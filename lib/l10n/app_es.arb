@@ -1,0 +1,538 @@
+{
+  "@@locale": "es",
+  "settings": "Ajustes",
+  "practiceNav": "Práctica",
+  "transformNav": "Transformaciones",
+  "appearance": "Apariencia",
+  "learning": "Aprendizaje y reproducción",
+  "themeLabel": "Tema",
+  "lightTheme": "Claro",
+  "darkTheme": "Oscuro",
+  "solutionModeLabel": "Vista de solución",
+  "guidedMode": "Animación guiada",
+  "stepsMode": "Pasos sin animación",
+  "resultMode": "Resultado directo",
+  "showResult": "Ver resultado",
+  "viewSteps": "Explorar pasos",
+  "motionLabel": "Reducir movimiento",
+  "motionHelp": "Siempre se respeta la preferencia de movimiento reducido del sistema.",
+  "shortExplanation": "Breve",
+  "detailedExplanation": "Detallada",
+  "hiddenExplanation": "Oculta",
+  "predictionLabel": "Preguntas de predicción",
+  "predictionHelp": "Preguntas opcionales en los ejemplos guiados.",
+  "predictTitle": "Antes de intentarlo…",
+  "predictPrompt": "¿Qué factor anula el elemento objetivo?",
+  "predictCorrect": "¡Exacto! Sigue ahora la misma operación en toda la fila.",
+  "predictIncorrect": "Divide el elemento objetivo entre el pivote para hallar el factor.",
+  "skip": "Omitir",
+  "continueLabel": "Continuar",
+  "numberView": "Formato numérico",
+  "fractionView": "Fracciones exactas",
+  "decimalView": "Decimales",
+  "densityLabel": "Densidad de diseño",
+  "comfortable": "Cómoda",
+  "compact": "Compacta",
+  "accentLabel": "Paleta de acento",
+  "blue": "Azul",
+  "teal": "Verde azulado",
+  "purple": "Morado",
+  "shortcutsLabel": "Atajos de teclado",
+  "shortcutHelp": "Selecciona una acción y pulsa una letra, Espacio o una flecha horizontal. Inicio/Fin y Re Pág/Av Pág siguen disponibles.",
+  "pressKey": "Pulsa una tecla",
+  "shortcutConflict": "Esta tecla está reservada o ya está asignada.",
+  "resetSettings": "Restablecer ajustes",
+  "settingsStorageError": "No se pudieron leer o guardar los ajustes. Los cambios siguen disponibles en esta sesión.",
+  "localPreferences": "Los ajustes se guardan en este dispositivo. No se guarda el historial de matrices.",
+  "resultExact": "Exacto",
+  "resultApproximate": "Aproximado",
+  "resultComplete": "Completo",
+  "resultPartial": "Parcial",
+  "resultUnsupported": "No compatible",
+  "eigenPrecision": "Los valores propios se redondean a tres decimales; los vectores son direcciones aproximadas, no soluciones exactas del núcleo.",
+  "eigenScope": "El análisis 3×3 busca raíces enteras entre −20 y 20. Las raíces no encontradas pueden ser reales o complejas.",
+  "eigenBasisScope": "Se muestra un vector por valor propio; no se calcula una base completa del espacio propio.",
+  "complexScope": "No se admiten vectores propios complejos. La parte imaginaria se redondea a dos decimales.",
+  "guideAddSource": "Empareja la misma posición en A y B.",
+  "guideAddApply": "Suma este par de elementos.",
+  "guideAddResult": "Su suma ocupa la misma posición en C.",
+  "appTitle": "Matriks · Álgebra lineal",
+  "topics": "Temas",
+  "selectTopic": "Explora el álgebra lineal",
+  "topicSubtitle": "Comprende cada operación, paso a paso.",
+  "categoryAll": "Todos los temas",
+  "categoryElimination": "Eliminación y sistemas",
+  "categoryAlgebra": "Álgebra matricial",
+  "categoryAdvanced": "Descomposición y espectro",
+  "categoryVisual": "Visualización y práctica",
+  "topicGauss": "Eliminación de Gauss (REF)",
+  "topicGaussDesc": "Reduce la matriz a forma escalonada, paso a paso.",
+  "topicRref": "Eliminación de Gauss-Jordan (RREF)",
+  "topicRrefDesc": "Obtén la forma escalonada reducida con pivotes iguales a uno.",
+  "topicLinearSystems": "Sistemas lineales (Ax = b)",
+  "topicLinearSystemsDesc": "Identifica una solución única, infinitas soluciones o ninguna.",
+  "topicDeterminant": "Determinante",
+  "topicDeterminantDesc": "Productos cruzados 2×2, regla de Sarrus 3×3 y triangularización.",
+  "topicInverse": "Matriz inversa (A⁻¹)",
+  "topicInverseDesc": "Adjunta 2×2 y método de Gauss-Jordan sobre [A ∣ I].",
+  "topicRankNullity": "Rango y nulidad",
+  "topicRankNullityDesc": "Calcula el rango y la dimensión del núcleo; comprueba su suma.",
+  "topicEigen": "Valores y vectores propios",
+  "topicEigenDesc": "Pares propios 2×2 y raíces enteras 3×3 entre −20 y 20.",
+  "topicTransform2d": "Transformación geométrica 2D",
+  "topicTransform2dDesc": "Explora el cuadrado unidad, los vectores base y el área orientada.",
+  "topicAdd": "Suma de matrices",
+  "topicAddDesc": "Suma los elementos correspondientes con animaciones.",
+  "topicMultiply": "Multiplicación de matrices",
+  "topicMultiplyDesc": "Combina filas y columnas para calcular cada elemento.",
+  "matrixInput": "Entrada de matriz",
+  "matrixA": "Matriz A",
+  "matrixB": "Matriz B",
+  "rows": "Filas",
+  "cols": "Columnas",
+  "size": "Tamaño",
+  "presetRandom": "Aleatoria",
+  "presetIdentity": "Identidad",
+  "presetClear": "Vaciar",
+  "calculate": "Resolver",
+  "fractionToggle": "Fracción / Decimal",
+  "decreaseDimension": "Reducir dimensión",
+  "increaseDimension": "Aumentar dimensión",
+  "stepOf": "Paso {current} de {total}",
+  "decreasePlaybackSpeed": "Reducir la velocidad de reproducción",
+  "increasePlaybackSpeed": "Aumentar la velocidad de reproducción",
+  "playbackSpeed": "Velocidad: {speed}×",
+  "play": "Reproducir",
+  "pause": "Pausar",
+  "nextStep": "Siguiente",
+  "prevStep": "Anterior",
+  "jumpToStep": "Ir al paso",
+  "explanation": "Explicación",
+  "cellDetail": "Detalle del cálculo",
+  "tapCellHint": "Toca un elemento para revisar su cálculo.",
+  "close": "Cerrar",
+  "toggleTheme": "Cambiar tema",
+  "changeLanguage": "Idioma",
+  "solveError": "Error: {error}",
+  "solveFallbackError": "No se pudo resolver la matriz.",
+  "badgeRowSwap": "Intercambio de filas",
+  "badgeRowScale": "Escalado de fila",
+  "badgeElimination": "Eliminación",
+  "badgeDeterminant": "Determinante",
+  "badgeSarrus": "Regla de Sarrus",
+  "badgeCofactor": "Cofactor",
+  "badgeDotProduct": "Producto escalar",
+  "badgeInverseResult": "Matriz inversa",
+  "badgeLinearSystem": "Sistema lineal",
+  "badgeRankNullity": "Rango y nulidad",
+  "badgeEigen": "Espectro",
+  "badgeLu": "Factorización LU",
+  "badgeInfo": "Información",
+  "legendPivot": "Pivote",
+  "legendSource": "Origen",
+  "legendTarget": "Objetivo",
+  "legendZeroResult": "Cero obtenido",
+  "speedSlow": "0,5× (Lenta)",
+  "speedNormal": "1× (Normal)",
+  "speedFast": "1,5× (Rápida)",
+  "speedVeryFast": "2× (Muy rápida)",
+  "cellCalculationTitle": "Cálculo del elemento ({row}, {col})",
+  "arithmeticDetail": "Operación aritmética:",
+  "resultLabel": "Resultado:",
+  "transformScreenTitle": "Transformación lineal 2D",
+  "presetShear": "Cizallamiento",
+  "presetRotation": "Rotación de 45°",
+  "presetScale": "Escalado",
+  "presetReflection": "Reflexión",
+  "presetProjection": "Proyección (det=0)",
+  "presetReset": "Restablecer (I)",
+  "step_row_swap_title": "Intercambiar filas {rowA} y {rowB}",
+  "step_row_swap_desc": "Intercambiamos las filas {rowA} y {rowB} para situar un pivote no nulo ({pivot}) en la columna {col}.",
+  "step_row_scale_title": "Normalizar la fila {row}",
+  "step_row_scale_desc": "Multiplicamos la fila {row} por {factor} para que el pivote sea 1.",
+  "step_row_elimination_title": "Eliminar el elemento de la fila {target}",
+  "step_row_elimination_desc": "Anulamos la columna {col} en la fila {target}: R_{target} ← R_{target} − ({multiplier}) · R_{source}.",
+  "det_1x1_title": "Determinante de una matriz 1×1",
+  "det_1x1_desc": "El determinante es su único elemento: {val}.",
+  "det_2x2_main_diagonal_title": "Producto de la diagonal principal",
+  "det_2x2_main_diagonal_desc": "Multiplicamos la diagonal principal: {a} · {d} = {product}.",
+  "det_2x2_anti_diagonal_title": "Producto de la diagonal secundaria",
+  "det_2x2_anti_diagonal_desc": "Multiplicamos la diagonal secundaria: {b} · {c} = {product}.",
+  "det_2x2_final_title": "Resultado del determinante",
+  "det_2x2_final_desc": "Restamos los productos: ({main}) − ({anti}) = {det}.",
+  "det_sarrus_pos_title": "Sarrus: diagonales positivas",
+  "det_sarrus_pos_desc": "Suma de productos descendentes: {p1} + {p2} + {p3} = {total}.",
+  "det_sarrus_neg_title": "Sarrus: diagonales negativas",
+  "det_sarrus_neg_desc": "Suma de productos ascendentes: {n1} + {n2} + {n3} = {total}.",
+  "det_sarrus_final_title": "Resultado del determinante",
+  "det_sarrus_final_desc": "Determinante = positivos − negativos: ({pos}) − ({neg}) = {det}.",
+  "det_singular_column_title": "Columna nula",
+  "det_singular_column_desc": "La columna {col} es nula. El determinante es 0.",
+  "det_row_swap_title": "Intercambio de filas: cambio de signo",
+  "det_row_swap_desc": "Intercambiar las filas {rowA} y {rowB} cambia el signo del determinante.",
+  "det_diagonal_product_title": "Producto diagonal de la matriz triangular",
+  "det_diagonal_product_desc": "La matriz es triangular superior. Determinante = {sign}{diagonals} = {det}.",
+  "inverse_singular_title": "Matriz singular",
+  "inverse_singular_desc": "El determinante es 0; esta matriz no tiene inversa.",
+  "inverse_2x2_det_title": "Calcular el determinante",
+  "inverse_2x2_det_desc": "Determinante = {formula} = {det}.",
+  "inverse_2x2_adjoint_title": "Construir la matriz adjunta",
+  "inverse_2x2_adjoint_desc": "Intercambia la diagonal principal y cambia el signo de los otros elementos.",
+  "inverse_2x2_scale_title": "Multiplicar la adjunta por 1/det",
+  "inverse_2x2_scale_desc": "Multiplicamos cada elemento de la adjunta por 1/det = {factor}.",
+  "inverse_block_init_title": "Construir [A ∣ I]",
+  "inverse_block_init_desc": "Ampliamos la matriz A de {n}×{n} con la identidad I.",
+  "inverse_block_extract_title": "Extraer la inversa A⁻¹",
+  "inverse_block_extract_desc": "El bloque izquierdo es I; el derecho es la inversa A⁻¹.",
+  "arithmetic_add_cell_title": "Sumar el elemento ({row}, {col})",
+  "arithmetic_add_cell_desc": "Sumamos elementos correspondientes: {formula}.",
+  "arithmetic_mult_cell_title": "Calcular el elemento ({row}, {col})",
+  "arithmetic_mult_cell_desc": "Producto de la fila {row} de A y la columna {col} de B: {formula}.",
+  "error_matrix_is_singular": "La matriz es singular (determinante = 0) y no tiene inversa.",
+  "error_inverse_not_square": "La operación requiere una matriz cuadrada.",
+  "error_dimension_mismatch_add": "Las matrices deben tener las mismas dimensiones.",
+  "error_dimension_mismatch_multiply": "Las columnas de A deben coincidir con las filas de B.",
+  "system_inconsistent_title": "Contradicción en la fila {row}",
+  "system_inconsistent_desc": "La fila {row} indica 0 = {val}: [0 … 0 ∣ {val}]. El sistema no tiene solución.",
+  "system_unique_title": "Solución única",
+  "system_unique_desc": "Cada incógnita tiene un pivote. La solución única es {solution}.",
+  "system_infinite_title": "Infinitas soluciones ({count} variables libres)",
+  "system_infinite_desc": "Las variables {freeVars} son parámetros libres ({params}). Expresamos la solución en forma vectorial paramétrica.",
+  "rank_nullity_title": "Rango = {rank}, nulidad = {nullity}",
+  "rank_nullity_desc": "Hay {rank} columnas pivote y {nullity} libres. Rango + nulidad = {cols}.",
+  "eigen_char_poly_title": "Polinomio característico",
+  "eigen_trace_det_desc": "Para 2×2: λ² − tr(A)λ + det(A) = 0, con traza {trace} y determinante {det}.",
+  "eigen_complex_title": "Valores propios complejos",
+  "eigen_complex_desc": "El discriminante de {poly} es negativo. Raíces conjugadas aproximadas: {roots}.",
+  "eigen_roots_title": "Raíces de la ecuación característica",
+  "eigen_roots_approx_desc": "Al resolver {poly}, los valores propios reales aproximados, redondeados a tres decimales, son: {roots}.",
+  "eigen_roots_desc": "De {poly} obtenemos los valores propios: {roots}.",
+  "eigen_vector_title": "Vector propio para λ_{index} = {lambda}",
+  "eigen_vector_desc": "Para (A − {lambda}I)v = 0, un vector propio es {vector}.",
+  "eigen_3x3_poly_desc": "Para 3×3: {poly}, con traza {trace} y determinante {det}.",
+  "eigen_irrational_desc": "No se hallaron raíces enteras de −20 a 20 para {poly}. Puede haber otras raíces reales o complejas.",
+  "topicLu": "Descomposición LU (A = LU)",
+  "topicLuDesc": "Descompón la matriz en factores triangulares inferior L y superior U.",
+  "topicPractice": "Autoevaluación y práctica",
+  "topicPracticeDesc": "Retos con explicaciones inmediatas y puntuación.",
+  "lu_init_title": "Iniciar la factorización LU",
+  "lu_init_desc": "Empezamos con L = I y U = A.",
+  "lu_swap_desc": "El pivote era 0. Intercambiamos las filas {rowA} y {rowB}; se necesita la matriz de permutación P.",
+  "lu_elim_title": "Eliminar en fila {target} usando fila {source}",
+  "lu_elim_desc": "Guardamos m_{target}{source} = {multiplier} en L. En U: R_{target} ← R_{target} − ({multiplier})R_{source}.",
+  "lu_final_title": "Factorización LU completa",
+  "lu_final_desc": "Obtuvimos L triangular inferior y U triangular superior.",
+  "practiceTitle": "Autoevaluación",
+  "practiceScore": "{score} puntos",
+  "practiceQuestionProgress": "Pregunta {current} / {total}",
+  "practiceHint": "Pista",
+  "practiceHideHint": "Ocultar pista",
+  "practiceCorrect": "¡Respuesta correcta!",
+  "practiceIncorrect": "Revisemos esta respuesta",
+  "practiceNext": "Siguiente pregunta",
+  "practiceResults": "Ver resultados",
+  "practiceCompleted": "¡Práctica completada!",
+  "practiceTotalScore": "Puntuación total: {score} / {total}",
+  "practicePerfectScore": "¡Excelente! Has respondido correctamente a todas las preguntas.",
+  "practiceGoodEffort": "¡Buen esfuerzo! Inténtalo otra vez para afianzar lo aprendido.",
+  "practiceReturnTopics": "Volver a los temas",
+  "practiceRestart": "Reiniciar práctica",
+  "searchTopics": "Buscar temas…",
+  "noTopicsFound": "No hay temas coincidentes",
+  "noTopicsFoundDesc": "Prueba otra palabra o categoría.",
+  "clearSearch": "Borrar búsqueda",
+  "rowLabel": "Fila {row}",
+  "systemDefault": "Predeterminado del sistema",
+  "replayAnimation": "Repetir animación",
+  "ghostRowMultiply": "Proyección: −({multiplier}) · R{source}",
+  "scaleWaveBadge": "× {scalar}",
+  "celebratoryZeroBadge": "0 (anulado)",
+  "sarrusPosBadge": "+ {product}",
+  "sarrusNegBadge": "− {product}",
+  "dotProductMerging": "Fila {row} · Columna {col}",
+  "bracketSwapRows": "R{rowA} ↔ R{rowB}",
+  "basisVectorI": "î = ({x}, {y})",
+  "basisVectorJ": "ĵ = ({x}, {y})",
+  "detValue": "det = {val}",
+  "progressPercent": "t = {percent}%",
+  "stepReplayTooltip": "Repetir la transformación del paso",
+  "intermediateCalculation": "Cálculo intermedio: {formula}",
+  "inputHelp": "Selecciona un elemento e introduce un entero, decimal o fracción.",
+  "inputInvalid": "Revisa la matriz {matrix}, fila {row}, columna {column}. Introduce un número completo; el denominador no puede ser cero.",
+  "calculating": "Calculando…",
+  "inputCell": "Matriz {matrix}, fila {row}, columna {column}",
+  "stepAlreadyReducedTitle": "Ya está en la forma solicitada",
+  "stepAlreadyReducedDesc": "No hacen falta operaciones de fila. La matriz mostrada es el resultado.",
+  "keyPreviousCell": "Elemento anterior",
+  "keyNextCell": "Elemento siguiente",
+  "keySign": "Cambiar signo",
+  "keyFraction": "Barra de fracción",
+  "keyBackspace": "Borrar último dígito",
+  "keyClear": "Vaciar elemento",
+  "keyDecimal": "Separador decimal",
+  "phaseSource": "Identifica el origen",
+  "phaseOperation": "Aplica la operación",
+  "phaseResult": "Comprueba el resultado",
+  "instructionProgress": "Esta operación",
+  "lessonSteps": "Pasos de la lección",
+  "customTransform": "Personalizada",
+  "transformCoefficients": "Matriz de transformación",
+  "basisVectors": "Vectores base transformados",
+  "targetDeterminant": "Determinante objetivo",
+  "matrixCellLabel": "Fila {row}, columna {column}, valor {value}",
+  "focusSource": "Comprende el objetivo",
+  "focusOperation": "Sigue el cálculo",
+  "focusResult": "Comprueba qué cambió",
+  "inspectOperation": "Inspeccionar esta operación",
+  "stepExplanation": "Por qué funciona",
+  "cellCalculations": "Cálculos de elementos",
+  "chooseStep": "Elegir un paso",
+  "learningPath": "¿Empiezas con matrices?",
+  "learningPathDesc": "Empieza por las operaciones de fila y descubre cómo resuelven ecuaciones.",
+  "pathEliminate": "1 · Crear ceros",
+  "pathReduce": "2 · Encontrar pivotes",
+  "pathSolve": "3 · Resolver un sistema",
+  "guidedExample": "Ejemplo guiado",
+  "guideGenericSource": "Lee la matriz y el objetivo de este paso.",
+  "guideGenericApply": "Sigue los elementos resaltados y su explicación.",
+  "guideGenericResult": "Compara el resultado y continúa cuando quieras.",
+  "guideEliminateSource": "Usa la fila {source} para cambiar la fila {target}. Mira la columna {column}.",
+  "guideEliminateApply": "Suma {factor} veces la fila {source} a la fila {target}, en todos sus elementos.",
+  "guideEliminateResult": "La columna {column} ahora contiene {value}. Se conserva el conjunto de soluciones.",
+  "guideScaleSource": "Multiplica toda la fila {row} por el mismo factor no nulo: {factor}.",
+  "guideScaleApply": "Aplica el factor a toda la fila, no solo al pivote.",
+  "guideScaleResult": "Compara cada elemento escalado con el original.",
+  "guideSwapSource": "Las filas {first} y {second} intercambiarán sus posiciones.",
+  "guideSwapApply": "Mueve las filas completas; los valores no cambian.",
+  "guideSwapResult": "Las filas están en sus nuevas posiciones. Las soluciones no cambian.",
+  "guideDotSource": "Empareja la fila {row} y la columna {column}. Cada pareja aporta al resultado.",
+  "guideDotApply": "Multiplica cada pareja y suma los productos.",
+  "guideDotResult": "La suma ocupa la fila {row}, columna {column}.",
+  "guideDetSource": "Observa los factores y los signos de cada producto.",
+  "guideDetApply": "Sigue un producto cada vez y revisa sus factores.",
+  "guideDetResult": "Los productos quedan visibles para revisarlos a tu ritmo.",
+  "coefficientError": "Introduce un número entre −1000 y 1000.",
+  "transformTransitionHint": "Edita un coeficiente y pulsa Intro o sal del campo para aplicarlo. Rango: −1000 a 1000. El deslizador muestra la transición entre estados.",
+  "multiplicationSourceRow": "A · fila {row}",
+  "multiplicationSourceColumn": "B · columna {column}",
+  "multiplicationOutput": "C = A × B · matriz resultado",
+  "guideEliminateReason": "Objetivo {entry} ÷ pivote {pivot} = {ratio}. Resta ese múltiplo de la fila origen para obtener cero.",
+  "guideEliminateSubtract": "Resta {factor} veces la fila {source} de la fila {target}, en todos sus elementos.",
+  "transformProgress": "Progreso de la transición",
+  "increaseCoefficient": "Aumentar el coeficiente {name}",
+  "decreaseCoefficient": "Reducir el coeficiente {name}",
+  "guideDotReason": "Un elemento de C usa una fila completa de A y una columna completa de B. Multiplica las posiciones correspondientes y suma.",
+  "guideDetReason": "El determinante mide el cambio de área o volumen con signo. Suma los productos + y resta los −; si es cero, se pierde una dimensión.",
+  "@inputInvalid": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@inputCell": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@matrixCellLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateApply": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateResult": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideScaleSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideSwapSource": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotResult": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceRow": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceColumn": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSubtract": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@increaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@decreaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizQ1QuestionTitle": "Gauss: pivote y eliminación",
+  "quizQ1Prompt": "El pivote está en (1,1). ¿Qué operación anula el primer elemento de la fila 2?",
+  "quizQ1Explanation": "El objetivo es 2 y el pivote 1: restar dos veces la primera fila da 2 − 2×1 = 0.",
+  "quizQ1Hint": "Resta un múltiplo de la fila pivote.",
+  "quizQ1Feedback0": "Restar dos veces la fila 1 da 2 − 2 = 0.",
+  "quizQ1Feedback1": "Sumar da 2 + 2 = 4, no cero.",
+  "quizQ1Feedback2": "Intercambiar mueve los elementos, pero no anula el objetivo.",
+  "quizQ1Feedback3": "Dividir la fila 2 entre dos da 1, no cero.",
+  "quizQ2QuestionTitle": "Intercambio de filas",
+  "quizQ2Prompt": "El pivote (1,1) es 0. ¿Qué intercambio sitúa allí un elemento no nulo?",
+  "quizQ2Explanation": "Intercambiar las filas 1 y 2 sitúa el 3 en la posición pivote.",
+  "quizQ2Hint": "Busca una fila con primer elemento distinto de cero.",
+  "quizQ2Feedback0": "Sumar también crea un pivote no nulo, pero se pide un intercambio.",
+  "quizQ2Feedback1": "El intercambio lleva el 3 a (1,1).",
+  "quizQ2Feedback2": "Cambiar la fila 2 no modifica el cero de (1,1).",
+  "quizQ2Feedback3": "Escalar la fila 3 no modifica el cero de (1,1).",
+  "quizQ3QuestionTitle": "Normalización del pivote",
+  "quizQ3Prompt": "El pivote de la fila 2 es −3. ¿Qué operación lo convierte en 1?",
+  "quizQ3Explanation": "Multiplica toda la fila 2 por −1/3: (−3)×(−1/3) = 1.",
+  "quizQ3Hint": "Usa el recíproco del pivote.",
+  "quizQ3Feedback0": "Sumar la fila 1 rompe el cero inicial y no normaliza el pivote.",
+  "quizQ3Feedback1": "El recíproco de −3 es −1/3; su producto es 1.",
+  "quizQ3Feedback2": "−3×3 = −9. Necesitas el recíproco.",
+  "quizQ3Feedback3": "Intercambiar filas no convierte −3 en 1.",
+  "quizQ4QuestionTitle": "Rango y filas nulas",
+  "quizQ4Prompt": "¿Cuál es el rango de esta matriz escalonada?",
+  "quizQ4Explanation": "Hay dos filas pivote no nulas y una fila nula: rango(A) = 2.",
+  "quizQ4Hint": "Cuenta las filas no nulas en forma escalonada.",
+  "quizQ4Feedback0": "La fila nula no aporta un pivote; el tamaño no determina el rango.",
+  "quizQ4Feedback1": "La matriz tiene dos filas pivote.",
+  "quizQ4Feedback2": "La segunda fila no nula también tiene un pivote.",
+  "quizQ4Feedback3": "El rango sería cero solo si todos los elementos fueran cero.",
+  "quizQ5QuestionTitle": "Determinante triangular",
+  "quizQ5Prompt": "En una matriz triangular, multiplica la diagonal principal. ¿Cuánto vale det(A)?",
+  "quizQ5Explanation": "El producto de la diagonal es 2×3×4 = 24.",
+  "quizQ5Hint": "Con ceros bajo la diagonal, multiplica los elementos diagonales.",
+  "quizQ5Feedback0": "Multiplica la diagonal; la suma es la traza.",
+  "quizQ5Feedback1": "2×3×4 = 24.",
+  "quizQ5Feedback2": "Los ceros bajo la diagonal no anulan el determinante; un cero diagonal sí.",
+  "quizQ5Feedback3": "Todos los elementos diagonales son positivos; no hay signo negativo adicional.",
+  "eigen_vector_approx_title": "Vector aproximado para λ_{index} ≈ {lambda}",
+  "eigen_vector_approx_desc": "Con λ ≈ {lambda}, una dirección aproximada es {vector}; no es una solución exacta del núcleo.",
+  "spaceKey": "Espacio"
+}

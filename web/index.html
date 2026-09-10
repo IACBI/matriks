@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore linear algebra with exact matrix calculations, guided solutions, and interactive practice.">
+  <meta name="theme-color" content="#2455B2">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Matriks">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Matriks · Linear Algebra</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; background: #f5f7fa; color: #202938; font: 16px/1.5 system-ui, sans-serif; }
+    #startup { box-sizing: border-box; min-height: 100vh; display: grid; place-content: center; padding: 32px; max-width: 640px; margin: auto; }
+    h1 { font-size: 32px; letter-spacing: -1px; margin: 0 0 12px; }
+    p { margin: 0 0 20px; }
+    button { font: inherit; padding: 12px 20px; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #2455b2; outline-offset: 4px; }
+    @media (prefers-color-scheme: dark) { body { background: #101a29; color: #eef2f7; } }
+  </style>
+</head>
+<body>
+  <main id="startup">
+    <h1>Matriks</h1>
+    <p id="startup-status" role="status">Preparing your linear algebra workspace…</p>
+    <button id="retry" type="button" hidden>Try again</button>
+    <noscript>Enable JavaScript to use the interactive workspace.</noscript>
+  </main>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

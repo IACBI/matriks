@@ -1,0 +1,1345 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Spanish Castilian (`es`).
+class AppLocalizationsEs extends AppLocalizations {
+  AppLocalizationsEs([String locale = 'es']) : super(locale);
+
+  @override
+  String get appTitle => 'Matriks · Álgebra lineal';
+
+  @override
+  String get topics => 'Temas';
+
+  @override
+  String get selectTopic => 'Explora el álgebra lineal';
+
+  @override
+  String get topicSubtitle => 'Comprende cada operación, paso a paso.';
+
+  @override
+  String get categoryAll => 'Todos los temas';
+
+  @override
+  String get categoryElimination => 'Eliminación y sistemas';
+
+  @override
+  String get categoryAlgebra => 'Álgebra matricial';
+
+  @override
+  String get categoryAdvanced => 'Descomposición y espectro';
+
+  @override
+  String get categoryVisual => 'Visualización y práctica';
+
+  @override
+  String get topicGauss => 'Eliminación de Gauss (REF)';
+
+  @override
+  String get topicGaussDesc =>
+      'Reduce la matriz a forma escalonada, paso a paso.';
+
+  @override
+  String get topicRref => 'Eliminación de Gauss-Jordan (RREF)';
+
+  @override
+  String get topicRrefDesc =>
+      'Obtén la forma escalonada reducida con pivotes iguales a uno.';
+
+  @override
+  String get topicLinearSystems => 'Sistemas lineales (Ax = b)';
+
+  @override
+  String get topicLinearSystemsDesc =>
+      'Identifica una solución única, infinitas soluciones o ninguna.';
+
+  @override
+  String get topicDeterminant => 'Determinante';
+
+  @override
+  String get topicDeterminantDesc =>
+      'Productos cruzados 2×2, regla de Sarrus 3×3 y triangularización.';
+
+  @override
+  String get topicInverse => 'Matriz inversa (A⁻¹)';
+
+  @override
+  String get topicInverseDesc =>
+      'Adjunta 2×2 y método de Gauss-Jordan sobre [A ∣ I].';
+
+  @override
+  String get topicRankNullity => 'Rango y nulidad';
+
+  @override
+  String get topicRankNullityDesc =>
+      'Calcula el rango y la dimensión del núcleo; comprueba su suma.';
+
+  @override
+  String get topicEigen => 'Valores y vectores propios';
+
+  @override
+  String get topicEigenDesc =>
+      'Pares propios 2×2 y raíces enteras 3×3 entre −20 y 20.';
+
+  @override
+  String get topicTransform2d => 'Transformación geométrica 2D';
+
+  @override
+  String get topicTransform2dDesc =>
+      'Explora el cuadrado unidad, los vectores base y el área orientada.';
+
+  @override
+  String get topicAdd => 'Suma de matrices';
+
+  @override
+  String get topicAddDesc =>
+      'Suma los elementos correspondientes con animaciones.';
+
+  @override
+  String get topicMultiply => 'Multiplicación de matrices';
+
+  @override
+  String get topicMultiplyDesc =>
+      'Combina filas y columnas para calcular cada elemento.';
+
+  @override
+  String get matrixInput => 'Entrada de matriz';
+
+  @override
+  String get matrixA => 'Matriz A';
+
+  @override
+  String get matrixB => 'Matriz B';
+
+  @override
+  String get rows => 'Filas';
+
+  @override
+  String get cols => 'Columnas';
+
+  @override
+  String get size => 'Tamaño';
+
+  @override
+  String get presetRandom => 'Aleatoria';
+
+  @override
+  String get presetIdentity => 'Identidad';
+
+  @override
+  String get presetClear => 'Vaciar';
+
+  @override
+  String get calculate => 'Resolver';
+
+  @override
+  String get fractionToggle => 'Fracción / Decimal';
+
+  @override
+  String get decreaseDimension => 'Reducir dimensión';
+
+  @override
+  String get increaseDimension => 'Aumentar dimensión';
+
+  @override
+  String stepOf(Object current, Object total) {
+    return 'Paso $current de $total';
+  }
+
+  @override
+  String get decreasePlaybackSpeed => 'Reducir la velocidad de reproducción';
+
+  @override
+  String get increasePlaybackSpeed => 'Aumentar la velocidad de reproducción';
+
+  @override
+  String playbackSpeed(Object speed) {
+    return 'Velocidad: $speed×';
+  }
+
+  @override
+  String get play => 'Reproducir';
+
+  @override
+  String get pause => 'Pausar';
+
+  @override
+  String get nextStep => 'Siguiente';
+
+  @override
+  String get prevStep => 'Anterior';
+
+  @override
+  String get jumpToStep => 'Ir al paso';
+
+  @override
+  String get explanation => 'Explicación';
+
+  @override
+  String get cellDetail => 'Detalle del cálculo';
+
+  @override
+  String get tapCellHint => 'Toca un elemento para revisar su cálculo.';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get toggleTheme => 'Cambiar tema';
+
+  @override
+  String get changeLanguage => 'Idioma';
+
+  @override
+  String solveError(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get solveFallbackError => 'No se pudo resolver la matriz.';
+
+  @override
+  String get badgeRowSwap => 'Intercambio de filas';
+
+  @override
+  String get badgeRowScale => 'Escalado de fila';
+
+  @override
+  String get badgeElimination => 'Eliminación';
+
+  @override
+  String get badgeDeterminant => 'Determinante';
+
+  @override
+  String get badgeSarrus => 'Regla de Sarrus';
+
+  @override
+  String get badgeCofactor => 'Cofactor';
+
+  @override
+  String get badgeDotProduct => 'Producto escalar';
+
+  @override
+  String get badgeInverseResult => 'Matriz inversa';
+
+  @override
+  String get badgeLinearSystem => 'Sistema lineal';
+
+  @override
+  String get badgeRankNullity => 'Rango y nulidad';
+
+  @override
+  String get badgeEigen => 'Espectro';
+
+  @override
+  String get badgeLu => 'Factorización LU';
+
+  @override
+  String get badgeInfo => 'Información';
+
+  @override
+  String get legendPivot => 'Pivote';
+
+  @override
+  String get legendSource => 'Origen';
+
+  @override
+  String get legendTarget => 'Objetivo';
+
+  @override
+  String get legendZeroResult => 'Cero obtenido';
+
+  @override
+  String get speedSlow => '0,5× (Lenta)';
+
+  @override
+  String get speedNormal => '1× (Normal)';
+
+  @override
+  String get speedFast => '1,5× (Rápida)';
+
+  @override
+  String get speedVeryFast => '2× (Muy rápida)';
+
+  @override
+  String cellCalculationTitle(Object col, Object row) {
+    return 'Cálculo del elemento ($row, $col)';
+  }
+
+  @override
+  String get arithmeticDetail => 'Operación aritmética:';
+
+  @override
+  String get resultLabel => 'Resultado:';
+
+  @override
+  String get transformScreenTitle => 'Transformación lineal 2D';
+
+  @override
+  String get presetShear => 'Cizallamiento';
+
+  @override
+  String get presetRotation => 'Rotación de 45°';
+
+  @override
+  String get presetScale => 'Escalado';
+
+  @override
+  String get presetReflection => 'Reflexión';
+
+  @override
+  String get presetProjection => 'Proyección (det=0)';
+
+  @override
+  String get presetReset => 'Restablecer (I)';
+
+  @override
+  String step_row_swap_title(Object rowA, Object rowB) {
+    return 'Intercambiar filas $rowA y $rowB';
+  }
+
+  @override
+  String step_row_swap_desc(
+    Object col,
+    Object pivot,
+    Object rowA,
+    Object rowB,
+  ) {
+    return 'Intercambiamos las filas $rowA y $rowB para situar un pivote no nulo ($pivot) en la columna $col.';
+  }
+
+  @override
+  String step_row_scale_title(Object row) {
+    return 'Normalizar la fila $row';
+  }
+
+  @override
+  String step_row_scale_desc(Object factor, Object row) {
+    return 'Multiplicamos la fila $row por $factor para que el pivote sea 1.';
+  }
+
+  @override
+  String step_row_elimination_title(Object target) {
+    return 'Eliminar el elemento de la fila $target';
+  }
+
+  @override
+  String step_row_elimination_desc(
+    Object col,
+    Object multiplier,
+    Object source,
+    Object target,
+  ) {
+    return 'Anulamos la columna $col en la fila $target: R_$target ← R_$target − ($multiplier) · R_$source.';
+  }
+
+  @override
+  String get det_1x1_title => 'Determinante de una matriz 1×1';
+
+  @override
+  String det_1x1_desc(Object val) {
+    return 'El determinante es su único elemento: $val.';
+  }
+
+  @override
+  String get det_2x2_main_diagonal_title => 'Producto de la diagonal principal';
+
+  @override
+  String det_2x2_main_diagonal_desc(Object a, Object d, Object product) {
+    return 'Multiplicamos la diagonal principal: $a · $d = $product.';
+  }
+
+  @override
+  String get det_2x2_anti_diagonal_title =>
+      'Producto de la diagonal secundaria';
+
+  @override
+  String det_2x2_anti_diagonal_desc(Object b, Object c, Object product) {
+    return 'Multiplicamos la diagonal secundaria: $b · $c = $product.';
+  }
+
+  @override
+  String get det_2x2_final_title => 'Resultado del determinante';
+
+  @override
+  String det_2x2_final_desc(Object anti, Object det, Object main) {
+    return 'Restamos los productos: ($main) − ($anti) = $det.';
+  }
+
+  @override
+  String get det_sarrus_pos_title => 'Sarrus: diagonales positivas';
+
+  @override
+  String det_sarrus_pos_desc(Object p1, Object p2, Object p3, Object total) {
+    return 'Suma de productos descendentes: $p1 + $p2 + $p3 = $total.';
+  }
+
+  @override
+  String get det_sarrus_neg_title => 'Sarrus: diagonales negativas';
+
+  @override
+  String det_sarrus_neg_desc(Object n1, Object n2, Object n3, Object total) {
+    return 'Suma de productos ascendentes: $n1 + $n2 + $n3 = $total.';
+  }
+
+  @override
+  String get det_sarrus_final_title => 'Resultado del determinante';
+
+  @override
+  String det_sarrus_final_desc(Object det, Object neg, Object pos) {
+    return 'Determinante = positivos − negativos: ($pos) − ($neg) = $det.';
+  }
+
+  @override
+  String get det_singular_column_title => 'Columna nula';
+
+  @override
+  String det_singular_column_desc(Object col) {
+    return 'La columna $col es nula. El determinante es 0.';
+  }
+
+  @override
+  String get det_row_swap_title => 'Intercambio de filas: cambio de signo';
+
+  @override
+  String det_row_swap_desc(Object rowA, Object rowB) {
+    return 'Intercambiar las filas $rowA y $rowB cambia el signo del determinante.';
+  }
+
+  @override
+  String get det_diagonal_product_title =>
+      'Producto diagonal de la matriz triangular';
+
+  @override
+  String det_diagonal_product_desc(Object det, Object diagonals, Object sign) {
+    return 'La matriz es triangular superior. Determinante = $sign$diagonals = $det.';
+  }
+
+  @override
+  String get inverse_singular_title => 'Matriz singular';
+
+  @override
+  String get inverse_singular_desc =>
+      'El determinante es 0; esta matriz no tiene inversa.';
+
+  @override
+  String get inverse_2x2_det_title => 'Calcular el determinante';
+
+  @override
+  String inverse_2x2_det_desc(Object det, Object formula) {
+    return 'Determinante = $formula = $det.';
+  }
+
+  @override
+  String get inverse_2x2_adjoint_title => 'Construir la matriz adjunta';
+
+  @override
+  String get inverse_2x2_adjoint_desc =>
+      'Intercambia la diagonal principal y cambia el signo de los otros elementos.';
+
+  @override
+  String get inverse_2x2_scale_title => 'Multiplicar la adjunta por 1/det';
+
+  @override
+  String inverse_2x2_scale_desc(Object factor) {
+    return 'Multiplicamos cada elemento de la adjunta por 1/det = $factor.';
+  }
+
+  @override
+  String get inverse_block_init_title => 'Construir [A ∣ I]';
+
+  @override
+  String inverse_block_init_desc(Object n) {
+    return 'Ampliamos la matriz A de $n×$n con la identidad I.';
+  }
+
+  @override
+  String get inverse_block_extract_title => 'Extraer la inversa A⁻¹';
+
+  @override
+  String get inverse_block_extract_desc =>
+      'El bloque izquierdo es I; el derecho es la inversa A⁻¹.';
+
+  @override
+  String arithmetic_add_cell_title(Object col, Object row) {
+    return 'Sumar el elemento ($row, $col)';
+  }
+
+  @override
+  String arithmetic_add_cell_desc(Object formula) {
+    return 'Sumamos elementos correspondientes: $formula.';
+  }
+
+  @override
+  String arithmetic_mult_cell_title(Object col, Object row) {
+    return 'Calcular el elemento ($row, $col)';
+  }
+
+  @override
+  String arithmetic_mult_cell_desc(Object col, Object formula, Object row) {
+    return 'Producto de la fila $row de A y la columna $col de B: $formula.';
+  }
+
+  @override
+  String get error_matrix_is_singular =>
+      'La matriz es singular (determinante = 0) y no tiene inversa.';
+
+  @override
+  String get error_inverse_not_square =>
+      'La operación requiere una matriz cuadrada.';
+
+  @override
+  String get error_dimension_mismatch_add =>
+      'Las matrices deben tener las mismas dimensiones.';
+
+  @override
+  String get error_dimension_mismatch_multiply =>
+      'Las columnas de A deben coincidir con las filas de B.';
+
+  @override
+  String system_inconsistent_title(Object row) {
+    return 'Contradicción en la fila $row';
+  }
+
+  @override
+  String system_inconsistent_desc(Object row, Object val) {
+    return 'La fila $row indica 0 = $val: [0 … 0 ∣ $val]. El sistema no tiene solución.';
+  }
+
+  @override
+  String get system_unique_title => 'Solución única';
+
+  @override
+  String system_unique_desc(Object solution) {
+    return 'Cada incógnita tiene un pivote. La solución única es $solution.';
+  }
+
+  @override
+  String system_infinite_title(Object count) {
+    return 'Infinitas soluciones ($count variables libres)';
+  }
+
+  @override
+  String system_infinite_desc(Object freeVars, Object params) {
+    return 'Las variables $freeVars son parámetros libres ($params). Expresamos la solución en forma vectorial paramétrica.';
+  }
+
+  @override
+  String rank_nullity_title(Object nullity, Object rank) {
+    return 'Rango = $rank, nulidad = $nullity';
+  }
+
+  @override
+  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+    return 'Hay $rank columnas pivote y $nullity libres. Rango + nulidad = $cols.';
+  }
+
+  @override
+  String get eigen_char_poly_title => 'Polinomio característico';
+
+  @override
+  String eigen_trace_det_desc(Object det, Object trace) {
+    return 'Para 2×2: λ² − tr(A)λ + det(A) = 0, con traza $trace y determinante $det.';
+  }
+
+  @override
+  String get eigen_complex_title => 'Valores propios complejos';
+
+  @override
+  String eigen_complex_desc(Object poly, Object roots) {
+    return 'El discriminante de $poly es negativo. Raíces conjugadas aproximadas: $roots.';
+  }
+
+  @override
+  String get eigen_roots_title => 'Raíces de la ecuación característica';
+
+  @override
+  String eigen_roots_approx_desc(Object poly, Object roots) {
+    return 'Al resolver $poly, los valores propios reales aproximados, redondeados a tres decimales, son: $roots.';
+  }
+
+  @override
+  String eigen_roots_desc(Object poly, Object roots) {
+    return 'De $poly obtenemos los valores propios: $roots.';
+  }
+
+  @override
+  String eigen_vector_title(Object index, Object lambda) {
+    return 'Vector propio para λ_$index = $lambda';
+  }
+
+  @override
+  String eigen_vector_desc(Object lambda, Object vector) {
+    return 'Para (A − ${lambda}I)v = 0, un vector propio es $vector.';
+  }
+
+  @override
+  String eigen_3x3_poly_desc(Object det, Object poly, Object trace) {
+    return 'Para 3×3: $poly, con traza $trace y determinante $det.';
+  }
+
+  @override
+  String eigen_irrational_desc(Object poly) {
+    return 'No se hallaron raíces enteras de −20 a 20 para $poly. Puede haber otras raíces reales o complejas.';
+  }
+
+  @override
+  String get topicLu => 'Descomposición LU (A = LU)';
+
+  @override
+  String get topicLuDesc =>
+      'Descompón la matriz en factores triangulares inferior L y superior U.';
+
+  @override
+  String get topicPractice => 'Autoevaluación y práctica';
+
+  @override
+  String get topicPracticeDesc =>
+      'Retos con explicaciones inmediatas y puntuación.';
+
+  @override
+  String get lu_init_title => 'Iniciar la factorización LU';
+
+  @override
+  String get lu_init_desc => 'Empezamos con L = I y U = A.';
+
+  @override
+  String lu_swap_desc(Object rowA, Object rowB) {
+    return 'El pivote era 0. Intercambiamos las filas $rowA y $rowB; se necesita la matriz de permutación P.';
+  }
+
+  @override
+  String lu_elim_title(Object source, Object target) {
+    return 'Eliminar en fila $target usando fila $source';
+  }
+
+  @override
+  String lu_elim_desc(Object multiplier, Object source, Object target) {
+    return 'Guardamos m_$target$source = $multiplier en L. En U: R_$target ← R_$target − ($multiplier)R_$source.';
+  }
+
+  @override
+  String get lu_final_title => 'Factorización LU completa';
+
+  @override
+  String get lu_final_desc =>
+      'Obtuvimos L triangular inferior y U triangular superior.';
+
+  @override
+  String get practiceTitle => 'Autoevaluación';
+
+  @override
+  String practiceScore(Object score) {
+    return '$score puntos';
+  }
+
+  @override
+  String practiceQuestionProgress(Object current, Object total) {
+    return 'Pregunta $current / $total';
+  }
+
+  @override
+  String get practiceHint => 'Pista';
+
+  @override
+  String get practiceHideHint => 'Ocultar pista';
+
+  @override
+  String get practiceCorrect => '¡Respuesta correcta!';
+
+  @override
+  String get practiceIncorrect => 'Revisemos esta respuesta';
+
+  @override
+  String get practiceNext => 'Siguiente pregunta';
+
+  @override
+  String get practiceResults => 'Ver resultados';
+
+  @override
+  String get practiceCompleted => '¡Práctica completada!';
+
+  @override
+  String practiceTotalScore(Object score, Object total) {
+    return 'Puntuación total: $score / $total';
+  }
+
+  @override
+  String get practicePerfectScore =>
+      '¡Excelente! Has respondido correctamente a todas las preguntas.';
+
+  @override
+  String get practiceGoodEffort =>
+      '¡Buen esfuerzo! Inténtalo otra vez para afianzar lo aprendido.';
+
+  @override
+  String get practiceReturnTopics => 'Volver a los temas';
+
+  @override
+  String get practiceRestart => 'Reiniciar práctica';
+
+  @override
+  String get searchTopics => 'Buscar temas…';
+
+  @override
+  String get noTopicsFound => 'No hay temas coincidentes';
+
+  @override
+  String get noTopicsFoundDesc => 'Prueba otra palabra o categoría.';
+
+  @override
+  String get clearSearch => 'Borrar búsqueda';
+
+  @override
+  String rowLabel(Object row) {
+    return 'Fila $row';
+  }
+
+  @override
+  String get systemDefault => 'Predeterminado del sistema';
+
+  @override
+  String get replayAnimation => 'Repetir animación';
+
+  @override
+  String ghostRowMultiply(Object multiplier, Object source) {
+    return 'Proyección: −($multiplier) · R$source';
+  }
+
+  @override
+  String scaleWaveBadge(Object scalar) {
+    return '× $scalar';
+  }
+
+  @override
+  String get celebratoryZeroBadge => '0 (anulado)';
+
+  @override
+  String sarrusPosBadge(Object product) {
+    return '+ $product';
+  }
+
+  @override
+  String sarrusNegBadge(Object product) {
+    return '− $product';
+  }
+
+  @override
+  String dotProductMerging(Object col, Object row) {
+    return 'Fila $row · Columna $col';
+  }
+
+  @override
+  String bracketSwapRows(Object rowA, Object rowB) {
+    return 'R$rowA ↔ R$rowB';
+  }
+
+  @override
+  String basisVectorI(Object x, Object y) {
+    return 'î = ($x, $y)';
+  }
+
+  @override
+  String basisVectorJ(Object x, Object y) {
+    return 'ĵ = ($x, $y)';
+  }
+
+  @override
+  String detValue(Object val) {
+    return 'det = $val';
+  }
+
+  @override
+  String progressPercent(Object percent) {
+    return 't = $percent%';
+  }
+
+  @override
+  String get stepReplayTooltip => 'Repetir la transformación del paso';
+
+  @override
+  String intermediateCalculation(Object formula) {
+    return 'Cálculo intermedio: $formula';
+  }
+
+  @override
+  String get inputHelp =>
+      'Selecciona un elemento e introduce un entero, decimal o fracción.';
+
+  @override
+  String inputInvalid(String matrix, int row, int column) {
+    return 'Revisa la matriz $matrix, fila $row, columna $column. Introduce un número completo; el denominador no puede ser cero.';
+  }
+
+  @override
+  String get calculating => 'Calculando…';
+
+  @override
+  String inputCell(String matrix, int row, int column) {
+    return 'Matriz $matrix, fila $row, columna $column';
+  }
+
+  @override
+  String get stepAlreadyReducedTitle => 'Ya está en la forma solicitada';
+
+  @override
+  String get stepAlreadyReducedDesc =>
+      'No hacen falta operaciones de fila. La matriz mostrada es el resultado.';
+
+  @override
+  String get keyPreviousCell => 'Elemento anterior';
+
+  @override
+  String get keyNextCell => 'Elemento siguiente';
+
+  @override
+  String get keySign => 'Cambiar signo';
+
+  @override
+  String get keyFraction => 'Barra de fracción';
+
+  @override
+  String get keyBackspace => 'Borrar último dígito';
+
+  @override
+  String get keyClear => 'Vaciar elemento';
+
+  @override
+  String get keyDecimal => 'Separador decimal';
+
+  @override
+  String get phaseSource => 'Identifica el origen';
+
+  @override
+  String get phaseOperation => 'Aplica la operación';
+
+  @override
+  String get phaseResult => 'Comprueba el resultado';
+
+  @override
+  String get instructionProgress => 'Esta operación';
+
+  @override
+  String get lessonSteps => 'Pasos de la lección';
+
+  @override
+  String get customTransform => 'Personalizada';
+
+  @override
+  String get transformCoefficients => 'Matriz de transformación';
+
+  @override
+  String get basisVectors => 'Vectores base transformados';
+
+  @override
+  String get targetDeterminant => 'Determinante objetivo';
+
+  @override
+  String matrixCellLabel(int row, int column, String value) {
+    return 'Fila $row, columna $column, valor $value';
+  }
+
+  @override
+  String get focusSource => 'Comprende el objetivo';
+
+  @override
+  String get focusOperation => 'Sigue el cálculo';
+
+  @override
+  String get focusResult => 'Comprueba qué cambió';
+
+  @override
+  String get inspectOperation => 'Inspeccionar esta operación';
+
+  @override
+  String get stepExplanation => 'Por qué funciona';
+
+  @override
+  String get cellCalculations => 'Cálculos de elementos';
+
+  @override
+  String get chooseStep => 'Elegir un paso';
+
+  @override
+  String get learningPath => '¿Empiezas con matrices?';
+
+  @override
+  String get learningPathDesc =>
+      'Empieza por las operaciones de fila y descubre cómo resuelven ecuaciones.';
+
+  @override
+  String get pathEliminate => '1 · Crear ceros';
+
+  @override
+  String get pathReduce => '2 · Encontrar pivotes';
+
+  @override
+  String get pathSolve => '3 · Resolver un sistema';
+
+  @override
+  String get guidedExample => 'Ejemplo guiado';
+
+  @override
+  String get guideGenericSource => 'Lee la matriz y el objetivo de este paso.';
+
+  @override
+  String get guideGenericApply =>
+      'Sigue los elementos resaltados y su explicación.';
+
+  @override
+  String get guideGenericResult =>
+      'Compara el resultado y continúa cuando quieras.';
+
+  @override
+  String guideEliminateSource(String source, String target, String column) {
+    return 'Usa la fila $source para cambiar la fila $target. Mira la columna $column.';
+  }
+
+  @override
+  String guideEliminateApply(String factor, String source, String target) {
+    return 'Suma $factor veces la fila $source a la fila $target, en todos sus elementos.';
+  }
+
+  @override
+  String guideEliminateResult(String column, String value) {
+    return 'La columna $column ahora contiene $value. Se conserva el conjunto de soluciones.';
+  }
+
+  @override
+  String guideScaleSource(String row, String factor) {
+    return 'Multiplica toda la fila $row por el mismo factor no nulo: $factor.';
+  }
+
+  @override
+  String get guideScaleApply =>
+      'Aplica el factor a toda la fila, no solo al pivote.';
+
+  @override
+  String get guideScaleResult =>
+      'Compara cada elemento escalado con el original.';
+
+  @override
+  String guideSwapSource(String first, String second) {
+    return 'Las filas $first y $second intercambiarán sus posiciones.';
+  }
+
+  @override
+  String get guideSwapApply =>
+      'Mueve las filas completas; los valores no cambian.';
+
+  @override
+  String get guideSwapResult =>
+      'Las filas están en sus nuevas posiciones. Las soluciones no cambian.';
+
+  @override
+  String guideDotSource(String row, String column) {
+    return 'Empareja la fila $row y la columna $column. Cada pareja aporta al resultado.';
+  }
+
+  @override
+  String get guideDotApply => 'Multiplica cada pareja y suma los productos.';
+
+  @override
+  String guideDotResult(String row, String column) {
+    return 'La suma ocupa la fila $row, columna $column.';
+  }
+
+  @override
+  String get guideDetSource =>
+      'Observa los factores y los signos de cada producto.';
+
+  @override
+  String get guideDetApply =>
+      'Sigue un producto cada vez y revisa sus factores.';
+
+  @override
+  String get guideDetResult =>
+      'Los productos quedan visibles para revisarlos a tu ritmo.';
+
+  @override
+  String get coefficientError => 'Introduce un número entre −1000 y 1000.';
+
+  @override
+  String get transformTransitionHint =>
+      'Edita un coeficiente y pulsa Intro o sal del campo para aplicarlo. Rango: −1000 a 1000. El deslizador muestra la transición entre estados.';
+
+  @override
+  String multiplicationSourceRow(String row) {
+    return 'A · fila $row';
+  }
+
+  @override
+  String multiplicationSourceColumn(String column) {
+    return 'B · columna $column';
+  }
+
+  @override
+  String get multiplicationOutput => 'C = A × B · matriz resultado';
+
+  @override
+  String guideEliminateReason(String entry, String pivot, String ratio) {
+    return 'Objetivo $entry ÷ pivote $pivot = $ratio. Resta ese múltiplo de la fila origen para obtener cero.';
+  }
+
+  @override
+  String guideEliminateSubtract(String factor, String source, String target) {
+    return 'Resta $factor veces la fila $source de la fila $target, en todos sus elementos.';
+  }
+
+  @override
+  String get transformProgress => 'Progreso de la transición';
+
+  @override
+  String increaseCoefficient(String name) {
+    return 'Aumentar el coeficiente $name';
+  }
+
+  @override
+  String decreaseCoefficient(String name) {
+    return 'Reducir el coeficiente $name';
+  }
+
+  @override
+  String get guideDotReason =>
+      'Un elemento de C usa una fila completa de A y una columna completa de B. Multiplica las posiciones correspondientes y suma.';
+
+  @override
+  String get guideDetReason =>
+      'El determinante mide el cambio de área o volumen con signo. Suma los productos + y resta los −; si es cero, se pierde una dimensión.';
+
+  @override
+  String get settings => 'Ajustes';
+
+  @override
+  String get practiceNav => 'Práctica';
+
+  @override
+  String get transformNav => 'Transformaciones';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get learning => 'Aprendizaje y reproducción';
+
+  @override
+  String get themeLabel => 'Tema';
+
+  @override
+  String get lightTheme => 'Claro';
+
+  @override
+  String get darkTheme => 'Oscuro';
+
+  @override
+  String get solutionModeLabel => 'Vista de solución';
+
+  @override
+  String get guidedMode => 'Animación guiada';
+
+  @override
+  String get stepsMode => 'Pasos sin animación';
+
+  @override
+  String get resultMode => 'Resultado directo';
+
+  @override
+  String get showResult => 'Ver resultado';
+
+  @override
+  String get viewSteps => 'Explorar pasos';
+
+  @override
+  String get motionLabel => 'Reducir movimiento';
+
+  @override
+  String get motionHelp =>
+      'Siempre se respeta la preferencia de movimiento reducido del sistema.';
+
+  @override
+  String get shortExplanation => 'Breve';
+
+  @override
+  String get detailedExplanation => 'Detallada';
+
+  @override
+  String get hiddenExplanation => 'Oculta';
+
+  @override
+  String get predictionLabel => 'Preguntas de predicción';
+
+  @override
+  String get predictionHelp => 'Preguntas opcionales en los ejemplos guiados.';
+
+  @override
+  String get predictTitle => 'Antes de intentarlo…';
+
+  @override
+  String get predictPrompt => '¿Qué factor anula el elemento objetivo?';
+
+  @override
+  String get predictCorrect =>
+      '¡Exacto! Sigue ahora la misma operación en toda la fila.';
+
+  @override
+  String get predictIncorrect =>
+      'Divide el elemento objetivo entre el pivote para hallar el factor.';
+
+  @override
+  String get skip => 'Omitir';
+
+  @override
+  String get continueLabel => 'Continuar';
+
+  @override
+  String get numberView => 'Formato numérico';
+
+  @override
+  String get fractionView => 'Fracciones exactas';
+
+  @override
+  String get decimalView => 'Decimales';
+
+  @override
+  String get densityLabel => 'Densidad de diseño';
+
+  @override
+  String get comfortable => 'Cómoda';
+
+  @override
+  String get compact => 'Compacta';
+
+  @override
+  String get accentLabel => 'Paleta de acento';
+
+  @override
+  String get blue => 'Azul';
+
+  @override
+  String get teal => 'Verde azulado';
+
+  @override
+  String get purple => 'Morado';
+
+  @override
+  String get shortcutsLabel => 'Atajos de teclado';
+
+  @override
+  String get shortcutHelp =>
+      'Selecciona una acción y pulsa una letra, Espacio o una flecha horizontal. Inicio/Fin y Re Pág/Av Pág siguen disponibles.';
+
+  @override
+  String get pressKey => 'Pulsa una tecla';
+
+  @override
+  String get shortcutConflict =>
+      'Esta tecla está reservada o ya está asignada.';
+
+  @override
+  String get resetSettings => 'Restablecer ajustes';
+
+  @override
+  String get settingsStorageError =>
+      'No se pudieron leer o guardar los ajustes. Los cambios siguen disponibles en esta sesión.';
+
+  @override
+  String get localPreferences =>
+      'Los ajustes se guardan en este dispositivo. No se guarda el historial de matrices.';
+
+  @override
+  String get resultExact => 'Exacto';
+
+  @override
+  String get resultApproximate => 'Aproximado';
+
+  @override
+  String get resultComplete => 'Completo';
+
+  @override
+  String get resultPartial => 'Parcial';
+
+  @override
+  String get resultUnsupported => 'No compatible';
+
+  @override
+  String get eigenPrecision =>
+      'Los valores propios se redondean a tres decimales; los vectores son direcciones aproximadas, no soluciones exactas del núcleo.';
+
+  @override
+  String get eigenScope =>
+      'El análisis 3×3 busca raíces enteras entre −20 y 20. Las raíces no encontradas pueden ser reales o complejas.';
+
+  @override
+  String get eigenBasisScope =>
+      'Se muestra un vector por valor propio; no se calcula una base completa del espacio propio.';
+
+  @override
+  String get complexScope =>
+      'No se admiten vectores propios complejos. La parte imaginaria se redondea a dos decimales.';
+
+  @override
+  String get guideAddSource => 'Empareja la misma posición en A y B.';
+
+  @override
+  String get guideAddApply => 'Suma este par de elementos.';
+
+  @override
+  String get guideAddResult => 'Su suma ocupa la misma posición en C.';
+
+  @override
+  String get quizQ1QuestionTitle => 'Gauss: pivote y eliminación';
+
+  @override
+  String get quizQ1Prompt =>
+      'El pivote está en (1,1). ¿Qué operación anula el primer elemento de la fila 2?';
+
+  @override
+  String get quizQ1Explanation =>
+      'El objetivo es 2 y el pivote 1: restar dos veces la primera fila da 2 − 2×1 = 0.';
+
+  @override
+  String get quizQ1Hint => 'Resta un múltiplo de la fila pivote.';
+
+  @override
+  String get quizQ1Feedback0 => 'Restar dos veces la fila 1 da 2 − 2 = 0.';
+
+  @override
+  String get quizQ1Feedback1 => 'Sumar da 2 + 2 = 4, no cero.';
+
+  @override
+  String get quizQ1Feedback2 =>
+      'Intercambiar mueve los elementos, pero no anula el objetivo.';
+
+  @override
+  String get quizQ1Feedback3 => 'Dividir la fila 2 entre dos da 1, no cero.';
+
+  @override
+  String get quizQ2QuestionTitle => 'Intercambio de filas';
+
+  @override
+  String get quizQ2Prompt =>
+      'El pivote (1,1) es 0. ¿Qué intercambio sitúa allí un elemento no nulo?';
+
+  @override
+  String get quizQ2Explanation =>
+      'Intercambiar las filas 1 y 2 sitúa el 3 en la posición pivote.';
+
+  @override
+  String get quizQ2Hint =>
+      'Busca una fila con primer elemento distinto de cero.';
+
+  @override
+  String get quizQ2Feedback0 =>
+      'Sumar también crea un pivote no nulo, pero se pide un intercambio.';
+
+  @override
+  String get quizQ2Feedback1 => 'El intercambio lleva el 3 a (1,1).';
+
+  @override
+  String get quizQ2Feedback2 =>
+      'Cambiar la fila 2 no modifica el cero de (1,1).';
+
+  @override
+  String get quizQ2Feedback3 =>
+      'Escalar la fila 3 no modifica el cero de (1,1).';
+
+  @override
+  String get quizQ3QuestionTitle => 'Normalización del pivote';
+
+  @override
+  String get quizQ3Prompt =>
+      'El pivote de la fila 2 es −3. ¿Qué operación lo convierte en 1?';
+
+  @override
+  String get quizQ3Explanation =>
+      'Multiplica toda la fila 2 por −1/3: (−3)×(−1/3) = 1.';
+
+  @override
+  String get quizQ3Hint => 'Usa el recíproco del pivote.';
+
+  @override
+  String get quizQ3Feedback0 =>
+      'Sumar la fila 1 rompe el cero inicial y no normaliza el pivote.';
+
+  @override
+  String get quizQ3Feedback1 => 'El recíproco de −3 es −1/3; su producto es 1.';
+
+  @override
+  String get quizQ3Feedback2 => '−3×3 = −9. Necesitas el recíproco.';
+
+  @override
+  String get quizQ3Feedback3 => 'Intercambiar filas no convierte −3 en 1.';
+
+  @override
+  String get quizQ4QuestionTitle => 'Rango y filas nulas';
+
+  @override
+  String get quizQ4Prompt => '¿Cuál es el rango de esta matriz escalonada?';
+
+  @override
+  String get quizQ4Explanation =>
+      'Hay dos filas pivote no nulas y una fila nula: rango(A) = 2.';
+
+  @override
+  String get quizQ4Hint => 'Cuenta las filas no nulas en forma escalonada.';
+
+  @override
+  String get quizQ4Feedback0 =>
+      'La fila nula no aporta un pivote; el tamaño no determina el rango.';
+
+  @override
+  String get quizQ4Feedback1 => 'La matriz tiene dos filas pivote.';
+
+  @override
+  String get quizQ4Feedback2 =>
+      'La segunda fila no nula también tiene un pivote.';
+
+  @override
+  String get quizQ4Feedback3 =>
+      'El rango sería cero solo si todos los elementos fueran cero.';
+
+  @override
+  String get quizQ5QuestionTitle => 'Determinante triangular';
+
+  @override
+  String get quizQ5Prompt =>
+      'En una matriz triangular, multiplica la diagonal principal. ¿Cuánto vale det(A)?';
+
+  @override
+  String get quizQ5Explanation => 'El producto de la diagonal es 2×3×4 = 24.';
+
+  @override
+  String get quizQ5Hint =>
+      'Con ceros bajo la diagonal, multiplica los elementos diagonales.';
+
+  @override
+  String get quizQ5Feedback0 => 'Multiplica la diagonal; la suma es la traza.';
+
+  @override
+  String get quizQ5Feedback1 => '2×3×4 = 24.';
+
+  @override
+  String get quizQ5Feedback2 =>
+      'Los ceros bajo la diagonal no anulan el determinante; un cero diagonal sí.';
+
+  @override
+  String get quizQ5Feedback3 =>
+      'Todos los elementos diagonales son positivos; no hay signo negativo adicional.';
+
+  @override
+  String eigen_vector_approx_title(Object index, Object lambda) {
+    return 'Vector aproximado para λ_$index ≈ $lambda';
+  }
+
+  @override
+  String eigen_vector_approx_desc(Object lambda, Object vector) {
+    return 'Con λ ≈ $lambda, una dirección aproximada es $vector; no es una solución exacta del núcleo.';
+  }
+
+  @override
+  String get spaceKey => 'Espacio';
+}

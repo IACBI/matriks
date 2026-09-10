@@ -1,0 +1,538 @@
+{
+  "@@locale": "ru",
+  "settings": "Настройки",
+  "practiceNav": "Практика",
+  "transformNav": "Преобразования",
+  "appearance": "Оформление",
+  "learning": "Обучение и воспроизведение",
+  "themeLabel": "Тема",
+  "lightTheme": "Светлая",
+  "darkTheme": "Тёмная",
+  "solutionModeLabel": "Вид решения",
+  "guidedMode": "Анимация с пояснениями",
+  "stepsMode": "Шаги без анимации",
+  "resultMode": "Сразу результат",
+  "showResult": "Показать результат",
+  "viewSteps": "Изучить шаги",
+  "motionLabel": "Уменьшить движение",
+  "motionHelp": "Системная настройка уменьшения движения всегда учитывается.",
+  "shortExplanation": "Кратко",
+  "detailedExplanation": "Подробно",
+  "hiddenExplanation": "Скрыто",
+  "predictionLabel": "Вопросы на прогноз",
+  "predictionHelp": "Необязательные вопросы в учебных примерах.",
+  "predictTitle": "Прежде чем начать…",
+  "predictPrompt": "Какой множитель обнулит целевой элемент?",
+  "predictCorrect": "Верно! Теперь проследите эту операцию по всей строке.",
+  "predictIncorrect": "Разделите целевой элемент на ведущий, чтобы найти множитель.",
+  "skip": "Пропустить",
+  "continueLabel": "Продолжить",
+  "numberView": "Формат чисел",
+  "fractionView": "Точные дроби",
+  "decimalView": "Десятичные",
+  "densityLabel": "Плотность интерфейса",
+  "comfortable": "Свободная",
+  "compact": "Компактная",
+  "accentLabel": "Цвет акцента",
+  "blue": "Синий",
+  "teal": "Бирюзовый",
+  "purple": "Фиолетовый",
+  "shortcutsLabel": "Сочетания клавиш",
+  "shortcutHelp": "Выберите действие и нажмите букву, пробел или горизонтальную стрелку. Home/End и Page Up/Down остаются доступны.",
+  "pressKey": "Нажмите клавишу",
+  "shortcutConflict": "Эта клавиша зарезервирована или уже назначена.",
+  "resetSettings": "Сбросить настройки",
+  "settingsStorageError": "Не удалось прочитать или сохранить настройки. Изменения доступны в этом сеансе.",
+  "localPreferences": "Настройки хранятся на этом устройстве. История матриц не сохраняется.",
+  "resultExact": "Точно",
+  "resultApproximate": "Приближённо",
+  "resultComplete": "Полностью",
+  "resultPartial": "Частично",
+  "resultUnsupported": "Не поддерживается",
+  "eigenPrecision": "Собственные значения округлены до трёх знаков; векторы задают приближённые направления, а не точные решения ядра.",
+  "eigenScope": "Для матриц 3×3 ищутся целые корни от −20 до 20. Остальные корни могут быть вещественными или комплексными.",
+  "eigenBasisScope": "Для каждого собственного значения показан один вектор; полный базис собственного подпространства не вычисляется.",
+  "complexScope": "Комплексные собственные векторы не поддерживаются. Мнимая часть округлена до двух знаков.",
+  "guideAddSource": "Сопоставьте одинаковые позиции в A и B.",
+  "guideAddApply": "Сложите эту пару элементов.",
+  "guideAddResult": "Их сумма занимает ту же позицию в C.",
+  "appTitle": "Matriks · Линейная алгебра",
+  "topics": "Темы",
+  "selectTopic": "Изучайте линейную алгебру",
+  "topicSubtitle": "Разберитесь в каждой операции шаг за шагом.",
+  "categoryAll": "Все темы",
+  "categoryElimination": "Исключение и системы",
+  "categoryAlgebra": "Алгебра матриц",
+  "categoryAdvanced": "Разложения и спектр",
+  "categoryVisual": "Визуализация и практика",
+  "topicGauss": "Метод Гаусса (REF)",
+  "topicGaussDesc": "Пошаговое приведение к ступенчатому виду.",
+  "topicRref": "Метод Гаусса — Жордана (RREF)",
+  "topicRrefDesc": "Получите приведённый ступенчатый вид с единичными ведущими элементами.",
+  "topicLinearSystems": "Линейные системы (Ax = b)",
+  "topicLinearSystemsDesc": "Определите, имеет ли система одно, бесконечно много решений или ни одного.",
+  "topicDeterminant": "Определитель",
+  "topicDeterminantDesc": "Перекрёстные произведения 2×2, правило Саррюса 3×3 и приведение к треугольному виду.",
+  "topicInverse": "Обратная матрица (A⁻¹)",
+  "topicInverseDesc": "Присоединённая матрица 2×2 и метод Гаусса — Жордана для [A ∣ I].",
+  "topicRankNullity": "Ранг и дефект",
+  "topicRankNullityDesc": "Найдите ранг и размерность ядра; проверьте их сумму.",
+  "topicEigen": "Собственные значения и векторы",
+  "topicEigenDesc": "Собственные пары 2×2 и целые корни 3×3 от −20 до 20.",
+  "topicTransform2d": "Геометрические преобразования 2D",
+  "topicTransform2dDesc": "Исследуйте единичный квадрат, базисные векторы и ориентированную площадь.",
+  "topicAdd": "Сложение матриц",
+  "topicAddDesc": "Сложение соответствующих элементов с анимацией.",
+  "topicMultiply": "Умножение матриц",
+  "topicMultiplyDesc": "Вычисляйте каждый элемент как скалярное произведение строки и столбца.",
+  "matrixInput": "Ввод матрицы",
+  "matrixA": "Матрица A",
+  "matrixB": "Матрица B",
+  "rows": "Строки",
+  "cols": "Столбцы",
+  "size": "Размер",
+  "presetRandom": "Случайная",
+  "presetIdentity": "Единичная",
+  "presetClear": "Очистить",
+  "calculate": "Решить",
+  "fractionToggle": "Дробь / Десятичная",
+  "decreaseDimension": "Уменьшить размер",
+  "increaseDimension": "Увеличить размер",
+  "stepOf": "Шаг {current} из {total}",
+  "decreasePlaybackSpeed": "Уменьшить скорость воспроизведения",
+  "increasePlaybackSpeed": "Увеличить скорость воспроизведения",
+  "playbackSpeed": "Скорость: {speed}×",
+  "play": "Воспроизвести",
+  "pause": "Пауза",
+  "nextStep": "Далее",
+  "prevStep": "Назад",
+  "jumpToStep": "Перейти к шагу",
+  "explanation": "Пояснение",
+  "cellDetail": "Расчёт элемента",
+  "tapCellHint": "Нажмите на элемент, чтобы изучить его вычисление.",
+  "close": "Закрыть",
+  "toggleTheme": "Сменить тему",
+  "changeLanguage": "Язык",
+  "solveError": "Ошибка: {error}",
+  "solveFallbackError": "Не удалось выполнить вычисление.",
+  "badgeRowSwap": "Перестановка строк",
+  "badgeRowScale": "Умножение строки",
+  "badgeElimination": "Исключение",
+  "badgeDeterminant": "Определитель",
+  "badgeSarrus": "Правило Саррюса",
+  "badgeCofactor": "Алгебраическое дополнение",
+  "badgeDotProduct": "Скалярное произведение",
+  "badgeInverseResult": "Обратная матрица",
+  "badgeLinearSystem": "Линейная система",
+  "badgeRankNullity": "Ранг и дефект",
+  "badgeEigen": "Спектр",
+  "badgeLu": "Разложение LU",
+  "badgeInfo": "Информация",
+  "legendPivot": "Ведущий элемент",
+  "legendSource": "Источник",
+  "legendTarget": "Цель",
+  "legendZeroResult": "Обнулено",
+  "speedSlow": "0,5× (Медленно)",
+  "speedNormal": "1× (Обычно)",
+  "speedFast": "1,5× (Быстро)",
+  "speedVeryFast": "2× (Очень быстро)",
+  "cellCalculationTitle": "Расчёт элемента ({row}, {col})",
+  "arithmeticDetail": "Арифметическая операция:",
+  "resultLabel": "Результат:",
+  "transformScreenTitle": "Линейное преобразование 2D",
+  "presetShear": "Сдвиг",
+  "presetRotation": "Поворот на 45°",
+  "presetScale": "Масштабирование",
+  "presetReflection": "Отражение",
+  "presetProjection": "Проекция (det=0)",
+  "presetReset": "Сброс (I)",
+  "step_row_swap_title": "Поменять строки {rowA} и {rowB}",
+  "step_row_swap_desc": "Меняем строки {rowA} и {rowB}, чтобы поставить ненулевой ведущий элемент ({pivot}) в столбец {col}.",
+  "step_row_scale_title": "Нормировать строку {row}",
+  "step_row_scale_desc": "Умножаем строку {row} на {factor}, чтобы ведущий элемент стал равен 1.",
+  "step_row_elimination_title": "Обнулить элемент строки {target}",
+  "step_row_elimination_desc": "Обнуляем столбец {col} в строке {target}: R_{target} ← R_{target} − ({multiplier}) · R_{source}.",
+  "det_1x1_title": "Определитель матрицы 1×1",
+  "det_1x1_desc": "Определитель равен единственному элементу: {val}.",
+  "det_2x2_main_diagonal_title": "Произведение главной диагонали",
+  "det_2x2_main_diagonal_desc": "Перемножаем главную диагональ: {a} · {d} = {product}.",
+  "det_2x2_anti_diagonal_title": "Произведение побочной диагонали",
+  "det_2x2_anti_diagonal_desc": "Перемножаем побочную диагональ: {b} · {c} = {product}.",
+  "det_2x2_final_title": "Результат определителя",
+  "det_2x2_final_desc": "Вычитаем произведения: ({main}) − ({anti}) = {det}.",
+  "det_sarrus_pos_title": "Саррюс: положительные диагонали",
+  "det_sarrus_pos_desc": "Сумма нисходящих произведений: {p1} + {p2} + {p3} = {total}.",
+  "det_sarrus_neg_title": "Саррюс: отрицательные диагонали",
+  "det_sarrus_neg_desc": "Сумма восходящих произведений: {n1} + {n2} + {n3} = {total}.",
+  "det_sarrus_final_title": "Результат определителя",
+  "det_sarrus_final_desc": "Определитель = положительные − отрицательные: ({pos}) − ({neg}) = {det}.",
+  "det_singular_column_title": "Нулевой столбец",
+  "det_singular_column_desc": "Столбец {col} нулевой. Определитель равен 0.",
+  "det_row_swap_title": "Перестановка строк: смена знака",
+  "det_row_swap_desc": "Перестановка строк {rowA} и {rowB} меняет знак определителя.",
+  "det_diagonal_product_title": "Диагональное произведение треугольной матрицы",
+  "det_diagonal_product_desc": "Матрица верхнетреугольная. Определитель = {sign}{diagonals} = {det}.",
+  "inverse_singular_title": "Вырожденная матрица",
+  "inverse_singular_desc": "Определитель равен 0; обратной матрицы не существует.",
+  "inverse_2x2_det_title": "Вычислить определитель",
+  "inverse_2x2_det_desc": "Определитель = {formula} = {det}.",
+  "inverse_2x2_adjoint_title": "Построить присоединённую матрицу",
+  "inverse_2x2_adjoint_desc": "Поменяйте местами элементы главной диагонали и смените знак остальных.",
+  "inverse_2x2_scale_title": "Умножить присоединённую матрицу на 1/det",
+  "inverse_2x2_scale_desc": "Умножаем каждый элемент присоединённой матрицы на 1/det = {factor}.",
+  "inverse_block_init_title": "Построить [A ∣ I]",
+  "inverse_block_init_desc": "Дополняем матрицу A размера {n}×{n} единичной матрицей I.",
+  "inverse_block_extract_title": "Выделить обратную матрицу A⁻¹",
+  "inverse_block_extract_desc": "Левый блок стал I; правый блок — обратная матрица A⁻¹.",
+  "arithmetic_add_cell_title": "Сложить элемент ({row}, {col})",
+  "arithmetic_add_cell_desc": "Складываем соответствующие элементы: {formula}.",
+  "arithmetic_mult_cell_title": "Вычислить элемент ({row}, {col})",
+  "arithmetic_mult_cell_desc": "Произведение строки {row} матрицы A и столбца {col} матрицы B: {formula}.",
+  "error_matrix_is_singular": "Матрица вырождена (определитель = 0), обратной матрицы нет.",
+  "error_inverse_not_square": "Операция требует квадратной матрицы.",
+  "error_dimension_mismatch_add": "Матрицы должны иметь одинаковые размеры.",
+  "error_dimension_mismatch_multiply": "Число столбцов A должно совпадать с числом строк B.",
+  "system_inconsistent_title": "Противоречие в строке {row}",
+  "system_inconsistent_desc": "Строка {row} даёт 0 = {val}: [0 … 0 ∣ {val}]. Система не имеет решений.",
+  "system_unique_title": "Единственное решение",
+  "system_unique_desc": "Каждой неизвестной соответствует ведущий столбец. Решение: {solution}.",
+  "system_infinite_title": "Бесконечно много решений ({count} свободных переменных)",
+  "system_infinite_desc": "Переменные {freeVars} — свободные параметры ({params}). Решение записано в параметрическом векторном виде.",
+  "rank_nullity_title": "Ранг = {rank}, дефект = {nullity}",
+  "rank_nullity_desc": "Ведущих столбцов: {rank}, свободных: {nullity}. Ранг + дефект = {cols}.",
+  "eigen_char_poly_title": "Характеристический многочлен",
+  "eigen_trace_det_desc": "Для 2×2: λ² − tr(A)λ + det(A) = 0, след {trace}, определитель {det}.",
+  "eigen_complex_title": "Комплексные собственные значения",
+  "eigen_complex_desc": "Дискриминант {poly} отрицателен. Приближённые сопряжённые корни: {roots}.",
+  "eigen_roots_title": "Корни характеристического уравнения",
+  "eigen_roots_approx_desc": "При решении {poly} приближённые действительные собственные значения, округлённые до трёх знаков: {roots}.",
+  "eigen_roots_desc": "Из {poly} получаем собственные значения: {roots}.",
+  "eigen_vector_title": "Собственный вектор для λ_{index} = {lambda}",
+  "eigen_vector_desc": "Для (A − {lambda}I)v = 0 один из собственных векторов: {vector}.",
+  "eigen_3x3_poly_desc": "Для 3×3: {poly}, след {trace}, определитель {det}.",
+  "eigen_irrational_desc": "Для {poly} не найдено целых корней от −20 до 20. Могут существовать другие вещественные или комплексные корни.",
+  "topicLu": "Разложение LU (A = LU)",
+  "topicLuDesc": "Разложите матрицу на нижний треугольный множитель L и верхний U.",
+  "topicPractice": "Самопроверка и практика",
+  "topicPracticeDesc": "Задачи с мгновенными пояснениями и баллами.",
+  "lu_init_title": "Начать разложение LU",
+  "lu_init_desc": "Начинаем с L = I и U = A.",
+  "lu_swap_desc": "Ведущий элемент равен 0. Меняем строки {rowA} и {rowB}; нужна матрица перестановки P.",
+  "lu_elim_title": "Обнулить строку {target} с помощью строки {source}",
+  "lu_elim_desc": "Сохраняем m_{target}{source} = {multiplier} в L. В U: R_{target} ← R_{target} − ({multiplier})R_{source}.",
+  "lu_final_title": "Разложение LU завершено",
+  "lu_final_desc": "Получены нижнетреугольная L и верхнетреугольная U.",
+  "practiceTitle": "Самопроверка",
+  "practiceScore": "{score} баллов",
+  "practiceQuestionProgress": "Вопрос {current} / {total}",
+  "practiceHint": "Подсказка",
+  "practiceHideHint": "Скрыть подсказку",
+  "practiceCorrect": "Верный ответ!",
+  "practiceIncorrect": "Разберём этот ответ",
+  "practiceNext": "Следующий вопрос",
+  "practiceResults": "Посмотреть результаты",
+  "practiceCompleted": "Практика завершена!",
+  "practiceTotalScore": "Всего баллов: {score} / {total}",
+  "practicePerfectScore": "Отлично! Вы верно ответили на все вопросы.",
+  "practiceGoodEffort": "Хорошая работа! Попробуйте снова, чтобы закрепить знания.",
+  "practiceReturnTopics": "Вернуться к темам",
+  "practiceRestart": "Начать заново",
+  "searchTopics": "Поиск тем…",
+  "noTopicsFound": "Темы не найдены",
+  "noTopicsFoundDesc": "Попробуйте другое слово или категорию.",
+  "clearSearch": "Очистить поиск",
+  "rowLabel": "Строка {row}",
+  "systemDefault": "Системная настройка",
+  "replayAnimation": "Повторить анимацию",
+  "ghostRowMultiply": "Проекция: −({multiplier}) · R{source}",
+  "scaleWaveBadge": "× {scalar}",
+  "celebratoryZeroBadge": "0 (обнулено)",
+  "sarrusPosBadge": "+ {product}",
+  "sarrusNegBadge": "− {product}",
+  "dotProductMerging": "Строка {row} · Столбец {col}",
+  "bracketSwapRows": "R{rowA} ↔ R{rowB}",
+  "basisVectorI": "î = ({x}, {y})",
+  "basisVectorJ": "ĵ = ({x}, {y})",
+  "detValue": "det = {val}",
+  "progressPercent": "t = {percent}%",
+  "stepReplayTooltip": "Повторить преобразование шага",
+  "intermediateCalculation": "Промежуточное вычисление: {formula}",
+  "inputHelp": "Выберите элемент и введите целое число, десятичное число или дробь.",
+  "inputInvalid": "Проверьте матрицу {matrix}, строку {row}, столбец {column}. Введите полное число; знаменатель не может быть нулём.",
+  "calculating": "Вычисление…",
+  "inputCell": "Матрица {matrix}, строка {row}, столбец {column}",
+  "stepAlreadyReducedTitle": "Уже в нужном виде",
+  "stepAlreadyReducedDesc": "Строковые операции не нужны. Показанная матрица — результат.",
+  "keyPreviousCell": "Предыдущий элемент",
+  "keyNextCell": "Следующий элемент",
+  "keySign": "Сменить знак",
+  "keyFraction": "Дробная черта",
+  "keyBackspace": "Удалить последнюю цифру",
+  "keyClear": "Очистить элемент",
+  "keyDecimal": "Десятичная точка",
+  "phaseSource": "Определите источник",
+  "phaseOperation": "Выполните операцию",
+  "phaseResult": "Проверьте результат",
+  "instructionProgress": "Эта операция",
+  "lessonSteps": "Шаги урока",
+  "customTransform": "Своя",
+  "transformCoefficients": "Матрица преобразования",
+  "basisVectors": "Преобразованные базисные векторы",
+  "targetDeterminant": "Целевой определитель",
+  "matrixCellLabel": "Строка {row}, столбец {column}, значение {value}",
+  "focusSource": "Поймите цель",
+  "focusOperation": "Проследите вычисление",
+  "focusResult": "Проверьте изменения",
+  "inspectOperation": "Изучить эту операцию",
+  "stepExplanation": "Почему это работает",
+  "cellCalculations": "Вычисления элементов",
+  "chooseStep": "Выбрать шаг",
+  "learningPath": "Впервые изучаете матрицы?",
+  "learningPathDesc": "Начните со строковых операций и узнайте, как они решают уравнения.",
+  "pathEliminate": "1 · Создать нули",
+  "pathReduce": "2 · Найти ведущие элементы",
+  "pathSolve": "3 · Решить систему",
+  "guidedExample": "Учебный пример",
+  "guideGenericSource": "Изучите матрицу и цель этого шага.",
+  "guideGenericApply": "Следите за выделенными элементами и пояснением.",
+  "guideGenericResult": "Сравните результат и продолжайте, когда будете готовы.",
+  "guideEliminateSource": "Используйте строку {source}, чтобы изменить строку {target}. Следите за столбцом {column}.",
+  "guideEliminateApply": "Прибавьте строку {source}, умноженную на {factor}, к каждому элементу строки {target}.",
+  "guideEliminateResult": "В столбце {column} теперь {value}. Множество решений сохраняется.",
+  "guideScaleSource": "Умножьте всю строку {row} на ненулевой множитель {factor}.",
+  "guideScaleApply": "Умножайте всю строку, а не только ведущий элемент.",
+  "guideScaleResult": "Сравните каждый элемент с исходным.",
+  "guideSwapSource": "Строки {first} и {second} поменяются местами.",
+  "guideSwapApply": "Перемещайте строки целиком; значения не меняются.",
+  "guideSwapResult": "Строки на новых местах. Множество решений не изменилось.",
+  "guideDotSource": "Сопоставьте строку {row} и столбец {column}. Каждая пара вносит вклад в результат.",
+  "guideDotApply": "Перемножьте пары и сложите произведения.",
+  "guideDotResult": "Сумма занимает строку {row}, столбец {column}.",
+  "guideDetSource": "Следите за множителями и знаками произведений.",
+  "guideDetApply": "Следите за одним произведением за раз и проверяйте множители.",
+  "guideDetResult": "Произведения остаются видимыми: проверяйте в своём темпе.",
+  "coefficientError": "Введите число от −1000 до 1000.",
+  "transformTransitionHint": "Измените коэффициент и нажмите Enter или выйдите из поля. Диапазон: от −1000 до 1000. Ползунок показывает переход между состояниями.",
+  "multiplicationSourceRow": "A · строка {row}",
+  "multiplicationSourceColumn": "B · столбец {column}",
+  "multiplicationOutput": "C = A × B · результат",
+  "guideEliminateReason": "Целевой элемент {entry} ÷ ведущий {pivot} = {ratio}. Вычтите этот кратный исходной строки, чтобы получить ноль.",
+  "guideEliminateSubtract": "Вычтите строку {source}, умноженную на {factor}, из всей строки {target}.",
+  "transformProgress": "Ход перехода",
+  "increaseCoefficient": "Увеличить коэффициент {name}",
+  "decreaseCoefficient": "Уменьшить коэффициент {name}",
+  "guideDotReason": "Один элемент C использует целую строку A и столбец B. Перемножьте соответствующие элементы и сложите.",
+  "guideDetReason": "Определитель задаёт изменение ориентированной площади или объёма. Сложите произведения + и вычтите −; ноль означает потерю размерности.",
+  "@inputInvalid": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@inputCell": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@matrixCellLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateApply": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateResult": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideScaleSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideSwapSource": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotResult": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceRow": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceColumn": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSubtract": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@increaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@decreaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizQ1QuestionTitle": "Гаусс: ведущий элемент и исключение",
+  "quizQ1Prompt": "Ведущий элемент находится в (1,1). Какая операция обнулит первый элемент строки 2?",
+  "quizQ1Explanation": "Целевой элемент 2, ведущий 1: вычитаем удвоенную первую строку и получаем 2 − 2×1 = 0.",
+  "quizQ1Hint": "Вычтите кратную ведущей строки.",
+  "quizQ1Feedback0": "Вычитание удвоенной строки 1 даёт 2 − 2 = 0.",
+  "quizQ1Feedback1": "Прибавление даёт 2 + 2 = 4, а не ноль.",
+  "quizQ1Feedback2": "Перестановка перемещает элементы, но не обнуляет целевой.",
+  "quizQ1Feedback3": "Деление строки 2 пополам даёт 1, а не ноль.",
+  "quizQ2QuestionTitle": "Перестановка строк",
+  "quizQ2Prompt": "В позиции (1,1) стоит 0. Какая перестановка поставит туда ненулевой элемент?",
+  "quizQ2Explanation": "Перестановка строк 1 и 2 ставит 3 на место ведущего элемента.",
+  "quizQ2Hint": "Найдите строку с ненулевым первым элементом.",
+  "quizQ2Feedback0": "Прибавление тоже создаёт ненулевой элемент, но требуется перестановка.",
+  "quizQ2Feedback1": "Перестановка переносит 3 в (1,1).",
+  "quizQ2Feedback2": "Изменение строки 2 не меняет ноль в (1,1).",
+  "quizQ2Feedback3": "Умножение строки 3 не меняет ноль в (1,1).",
+  "quizQ3QuestionTitle": "Нормирование ведущего элемента",
+  "quizQ3Prompt": "Ведущий элемент строки 2 равен −3. Какая операция превратит его в 1?",
+  "quizQ3Explanation": "Умножьте всю строку 2 на −1/3: (−3)×(−1/3) = 1.",
+  "quizQ3Hint": "Используйте обратное к ведущему элементу число.",
+  "quizQ3Feedback0": "Прибавление строки 1 нарушает начальный ноль и не нормирует ведущий элемент.",
+  "quizQ3Feedback1": "Обратное к −3 число — −1/3; их произведение равно 1.",
+  "quizQ3Feedback2": "−3×3 = −9. Нужно обратное число.",
+  "quizQ3Feedback3": "Перестановка строк не превращает −3 в 1.",
+  "quizQ4QuestionTitle": "Ранг и нулевые строки",
+  "quizQ4Prompt": "Каков ранг этой ступенчатой матрицы?",
+  "quizQ4Explanation": "Есть две ненулевые ведущие строки и одна нулевая: rank(A) = 2.",
+  "quizQ4Hint": "Сосчитайте ненулевые строки ступенчатой матрицы.",
+  "quizQ4Feedback0": "Нулевая строка не даёт ведущего элемента; размер не определяет ранг.",
+  "quizQ4Feedback1": "В матрице две ведущие строки.",
+  "quizQ4Feedback2": "Вторая ненулевая строка тоже содержит ведущий элемент.",
+  "quizQ4Feedback3": "Нулевой ранг возможен только при всех нулевых элементах.",
+  "quizQ5QuestionTitle": "Определитель треугольной матрицы",
+  "quizQ5Prompt": "У треугольной матрицы перемножьте главную диагональ. Чему равен det(A)?",
+  "quizQ5Explanation": "Произведение главной диагонали: 2×3×4 = 24.",
+  "quizQ5Hint": "Если под диагональю нули, перемножьте диагональные элементы.",
+  "quizQ5Feedback0": "Диагональ нужно перемножить; сумма — это след.",
+  "quizQ5Feedback1": "2×3×4 = 24.",
+  "quizQ5Feedback2": "Нули под диагональю не обнуляют определитель, а ноль на диагонали — да.",
+  "quizQ5Feedback3": "Все диагональные элементы положительны; дополнительного минуса нет.",
+  "eigen_vector_approx_title": "Приближённый вектор для λ_{index} ≈ {lambda}",
+  "eigen_vector_approx_desc": "При λ ≈ {lambda} приближённое направление: {vector}; это не точное решение ядра.",
+  "spaceKey": "Пробел"
+}

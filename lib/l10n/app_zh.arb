@@ -1,0 +1,538 @@
+{
+  "@@locale": "zh",
+  "settings": "设置",
+  "practiceNav": "练习",
+  "transformNav": "变换",
+  "appearance": "外观",
+  "learning": "学习与播放",
+  "themeLabel": "主题",
+  "lightTheme": "浅色",
+  "darkTheme": "深色",
+  "solutionModeLabel": "解答视图",
+  "guidedMode": "引导动画",
+  "stepsMode": "静态步骤",
+  "resultMode": "直接显示结果",
+  "showResult": "显示结果",
+  "viewSteps": "查看步骤",
+  "motionLabel": "减少动态效果",
+  "motionHelp": "始终遵循系统的减少动态效果设置。",
+  "shortExplanation": "简短",
+  "detailedExplanation": "详细",
+  "hiddenExplanation": "隐藏",
+  "predictionLabel": "预测问题",
+  "predictionHelp": "讲解示例中的可选思考问题。",
+  "predictTitle": "开始之前……",
+  "predictPrompt": "用哪个倍数可以消去目标元素？",
+  "predictCorrect": "答对了！现在看看同一运算如何应用到整行。",
+  "predictIncorrect": "用目标元素除以主元即可得到倍数。",
+  "skip": "跳过",
+  "continueLabel": "继续",
+  "numberView": "数字显示",
+  "fractionView": "精确分数",
+  "decimalView": "小数",
+  "densityLabel": "布局密度",
+  "comfortable": "宽松",
+  "compact": "紧凑",
+  "accentLabel": "强调色",
+  "blue": "蓝色",
+  "teal": "青绿色",
+  "purple": "紫色",
+  "shortcutsLabel": "键盘快捷键",
+  "shortcutHelp": "选择操作后按字母、空格或左右方向键。Home/End 和 Page Up/Down 仍可使用。",
+  "pressKey": "请按键",
+  "shortcutConflict": "该按键已保留或已分配。",
+  "resetSettings": "重置设置",
+  "settingsStorageError": "无法读取或保存偏好设置。更改在本次会话中仍然有效。",
+  "localPreferences": "偏好设置保存在此设备上，不保存矩阵历史记录。",
+  "resultExact": "精确",
+  "resultApproximate": "近似",
+  "resultComplete": "完整",
+  "resultPartial": "部分",
+  "resultUnsupported": "不支持",
+  "eigenPrecision": "特征值保留三位小数；向量表示近似方向，并非零空间的精确解。",
+  "eigenScope": "3×3 分析仅搜索 −20 到 20 的整数根。未找到的根可能是实数或复数。",
+  "eigenBasisScope": "每个特征值仅显示一个代表向量，不计算完整的特征空间基。",
+  "complexScope": "不支持复特征向量。虚部保留两位小数。",
+  "guideAddSource": "对应 A 和 B 中的相同位置。",
+  "guideAddApply": "将这两个元素相加。",
+  "guideAddResult": "将和放在 C 中的相同位置。",
+  "appTitle": "Matriks · 线性代数",
+  "topics": "主题",
+  "selectTopic": "探索线性代数",
+  "topicSubtitle": "逐步理解每一次运算。",
+  "categoryAll": "全部主题",
+  "categoryElimination": "消元与方程组",
+  "categoryAlgebra": "矩阵代数",
+  "categoryAdvanced": "分解与谱",
+  "categoryVisual": "可视化与练习",
+  "topicGauss": "高斯消元（REF）",
+  "topicGaussDesc": "逐步将矩阵化为行阶梯形。",
+  "topicRref": "高斯－若尔当消元（RREF）",
+  "topicRrefDesc": "化为主元为 1 的简化行阶梯形。",
+  "topicLinearSystems": "线性方程组（Ax = b）",
+  "topicLinearSystemsDesc": "判断唯一解、无穷多解或无解。",
+  "topicDeterminant": "行列式",
+  "topicDeterminantDesc": "2×2 交叉乘积、3×3 萨吕斯法则与三角化。",
+  "topicInverse": "逆矩阵（A⁻¹）",
+  "topicInverseDesc": "2×2 伴随矩阵法与 [A ∣ I] 高斯－若尔当法。",
+  "topicRankNullity": "秩与零度",
+  "topicRankNullityDesc": "计算秩与零空间维数，验证它们的和。",
+  "topicEigen": "特征值与特征向量",
+  "topicEigenDesc": "探索 2×2 特征对及 −20 到 20 的 3×3 整数根。",
+  "topicTransform2d": "二维几何变换",
+  "topicTransform2dDesc": "探索单位正方形、基向量与有向面积。",
+  "topicAdd": "矩阵加法",
+  "topicAddDesc": "通过动画观察对应元素相加。",
+  "topicMultiply": "矩阵乘法",
+  "topicMultiplyDesc": "通过行与列的点积计算每个元素。",
+  "matrixInput": "输入矩阵",
+  "matrixA": "矩阵 A",
+  "matrixB": "矩阵 B",
+  "rows": "行",
+  "cols": "列",
+  "size": "大小",
+  "presetRandom": "随机",
+  "presetIdentity": "单位矩阵",
+  "presetClear": "清空",
+  "calculate": "求解",
+  "fractionToggle": "分数／小数",
+  "decreaseDimension": "减小维度",
+  "increaseDimension": "增大维度",
+  "stepOf": "第 {current} 步，共 {total} 步",
+  "decreasePlaybackSpeed": "降低播放速度",
+  "increasePlaybackSpeed": "提高播放速度",
+  "playbackSpeed": "速度：{speed}×",
+  "play": "播放",
+  "pause": "暂停",
+  "nextStep": "下一步",
+  "prevStep": "上一步",
+  "jumpToStep": "跳转步骤",
+  "explanation": "说明",
+  "cellDetail": "单元格计算详情",
+  "tapCellHint": "点击元素查看计算过程。",
+  "close": "关闭",
+  "toggleTheme": "切换主题",
+  "changeLanguage": "语言",
+  "solveError": "错误：{error}",
+  "solveFallbackError": "无法完成矩阵求解。",
+  "badgeRowSwap": "交换行",
+  "badgeRowScale": "行倍乘",
+  "badgeElimination": "消元",
+  "badgeDeterminant": "行列式",
+  "badgeSarrus": "萨吕斯法则",
+  "badgeCofactor": "代数余子式",
+  "badgeDotProduct": "点积",
+  "badgeInverseResult": "逆矩阵结果",
+  "badgeLinearSystem": "线性方程组",
+  "badgeRankNullity": "秩与零度",
+  "badgeEigen": "特征分析",
+  "badgeLu": "LU 分解",
+  "badgeInfo": "信息",
+  "legendPivot": "主元",
+  "legendSource": "来源",
+  "legendTarget": "目标",
+  "legendZeroResult": "已消为零",
+  "speedSlow": "0.5×（慢）",
+  "speedNormal": "1×（正常）",
+  "speedFast": "1.5×（快）",
+  "speedVeryFast": "2×（很快）",
+  "cellCalculationTitle": "元素（{row}，{col}）的计算",
+  "arithmeticDetail": "算术运算：",
+  "resultLabel": "结果：",
+  "transformScreenTitle": "二维线性变换",
+  "presetShear": "剪切",
+  "presetRotation": "旋转 45°",
+  "presetScale": "缩放",
+  "presetReflection": "反射",
+  "presetProjection": "投影（det=0）",
+  "presetReset": "重置（I）",
+  "step_row_swap_title": "交换第 {rowA} 行与第 {rowB} 行",
+  "step_row_swap_desc": "交换第 {rowA} 行与第 {rowB} 行，将非零主元（{pivot}）放在第 {col} 列。",
+  "step_row_scale_title": "归一化第 {row} 行",
+  "step_row_scale_desc": "将第 {row} 行乘以 {factor}，使主元变为 1。",
+  "step_row_elimination_title": "消去第 {target} 行的元素",
+  "step_row_elimination_desc": "消去第 {target} 行第 {col} 列的元素：R_{target} ← R_{target} − ({multiplier}) · R_{source}。",
+  "det_1x1_title": "1×1 矩阵的行列式",
+  "det_1x1_desc": "行列式就是唯一的元素：{val}。",
+  "det_2x2_main_diagonal_title": "主对角线乘积",
+  "det_2x2_main_diagonal_desc": "主对角线元素相乘：{a} · {d} = {product}。",
+  "det_2x2_anti_diagonal_title": "副对角线乘积",
+  "det_2x2_anti_diagonal_desc": "副对角线元素相乘：{b} · {c} = {product}。",
+  "det_2x2_final_title": "行列式结果",
+  "det_2x2_final_desc": "两乘积相减：({main}) − ({anti}) = {det}。",
+  "det_sarrus_pos_title": "萨吕斯：正向对角线",
+  "det_sarrus_pos_desc": "向下对角线乘积之和：{p1} + {p2} + {p3} = {total}。",
+  "det_sarrus_neg_title": "萨吕斯：反向对角线",
+  "det_sarrus_neg_desc": "向上对角线乘积之和：{n1} + {n2} + {n3} = {total}。",
+  "det_sarrus_final_title": "行列式结果",
+  "det_sarrus_final_desc": "行列式 = 正向 − 反向：({pos}) − ({neg}) = {det}。",
+  "det_singular_column_title": "零列",
+  "det_singular_column_desc": "第 {col} 列全为零，行列式为 0。",
+  "det_row_swap_title": "交换行：符号改变",
+  "det_row_swap_desc": "交换第 {rowA} 行与第 {rowB} 行使行列式变号。",
+  "det_diagonal_product_title": "三角矩阵的对角线乘积",
+  "det_diagonal_product_desc": "矩阵已为上三角形。行列式 = {sign}{diagonals} = {det}。",
+  "inverse_singular_title": "奇异矩阵",
+  "inverse_singular_desc": "行列式为 0，该矩阵不存在逆矩阵。",
+  "inverse_2x2_det_title": "计算行列式",
+  "inverse_2x2_det_desc": "行列式 = {formula} = {det}。",
+  "inverse_2x2_adjoint_title": "构造伴随矩阵",
+  "inverse_2x2_adjoint_desc": "交换主对角线元素，并将其他元素变号。",
+  "inverse_2x2_scale_title": "将伴随矩阵乘以 1/det",
+  "inverse_2x2_scale_desc": "将伴随矩阵每个元素乘以 1/det = {factor}。",
+  "inverse_block_init_title": "构造 [A ∣ I]",
+  "inverse_block_init_desc": "将 {n}×{n} 矩阵 A 与单位矩阵 I 拼接。",
+  "inverse_block_extract_title": "提取逆矩阵 A⁻¹",
+  "inverse_block_extract_desc": "左侧已变为 I，右侧就是逆矩阵 A⁻¹。",
+  "arithmetic_add_cell_title": "计算元素（{row}，{col}）的和",
+  "arithmetic_add_cell_desc": "对应元素相加：{formula}。",
+  "arithmetic_mult_cell_title": "计算元素（{row}，{col}）",
+  "arithmetic_mult_cell_desc": "A 的第 {row} 行与 B 的第 {col} 列的点积：{formula}。",
+  "error_matrix_is_singular": "矩阵奇异（行列式 = 0），不存在逆矩阵。",
+  "error_inverse_not_square": "该运算需要方阵。",
+  "error_dimension_mismatch_add": "矩阵维度必须相同。",
+  "error_dimension_mismatch_multiply": "A 的列数必须等于 B 的行数。",
+  "system_inconsistent_title": "第 {row} 行矛盾",
+  "system_inconsistent_desc": "第 {row} 行得到 [0 … 0 ∣ {val}]，即 0 = {val}，所以方程组无解。",
+  "system_unique_title": "唯一解",
+  "system_unique_desc": "每个未知量对应一个主元列。唯一解为 {solution}。",
+  "system_infinite_title": "无穷多解（{count} 个自由变量）",
+  "system_infinite_desc": "变量 {freeVars} 为自由参数（{params}），解以参数向量形式表示。",
+  "rank_nullity_title": "秩 = {rank}，零度 = {nullity}",
+  "rank_nullity_desc": "有 {rank} 个主元列和 {nullity} 个自由列。秩 + 零度 = {cols}。",
+  "eigen_char_poly_title": "特征多项式",
+  "eigen_trace_det_desc": "对于 2×2：λ² − tr(A)λ + det(A) = 0，迹为 {trace}，行列式为 {det}。",
+  "eigen_complex_title": "复特征值",
+  "eigen_complex_desc": "{poly} 的判别式为负。近似共轭根：{roots}。",
+  "eigen_roots_title": "特征方程的根",
+  "eigen_roots_approx_desc": "求解 {poly} 得到保留三位小数的近似实特征值：{roots}。",
+  "eigen_roots_desc": "由 {poly} 得到特征值：{roots}。",
+  "eigen_vector_title": "λ_{index} = {lambda} 对应的特征向量",
+  "eigen_vector_desc": "对于 (A − {lambda}I)v = 0，一个特征向量为 {vector}。",
+  "eigen_3x3_poly_desc": "对于 3×3：{poly}，迹为 {trace}，行列式为 {det}。",
+  "eigen_irrational_desc": "未在 −20 到 20 中找到 {poly} 的整数根，可能存在其他实根或复根。",
+  "topicLu": "LU 分解（A = LU）",
+  "topicLuDesc": "将矩阵分解为下三角矩阵 L 与上三角矩阵 U。",
+  "topicPractice": "自测与练习",
+  "topicPracticeDesc": "通过即时讲解和评分练习。",
+  "lu_init_title": "开始 LU 分解",
+  "lu_init_desc": "初始设 L = I，U = A。",
+  "lu_swap_desc": "主元为 0。交换第 {rowA} 行与第 {rowB} 行，需要置换矩阵 P。",
+  "lu_elim_title": "用第 {source} 行消去第 {target} 行的元素",
+  "lu_elim_desc": "将 m_{target}{source} = {multiplier} 存入 L。在 U 中：R_{target} ← R_{target} − ({multiplier})R_{source}。",
+  "lu_final_title": "LU 分解完成",
+  "lu_final_desc": "得到下三角矩阵 L 与上三角矩阵 U。",
+  "practiceTitle": "自测",
+  "practiceScore": "{score} 分",
+  "practiceQuestionProgress": "第 {current} 题／共 {total} 题",
+  "practiceHint": "提示",
+  "practiceHideHint": "隐藏提示",
+  "practiceCorrect": "回答正确！",
+  "practiceIncorrect": "来看看这个答案",
+  "practiceNext": "下一题",
+  "practiceResults": "查看结果",
+  "practiceCompleted": "练习完成！",
+  "practiceTotalScore": "总分：{score}／{total}",
+  "practicePerfectScore": "太棒了！你答对了所有问题。",
+  "practiceGoodEffort": "做得不错！再试一次，巩固所学知识。",
+  "practiceReturnTopics": "返回主题",
+  "practiceRestart": "重新开始",
+  "searchTopics": "搜索主题……",
+  "noTopicsFound": "未找到匹配主题",
+  "noTopicsFoundDesc": "请尝试其他关键词或分类。",
+  "clearSearch": "清除搜索",
+  "rowLabel": "第 {row} 行",
+  "systemDefault": "跟随系统",
+  "replayAnimation": "重播动画",
+  "ghostRowMultiply": "投影：−({multiplier}) · R{source}",
+  "scaleWaveBadge": "× {scalar}",
+  "celebratoryZeroBadge": "0（已消去）",
+  "sarrusPosBadge": "+ {product}",
+  "sarrusNegBadge": "− {product}",
+  "dotProductMerging": "第 {row} 行 · 第 {col} 列",
+  "bracketSwapRows": "R{rowA} ↔ R{rowB}",
+  "basisVectorI": "î = ({x}, {y})",
+  "basisVectorJ": "ĵ = ({x}, {y})",
+  "detValue": "det = {val}",
+  "progressPercent": "t = {percent}%",
+  "stepReplayTooltip": "重播本步骤变换",
+  "intermediateCalculation": "中间计算：{formula}",
+  "inputHelp": "选择元素，输入整数、小数或分数。",
+  "inputInvalid": "请检查矩阵 {matrix} 的第 {row} 行第 {column} 列。请输入完整数字，分母不能为零。",
+  "calculating": "计算中……",
+  "inputCell": "矩阵 {matrix}，第 {row} 行，第 {column} 列",
+  "stepAlreadyReducedTitle": "已为所需形式",
+  "stepAlreadyReducedDesc": "无需行运算，所示矩阵即为结果。",
+  "keyPreviousCell": "上一个元素",
+  "keyNextCell": "下一个元素",
+  "keySign": "切换正负号",
+  "keyFraction": "分数斜线",
+  "keyBackspace": "删除最后一位",
+  "keyClear": "清空元素",
+  "keyDecimal": "小数点",
+  "phaseSource": "识别来源",
+  "phaseOperation": "执行运算",
+  "phaseResult": "验证结果",
+  "instructionProgress": "本次运算",
+  "lessonSteps": "课程步骤",
+  "customTransform": "自定义",
+  "transformCoefficients": "变换矩阵",
+  "basisVectors": "变换后的基向量",
+  "targetDeterminant": "目标行列式",
+  "matrixCellLabel": "第 {row} 行，第 {column} 列，值 {value}",
+  "focusSource": "理解目标",
+  "focusOperation": "跟随计算",
+  "focusResult": "检查变化",
+  "inspectOperation": "查看本次运算",
+  "stepExplanation": "为什么这样做",
+  "cellCalculations": "元素计算",
+  "chooseStep": "选择步骤",
+  "learningPath": "刚开始学习矩阵？",
+  "learningPathDesc": "从行运算开始，了解它们如何求解方程。",
+  "pathEliminate": "1 · 消为零",
+  "pathReduce": "2 · 寻找主元",
+  "pathSolve": "3 · 求解方程组",
+  "guidedExample": "讲解示例",
+  "guideGenericSource": "观察矩阵，理解本步骤的目标。",
+  "guideGenericApply": "跟随高亮元素与讲解。",
+  "guideGenericResult": "比较结果，准备好后继续。",
+  "guideEliminateSource": "用第 {source} 行改变第 {target} 行，关注第 {column} 列。",
+  "guideEliminateApply": "将第 {source} 行的 {factor} 倍加到第 {target} 行，对整行执行。",
+  "guideEliminateResult": "第 {column} 列现在为 {value}，解集保持不变。",
+  "guideScaleSource": "将第 {row} 行的所有元素乘以同一个非零倍数：{factor}。",
+  "guideScaleApply": "将倍数应用到整行，而不仅是主元。",
+  "guideScaleResult": "比较倍乘前后的每个元素。",
+  "guideSwapSource": "第 {first} 行与第 {second} 行将交换位置。",
+  "guideSwapApply": "整行移动，数值不变。",
+  "guideSwapResult": "行已到达新位置，解集不变。",
+  "guideDotSource": "配对第 {row} 行与第 {column} 列，每对元素贡献一个乘积。",
+  "guideDotApply": "将每对元素相乘，再把乘积相加。",
+  "guideDotResult": "和位于第 {row} 行第 {column} 列。",
+  "guideDetSource": "观察每个乘积的因子和符号。",
+  "guideDetApply": "逐个观察乘积并检查因子。",
+  "guideDetResult": "乘积保留在屏幕上，可按自己的节奏检查。",
+  "coefficientError": "请输入 −1000 到 1000 的数字。",
+  "transformTransitionHint": "编辑系数后按 Enter 或离开输入框应用。范围为 −1000 到 1000。滑块显示状态之间的过渡。",
+  "multiplicationSourceRow": "A · 第 {row} 行",
+  "multiplicationSourceColumn": "B · 第 {column} 列",
+  "multiplicationOutput": "C = A × B · 结果矩阵",
+  "guideEliminateReason": "目标元素 {entry} ÷ 主元 {pivot} = {ratio}。减去来源行的这个倍数即可消为零。",
+  "guideEliminateSubtract": "从第 {target} 行减去第 {source} 行的 {factor} 倍，对整行执行。",
+  "transformProgress": "过渡进度",
+  "increaseCoefficient": "增大系数 {name}",
+  "decreaseCoefficient": "减小系数 {name}",
+  "guideDotReason": "C 的一个元素使用 A 的整行与 B 的整列。对应元素相乘，再求和。",
+  "guideDetReason": "行列式衡量有向面积或体积的缩放。加上正项，减去负项；行列式为零表示损失了一个维度。",
+  "@inputInvalid": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@inputCell": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "@matrixCellLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateApply": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateResult": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideScaleSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideSwapSource": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideDotResult": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceRow": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "@multiplicationSourceColumn": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "@guideEliminateSubtract": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@increaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@decreaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quizQ1QuestionTitle": "高斯消元：主元与消元",
+  "quizQ1Prompt": "主元位于 (1,1)。哪种运算能将第 2 行首元素消为零？",
+  "quizQ1Explanation": "目标元素为 2，主元为 1。减去第一行的两倍，得到 2 − 2×1 = 0。",
+  "quizQ1Hint": "减去主元行的适当倍数。",
+  "quizQ1Feedback0": "减去第一行的两倍，得到 2 − 2 = 0。",
+  "quizQ1Feedback1": "相加得到 2 + 2 = 4，而不是零。",
+  "quizQ1Feedback2": "交换行只会移动元素，不能消去目标元素。",
+  "quizQ1Feedback3": "将第二行除以 2，首元素变为 1，不是零。",
+  "quizQ2QuestionTitle": "交换行",
+  "quizQ2Prompt": "主元位置 (1,1) 为 0。哪次行交换能将非零元素放到该位置？",
+  "quizQ2Explanation": "交换第 1、2 行可将 3 放到主元位置。",
+  "quizQ2Hint": "寻找首元素不为零的行。",
+  "quizQ2Feedback0": "相加也能得到非零主元，但本题要求交换行。",
+  "quizQ2Feedback1": "交换后，3 位于 (1,1)。",
+  "quizQ2Feedback2": "改变第二行不会改变 (1,1) 的零。",
+  "quizQ2Feedback3": "倍乘第三行不会改变 (1,1) 的零。",
+  "quizQ3QuestionTitle": "主元归一化",
+  "quizQ3Prompt": "第二行主元为 −3。哪种运算使它变为 1？",
+  "quizQ3Explanation": "将第二行乘以 −1/3：(−3)×(−1/3) = 1。",
+  "quizQ3Hint": "使用主元的倒数。",
+  "quizQ3Feedback0": "加上第一行会破坏开头的零，也不能使主元归一化。",
+  "quizQ3Feedback1": "−3 的倒数是 −1/3，两者乘积为 1。",
+  "quizQ3Feedback2": "−3×3 = −9，需要使用倒数。",
+  "quizQ3Feedback3": "交换行不能把 −3 变为 1。",
+  "quizQ4QuestionTitle": "秩与零行",
+  "quizQ4Prompt": "这个行阶梯形矩阵的秩是多少？",
+  "quizQ4Explanation": "有两个非零主元行和一个零行，因此 rank(A) = 2。",
+  "quizQ4Hint": "计算行阶梯形矩阵中的非零行数。",
+  "quizQ4Feedback0": "零行不提供主元，矩阵大小不能单独决定秩。",
+  "quizQ4Feedback1": "矩阵有两个主元行。",
+  "quizQ4Feedback2": "第二个非零行也有主元，需要计入。",
+  "quizQ4Feedback3": "只有所有元素都为零时，秩才为零。",
+  "quizQ5QuestionTitle": "三角矩阵的行列式",
+  "quizQ5Prompt": "三角矩阵的行列式等于主对角线元素的乘积。det(A) 是多少？",
+  "quizQ5Explanation": "主对角线乘积为 2×3×4 = 24。",
+  "quizQ5Hint": "对角线下方全为零时，直接将对角线元素相乘。",
+  "quizQ5Feedback0": "需要相乘，对角线之和是矩阵的迹。",
+  "quizQ5Feedback1": "2×3×4 = 24。",
+  "quizQ5Feedback2": "对角线下方的零不会使行列式为零，对角线上的零才会。",
+  "quizQ5Feedback3": "对角线元素均为正，没有额外的负号。",
+  "eigen_vector_approx_title": "λ_{index} ≈ {lambda} 的近似向量",
+  "eigen_vector_approx_desc": "使用 λ ≈ {lambda} 得到近似方向 {vector}，它不是零空间的精确解。",
+  "spaceKey": "空格"
+}

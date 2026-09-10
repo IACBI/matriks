@@ -1,0 +1,538 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Matris ve Lineer Cebir Eğitmeni",
+  "topics": "Konular",
+  "selectTopic": "Matematik stüdyon",
+  "topicSubtitle": "Bir problem seç. Örüntüyü gör. Her adımı anla.",
+  "categoryAll": "Tüm Konular",
+  "categoryElimination": "İndirgeme ve Sistemler",
+  "categoryAlgebra": "Matris Cebiri",
+  "categoryAdvanced": "Ayrışım ve Spektral Teori",
+  "categoryVisual": "Görsel ve Alıştırma",
+  "topicGauss": "Gauss Eliminasyonu (REF)",
+  "topicGaussDesc": "Temel satır işlemleriyle üst üçgensel satır eşelon biçimine (REF) adım adım indirgeme.",
+  "topicRref": "Gauss-Jordan Eliminasyonu (RREF)",
+  "topicRrefDesc": "Baş elemanları 1 olan indirgenmiş satır eşelon biçimine (RREF) tam çözüm.",
+  "topicLinearSystems": "Lineer Denklem Sistemleri (Ax = b)",
+  "topicLinearSystemsDesc": "Gauss-Jordan ile tek çözüm, sonsuz çözüm ve tutarsızlık analizi.",
+  "topicDeterminant": "Determinant",
+  "topicDeterminantDesc": "2x2 çapraz çarpım, 3x3 Sarrus kuralı ve satır işlemleriyle üçgenleme.",
+  "topicInverse": "Matris Tersi (A⁻¹)",
+  "topicInverseDesc": "2x2 ek (adjoint) matris formülü ve [A | I] genişletilmiş blok matris Gauss-Jordan yöntemi.",
+  "topicRankNullity": "Rank ve Sıfırlık (Rank-Nullity)",
+  "topicRankNullityDesc": "Matris rankını, sıfırlığını (nullity) ve Rank-Sıfırlık Teoremini adım adım keşfedin.",
+  "topicEigen": "Özdeğerler ve Özvektörler",
+  "topicEigenDesc": "2×2 özçiftleri ve −20 ile 20 arasındaki 3×3 tam sayı köklerini inceleyin.",
+  "topicTransform2d": "2B Geometrik Lineer Dönüşüm",
+  "topicTransform2dDesc": "Birim karenin bükülmesini, taban vektörlerini (î, ĵ) ve determinant alanını etkileşimli incele.",
+  "topicAdd": "Matris Toplama",
+  "topicAddDesc": "Etkileşimli hücre animasyonlarıyla eleman eleman toplama.",
+  "topicMultiply": "Matris Çarpımı",
+  "topicMultiplyDesc": "Hedef hücreyi oluşturan satır ve sütun vektörlerinin iç çarpımı.",
+  "matrixInput": "Matris Girişi",
+  "matrixA": "A Matrisi",
+  "matrixB": "B Matrisi",
+  "rows": "Satır",
+  "cols": "Sütun",
+  "size": "Boyut",
+  "presetRandom": "Rastgele",
+  "presetIdentity": "Birim Matris",
+  "presetClear": "Temizle",
+  "calculate": "Çöz",
+  "fractionToggle": "Kesir / Ondalık",
+  "decreaseDimension": "Boyutu azalt",
+  "increaseDimension": "Boyutu artır",
+  "stepOf": "Adım {current} / {total}",
+  "decreasePlaybackSpeed": "Oynatma hızını azalt",
+  "increasePlaybackSpeed": "Oynatma hızını artır",
+  "playbackSpeed": "Hız: {speed}x",
+  "play": "Oynat",
+  "pause": "Duraklat",
+  "nextStep": "İleri",
+  "prevStep": "Geri",
+  "jumpToStep": "Adıma Git",
+  "explanation": "Açıklama",
+  "cellDetail": "Hücre İşlem Detayı",
+  "tapCellHint": "Aritmetik işlem detayını görmek için herhangi bir hücreye dokunun.",
+  "close": "Kapat",
+  "toggleTheme": "Temayı Değiştir",
+  "changeLanguage": "Dil",
+  "solveError": "Hata: {error}",
+  "solveFallbackError": "Matris çözülemedi.",
+  "badgeRowSwap": "Satır Takası",
+  "badgeRowScale": "Satır Ölçekleme",
+  "badgeElimination": "Satır İndirgeme",
+  "badgeDeterminant": "Determinant",
+  "badgeSarrus": "Sarrus Kuralı",
+  "badgeCofactor": "Kofaktör",
+  "badgeDotProduct": "İç Çarpım",
+  "badgeInverseResult": "Ters Matris",
+  "badgeLinearSystem": "Lineer Sistem",
+  "badgeRankNullity": "Rank-Sıfırlık",
+  "badgeEigen": "Özdeğer/Özvektör",
+  "badgeLu": "LU Ayrışımı",
+  "badgeInfo": "Bilgi",
+  "legendPivot": "Pivot",
+  "legendSource": "Kaynak",
+  "legendTarget": "Hedef",
+  "legendZeroResult": "0-Sonuç",
+  "speedSlow": "0.5x (Yavaş)",
+  "speedNormal": "1.0x (Normal)",
+  "speedFast": "1.5x (Hızlı)",
+  "speedVeryFast": "2.0x (Çok Hızlı)",
+  "cellCalculationTitle": "Hücre ({row}, {col}) Hesabı",
+  "arithmeticDetail": "Aritmetik İşlem Detayı:",
+  "resultLabel": "Sonuç:",
+  "transformScreenTitle": "2B Lineer Dönüşüm",
+  "presetShear": "Kayma (Shear)",
+  "presetRotation": "Dönme 45°",
+  "presetScale": "Ölçekleme",
+  "presetReflection": "Yansıma",
+  "presetProjection": "İzdüşüm (det=0)",
+  "presetReset": "Sıfırla (Birim)",
+  "step_row_swap_title": "Satır {rowA} ile Satır {rowB}'yi Değiştir",
+  "step_row_swap_desc": "{col}. sütuna sıfırdan farklı bir baş eleman (pivot: {pivot}) getirmek için Satır {rowA} ve Satır {rowB} yer değiştirdi.",
+  "step_row_scale_title": "Satır {row}'yi Sadeleştir (Ölçekle)",
+  "step_row_scale_desc": "Satır {row} elemanları {factor} ile çarpılarak baş eleman (pivot) 1 yapıldı.",
+  "step_row_elimination_title": "Satır {target} Elemanını Sıfırla",
+  "step_row_elimination_desc": "Satır {target}'nin {col}. sütun elemanını sıfırlamak için: R_{target} ← R_{target} - ({multiplier}) · R_{source} işlemi uygulandı.",
+  "det_1x1_title": "1x1 Matris Determinantı",
+  "det_1x1_desc": "1x1 matrisin determinantı doğrudan tek elemanının değerine eşittir: {val}.",
+  "det_2x2_main_diagonal_title": "Asal Köşegen Çarpımı",
+  "det_2x2_main_diagonal_desc": "Asal köşegen elemanları çarpımı: {a} · {d} = {product}.",
+  "det_2x2_anti_diagonal_title": "Yedek Köşegen Çarpımı",
+  "det_2x2_anti_diagonal_desc": "Yedek köşegen elemanları çarpımı: {b} · {c} = {product}.",
+  "det_2x2_final_title": "Determinant Sonucu",
+  "det_2x2_final_desc": "Determinant = (Asal Köşegen) - (Yedek Köşegen): ({main}) - ({anti}) = {det}.",
+  "det_sarrus_pos_title": "Sarrus Kuralı: Pozitif Köşegenler",
+  "det_sarrus_pos_desc": "Aşağı yönlü köşegenlerin toplamı: {p1} + {p2} + {p3} = {total}.",
+  "det_sarrus_neg_title": "Sarrus Kuralı: Negatif Köşegenler",
+  "det_sarrus_neg_desc": "Yukarı yönlü köşegenlerin toplamı: {n1} + {n2} + {n3} = {total}.",
+  "det_sarrus_final_title": "Determinant Sonucu",
+  "det_sarrus_final_desc": "Determinant = (Pozitif Köşegenler) - (Negatif Köşegenler): ({pos}) - ({neg}) = {det}.",
+  "det_singular_column_title": "Sıfır Sütun Tespit Edildi",
+  "det_singular_column_desc": "{col}. sütundaki tüm elemanlar sıfırdır. Bu matrisin determinantı 0'dır.",
+  "det_row_swap_title": "Satır Değişimi (İşaret Değişimi)",
+  "det_row_swap_desc": "Satır {rowA} ile Satır {rowB} yer değiştirdiğinde determinantın işareti değişir (-1 ile çarpılır).",
+  "det_diagonal_product_title": "Üst Üçgensel Köşegen Çarpımı",
+  "det_diagonal_product_desc": "Matris üst üçgensel forma dönüştürüldü. Determinant = {sign}{diagonals} = {det}.",
+  "inverse_singular_title": "Matris Tekildir (Singular)",
+  "inverse_singular_desc": "Determinant 0 olduğundan bu matris tekildir ve tersi (inversi) mevcut değildir.",
+  "inverse_2x2_det_title": "Determinant Hesabı",
+  "inverse_2x2_det_desc": "Determinant = {formula} = {det}.",
+  "inverse_2x2_adjoint_title": "Ek (Adjoint) Matrisi Oluşturma",
+  "inverse_2x2_adjoint_desc": "Asal köşegen elemanlarının yerleri değiştirildi, yedek köşegen elemanlarının işaretleri ters çevrildi.",
+  "inverse_2x2_scale_title": "Ek Matrisi 1/det ile Çarpma",
+  "inverse_2x2_scale_desc": "Ek matrisin her elemanı 1/det = {factor} ile çarpılarak ters matris elde edildi.",
+  "inverse_block_init_title": "Genişletilmiş Matrisi Oluşturma [A | I]",
+  "inverse_block_init_desc": "{n}x{n} boyutundaki A matrisinin sağına aynı boyuttaki birim matris I eklendi.",
+  "inverse_block_extract_title": "Ters Matrisi (A⁻¹) Ayırma",
+  "inverse_block_extract_desc": "Sol blok birim matrise (I) dönüştü. Sağ bloktaki matris artık A matrisinin tersidir.",
+  "arithmetic_add_cell_title": "({row}, {col}) Elemanlarını Toplama",
+  "arithmetic_add_cell_desc": "Karşılık gelen elemanlar toplandı: {formula}.",
+  "arithmetic_mult_cell_title": "({row}, {col}) Elemanını Hesaplama",
+  "arithmetic_mult_cell_desc": "A matrisinin {row}. satırı ile B matrisinin {col}. sütununun iç çarpımı: {formula}.",
+  "error_matrix_is_singular": "Bu matris tekildir (determinant = 0), dolayısıyla tersi yoktur.",
+  "error_inverse_not_square": "Bu işlem kare matris gerektirir.",
+  "error_dimension_mismatch_add": "Matris toplaması için matrislerin boyutları aynı olmalıdır.",
+  "error_dimension_mismatch_multiply": "Matris çarpımı için birinci matrisin sütun sayısı ikinci matrisin satır sayısına eşit olmalıdır.",
+  "system_inconsistent_title": "Satır {row} Çelişkisi: Tutarsız Sistem",
+  "system_inconsistent_desc": "Satır {row} [0 ... 0 | {val}] biçimine indirgendi; bu da 0 = {val} demektir. Bu bir çelişkidir, dolayısıyla sistemin çözümü yoktur.",
+  "system_unique_title": "Tek Çözüm Bulundu",
+  "system_unique_desc": "Her değişken bir pivot sütununa karşılık gelir. Tek çözüm: {solution}.",
+  "system_infinite_title": "Sonsuz Çözüm ({count} Serbest Değişken)",
+  "system_infinite_desc": "Pivot olmayan ({freeVars}) değişkenleri serbest parametrelerdir ({params}). Çözüm parametrik vektör formunda yazılmıştır.",
+  "rank_nullity_title": "Rank = {rank}, Sıfırlık = {nullity}",
+  "rank_nullity_desc": "Matrisin {rank} pivot sütunu ve {nullity} serbest sütunu vardır. Rank-Sıfırlık Teoremi gereği: rank(A) + nullity(A) = {cols}.",
+  "eigen_char_poly_title": "Karakteristik Polinom",
+  "eigen_trace_det_desc": "2x2 matris için karakteristik denklem λ² - tr(A)λ + det(A) = 0 olup, iz = {trace} ve det = {det} değerlerindedir.",
+  "eigen_complex_title": "Karmaşık Özdeğerler",
+  "eigen_complex_desc": "{poly} için diskriminant negatiftir. Özdeğerler karmaşık eşleniklerdir: {roots}.",
+  "eigen_roots_title": "Özdeğerler (Karakteristik Denklemin Kökleri)",
+  "eigen_roots_approx_desc": "{poly} için üç ondalık basamağa yuvarlanan yaklaşık gerçek özdeğerler: {roots}.",
+  "eigen_roots_desc": "{poly} çözüldüğünde gerçek özdeğerler elde edilir: {roots}.",
+  "eigen_vector_title": "λ_{index} = {lambda} için Özvektör",
+  "eigen_vector_desc": "(A − {lambda}I)v = 0 için bir örnek özvektör {vector}.",
+  "eigen_3x3_poly_desc": "3x3 matris için karakteristik denklem: {poly}, iz = {trace} ve det = {det}.",
+  "eigen_irrational_desc": "{poly} için −20 ile 20 arasında tam sayı kökü bulunamadı. Başka gerçek veya karmaşık kökler olabilir; bu çözücü bunları hesaplamaz.",
+  "topicLu": "LU Ayrışımı (A = LU)",
+  "topicLuDesc": "Kare matrisi alt (L) ve üst (U) üçgensel matris çarpanlarına ayırın.",
+  "topicPractice": "Kendini Sına (Alıştırma & Test)",
+  "topicPracticeDesc": "Adım adım doğru işlemi tahmin ederek kendinizi test edin ve puan toplayın.",
+  "lu_init_title": "LU Ayrışımını Başlat",
+  "lu_init_desc": "L matrisi köşegeninde 1 olan birim matris I olarak, U matrisi ise doğrudan A matrisi olarak başlatılır.",
+  "lu_swap_desc": "Pivot 0 idi. Satır {rowA} ile Satır {rowB} takas edildi (permütasyon matrisi P gerekir).",
+  "lu_elim_title": "Satır {target} Elemanını Sıfırla (Pivot Satır {source})",
+  "lu_elim_desc": "Çarpan m_{target}{source} = {multiplier} değeri L matrisinin ({target},{source}) hücresine kaydedildi. U matrisindeki işlem: R_{target} ← R_{target} - ({multiplier})R_{source}.",
+  "lu_final_title": "LU Ayrışımı Tamamlandı",
+  "lu_final_desc": "Matris başarıyla L (alt üçgensel) ve U (üst üçgensel) çarpanlarına ayrıştırıldı.",
+  "practiceTitle": "Kendini Sına (Alıştırma Modu)",
+  "practiceScore": "{score} Puan",
+  "practiceQuestionProgress": "Soru {current} / {total}",
+  "practiceHint": "İpucu",
+  "practiceHideHint": "İpucunu Gizle",
+  "practiceCorrect": "Tebrikler, Doğru Cevap!",
+  "practiceIncorrect": "Yanlış Seçim",
+  "practiceNext": "Sonraki Soruya Geç",
+  "practiceResults": "Sonuçları Gör",
+  "practiceCompleted": "Alıştırma Tamamlandı!",
+  "practiceTotalScore": "Toplam Puanınız: {score} / {total}",
+  "practicePerfectScore": "Harika! Tüm soruları doğru cevaplayarak tam puan aldınız!",
+  "practiceGoodEffort": "İyi çalışma! Matris işlemlerinde daha da ustalaşmak için tekrar deneyebilirsiniz.",
+  "practiceReturnTopics": "Konulara Dön",
+  "practiceRestart": "Tekrar Başla",
+  "searchTopics": "Konularda ara...",
+  "noTopicsFound": "Eşleşen konu bulunamadı",
+  "noTopicsFoundDesc": "Farklı bir arama terimi deneyin veya başka bir kategori seçin.",
+  "clearSearch": "Aramayı Temizle",
+  "rowLabel": "Satır {row}",
+  "systemDefault": "Sistem Varsayılanı",
+  "replayAnimation": "Animasyonu Tekrar Oynat",
+  "ghostRowMultiply": "Gölge izdüşüm: -({multiplier}) · R{source}",
+  "scaleWaveBadge": "× {scalar}",
+  "celebratoryZeroBadge": "0 (Sıfırlandı)",
+  "sarrusPosBadge": "+ {product}",
+  "sarrusNegBadge": "- {product}",
+  "dotProductMerging": "Satır {row} · Sütun {col}",
+  "bracketSwapRows": "R{rowA} ↔ R{rowB}",
+  "basisVectorI": "î = ({x}, {y})",
+  "basisVectorJ": "ĵ = ({x}, {y})",
+  "detValue": "det = {val}",
+  "progressPercent": "t = {percent}%",
+  "stepReplayTooltip": "Adım dönüşüm animasyonunu tekrar oynat",
+  "intermediateCalculation": "Ara İşlem: {formula}",
+  "inputHelp": "Bir hücre seçip tam sayı, ondalık sayı veya kesir girin.",
+  "inputInvalid": "{matrix} matrisinde {row}. satır, {column}. sütunu kontrol edin. Tam bir sayı girin; kesrin paydası sıfır olamaz.",
+  "@inputInvalid": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "calculating": "Hesaplanıyor…",
+  "inputCell": "{matrix} matrisi, {row}. satır, {column}. sütun",
+  "@inputCell": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "stepAlreadyReducedTitle": "Matris zaten istenen biçimde",
+  "stepAlreadyReducedDesc": "Satır işlemine gerek yok. Gösterilen matris sonuçtur.",
+  "keyPreviousCell": "Önceki hücre",
+  "keyNextCell": "Sonraki hücre",
+  "keySign": "İşareti değiştir",
+  "keyFraction": "Kesir çizgisi",
+  "keyBackspace": "Son basamağı sil",
+  "keyClear": "Hücreyi temizle",
+  "keyDecimal": "Ondalık ayırıcı",
+  "phaseSource": "Kaynağı göster",
+  "phaseOperation": "İşlemi uygula",
+  "phaseResult": "Sonucu doğrula",
+  "instructionProgress": "Bu işlemin ilerlemesi",
+  "lessonSteps": "Ders adımları",
+  "customTransform": "Özel",
+  "transformCoefficients": "Dönüşüm matrisi",
+  "basisVectors": "Dönüşen baz vektörleri",
+  "targetDeterminant": "Hedef determinant",
+  "matrixCellLabel": "Satır {row}, sütun {column}, değer {value}",
+  "@matrixCellLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "focusSource": "Hedefi anla",
+  "focusOperation": "Hesabı takip et",
+  "focusResult": "Değişimi kontrol et",
+  "inspectOperation": "Bu işlemi incele",
+  "stepExplanation": "Neden bu işlem?",
+  "cellCalculations": "Hücre hesapları",
+  "chooseStep": "Adım seç",
+  "learningPath": "Matrislere yeni mi başlıyorsun?",
+  "learningPathDesc": "Satır işlemleriyle başla, ardından bu işlemlerin denklem çözümündeki yerini keşfet.",
+  "pathEliminate": "1 · Sıfırları oluştur",
+  "pathReduce": "2 · Pivotları bul",
+  "pathSolve": "3 · Sistemi çöz",
+  "guidedExample": "Örnek üzerinden öğren",
+  "guideGenericSource": "Mevcut matrisi ve bu adımın hedefini incele.",
+  "guideGenericApply": "Vurgulanan elemanları takip et. Açıklamada işlemin gerekçesini bulabilirsin.",
+  "guideGenericResult": "Sonucu açıklamayla karşılaştır. Hazır olduğunda sonraki adıma geç.",
+  "guideEliminateSource": "{target}. satırı değiştirmek için {source}. satırı kullanıyoruz. {column}. sütuna odaklan.",
+  "@guideEliminateSource": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "guideEliminateApply": "{source}. satırın {factor} katını {target}. satıra ekle. Aynı işlemi satırdaki her elemana uygula.",
+  "@guideEliminateApply": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "guideEliminateResult": "{column}. sütundaki eleman artık {value}. Satır işlemi çözüm kümesini korur.",
+  "@guideEliminateResult": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "guideScaleSource": "{row}. satırdaki her elemanı aynı sıfırdan farklı katsayıyla çarp: {factor}.",
+  "@guideScaleSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "guideScaleApply": "Katsayıyı yalnızca pivota değil, satırın tamamına uygula.",
+  "guideScaleResult": "Satır ölçeklendi. Her elemanı başlangıçtaki satırla karşılaştır.",
+  "guideSwapSource": "{first}. ve {second}. satırlar yer değiştirecek.",
+  "@guideSwapSource": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "guideSwapApply": "Satırları bütün olarak taşı; elemanların değerleri değişmez.",
+  "guideSwapResult": "Satırlar yeni yerlerinde. Çözüm kümesi değişmedi.",
+  "guideDotSource": "{row}. satırı {column}. sütunla eşleştir. Her çift aynı sonuç elemanına katkı yapar.",
+  "@guideDotSource": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "guideDotApply": "Eşleşen elemanları çarp, ardından katkıları topla.",
+  "guideDotResult": "Toplam, {row}. satır ve {column}. sütundaki sonuç elemanını verir.",
+  "@guideDotResult": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "guideDetSource": "Her çarpımın elemanlarını takip et. İşaretler hangi çarpımların çıkarılacağını belirler.",
+  "guideDetApply": "Her seferinde bir çarpım vurgulanır. Elemanlarını matrisin altındaki hesapta incele.",
+  "guideDetResult": "Çarpımlar aşağıda görünür kalır; sonucu kendi hızında kontrol edebilirsin.",
+  "coefficientError": "−1000 ile 1000 arasında bir sayı gir.",
+  "transformTransitionHint": "Katsayıyı yazıp Enter’a bas veya alandan çık. Değer aralığı: −1000–1000. Sürgü önceki ve yeni durumu karşılaştırır; ara kareler dönüşümler arasındaki geçişi gösterir.",
+  "multiplicationSourceRow": "A · {row}. satır",
+  "@multiplicationSourceRow": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "multiplicationSourceColumn": "B · {column}. sütun",
+  "@multiplicationSourceColumn": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "multiplicationOutput": "C = A × B · sonuç matrisi",
+  "guideEliminateReason": "Hedefteki {entry} ÷ pivot {pivot} = {ratio}. Hedef elemanı sıfırlamak için kaynak satırın bu katını çıkar.",
+  "@guideEliminateReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "guideEliminateSubtract": "{target}. satırdan {source}. satırın {factor} katını çıkar. İşlemi satırdaki her elemana uygula.",
+  "@guideEliminateSubtract": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "transformProgress": "Dönüşümün ilerlemesi",
+  "increaseCoefficient": "{name} katsayısını artır",
+  "@increaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "decreaseCoefficient": "{name} katsayısını azalt",
+  "@decreaseCoefficient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "guideDotReason": "Bir sonuç elemanı, A’nın bir satırı ile B’nin bir sütununun tamamından oluşur. Aynı sıradaki elemanları çarp, sonra bu katkıları topla.",
+  "guideDetReason": "Determinant, alanın veya hacmin işaretli ölçeklenmesini ölçer. Pozitif gruptaki çarpımları topla, negatif gruptakileri çıkar. Determinant sıfırsa dönüşüm en az bir boyutu kaybettirir.",
+  "settings": "Ayarlar",
+  "practiceNav": "Alıştırmalar",
+  "transformNav": "Dönüşümler",
+  "appearance": "Görünüm",
+  "learning": "Öğrenme ve oynatma",
+  "themeLabel": "Tema",
+  "lightTheme": "Açık",
+  "darkTheme": "Koyu",
+  "solutionModeLabel": "Çözüm görünümü",
+  "guidedMode": "Rehberli animasyon",
+  "stepsMode": "Hareketsiz adımlar",
+  "resultMode": "Doğrudan sonuç",
+  "showResult": "Sonucu göster",
+  "viewSteps": "Adımları incele",
+  "motionLabel": "Hareketi azalt",
+  "motionHelp": "Sistemin azaltılmış hareket tercihi her zaman korunur.",
+  "shortExplanation": "Kısa",
+  "detailedExplanation": "Ayrıntılı",
+  "hiddenExplanation": "Gizli",
+  "predictionLabel": "Tahmin soruları",
+  "predictionHelp": "Başlangıç örneklerinde atlanabilir düşünme soruları.",
+  "predictTitle": "Denemeden önce…",
+  "predictPrompt": "Hedef elemanı hangi katsayı sıfırlar?",
+  "predictCorrect": "Aynen öyle! Şimdi aynı işlemi satır boyunca izleyelim.",
+  "predictIncorrect": "Katsayıyı bulmak için hedefi pivota böl.",
+  "skip": "Atla",
+  "continueLabel": "Devam et",
+  "numberView": "Sayı görünümü",
+  "fractionView": "Kesirler",
+  "decimalView": "Ondalık",
+  "densityLabel": "Görünüm yoğunluğu",
+  "comfortable": "Rahat",
+  "compact": "Kompakt",
+  "accentLabel": "Vurgu paleti",
+  "blue": "Mavi",
+  "teal": "Turkuaz",
+  "purple": "Mor",
+  "shortcutsLabel": "Klavye kısayolları",
+  "shortcutHelp": "Bir eylem seç; harf, boşluk veya yatay ok tuşuna bas. Home/End ve Page Up/Down kullanılabilir kalır.",
+  "pressKey": "Bir tuşa bas",
+  "shortcutConflict": "Bu tuş ayrılmış veya başka bir eyleme atanmış.",
+  "resetSettings": "Ayarları sıfırla",
+  "settingsStorageError": "Ayarlar okunamadı veya kaydedilemedi. Değişiklikler bu oturumda kullanılabilir.",
+  "localPreferences": "Ayarlar bu cihazda tutulur. Matris geçmişi kaydedilmez.",
+  "resultExact": "Kesin",
+  "resultApproximate": "Yaklaşık",
+  "resultComplete": "Tam",
+  "resultPartial": "Kısmi",
+  "resultUnsupported": "Desteklenmiyor",
+  "eigenPrecision": "Özdeğerler üç ondalığa yuvarlanır; vektörler kesin sıfır uzayı çözümleri değil, yaklaşık yönlerdir.",
+  "eigenScope": "3×3 analizi −20 ile 20 arasındaki tam sayı kökleri arar. Bulunamayan kökler gerçek veya karmaşık olabilir.",
+  "eigenBasisScope": "Her özdeğer için bir örnek vektör gösterilir; özuzayın tam bazı hesaplanmaz.",
+  "complexScope": "Karmaşık özvektörler desteklenmiyor. Sanal kısım iki ondalığa yuvarlanır.",
+  "guideAddSource": "A ve B'deki aynı konumları eşleştir.",
+  "guideAddApply": "Bu iki elemanı topla.",
+  "guideAddResult": "Toplamları C'deki aynı konuma gelir.",
+  "quizQ1QuestionTitle": "Gauss Eliminasyonu: Pivot ve Sıfırlama",
+  "quizQ1Prompt": "Aşağıdaki matriste 1. sütundaki ilk pivot (1,1) hücresidir. 2. satırın ilk elemanını sıfırlamak için hangi satır işlemi uygulanmalıdır?",
+  "quizQ1Explanation": "2. satırın ilk elemanı 2, pivot ise 1 dir. 2 - 2(1) = 0 elde etmek için R_2 \\leftarrow R_2 - 2R_1 işlemi uygulanmalıdır.",
+  "quizQ1Hint": "Hedef satırdaki elemanı (2), pivot satırının (1) katı ile çıkararak sıfırlayın.",
+  "quizQ1Feedback0": "İlk satırın iki katını çıkarmak 2 − 2 = 0 sonucunu verir.",
+  "quizQ1Feedback1": "İlk satırın iki katını eklemek 2 + 2 = 4 verir; hedef eleman sıfırlanmaz.",
+  "quizQ1Feedback2": "Satır takası elemanları taşır; hedef elemanı sıfırlamaz.",
+  "quizQ1Feedback3": "İkinci satırı yarıya bölmek ilk elemanı 1 yapar; sıfır yapmaz.",
+  "quizQ2QuestionTitle": "Satır Takası (Row Swap) İhtiyacı",
+  "quizQ2Prompt": "1. sütunda pivot pozisyonunda 0 bulunmaktadır. (1,1) konumuna sıfır olmayan bir pivot getirmek için hangi satır takası yapılmalıdır?",
+  "quizQ2Explanation": "Pivot pozisyonu (1,1) sıfır olamaz. Sıfır olmayan bir elemanı başa almak için 1. ve 2. satırlar takas edilmelidir: R_1 \\leftrightarrow R_2.",
+  "quizQ2Hint": "Sıfır olan bir pivotla bölme yapılamaz, sıfır olmayan bir satırla yer değiştirin.",
+  "quizQ2Feedback0": "İkinci satırı eklemek de sıfır olmayan pivot oluşturur; ancak bu soru özellikle satır takasını soruyor.",
+  "quizQ2Feedback1": "İlk iki satırı takas etmek, sıfır olmayan 3 değerini pivot konumuna getirir.",
+  "quizQ2Feedback2": "İkinci satırı değiştirmek (1,1) konumundaki sıfırı değiştirmez.",
+  "quizQ2Feedback3": "Üçüncü satırı ölçeklemek (1,1) konumundaki sıfırı değiştirmez.",
+  "quizQ3QuestionTitle": "Pivot Normalizasyonu (Scaling)",
+  "quizQ3Prompt": "2. satırdaki pivot elemanı -3 tür. Bu pivotu 1 yapmak için hangi işlem yapılmalıdır?",
+  "quizQ3Explanation": "İkinci satırın her elemanını −1/3 ile çarpalım: (−3) × (−1/3) = 1.",
+  "quizQ3Hint": "Bir sayıyı 1 yapmak için o sayının çarpma işlemine göre tersi ile çarpın.",
+  "quizQ3Feedback0": "İlk satırı eklemek baştaki sıfırı bozar ve bu pivotu 1 yapmaz.",
+  "quizQ3Feedback1": "−3 sayısının çarpmaya göre tersi −1/3 olduğundan çarpımları 1 olur.",
+  "quizQ3Feedback2": "−3 ile 3 çarpıldığında −9 olur. Sayının çarpmaya göre tersini kullan.",
+  "quizQ3Feedback3": "Satır takası konumları değiştirir; −3 değerini 1 yapacak ölçeklemeyi sağlamaz.",
+  "quizQ4QuestionTitle": "Rank ve Sıfır Satırı Tespiti",
+  "quizQ4Prompt": "Aşağıdaki basamak matrisin rankı (bağımsız satır sayısı) kaçtır?",
+  "quizQ4Explanation": "Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2 dir.",
+  "quizQ4Hint": "Echelon formdaki sıfırdan farklı satır sayısını sayın.",
+  "quizQ4Feedback0": "Sıfır satırı pivot oluşturmaz. Matrisin boyutu tek başına rankını belirlemez.",
+  "quizQ4Feedback1": "Bu basamak matrisinde iki pivot satırı vardır.",
+  "quizQ4Feedback2": "İkinci sıfırdan farklı satırda da bir pivot var; onu da saymalısın.",
+  "quizQ4Feedback3": "Rankın sıfır olması için matrisin bütün elemanlarının sıfır olması gerekir.",
+  "quizQ5QuestionTitle": "Determinant ve Üçgensel Matris",
+  "quizQ5Prompt": "Üst üçgensel bir matrisin determinantı köşegen elemanlarının çarpımıdır. Bu matrisin det(A) değeri nedir?",
+  "quizQ5Explanation": "Üçgensel matrislerin determinantı asal köşegen üzerindeki elemanların çarpımıdır: 2 \\cdot 3 \\cdot 4 = 24.",
+  "quizQ5Hint": "Köşegen altı tamamen sıfır olduğunda sadece köşegen elemanlarını çarpın.",
+  "quizQ5Feedback0": "Üçgensel determinant için köşegen elemanlarını çarp. Toplamları matrisin izini verir.",
+  "quizQ5Feedback1": "Köşegen çarpımı 2 × 3 × 4 = 24 olur.",
+  "quizQ5Feedback2": "Köşegen altındaki sıfırlar determinantı sıfır yapmaz; köşegende sıfır olması bunu yapar.",
+  "quizQ5Feedback3": "Köşegen elemanlarının hepsi pozitif; ek bir eksi işareti gelmez.",
+  "eigen_vector_approx_title": "λ_{index} ≈ {lambda} için yaklaşık vektör",
+  "eigen_vector_approx_desc": "λ ≈ {lambda} kullanılarak yaklaşık yön {vector} bulunur. Yuvarlanan değer, kesin sıfır uzayı çözümü vermez.",
+  "spaceKey": "Boşluk"
+}
