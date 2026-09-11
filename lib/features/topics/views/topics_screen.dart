@@ -12,6 +12,7 @@ import '../../settings/widgets/language_menu.dart';
 import '../../transform_visualizer/views/transform_visualizer_screen.dart';
 import '../../practice/views/practice_screen.dart';
 import '../models/topic_item.dart';
+import '../search_fold.dart';
 
 class TopicsScreen extends StatefulWidget {
   const TopicsScreen({super.key});
@@ -81,7 +82,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final query = _searchController.text.trim().toLowerCase();
+    final query = foldForSearch(_searchController.text.trim());
     const categories = [
       'categoryAll',
       'categoryElimination',
@@ -93,9 +94,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
       final matchesCategory =
           _selectedCategory == 'categoryAll' ||
           topic.categoryKey == _selectedCategory;
-      final searchable =
-          '${_resolveTopicTitle(l10n, topic.titleKey)} ${_resolveTopicDesc(l10n, topic.descKey)} ${topic.tagText}'
-              .toLowerCase();
+      final searchable = foldForSearch(
+        '${_resolveTopicTitle(l10n, topic.titleKey)} '
+        '${_resolveTopicDesc(l10n, topic.descKey)} ${topic.tagText}',
+      );
       return matchesCategory && (query.isEmpty || searchable.contains(query));
     }).toList();
 

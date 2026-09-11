@@ -180,6 +180,18 @@ The earlier notation pass wrapped `StepCard`'s title in `readableMathProse`. Bot
 
 The general lesson is worth recording: a test that calls a conversion function proves the function, not the screen. The two earlier notation defects were found by looking at the running application, and so was this one.
 
+## Diacritic-insensitive topic search
+
+Noticed while driving the published site: typing `Ozdeger` found nothing, because the filter compared `toLowerCase()` on both sides and `ozdeger` is not a substring of `özdeğerler`.
+
+Looking at it turned up a larger problem than the missing accents. `String.toLowerCase` applies the Unicode default mapping, which is not Turkish: `"IŞIK".toLowerCase()` is `işik`, while `ışık` is already lowercase and stays as it is. The same Turkish word typed in upper and lower case therefore did not match itself, in the application's own primary language.
+
+`foldForSearch` in `lib/features/topics/search_fold.dart` folds case and strips marks on both the query and the searched text. It covers the Turkish letters, the Spanish accents, the Latin ligatures, Russian ё, and combining marks in the U+0300–U+036F block so decomposed input folds the same as composed. It deliberately does not merge и and й: those are separate Cyrillic letters and folding them would return wrong topics, whereas ı and i folding together is what a reader typing on an English keyboard expects.
+
+No dependency was added for this. `diacritic` would have done it, but a thirty-line table covering five supported locales does not justify one.
+
+Coverage is split on purpose. Seven unit tests pin the folding rules, including the asymmetry that motivated the change, and four widget tests drive the topic list itself. Only the widget tests can see whether the screen actually uses the helper, and they are the two that fail when the wiring is reverted; the English test keeps passing, which is the point.
+
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs two jobs. `verify` resolves both packages, regenerates localizations and fails if `lib/l10n/generated` differs from the ARB sources, then analyzes and tests the application and the engine. `deploy` depends on it and runs only outside pull requests, so a failing analyzer or test cannot ship.
@@ -200,6 +212,8 @@ One third-party request remains and is not removable at reasonable cost: CanvasK
 | CI `verify` job on Ubuntu | Passed — analysis, 255 application and 49 engine tests, no l10n drift |
 | CI `deploy` job | Passed |
 | Application tests after the title fix | 272 passed, no regression |
+| Application tests after the search fix | 283 passed, no regression |
+| Topic search tests without the wiring | The two Turkish cases fail, the English case still passes |
 | Rendered prose test without the fix | Fails in 5 places, as a regression test must |
 | Live site after the fix | The heading reads `λ₁ = 1 için Özvektör`; the character is U+2081, read out of the accessibility tree rather than judged from a screenshot |
 
