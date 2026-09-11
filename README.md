@@ -17,6 +17,8 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 
 ### Overview
 
+**Try it in the browser:** <https://iacbi.github.io/matriks/> — the full app, nothing to install.
+
 Matriks teaches linear algebra by showing the work. Twelve topics — from Gauss-Jordan elimination to eigenvectors — are solved with exact `BigInt` rational arithmetic, so a fraction stays a fraction and never drifts into floating-point noise. Each solution is replayed step by step: the operands that feed a cell are highlighted while the cell changes, and the arithmetic behind it stays on screen afterwards.
 
 Results are labelled honestly. Every solution carries an accuracy (exact or approximate) and a completeness (complete, partial or unsupported), so an approximation is never presented as an exact answer.
@@ -105,6 +107,8 @@ Maintained by 𝓐.𝓒.𝓑.
 ## Türkçe
 
 ### Genel Bakış
+
+**Tarayıcıda deneyin:** <https://iacbi.github.io/matriks/> — uygulamanın tamamı, kurulum gerekmez.
 
 Matriks lineer cebiri işlemi göstererek öğretir. Gauss-Jordan eliminasyonundan özvektörlere kadar on iki konu, tam `BigInt` rasyonel aritmetiğiyle çözülür; kesir kesir kalır, kayan nokta gürültüsüne dönüşmez. Her çözüm adım adım oynatılır: bir hücreyi besleyen operandlar hücre değişirken vurgulanır, arkasındaki aritmetik sonrasında da ekranda durur.
 

@@ -159,3 +159,62 @@ The reference scan reported two groups as unused that are not, and both were ver
 ## Completion boundary
 
 The cleanup, the localization fix, the animation suite and the README are delivered, verified by the full suites and confirmed in a rebuilt web application. Device, store and accessibility-hardware validation remain owner-controlled work tracked in [ROADMAP.md](ROADMAP.md).
+
+# Publication: GitHub Pages, CI and repository metadata — 2026-09-11
+
+## Outcome
+
+The web build is published at <https://iacbi.github.io/matriks/> and rebuilt by a workflow on every push to `main`. Publishing it exposed a defect that every previous pass had missed, and that defect is the substantive result of this review — the infrastructure is the smaller half.
+
+The repository was made public. It could not stay private and carry a site: GitHub Free covers "GitHub Pages in public repositories" only, and the attempt to enable Pages on the private repository returned `422 Your current plan does not support GitHub Pages for this repository`. A site published from a private repository would not have been private either — access control requires an organization on GitHub Enterprise Cloud — so the choice was between a paid plan and a public repository, and the owner chose public.
+
+## The defect found by publishing
+
+The eigenvector heading read `λ_1 = 1 için Özvektör` on the live site: a literal underscore where a subscript belongs.
+
+The cause is that `eigen_vector_title` is `"λ_{index} = {lambda} için Özvektör"`, where the braces are an ICU placeholder rather than a TeX group. After localization the title is `λ_1`, which needs the same prose conversion as every other displayed string.
+
+The earlier notation pass wrapped `StepCard`'s title in `readableMathProse`. Both layouts in `step_player_screen.dart` construct `StepCard` with `showTitle: false`, so that title is never drawn. The headings the reader actually sees are two separate `Text(title)` widgets in the screen, and neither was wrapped. The fix converts the title where it is resolved, which covers both headings, the card and the step list at once and leaves no fourth call site to forget.
+
+`math_prose_regression_test.dart` could not have caught this. It exercises `readableMathProse` directly, and that function was correct throughout — it converts `λ_1` to `λ₁` when it is called. The gap was a display path that never called it. `rendered_prose_regression_test.dart` closes that gap by reading strings back out of the rendered widget tree for eight lessons in English and Turkish and rejecting backslash commands, brace groups and bare sub/superscripts in what is drawn. It was confirmed to fail in five places with the fix removed, including an explicit assertion that a real `λ₁` appears.
+
+The general lesson is worth recording: a test that calls a conversion function proves the function, not the screen. The two earlier notation defects were found by looking at the running application, and so was this one.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs two jobs. `verify` resolves both packages, regenerates localizations and fails if `lib/l10n/generated` differs from the ARB sources, then analyzes and tests the application and the engine. `deploy` depends on it and runs only outside pull requests, so a failing analyzer or test cannot ship.
+
+Two build decisions are deliberate:
+
+- The base href comes from `configure-pages`' `base_path` output rather than a literal `/matriks/`, so renaming the repository or moving to a custom domain needs no edit.
+- `--no-web-resources-cdn` is passed. The default web build fetches CanvasKit from `gstatic.com`, which contradicts the README's statement that the app makes no network calls. The build now serves it from the site itself.
+
+One third-party request remains and is not removable at reasonable cost: CanvasKit fetches a Noto Sans face from `fonts.gstatic.com` for glyphs the bundled font does not cover. This is Flutter's own fallback mechanism, not application code. It is recorded here rather than described as zero.
+
+## Verification actually performed
+
+| Check | Result |
+| --- | --- |
+| Sub-path build served locally at `/matriks/` | Boots, navigates, animates; 31 resources, all same-origin except the font fallback; no console errors |
+| Live site at `iacbi.github.io/matriks` | Same, confirmed in the browser; solving an eigen lesson there is what exposed the heading defect below |
+| CI `verify` job on Ubuntu | Passed — analysis, 255 application and 49 engine tests, no l10n drift |
+| CI `deploy` job | Passed |
+| Application tests after the title fix | 272 passed, no regression |
+| Rendered prose test without the fix | Fails in 5 places, as a regression test must |
+| Live site after the fix | The heading reads `λ₁ = 1 için Özvektör`; the character is U+2081, read out of the accessibility tree rather than judged from a screenshot |
+
+## Repository metadata
+
+Description, 15 topics, the site URL, an Apache-2.0 `LICENSE` with the canonical text from the licences API rather than a retyped copy, `CONTRIBUTING.md`, `SECURITY.md`, a bug-report form and a pull request template. The README gained License and Lisans sections, the demo link and a licence badge in both languages.
+
+`SECURITY.md` states the real surface — no backend, so reports concern dependencies, the input bounds, and the published site — and repeats the two known limits rather than implying there are none: Android release builds still use the debug signing configuration and the inspected Windows executable is unsigned.
+
+A code of conduct was deliberately not added. For a single-maintainer project it would promise an enforcement process that does not exist, which is worse than its absence; it is a two-minute addition whenever that changes.
+
+## Limits of this pass
+
+- The commit history carries the maintainer's address in the author field. It was already visible in other public repositories of the same account, so publication added no exposure, but changing it for existing commits would require rewriting history and was not done.
+- A social preview image can only be uploaded through the web interface and is still unset.
+- No release is tagged. `pubspec.yaml` reads `1.0.0+1`; whether that constitutes a release is the owner's call.
+- Publication is not a correctness claim. The numerical limits recorded in the sections above are unchanged, and the app states them in its own interface.
+
