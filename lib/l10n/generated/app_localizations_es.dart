@@ -107,9 +107,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Combina filas y columnas para calcular cada elemento.';
 
   @override
-  String get matrixInput => 'Entrada de matriz';
-
-  @override
   String get matrixA => 'Matriz A';
 
   @override
@@ -180,12 +177,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get explanation => 'Explicación';
 
   @override
-  String get cellDetail => 'Detalle del cálculo';
-
-  @override
-  String get tapCellHint => 'Toca un elemento para revisar su cálculo.';
-
-  @override
   String get close => 'Cerrar';
 
   @override
@@ -203,45 +194,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get solveFallbackError => 'No se pudo resolver la matriz.';
 
   @override
-  String get badgeRowSwap => 'Intercambio de filas';
-
-  @override
-  String get badgeRowScale => 'Escalado de fila';
-
-  @override
-  String get badgeElimination => 'Eliminación';
-
-  @override
-  String get badgeDeterminant => 'Determinante';
-
-  @override
-  String get badgeSarrus => 'Regla de Sarrus';
-
-  @override
-  String get badgeCofactor => 'Cofactor';
-
-  @override
-  String get badgeDotProduct => 'Producto escalar';
-
-  @override
-  String get badgeInverseResult => 'Matriz inversa';
-
-  @override
-  String get badgeLinearSystem => 'Sistema lineal';
-
-  @override
-  String get badgeRankNullity => 'Rango y nulidad';
-
-  @override
-  String get badgeEigen => 'Espectro';
-
-  @override
-  String get badgeLu => 'Factorización LU';
-
-  @override
-  String get badgeInfo => 'Información';
-
-  @override
   String get legendPivot => 'Pivote';
 
   @override
@@ -252,18 +204,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get legendZeroResult => 'Cero obtenido';
-
-  @override
-  String get speedSlow => '0,5× (Lenta)';
-
-  @override
-  String get speedNormal => '1× (Normal)';
-
-  @override
-  String get speedFast => '1,5× (Rápida)';
-
-  @override
-  String get speedVeryFast => '2× (Muy rápida)';
 
   @override
   String cellCalculationTitle(Object col, Object row) {
@@ -695,48 +635,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clearSearch => 'Borrar búsqueda';
 
   @override
-  String rowLabel(Object row) {
-    return 'Fila $row';
-  }
-
-  @override
   String get systemDefault => 'Predeterminado del sistema';
 
   @override
   String get replayAnimation => 'Repetir animación';
-
-  @override
-  String ghostRowMultiply(Object multiplier, Object source) {
-    return 'Proyección: −($multiplier) · R$source';
-  }
-
-  @override
-  String scaleWaveBadge(Object scalar) {
-    return '× $scalar';
-  }
-
-  @override
-  String get celebratoryZeroBadge => '0 (anulado)';
-
-  @override
-  String sarrusPosBadge(Object product) {
-    return '+ $product';
-  }
-
-  @override
-  String sarrusNegBadge(Object product) {
-    return '− $product';
-  }
-
-  @override
-  String dotProductMerging(Object col, Object row) {
-    return 'Fila $row · Columna $col';
-  }
-
-  @override
-  String bracketSwapRows(Object rowA, Object rowB) {
-    return 'R$rowA ↔ R$rowB';
-  }
 
   @override
   String basisVectorI(Object x, Object y) {
@@ -749,21 +651,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String detValue(Object val) {
-    return 'det = $val';
-  }
-
-  @override
   String progressPercent(Object percent) {
     return 't = $percent%';
-  }
-
-  @override
-  String get stepReplayTooltip => 'Repetir la transformación del paso';
-
-  @override
-  String intermediateCalculation(Object formula) {
-    return 'Cálculo intermedio: $formula';
   }
 
   @override
@@ -812,19 +701,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get keyDecimal => 'Separador decimal';
 
   @override
-  String get phaseSource => 'Identifica el origen';
-
-  @override
-  String get phaseOperation => 'Aplica la operación';
-
-  @override
-  String get phaseResult => 'Comprueba el resultado';
-
-  @override
   String get instructionProgress => 'Esta operación';
-
-  @override
-  String get lessonSteps => 'Pasos de la lección';
 
   @override
   String get customTransform => 'Personalizada';
@@ -868,10 +745,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get learningPath => '¿Empiezas con matrices?';
 
   @override
-  String get learningPathDesc =>
-      'Empieza por las operaciones de fila y descubre cómo resuelven ecuaciones.';
-
-  @override
   String get pathEliminate => '1 · Crear ceros';
 
   @override
@@ -879,9 +752,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Resolver un sistema';
-
-  @override
-  String get guidedExample => 'Ejemplo guiado';
 
   @override
   String get guideGenericSource => 'Lee la matriz y el objetivo de este paso.';

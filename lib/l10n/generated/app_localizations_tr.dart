@@ -10,7 +10,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'Matris ve Lineer Cebir Eğitmeni';
+  String get appTitle => 'Matriks · Lineer Cebir';
 
   @override
   String get topics => 'Konular';
@@ -107,9 +107,6 @@ class AppLocalizationsTr extends AppLocalizations {
       'Hedef hücreyi oluşturan satır ve sütun vektörlerinin iç çarpımı.';
 
   @override
-  String get matrixInput => 'Matris Girişi';
-
-  @override
   String get matrixA => 'A Matrisi';
 
   @override
@@ -180,13 +177,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get explanation => 'Açıklama';
 
   @override
-  String get cellDetail => 'Hücre İşlem Detayı';
-
-  @override
-  String get tapCellHint =>
-      'Aritmetik işlem detayını görmek için herhangi bir hücreye dokunun.';
-
-  @override
   String get close => 'Kapat';
 
   @override
@@ -204,45 +194,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get solveFallbackError => 'Matris çözülemedi.';
 
   @override
-  String get badgeRowSwap => 'Satır Takası';
-
-  @override
-  String get badgeRowScale => 'Satır Ölçekleme';
-
-  @override
-  String get badgeElimination => 'Satır İndirgeme';
-
-  @override
-  String get badgeDeterminant => 'Determinant';
-
-  @override
-  String get badgeSarrus => 'Sarrus Kuralı';
-
-  @override
-  String get badgeCofactor => 'Kofaktör';
-
-  @override
-  String get badgeDotProduct => 'İç Çarpım';
-
-  @override
-  String get badgeInverseResult => 'Ters Matris';
-
-  @override
-  String get badgeLinearSystem => 'Lineer Sistem';
-
-  @override
-  String get badgeRankNullity => 'Rank-Sıfırlık';
-
-  @override
-  String get badgeEigen => 'Özdeğer/Özvektör';
-
-  @override
-  String get badgeLu => 'LU Ayrışımı';
-
-  @override
-  String get badgeInfo => 'Bilgi';
-
-  @override
   String get legendPivot => 'Pivot';
 
   @override
@@ -253,18 +204,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get legendZeroResult => '0-Sonuç';
-
-  @override
-  String get speedSlow => '0.5x (Yavaş)';
-
-  @override
-  String get speedNormal => '1.0x (Normal)';
-
-  @override
-  String get speedFast => '1.5x (Hızlı)';
-
-  @override
-  String get speedVeryFast => '2.0x (Çok Hızlı)';
 
   @override
   String cellCalculationTitle(Object col, Object row) {
@@ -300,7 +239,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_swap_title(Object rowA, Object rowB) {
-    return 'Satır $rowA ile Satır $rowB\'yi Değiştir';
+    return 'Satır $rowA ile Satır $rowB Yer Değiştirir';
   }
 
   @override
@@ -315,7 +254,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_scale_title(Object row) {
-    return 'Satır $row\'yi Sadeleştir (Ölçekle)';
+    return 'Satır $row Elemanlarını Sadeleştir (Ölçekle)';
   }
 
   @override
@@ -335,7 +274,7 @@ class AppLocalizationsTr extends AppLocalizations {
     Object source,
     Object target,
   ) {
-    return 'Satır $target\'nin $col. sütun elemanını sıfırlamak için: R_$target ← R_$target - ($multiplier) · R_$source işlemi uygulandı.';
+    return 'Satır $target içinde $col. sütun elemanını sıfırlamak için: R_$target ← R_$target - ($multiplier) · R_$source işlemi uygulandı.';
   }
 
   @override
@@ -697,48 +636,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get clearSearch => 'Aramayı Temizle';
 
   @override
-  String rowLabel(Object row) {
-    return 'Satır $row';
-  }
-
-  @override
   String get systemDefault => 'Sistem Varsayılanı';
 
   @override
   String get replayAnimation => 'Animasyonu Tekrar Oynat';
-
-  @override
-  String ghostRowMultiply(Object multiplier, Object source) {
-    return 'Gölge izdüşüm: -($multiplier) · R$source';
-  }
-
-  @override
-  String scaleWaveBadge(Object scalar) {
-    return '× $scalar';
-  }
-
-  @override
-  String get celebratoryZeroBadge => '0 (Sıfırlandı)';
-
-  @override
-  String sarrusPosBadge(Object product) {
-    return '+ $product';
-  }
-
-  @override
-  String sarrusNegBadge(Object product) {
-    return '- $product';
-  }
-
-  @override
-  String dotProductMerging(Object col, Object row) {
-    return 'Satır $row · Sütun $col';
-  }
-
-  @override
-  String bracketSwapRows(Object rowA, Object rowB) {
-    return 'R$rowA ↔ R$rowB';
-  }
 
   @override
   String basisVectorI(Object x, Object y) {
@@ -751,21 +652,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String detValue(Object val) {
-    return 'det = $val';
-  }
-
-  @override
   String progressPercent(Object percent) {
     return 't = $percent%';
-  }
-
-  @override
-  String get stepReplayTooltip => 'Adım dönüşüm animasyonunu tekrar oynat';
-
-  @override
-  String intermediateCalculation(Object formula) {
-    return 'Ara İşlem: $formula';
   }
 
   @override
@@ -814,19 +702,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get keyDecimal => 'Ondalık ayırıcı';
 
   @override
-  String get phaseSource => 'Kaynağı göster';
-
-  @override
-  String get phaseOperation => 'İşlemi uygula';
-
-  @override
-  String get phaseResult => 'Sonucu doğrula';
-
-  @override
   String get instructionProgress => 'Bu işlemin ilerlemesi';
-
-  @override
-  String get lessonSteps => 'Ders adımları';
 
   @override
   String get customTransform => 'Özel';
@@ -870,10 +746,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get learningPath => 'Matrislere yeni mi başlıyorsun?';
 
   @override
-  String get learningPathDesc =>
-      'Satır işlemleriyle başla, ardından bu işlemlerin denklem çözümündeki yerini keşfet.';
-
-  @override
   String get pathEliminate => '1 · Sıfırları oluştur';
 
   @override
@@ -881,9 +753,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Sistemi çöz';
-
-  @override
-  String get guidedExample => 'Örnek üzerinden öğren';
 
   @override
   String get guideGenericSource =>

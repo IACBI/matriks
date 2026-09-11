@@ -105,9 +105,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вычисляйте каждый элемент как скалярное произведение строки и столбца.';
 
   @override
-  String get matrixInput => 'Ввод матрицы';
-
-  @override
   String get matrixA => 'Матрица A';
 
   @override
@@ -178,12 +175,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get explanation => 'Пояснение';
 
   @override
-  String get cellDetail => 'Расчёт элемента';
-
-  @override
-  String get tapCellHint => 'Нажмите на элемент, чтобы изучить его вычисление.';
-
-  @override
   String get close => 'Закрыть';
 
   @override
@@ -201,45 +192,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get solveFallbackError => 'Не удалось выполнить вычисление.';
 
   @override
-  String get badgeRowSwap => 'Перестановка строк';
-
-  @override
-  String get badgeRowScale => 'Умножение строки';
-
-  @override
-  String get badgeElimination => 'Исключение';
-
-  @override
-  String get badgeDeterminant => 'Определитель';
-
-  @override
-  String get badgeSarrus => 'Правило Саррюса';
-
-  @override
-  String get badgeCofactor => 'Алгебраическое дополнение';
-
-  @override
-  String get badgeDotProduct => 'Скалярное произведение';
-
-  @override
-  String get badgeInverseResult => 'Обратная матрица';
-
-  @override
-  String get badgeLinearSystem => 'Линейная система';
-
-  @override
-  String get badgeRankNullity => 'Ранг и дефект';
-
-  @override
-  String get badgeEigen => 'Спектр';
-
-  @override
-  String get badgeLu => 'Разложение LU';
-
-  @override
-  String get badgeInfo => 'Информация';
-
-  @override
   String get legendPivot => 'Ведущий элемент';
 
   @override
@@ -250,18 +202,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get legendZeroResult => 'Обнулено';
-
-  @override
-  String get speedSlow => '0,5× (Медленно)';
-
-  @override
-  String get speedNormal => '1× (Обычно)';
-
-  @override
-  String get speedFast => '1,5× (Быстро)';
-
-  @override
-  String get speedVeryFast => '2× (Очень быстро)';
 
   @override
   String cellCalculationTitle(Object col, Object row) {
@@ -691,48 +631,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get clearSearch => 'Очистить поиск';
 
   @override
-  String rowLabel(Object row) {
-    return 'Строка $row';
-  }
-
-  @override
   String get systemDefault => 'Системная настройка';
 
   @override
   String get replayAnimation => 'Повторить анимацию';
-
-  @override
-  String ghostRowMultiply(Object multiplier, Object source) {
-    return 'Проекция: −($multiplier) · R$source';
-  }
-
-  @override
-  String scaleWaveBadge(Object scalar) {
-    return '× $scalar';
-  }
-
-  @override
-  String get celebratoryZeroBadge => '0 (обнулено)';
-
-  @override
-  String sarrusPosBadge(Object product) {
-    return '+ $product';
-  }
-
-  @override
-  String sarrusNegBadge(Object product) {
-    return '− $product';
-  }
-
-  @override
-  String dotProductMerging(Object col, Object row) {
-    return 'Строка $row · Столбец $col';
-  }
-
-  @override
-  String bracketSwapRows(Object rowA, Object rowB) {
-    return 'R$rowA ↔ R$rowB';
-  }
 
   @override
   String basisVectorI(Object x, Object y) {
@@ -745,21 +647,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String detValue(Object val) {
-    return 'det = $val';
-  }
-
-  @override
   String progressPercent(Object percent) {
     return 't = $percent%';
-  }
-
-  @override
-  String get stepReplayTooltip => 'Повторить преобразование шага';
-
-  @override
-  String intermediateCalculation(Object formula) {
-    return 'Промежуточное вычисление: $formula';
   }
 
   @override
@@ -808,19 +697,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get keyDecimal => 'Десятичная точка';
 
   @override
-  String get phaseSource => 'Определите источник';
-
-  @override
-  String get phaseOperation => 'Выполните операцию';
-
-  @override
-  String get phaseResult => 'Проверьте результат';
-
-  @override
   String get instructionProgress => 'Эта операция';
-
-  @override
-  String get lessonSteps => 'Шаги урока';
 
   @override
   String get customTransform => 'Своя';
@@ -864,10 +741,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get learningPath => 'Впервые изучаете матрицы?';
 
   @override
-  String get learningPathDesc =>
-      'Начните со строковых операций и узнайте, как они решают уравнения.';
-
-  @override
   String get pathEliminate => '1 · Создать нули';
 
   @override
@@ -875,9 +748,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Решить систему';
-
-  @override
-  String get guidedExample => 'Учебный пример';
 
   @override
   String get guideGenericSource => 'Изучите матрицу и цель этого шага.';

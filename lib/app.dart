@@ -19,7 +19,10 @@ class MatrixEducatorApp extends StatelessWidget {
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settings) {
           return MaterialApp(
-            title: 'Matriks · Linear Algebra',
+            // Resolved per locale so the task switcher matches the interface.
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)?.appTitle ??
+                'Matriks · Linear Algebra',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.studio(
               false,

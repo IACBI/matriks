@@ -1,22 +1,44 @@
+<a id="top"></a>
 # Matriks
 
-An interactive linear algebra learning application built with Flutter. Explore twelve topics, edit matrices, inspect worked calculations, play instructional animations, practice with a quiz, and visualize 2D transformations. Turkish, English, Simplified Chinese, Spanish and Russian interfaces, light/dark themes and a personalized mathematics studio are included.
+Interactive linear algebra with exact matrix arithmetic and guided visual solutions.
 
-## Architecture
+![Flutter 3.47.1](https://img.shields.io/badge/Flutter-3.47.1-02569B?logo=flutter&logoColor=white)
+![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
+![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
+![Tests](https://img.shields.io/badge/tests-255%20app%20%2B%2049%20engine-success)
 
-- `lib/features/topics`: searchable topic catalog and navigation.
-- `lib/features/matrix_input`: bounded numeric editor and asynchronous solve flow.
-- `lib/features/step_player`: worked steps, playback, matrix visualization, and cell inspection.
-- `lib/features/practice`: five-language five-question practice flow.
-- `lib/features/transform_visualizer`: animated basis vectors and matrix controls.
-- `lib/core`: shared theme and widgets.
-- `packages/matrix_engine`: immutable matrices, BigInt rational arithmetic, and solver tests.
+**Read this in:** [English](#english) · [Türkçe](#turkce)
 
-The application computes locally. It has no application backend, account system, or persistent user-data store. Preferences are stored locally; matrix history is not saved. Loading the web application initially requires its hosted runtime assets; offline installation is not guaranteed.
+---
+<a id="english"></a>
+## English
 
-## Development
+### Overview
 
-Requires Flutter compatible with the Dart SDK constraint in `pubspec.yaml` (validated with Flutter 3.47.1 / Dart 3.13.1).
+Matriks teaches linear algebra by showing the work. Twelve topics — from Gauss-Jordan elimination to eigenvectors — are solved with exact `BigInt` rational arithmetic, so a fraction stays a fraction and never drifts into floating-point noise. Each solution is replayed step by step: the operands that feed a cell are highlighted while the cell changes, and the arithmetic behind it stays on screen afterwards.
+
+Results are labelled honestly. Every solution carries an accuracy (exact or approximate) and a completeness (complete, partial or unsupported), so an approximation is never presented as an exact answer.
+
+Everything runs on the device. There is no backend, account system or remote data store; only presentation preferences are persisted, never matrices or quiz history.
+
+Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: irrational 2×2 roots are rounded to three decimals with approximate eigenvectors, complex spectra are unsupported, and the 3×3 solver searches integer roots from −20 to 20, so a rational non-integer eigenvalue of a fractional matrix will not be found. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
+
+### Features
+
+- **Twelve topics** in four groups — elimination and systems (RREF, REF, `Ax = b`), matrix algebra (determinant, inverse, addition, multiplication), decomposition and spectra (rank-nullity, eigenvalues, LU), and visual practice (2D transformations, quiz).
+- **Exact arithmetic** throughout. Rationals are stored as `BigInt` numerator and denominator; results are shown as fractions or decimals on demand.
+- **Guided playback** driven by the visible animation rather than a background timer: pause, step forward and back, scrub inside an operation, replay, and scale speed from 0.25× to 4×.
+- **Readable work.** Long exact expressions shrink to a 14 px floor and then scroll instead of truncating; the full calculation for any cell is one tap away.
+- **Five languages** (English, Turkish, Simplified Chinese, Spanish, Russian), light and dark themes, adaptive layout from 320 px upwards, system text scaling and reduced-motion support.
+
+### Requirements
+
+A Flutter SDK satisfying the Dart constraint `^3.13.1` in `pubspec.yaml`. Validated against Flutter 3.47.1 / Dart 3.13.1.
+
+### Installation
+
+The engine is a separate package, so resolve both:
 
 ```sh
 flutter pub get
@@ -24,38 +46,132 @@ cd packages/matrix_engine
 dart pub get
 cd ../..
 flutter gen-l10n
+```
+
+### Usage
+
+```sh
 flutter run
 ```
 
-Edit translations in all five `lib/l10n/app_*.arb` source files, then regenerate them. Do not edit generated localization classes manually.
-
-## Validation and builds
+Release builds:
 
 ```sh
-flutter analyze
-flutter test
-cd packages/matrix_engine
-dart analyze
-dart test
-cd ../..
 flutter build web --release
 flutter build windows --release
 ```
 
-Serve `build/web` through an HTTP server. Distribute the entire Windows `build/windows/x64/runner/Release` directory, including DLLs and data, rather than the executable alone.
+Serve `build/web` through any HTTP server. When distributing the Windows build, ship the whole `build/windows/x64/runner/Release` directory — the executable needs its DLLs and `data` folder.
 
-## Numerical scope
+Web, Windows and the test suites are the validated paths. Android, iOS, Linux and macOS targets are scaffolded but unverified here, Android release still uses the debug signing configuration, and the inspected Windows executable is unsigned.
 
-Most operations accept dimensions from 1 to 5. Fractions use exact rational arithmetic. Eigen analysis supports 2×2 and 3×3 matrices; irrational 2×2 roots use decimal approximations, and the 3×3 implementation searches integer roots only from −20 to 20. It is not a general-purpose numerical eigensolver. Input is limited to 32 characters per cell to bound user-controlled computation.
+### Configuration
 
-## Project status and roadmap
+Language, theme, accent palette, solution mode, default playback speed and player keyboard shortcuts live in the in-app Settings tab and persist locally through versioned preferences.
 
-Start with the [documentation index](docs/README.md), [current project review](docs/PROJECT_REVIEW.md), and [prioritized roadmap](docs/ROADMAP.md). The roadmap distinguishes verified defects, product opportunities, dependencies and release acceptance criteria; it does not describe already implemented work.
+Translations are edited in all five `lib/l10n/app_*.arb` source files and regenerated with `flutter gen-l10n`. Never edit `lib/l10n/generated/` by hand.
 
-The studio redesign adds adaptive navigation, persistent preferences, three solution modes, five-language quizzes and explicit eigen result scope. See [implementation and validation notes](docs/STUDIO_REDESIGN.md) and the [short Turkish publishing guide](docs/YAYINLAMA.md). Historical test counts are in dated reports; rerun checks before release.
+### Contributing
 
-[Design rules](docs/DESIGN_SYSTEM.md) describe the implemented UI. [Security review](docs/SECURITY_REVIEW.md) records the scoped checks and limits. Earlier implementation reports are historical snapshots. Android release still uses development signing; the inspected Windows executable is unsigned. Owner-managed release identities and production-host validation are required before public distribution. Android/Apple device builds and physical screen-reader support were not validated here.
+[AGENTS.md](AGENTS.md) is the working contract: architecture boundaries, playback invariants, UI and accessibility rules, and the commands expected before delivery. Read it before changing the step player or the engine.
 
-## Contributor and agent guide
+```sh
+flutter analyze
+flutter test
+cd packages/matrix_engine && dart analyze && dart test
+```
 
-See [AGENTS.md](AGENTS.md) for architecture boundaries, playback invariants, UI rules, and verification commands. The optional reproducible motion benchmark lives in `tool/motion_benchmark_test.dart`; run it with `flutter test tool/motion_benchmark_test.dart --reporter expanded`. Store disposable verification files in ignored `output/`.
+An optional animation benchmark is excluded from the default suite:
+
+```sh
+flutter test tool/motion_benchmark_test.dart --reporter expanded
+```
+
+Start from the [documentation index](docs/README.md); [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) records dated findings and [ROADMAP.md](docs/ROADMAP.md) lists proposed work, which is not implemented behaviour. Keep disposable logs and screenshots in the ignored `output/` directory.
+
+Maintained by 𝓐.𝓒.𝓑.
+
+[⬆ Back to top](#top)
+
+---
+<a id="turkce"></a>
+## Türkçe
+
+### Genel Bakış
+
+Matriks lineer cebiri işlemi göstererek öğretir. Gauss-Jordan eliminasyonundan özvektörlere kadar on iki konu, tam `BigInt` rasyonel aritmetiğiyle çözülür; kesir kesir kalır, kayan nokta gürültüsüne dönüşmez. Her çözüm adım adım oynatılır: bir hücreyi besleyen operandlar hücre değişirken vurgulanır, arkasındaki aritmetik sonrasında da ekranda durur.
+
+Sonuçlar dürüstçe etiketlenir. Her çözüm bir doğruluk (tam ya da yaklaşık) ve bir kapsam (tamamlanmış, kısmi ya da desteklenmiyor) taşır; yaklaşık bir değer hiçbir zaman kesin sonuçmuş gibi sunulmaz.
+
+Her şey cihazda çalışır. Arka uç, hesap sistemi veya uzak veri deposu yoktur; yalnızca sunum tercihleri saklanır, matrisler ve sınav geçmişi saklanmaz.
+
+Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: irrasyonel 2×2 kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık spektrumlar desteklenmez, 3×3 çözücü −20 ile 20 arasında yalnızca tam sayı kök arar; dolayısıyla kesirli bir matrisin tam sayı olmayan rasyonel özdeğeri bulunmaz. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
+
+### Özellikler
+
+- **On iki konu**, dört grup hâlinde — eliminasyon ve sistemler (RREF, REF, `Ax = b`), matris cebiri (determinant, ters, toplama, çarpma), ayrışım ve spektral teori (rank-sıfırlık, özdeğerler, LU) ve görsel alıştırma (2B dönüşümler, sınav).
+- **Baştan sona tam aritmetik.** Rasyonel sayılar `BigInt` pay ve payda olarak tutulur; sonuçlar istendiğinde kesir ya da ondalık gösterilir.
+- **Rehberli oynatma**, arka planda çalışan bir sayaçla değil görünen animasyonla ilerler: duraklatma, ileri/geri adım, işlem içinde gezinme, tekrar oynatma ve 0,25×–4× arası hız.
+- **Okunabilir işlem.** Uzun tam ifadeler 14 px tabanına kadar küçülür, sonra kırpılmak yerine kaydırılır; herhangi bir hücrenin tam hesabı tek dokunuş uzaklıktadır.
+- **Beş dil** (İngilizce, Türkçe, Basitleştirilmiş Çince, İspanyolca, Rusça), açık ve koyu tema, 320 px'ten itibaren uyarlanan yerleşim, sistem yazı ölçeği ve azaltılmış hareket desteği.
+
+### Gereksinimler
+
+`pubspec.yaml` içindeki `^3.13.1` Dart kısıtını karşılayan bir Flutter SDK. Flutter 3.47.1 / Dart 3.13.1 ile doğrulandı.
+
+### Kurulum
+
+Motor ayrı bir paket olduğu için ikisini de çözün:
+
+```sh
+flutter pub get
+cd packages/matrix_engine
+dart pub get
+cd ../..
+flutter gen-l10n
+```
+
+### Kullanım
+
+```sh
+flutter run
+```
+
+Yayın derlemeleri:
+
+```sh
+flutter build web --release
+flutter build windows --release
+```
+
+`build/web` dizinini herhangi bir HTTP sunucusuyla yayınlayın. Windows derlemesini dağıtırken `build/windows/x64/runner/Release` dizininin tamamını gönderin — çalıştırılabilir dosya kendi DLL'lerine ve `data` klasörüne ihtiyaç duyar.
+
+Doğrulanmış yollar web, Windows ve test paketleridir. Android, iOS, Linux ve macOS hedefleri hazır ama burada doğrulanmadı; Android yayın derlemesi hâlâ debug imzalama yapılandırmasını kullanıyor ve incelenen Windows çalıştırılabilir dosyası imzasız.
+
+### Yapılandırma
+
+Dil, tema, vurgu paleti, çözüm modu, varsayılan oynatma hızı ve oynatıcı klavye kısayolları uygulama içindeki Ayarlar sekmesinde yer alır ve sürümlenmiş tercihler aracılığıyla yerelde saklanır.
+
+Çeviriler beş `lib/l10n/app_*.arb` kaynak dosyasının tamamında düzenlenir ve `flutter gen-l10n` ile yeniden üretilir. `lib/l10n/generated/` dizinini elle düzenlemeyin.
+
+### Katkı
+
+[AGENTS.md](AGENTS.md) çalışma sözleşmesidir: mimari sınırlar, oynatma değişmezleri, arayüz ve erişilebilirlik kuralları, teslimden önce beklenen komutlar. Step player'a veya motora dokunmadan önce okuyun.
+
+```sh
+flutter analyze
+flutter test
+cd packages/matrix_engine && dart analyze && dart test
+```
+
+Varsayılan paketin dışında tutulan isteğe bağlı bir animasyon benchmark'ı var:
+
+```sh
+flutter test tool/motion_benchmark_test.dart --reporter expanded
+```
+
+[Dokümantasyon dizininden](docs/README.md) başlayın; [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) tarihli bulguları kaydeder, [ROADMAP.md](docs/ROADMAP.md) önerilen işleri listeler — bunlar uygulanmış davranış değildir. Atılabilir log ve ekran görüntülerini yoksayılan `output/` dizininde tutun.
+
+𝓐.𝓒.𝓑 tarafından sürdürülmektedir.
+
+[⬆ Başa Dön](#top)

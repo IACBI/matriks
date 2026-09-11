@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Matrix & Linear Algebra Educator';
+  String get appTitle => 'Matriks · Linear Algebra';
 
   @override
   String get topics => 'Topics';
@@ -108,9 +108,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Dot product of row and column vectors yielding each target cell.';
 
   @override
-  String get matrixInput => 'Matrix Input';
-
-  @override
   String get matrixA => 'Matrix A';
 
   @override
@@ -181,13 +178,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explanation => 'Explanation';
 
   @override
-  String get cellDetail => 'Cell Calculation Detail';
-
-  @override
-  String get tapCellHint =>
-      'Tap any cell to inspect its arithmetic calculation.';
-
-  @override
   String get close => 'Close';
 
   @override
@@ -205,45 +195,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get solveFallbackError => 'Could not solve matrix.';
 
   @override
-  String get badgeRowSwap => 'Row Swap';
-
-  @override
-  String get badgeRowScale => 'Scale Row';
-
-  @override
-  String get badgeElimination => 'Elimination';
-
-  @override
-  String get badgeDeterminant => 'Determinant';
-
-  @override
-  String get badgeSarrus => 'Sarrus Rule';
-
-  @override
-  String get badgeCofactor => 'Cofactor';
-
-  @override
-  String get badgeDotProduct => 'Dot Product';
-
-  @override
-  String get badgeInverseResult => 'Inverse Result';
-
-  @override
-  String get badgeLinearSystem => 'Linear System';
-
-  @override
-  String get badgeRankNullity => 'Rank-Nullity';
-
-  @override
-  String get badgeEigen => 'Eigen';
-
-  @override
-  String get badgeLu => 'LU Factorization';
-
-  @override
-  String get badgeInfo => 'Info';
-
-  @override
   String get legendPivot => 'Pivot';
 
   @override
@@ -254,18 +205,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get legendZeroResult => '0-Result';
-
-  @override
-  String get speedSlow => '0.5x (Slow)';
-
-  @override
-  String get speedNormal => '1.0x (Normal)';
-
-  @override
-  String get speedFast => '1.5x (Fast)';
-
-  @override
-  String get speedVeryFast => '2.0x (Very Fast)';
 
   @override
   String cellCalculationTitle(Object col, Object row) {
@@ -698,48 +637,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearSearch => 'Clear Search';
 
   @override
-  String rowLabel(Object row) {
-    return 'Row $row';
-  }
-
-  @override
   String get systemDefault => 'System Default';
 
   @override
   String get replayAnimation => 'Replay Animation';
-
-  @override
-  String ghostRowMultiply(Object multiplier, Object source) {
-    return 'Ghost projection: -($multiplier) · R$source';
-  }
-
-  @override
-  String scaleWaveBadge(Object scalar) {
-    return '× $scalar';
-  }
-
-  @override
-  String get celebratoryZeroBadge => '0 (Zeroed)';
-
-  @override
-  String sarrusPosBadge(Object product) {
-    return '+ $product';
-  }
-
-  @override
-  String sarrusNegBadge(Object product) {
-    return '- $product';
-  }
-
-  @override
-  String dotProductMerging(Object col, Object row) {
-    return 'Row $row · Column $col';
-  }
-
-  @override
-  String bracketSwapRows(Object rowA, Object rowB) {
-    return 'R$rowA ↔ R$rowB';
-  }
 
   @override
   String basisVectorI(Object x, Object y) {
@@ -752,21 +653,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String detValue(Object val) {
-    return 'det = $val';
-  }
-
-  @override
   String progressPercent(Object percent) {
     return 't = $percent%';
-  }
-
-  @override
-  String get stepReplayTooltip => 'Replay step transformation animation';
-
-  @override
-  String intermediateCalculation(Object formula) {
-    return 'Intermediate: $formula';
   }
 
   @override
@@ -815,19 +703,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keyDecimal => 'Decimal point';
 
   @override
-  String get phaseSource => 'Identify the source';
-
-  @override
-  String get phaseOperation => 'Apply the operation';
-
-  @override
-  String get phaseResult => 'Verify the result';
-
-  @override
   String get instructionProgress => 'This operation';
-
-  @override
-  String get lessonSteps => 'Lesson steps';
 
   @override
   String get customTransform => 'Custom';
@@ -871,10 +747,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learningPath => 'New to matrices?';
 
   @override
-  String get learningPathDesc =>
-      'Start with row operations, then connect them to solving equations.';
-
-  @override
   String get pathEliminate => '1 · Create zeros';
 
   @override
@@ -882,9 +754,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Solve a system';
-
-  @override
-  String get guidedExample => 'Worked example';
 
   @override
   String get guideGenericSource =>

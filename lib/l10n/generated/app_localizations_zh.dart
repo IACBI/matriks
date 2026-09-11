@@ -97,9 +97,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topicMultiplyDesc => '通过行与列的点积计算每个元素。';
 
   @override
-  String get matrixInput => '输入矩阵';
-
-  @override
   String get matrixA => '矩阵 A';
 
   @override
@@ -170,12 +167,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get explanation => '说明';
 
   @override
-  String get cellDetail => '单元格计算详情';
-
-  @override
-  String get tapCellHint => '点击元素查看计算过程。';
-
-  @override
   String get close => '关闭';
 
   @override
@@ -193,45 +184,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get solveFallbackError => '无法完成矩阵求解。';
 
   @override
-  String get badgeRowSwap => '交换行';
-
-  @override
-  String get badgeRowScale => '行倍乘';
-
-  @override
-  String get badgeElimination => '消元';
-
-  @override
-  String get badgeDeterminant => '行列式';
-
-  @override
-  String get badgeSarrus => '萨吕斯法则';
-
-  @override
-  String get badgeCofactor => '代数余子式';
-
-  @override
-  String get badgeDotProduct => '点积';
-
-  @override
-  String get badgeInverseResult => '逆矩阵结果';
-
-  @override
-  String get badgeLinearSystem => '线性方程组';
-
-  @override
-  String get badgeRankNullity => '秩与零度';
-
-  @override
-  String get badgeEigen => '特征分析';
-
-  @override
-  String get badgeLu => 'LU 分解';
-
-  @override
-  String get badgeInfo => '信息';
-
-  @override
   String get legendPivot => '主元';
 
   @override
@@ -242,18 +194,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get legendZeroResult => '已消为零';
-
-  @override
-  String get speedSlow => '0.5×（慢）';
-
-  @override
-  String get speedNormal => '1×（正常）';
-
-  @override
-  String get speedFast => '1.5×（快）';
-
-  @override
-  String get speedVeryFast => '2×（很快）';
 
   @override
   String cellCalculationTitle(Object col, Object row) {
@@ -671,48 +611,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clearSearch => '清除搜索';
 
   @override
-  String rowLabel(Object row) {
-    return '第 $row 行';
-  }
-
-  @override
   String get systemDefault => '跟随系统';
 
   @override
   String get replayAnimation => '重播动画';
-
-  @override
-  String ghostRowMultiply(Object multiplier, Object source) {
-    return '投影：−($multiplier) · R$source';
-  }
-
-  @override
-  String scaleWaveBadge(Object scalar) {
-    return '× $scalar';
-  }
-
-  @override
-  String get celebratoryZeroBadge => '0（已消去）';
-
-  @override
-  String sarrusPosBadge(Object product) {
-    return '+ $product';
-  }
-
-  @override
-  String sarrusNegBadge(Object product) {
-    return '− $product';
-  }
-
-  @override
-  String dotProductMerging(Object col, Object row) {
-    return '第 $row 行 · 第 $col 列';
-  }
-
-  @override
-  String bracketSwapRows(Object rowA, Object rowB) {
-    return 'R$rowA ↔ R$rowB';
-  }
 
   @override
   String basisVectorI(Object x, Object y) {
@@ -725,21 +627,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String detValue(Object val) {
-    return 'det = $val';
-  }
-
-  @override
   String progressPercent(Object percent) {
     return 't = $percent%';
-  }
-
-  @override
-  String get stepReplayTooltip => '重播本步骤变换';
-
-  @override
-  String intermediateCalculation(Object formula) {
-    return '中间计算：$formula';
   }
 
   @override
@@ -786,19 +675,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get keyDecimal => '小数点';
 
   @override
-  String get phaseSource => '识别来源';
-
-  @override
-  String get phaseOperation => '执行运算';
-
-  @override
-  String get phaseResult => '验证结果';
-
-  @override
   String get instructionProgress => '本次运算';
-
-  @override
-  String get lessonSteps => '课程步骤';
 
   @override
   String get customTransform => '自定义';
@@ -842,9 +719,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get learningPath => '刚开始学习矩阵？';
 
   @override
-  String get learningPathDesc => '从行运算开始，了解它们如何求解方程。';
-
-  @override
   String get pathEliminate => '1 · 消为零';
 
   @override
@@ -852,9 +726,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · 求解方程组';
-
-  @override
-  String get guidedExample => '讲解示例';
 
   @override
   String get guideGenericSource => '观察矩阵，理解本步骤的目标。';

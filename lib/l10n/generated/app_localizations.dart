@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Matrix & Linear Algebra Educator'**
+  /// **'Matriks · Linear Algebra'**
   String get appTitle;
 
   /// No description provided for @topics.
@@ -278,12 +278,6 @@ abstract class AppLocalizations {
   /// **'Dot product of row and column vectors yielding each target cell.'**
   String get topicMultiplyDesc;
 
-  /// No description provided for @matrixInput.
-  ///
-  /// In en, this message translates to:
-  /// **'Matrix Input'**
-  String get matrixInput;
-
   /// No description provided for @matrixA.
   ///
   /// In en, this message translates to:
@@ -416,18 +410,6 @@ abstract class AppLocalizations {
   /// **'Explanation'**
   String get explanation;
 
-  /// No description provided for @cellDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'Cell Calculation Detail'**
-  String get cellDetail;
-
-  /// No description provided for @tapCellHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap any cell to inspect its arithmetic calculation.'**
-  String get tapCellHint;
-
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -458,84 +440,6 @@ abstract class AppLocalizations {
   /// **'Could not solve matrix.'**
   String get solveFallbackError;
 
-  /// No description provided for @badgeRowSwap.
-  ///
-  /// In en, this message translates to:
-  /// **'Row Swap'**
-  String get badgeRowSwap;
-
-  /// No description provided for @badgeRowScale.
-  ///
-  /// In en, this message translates to:
-  /// **'Scale Row'**
-  String get badgeRowScale;
-
-  /// No description provided for @badgeElimination.
-  ///
-  /// In en, this message translates to:
-  /// **'Elimination'**
-  String get badgeElimination;
-
-  /// No description provided for @badgeDeterminant.
-  ///
-  /// In en, this message translates to:
-  /// **'Determinant'**
-  String get badgeDeterminant;
-
-  /// No description provided for @badgeSarrus.
-  ///
-  /// In en, this message translates to:
-  /// **'Sarrus Rule'**
-  String get badgeSarrus;
-
-  /// No description provided for @badgeCofactor.
-  ///
-  /// In en, this message translates to:
-  /// **'Cofactor'**
-  String get badgeCofactor;
-
-  /// No description provided for @badgeDotProduct.
-  ///
-  /// In en, this message translates to:
-  /// **'Dot Product'**
-  String get badgeDotProduct;
-
-  /// No description provided for @badgeInverseResult.
-  ///
-  /// In en, this message translates to:
-  /// **'Inverse Result'**
-  String get badgeInverseResult;
-
-  /// No description provided for @badgeLinearSystem.
-  ///
-  /// In en, this message translates to:
-  /// **'Linear System'**
-  String get badgeLinearSystem;
-
-  /// No description provided for @badgeRankNullity.
-  ///
-  /// In en, this message translates to:
-  /// **'Rank-Nullity'**
-  String get badgeRankNullity;
-
-  /// No description provided for @badgeEigen.
-  ///
-  /// In en, this message translates to:
-  /// **'Eigen'**
-  String get badgeEigen;
-
-  /// No description provided for @badgeLu.
-  ///
-  /// In en, this message translates to:
-  /// **'LU Factorization'**
-  String get badgeLu;
-
-  /// No description provided for @badgeInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Info'**
-  String get badgeInfo;
-
   /// No description provided for @legendPivot.
   ///
   /// In en, this message translates to:
@@ -559,30 +463,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'0-Result'**
   String get legendZeroResult;
-
-  /// No description provided for @speedSlow.
-  ///
-  /// In en, this message translates to:
-  /// **'0.5x (Slow)'**
-  String get speedSlow;
-
-  /// No description provided for @speedNormal.
-  ///
-  /// In en, this message translates to:
-  /// **'1.0x (Normal)'**
-  String get speedNormal;
-
-  /// No description provided for @speedFast.
-  ///
-  /// In en, this message translates to:
-  /// **'1.5x (Fast)'**
-  String get speedFast;
-
-  /// No description provided for @speedVeryFast.
-  ///
-  /// In en, this message translates to:
-  /// **'2.0x (Very Fast)'**
-  String get speedVeryFast;
 
   /// No description provided for @cellCalculationTitle.
   ///
@@ -1219,12 +1099,6 @@ abstract class AppLocalizations {
   /// **'Clear Search'**
   String get clearSearch;
 
-  /// No description provided for @rowLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Row {row}'**
-  String rowLabel(Object row);
-
   /// No description provided for @systemDefault.
   ///
   /// In en, this message translates to:
@@ -1236,48 +1110,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Replay Animation'**
   String get replayAnimation;
-
-  /// No description provided for @ghostRowMultiply.
-  ///
-  /// In en, this message translates to:
-  /// **'Ghost projection: -({multiplier}) · R{source}'**
-  String ghostRowMultiply(Object multiplier, Object source);
-
-  /// No description provided for @scaleWaveBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'× {scalar}'**
-  String scaleWaveBadge(Object scalar);
-
-  /// No description provided for @celebratoryZeroBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'0 (Zeroed)'**
-  String get celebratoryZeroBadge;
-
-  /// No description provided for @sarrusPosBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'+ {product}'**
-  String sarrusPosBadge(Object product);
-
-  /// No description provided for @sarrusNegBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'- {product}'**
-  String sarrusNegBadge(Object product);
-
-  /// No description provided for @dotProductMerging.
-  ///
-  /// In en, this message translates to:
-  /// **'Row {row} · Column {col}'**
-  String dotProductMerging(Object col, Object row);
-
-  /// No description provided for @bracketSwapRows.
-  ///
-  /// In en, this message translates to:
-  /// **'R{rowA} ↔ R{rowB}'**
-  String bracketSwapRows(Object rowA, Object rowB);
 
   /// No description provided for @basisVectorI.
   ///
@@ -1291,29 +1123,11 @@ abstract class AppLocalizations {
   /// **'ĵ = ({x}, {y})'**
   String basisVectorJ(Object x, Object y);
 
-  /// No description provided for @detValue.
-  ///
-  /// In en, this message translates to:
-  /// **'det = {val}'**
-  String detValue(Object val);
-
   /// No description provided for @progressPercent.
   ///
   /// In en, this message translates to:
   /// **'t = {percent}%'**
   String progressPercent(Object percent);
-
-  /// No description provided for @stepReplayTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Replay step transformation animation'**
-  String get stepReplayTooltip;
-
-  /// No description provided for @intermediateCalculation.
-  ///
-  /// In en, this message translates to:
-  /// **'Intermediate: {formula}'**
-  String intermediateCalculation(Object formula);
 
   /// No description provided for @inputHelp.
   ///
@@ -1393,35 +1207,11 @@ abstract class AppLocalizations {
   /// **'Decimal point'**
   String get keyDecimal;
 
-  /// No description provided for @phaseSource.
-  ///
-  /// In en, this message translates to:
-  /// **'Identify the source'**
-  String get phaseSource;
-
-  /// No description provided for @phaseOperation.
-  ///
-  /// In en, this message translates to:
-  /// **'Apply the operation'**
-  String get phaseOperation;
-
-  /// No description provided for @phaseResult.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify the result'**
-  String get phaseResult;
-
   /// No description provided for @instructionProgress.
   ///
   /// In en, this message translates to:
   /// **'This operation'**
   String get instructionProgress;
-
-  /// No description provided for @lessonSteps.
-  ///
-  /// In en, this message translates to:
-  /// **'Lesson steps'**
-  String get lessonSteps;
 
   /// No description provided for @customTransform.
   ///
@@ -1501,12 +1291,6 @@ abstract class AppLocalizations {
   /// **'New to matrices?'**
   String get learningPath;
 
-  /// No description provided for @learningPathDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Start with row operations, then connect them to solving equations.'**
-  String get learningPathDesc;
-
   /// No description provided for @pathEliminate.
   ///
   /// In en, this message translates to:
@@ -1524,12 +1308,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'3 · Solve a system'**
   String get pathSolve;
-
-  /// No description provided for @guidedExample.
-  ///
-  /// In en, this message translates to:
-  /// **'Worked example'**
-  String get guidedExample;
 
   /// No description provided for @guideGenericSource.
   ///
