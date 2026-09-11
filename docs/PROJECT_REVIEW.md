@@ -99,3 +99,63 @@ Two of the new playback assertions initially failed against correct behaviour: a
 ## Completion boundary
 
 Verification, the four fixes and their regressions are delivered and were re-confirmed in the running application after rebuilding. Device, store and accessibility-hardware validation remain owner-controlled work already tracked in [ROADMAP.md](ROADMAP.md).
+
+---
+
+# Quality pass: dead code, localization, colour and performance — 2026-09-11
+
+## Outcome
+
+A cleanup and quality review following the same-day topic verification above. Dead localization was removed, one genuine Turkish grammar defect was fixed, and the README was rewritten as a bilingual document. Colour, performance and security were measured rather than adjusted: none of the three produced a defect that justified changing working code, and nothing was changed to look busy. No algorithm, playback contract or architecture change was made.
+
+## Scope and evidence
+
+- **Dead code.** `dart analyze` and `flutter analyze` are clean, but they only report unreferenced *private* elements. A separate scan cross-referenced every ARB key, asset path and declared type against all Dart sources in `lib/`, `test/`, `tool/` and the engine. Its limit: it counts textual references with word-boundary matching, not compiler-grade reachability, so it can produce false positives — two of which it did (below).
+- **Animation.** A new suite drives every topic to completion at every supported matrix size.
+- **Colour.** WCAG contrast computed from the `AppTheme` tokens, first against a text threshold and then — after reading how each colour is actually applied — against the thresholds that match its real use.
+- **Performance.** The existing `tool/motion_benchmark_test.dart` harness.
+- **Security.** All 58 locked hosted package/version pairs queried against the OSV batch API on 2026-09-11, plus a staged-content credential scan before publishing.
+
+Limits: web release build and test suites only. No Android, iOS, Linux or macOS run, no device screen-reader session, no GPU trace and no learner study.
+
+## Changes in this review
+
+1. **Removed 37 unreferenced ARB keys from all five locales** (185 entries). Each was confirmed absent from every Dart source, including the string-keyed resolver switches in `step_player_screen.dart` that reference message keys as literals.
+2. **Localized the application title.** `appTitle` was translated in all five locales but never used, while `MaterialApp` hard-coded an English string — a localization gap rather than dead code. `MaterialApp` now resolves it through `onGenerateTitle`, and the `en`/`tr` values were normalized to the `Matriks · …` brand pattern that `es`, `ru` and `zh` already followed.
+3. **Fixed Turkish suffix agreement.** Three strings attached a fixed suffix to an interpolated number — `Satır {row}'yi Sadeleştir`, `Satır {rowB}'yi Değiştir` and `Satır {target}'nin …`. In Turkish the suffix follows the number's pronunciation (1'i, 2'yi, 3'ü, 4'ü, 5'i), so a fixed suffix is correct only for 2, and every size from 1 to 5 occurs. The strings were reworded so the suffix falls on the following noun, matching the pattern `step_row_elimination_title` already used. Turkish was the only affected locale; `en`, `es`, `ru` and `zh` have no placeholder-adjacent suffixes. Both reworded titles were confirmed in the running application.
+4. **Added `test/animation_quality_all_sizes_test.dart`** — 52 cases covering every topic at every supported size plus rectangular shapes, asserting each lesson reaches its last step unaided, skips no step, stops when finished, and throws nothing in either theme.
+5. **Rewrote `README.md`** as a bilingual English/Türkçe document with symmetric sections, explicit numerical boundaries and an honest statement of which build targets are validated.
+
+## Measurements that did not lead to a change
+
+- **Colour.** An initial pass flagged nineteen accent/surface pairs as failing, but it compared them against the 4.5 text threshold. Reading `matrix_cell_widget.dart` showed the accents are never the cell's text colour: they are the cell **border** and the **badge fill**, with badge text chosen adaptively by luminance. Re-measured against the thresholds that apply, borders score 3.13–4.24 against the outer surface in both themes (non-text threshold 3.0) and badge text scores 4.61–5.76 against its fill (text threshold 4.5). Every combination passes and no colour was changed. Role colours are separated by hue rather than luminance (pairwise contrast 1.02–1.26), which is a deliberate equal-weight choice; role is additionally carried by badge text and by semantic labels, so it is never conveyed by colour alone.
+- **Performance.** The 5×5 elimination benchmark measured 1407 samples, median 2.349 ms and p95 4.361 ms per test pump, against a historical p95 of 6.776 ms recorded in [GUIDED_UX_REVIEW.md](GUIDED_UX_REVIEW.md). This is debug-build widget rebuild cost on an uncontrolled machine, not GPU frame time and not a frame-rate guarantee. The player's per-step caches are already bounded and invalidated on dependency change; nothing was restructured.
+- **Security.** OSV returned no advisories for any of the 58 locked packages. No keystore, `.env`, certificate or credential file is tracked; the content scan's only matches were prose such as "design tokens" and an unrelated `revision token` identifier. Android release still builds with the debug signing configuration, as previously recorded.
+
+## False positives caught before deletion
+
+The reference scan reported two groups as unused that are not, and both were verified before anything was removed:
+
+- The five `assets/flags/*.png` files are loaded through an interpolated path, `assets/flags/${entry.key}.png`, so no literal filename appears in source.
+- Engine types such as `LinearSystemResult`, `LUResult` and `Eigenpair` have no call site in the application, which consumes the LaTeX result strings instead. They are the public API of a standalone package and are named in the engine boundaries in [../AGENTS.md](../AGENTS.md); deleting them would have removed documented library surface.
+
+## Fresh automated verification
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Root Flutter analysis | No issues | |
+| Application tests | 255 passed | 203 before this pass |
+| Engine analysis | No issues | |
+| Engine tests | 49 passed | |
+| Web release build | Built | used for the live Turkish confirmation |
+| Dependency advisories | 0 for 58 packages | OSV batch API, 2026-09-11 |
+
+## Remaining limits
+
+- Carried forward unchanged from the verification pass above: eigen search and rounding boundaries, eigenvectors not reduced by their greatest common divisor, the keypad appending digits to a non-empty cell, and the repeated answer position across four of the five practice questions.
+- The dead-code scan is textual. A public symbol referenced only through reflection, a generated binding or a string built at runtime would not be detected as used; the two false positives above show the failure mode, so any future removal should be verified the same way.
+- Role colours remain hue-differentiated with near-equal luminance. This is acceptable because text and semantic labels carry the same information, but a future palette change should preserve that redundancy rather than rely on hue.
+
+## Completion boundary
+
+The cleanup, the localization fix, the animation suite and the README are delivered, verified by the full suites and confirmed in a rebuilt web application. Device, store and accessibility-hardware validation remain owner-controlled work tracked in [ROADMAP.md](ROADMAP.md).
