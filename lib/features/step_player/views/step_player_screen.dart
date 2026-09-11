@@ -167,10 +167,11 @@ class _StepPlayerViewState extends State<_StepPlayerView>
             }
           });
         }
-        final title = _resolveString(
-          l10n,
-          currentStep.titleKey,
-          currentStep.titleParams,
+        // Converted here rather than at each display: the heading, the card and
+        // the step list all show this as prose, and a title carrying TeX reached
+        // the heading unconverted when only the card was wrapped.
+        final title = readableMathProse(
+          _resolveString(l10n, currentStep.titleKey, currentStep.titleParams),
         );
         final description = _resolveString(
           l10n,

@@ -74,7 +74,7 @@ Translations are edited in all five `lib/l10n/app_*.arb` source files and regene
 
 ### Contributing
 
-[AGENTS.md](AGENTS.md) is the working contract: architecture boundaries, playback invariants, UI and accessibility rules, and the commands expected before delivery. Read it before changing the step player or the engine.
+[CONTRIBUTING.md](CONTRIBUTING.md) is the short version; [AGENTS.md](AGENTS.md) is the working contract: architecture boundaries, playback invariants, UI and accessibility rules, and the commands expected before delivery. Read it before changing the step player or the engine. Security reports go through [SECURITY.md](SECURITY.md), not a public issue.
 
 ```sh
 flutter analyze
@@ -163,7 +163,7 @@ Dil, tema, vurgu paleti, çözüm modu, varsayılan oynatma hızı ve oynatıcı
 
 ### Katkı
 
-[AGENTS.md](AGENTS.md) çalışma sözleşmesidir: mimari sınırlar, oynatma değişmezleri, arayüz ve erişilebilirlik kuralları, teslimden önce beklenen komutlar. Step player'a veya motora dokunmadan önce okuyun.
+[CONTRIBUTING.md](CONTRIBUTING.md) kısa özettir; [AGENTS.md](AGENTS.md) çalışma sözleşmesidir: mimari sınırlar, oynatma değişmezleri, arayüz ve erişilebilirlik kuralları, teslimden önce beklenen komutlar. Step player'a veya motora dokunmadan önce okuyun. Güvenlik bildirimleri açık bir issue yerine [SECURITY.md](SECURITY.md) üzerinden iletilir.
 
 ```sh
 flutter analyze
