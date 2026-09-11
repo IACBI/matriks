@@ -7,6 +7,7 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 ![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
 ![Tests](https://img.shields.io/badge/tests-255%20app%20%2B%2049%20engine-success)
+![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 **Read this in:** [English](#english) · [Türkçe](#turkce)
 
@@ -88,6 +89,12 @@ flutter test tool/motion_benchmark_test.dart --reporter expanded
 ```
 
 Start from the [documentation index](docs/README.md); [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) records dated findings and [ROADMAP.md](docs/ROADMAP.md) lists proposed work, which is not implemented behaviour. Keep disposable logs and screenshots in the ignored `output/` directory.
+
+### License
+
+Apache License 2.0 — see [LICENSE](LICENSE). It grants use, modification and
+redistribution, requires modified files to be marked, and includes an express
+patent grant from every contributor.
 
 Maintained by 𝓐.𝓒.𝓑.
 
@@ -171,6 +178,12 @@ flutter test tool/motion_benchmark_test.dart --reporter expanded
 ```
 
 [Dokümantasyon dizininden](docs/README.md) başlayın; [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) tarihli bulguları kaydeder, [ROADMAP.md](docs/ROADMAP.md) önerilen işleri listeler — bunlar uygulanmış davranış değildir. Atılabilir log ve ekran görüntülerini yoksayılan `output/` dizininde tutun.
+
+### Lisans
+
+Apache License 2.0 — bkz. [LICENSE](LICENSE). Kullanma, değiştirme ve yeniden
+dağıtma hakkı verir, değiştirilen dosyaların işaretlenmesini şart koşar ve her
+katkıcıdan açık bir patent hakkı devri içerir.
 
 𝓐.𝓒.𝓑 tarafından sürdürülmektedir.
 

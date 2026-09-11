@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.47.1
+
+jobs:
+  verify:
+    name: Analyze and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: |
+          flutter pub get
+          dart pub get --directory packages/matrix_engine
+
+      - name: Check generated localizations are current
+        run: |
+          flutter gen-l10n
+          git diff --exit-code -- lib/l10n/generated
+
+      - name: Analyze
+        run: |
+          flutter analyze
+          dart analyze packages/matrix_engine
+
+      - name: Test app
+        run: flutter test
+
+      - name: Test engine
+        working-directory: packages/matrix_engine
+        run: dart test
+
+  deploy:
+    name: Deploy web to GitHub Pages
+    needs: verify
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - uses: actions/configure-pages@v6
+        id: pages
+
+      - name: Build web
+        # base_path carries the repository subdirectory Pages serves from, so a
+        # rename or a move to a custom domain needs no edit here.
+        # CanvasKit is served from the deployed site rather than a CDN: the app
+        # makes no backend calls and a third-party fetch would contradict that.
+        run: |
+          flutter pub get
+          dart pub get --directory packages/matrix_engine
+          flutter gen-l10n
+          flutter build web --release \
+            --base-href "${{ steps.pages.outputs.base_path }}/" \
+            --no-web-resources-cdn
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/web
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
