@@ -263,6 +263,7 @@ void main() {
   group('Matrix input', () {
     test('a lone minus toggles back to zero, not an empty cell', () async {
       final cubit = MatrixInputCubit(TopicItem.of(TopicType.determinant));
+      cubit.onClear();
       cubit.onKeyPressed('-');
       expect(cubit.state.dataA[0][0], '-');
       cubit.onKeyPressed('-');

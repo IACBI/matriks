@@ -1,27 +1,27 @@
 # Matriks product and engineering roadmap
 
-Reviewed: 2026-09-07. Status: proposed implementation backlog, not implemented functionality.
+Reviewed: 2026-09-07; evidence table refreshed 2026-09-24 (see PROJECT_REVIEW.md). Status: proposed implementation backlog, not implemented functionality.
 
 ## Direction
 
-Build a trustworthy teaching workspace for learners who need to understand matrix operations and for returning users checking calculations. Preserve Flutter/Cubit, exact arithmetic where supported, all existing operations, Turkish/English and both themes. Prioritize truthful mathematical results and release reproducibility before new visual effects or feature breadth. No backend, account system, new dependency or architectural rewrite is a prerequisite.
+Build a trustworthy teaching workspace for learners who need to understand matrix operations and for returning users checking calculations. Preserve Flutter/Cubit, exact arithmetic where supported, all existing operations, all five languages and both themes. Prioritize truthful mathematical results and release reproducibility before new visual effects or feature breadth. No backend, account system, new dependency or architectural rewrite is a prerequisite.
 
 ## Evidence and current assessment
 
 | Area | Current evidence | Gap and consequence |
 | --- | --- | --- |
-| Mathematics | Separate exact Rational engine; existing solver tests | Eigen results mix approximations with exact-looking fractions and can be incomplete without a machine-readable completion status; see A01 below |
+| Mathematics | Separate exact Rational engine; ResultAccuracy/ResultCompleteness on every solution; 3×3 rational roots exact, irrational roots bracketed (2026-09-24) | Complex eigenvectors and eigenspace bases for repeated roots are not computed; 3×3 coefficients beyond 1e12 fall back to an integer search |
 | Learning | Three starter lessons, phase explanations, progressive contributions and option-specific feedback | No connected prerequisite/progression route; understanding and timing have not been evaluated with learners |
 | Catalog | Search and categories combine correctly; aligned topic rows | The introductory region and filters consume significant space in the saved desktop capture; novice versus returning-user priorities need validation |
 | Player | One playback authority, revision guards, adaptive timing, reduced motion and scrubbing tests | Saved desktop capture has large unused lower space; explanation is split across stage and side panel. Mobile multiplication expands into several formula rows and requires scrolling |
 | Input | Bounded dimensions and 32-character numeric entry, cell errors and duplicate-submit protection | No saved work or bulk paste flow; retain existing safety boundaries if either is added |
-| Practice | Five authored bilingual questions, hints and misconception feedback | System locale fallback forces Turkish; changing quiz language resets score/question. Fixed question set has limited repeat value |
+| Practice | Five authored questions in five languages, hints, misconception feedback and balanced answer positions | System locale fallback forces Turkish; changing quiz language resets score/question. Fixed question set has limited repeat value |
 | Transform | Correct projection/rotation presets, finite coefficient bounds, visible-frame retargeting | Real-device usability and reading of vector/determinant labels still need verification |
 | Accessibility | Selected widths, themes, 200% text, keyboard/semantics and reduced-motion tests | No physical screen-reader audit or complete WCAG 2.2 AA verification |
 | Performance | Local computation; static/dynamic rendering separation; historical debug and browser scheduling measurements | No release-mode low-end-device raster/memory baseline or sustained worst-input workload measurement |
 | Architecture | Feature boundaries and pure engine are useful | Input screen 830 lines, practice 745, matrix display 738 and player screen 673; large files are maintenance hotspots, not proof of defects |
 | Security | Fresh scoped review: 75 Pub package/version queries with no returned advisories; bounded numeric inputs | Android debug signing and unsigned Windows artifact; production hosting and native toolchain remain unverified |
-| Delivery | Web/Windows builds previously passed; current source tests rerun | No Git repository or CI configuration in workspace; rollback, release signing and packaging checks lack an established workflow |
+| Delivery | Git history and GitHub Actions CI (analysis, both suites, generated-localization check); main deploys to GitHub Pages, other branches publish a web preview artifact | Release signing, Windows packaging and rollback procedure are still unestablished |
 | Documentation | English architecture/design/history documents | Engine README was a scaffold; this review replaces it and establishes a current documentation entry point |
 
 Visual observations are from saved 7 September screenshots, not a fresh live interaction session. Source and tests provide current behavior evidence. No learner study or exhaustive platform audit is claimed.

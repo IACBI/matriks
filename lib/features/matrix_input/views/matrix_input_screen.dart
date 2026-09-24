@@ -735,6 +735,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
     }
 
     if (!context.mounted) return;
+    // A preset's undo notice belongs to the editor; left open it would sit
+    // over the player's controls on the next page.
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (!solution.isSuccess && solution.steps.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

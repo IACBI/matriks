@@ -25,7 +25,7 @@ Results are labelled honestly. Every solution carries an accuracy (exact or appr
 
 Everything runs on the device. There is no backend, account system or remote data store; only presentation preferences are persisted, never matrices or quiz history.
 
-Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: irrational 2×2 roots are rounded to three decimals with approximate eigenvectors, complex spectra are unsupported, and the 3×3 solver searches integer roots from −20 to 20, so a rational non-integer eigenvalue of a fractional matrix will not be found. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
+Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: rational roots are exact, irrational roots are rounded to three decimals with approximate eigenvectors, complex eigenvalues are reported without eigenvectors, and 3×3 matrices with very large coefficients may be labelled incomplete. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
 
 ### Features
 
@@ -116,7 +116,7 @@ Sonuçlar dürüstçe etiketlenir. Her çözüm bir doğruluk (tam ya da yaklaş
 
 Her şey cihazda çalışır. Arka uç, hesap sistemi veya uzak veri deposu yoktur; yalnızca sunum tercihleri saklanır, matrisler ve sınav geçmişi saklanmaz.
 
-Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: irrasyonel 2×2 kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık spektrumlar desteklenmez, 3×3 çözücü −20 ile 20 arasında yalnızca tam sayı kök arar; dolayısıyla kesirli bir matrisin tam sayı olmayan rasyonel özdeğeri bulunmaz. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
+Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: rasyonel kökler kesindir, irrasyonel kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık özdeğerler özvektörsüz raporlanır, çok büyük katsayılı 3×3 matrisler eksik olarak işaretlenebilir. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
 
 ### Özellikler
 
