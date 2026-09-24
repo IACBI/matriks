@@ -86,11 +86,32 @@ void main() {
     );
     final scenes = solution.steps
         .where((s) => s.explanationKey == 'eigen_vector_desc')
-        .map((s) => s.explanationParams['scene'] as String)
+        .map(
+          (s) =>
+              (s.transformation as InformationalStepTransformation).sceneLatex!,
+        )
         .toList();
     expect(scenes, hasLength(3));
     expect(scenes, contains(startsWith('A + 4I')));
     expect(scenes, contains(startsWith('A - 2I')));
+    // The scene is a formula, not prose, so it stays out of the step text.
+    for (final step in solution.steps) {
+      expect(step.explanationParams.containsKey('scene'), isFalse);
+    }
+    final unit = EigenSolver.solve(
+      Matrix.fromInts([
+        [1, 1],
+        [0, 2],
+      ]),
+    );
+    expect(
+      unit.steps
+          .map((s) => s.transformation)
+          .whereType<InformationalStepTransformation>()
+          .map((t) => t.sceneLatex)
+          .whereType<String>(),
+      contains(startsWith('A - I ')),
+    );
   });
 
   test('LU steps carry L as it is filled and the result names L and U', () {

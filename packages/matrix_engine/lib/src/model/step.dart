@@ -232,7 +232,12 @@ class IdentitySeparationTransformation extends StepTransformation {
 
 class InformationalStepTransformation extends StepTransformation {
   final String note;
-  const InformationalStepTransformation(this.note);
+
+  /// Formula shown above the matrix (LaTeX), when the matrix is not simply
+  /// the input: an eigenvector step shows A - λI and the vector it yields.
+  final String? sceneLatex;
+
+  const InformationalStepTransformation(this.note, {this.sceneLatex});
 }
 
 enum LinearSystemType { unique, infinite, inconsistent }

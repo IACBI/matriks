@@ -257,12 +257,12 @@ class EigenSolver {
           explanationParams: {
             'lambda': lambda.toLatex(),
             'vector': pair.vectorLatex,
-            'scene': _shiftScene(lambda, pair.vectorLatex),
           },
           matrixBefore: shiftedSnap,
           matrixAfter: shiftedSnap,
           transformation: InformationalStepTransformation(
             'Solved null space of (A - λI)',
+            sceneLatex: _shiftScene(lambda, pair.vectorLatex),
           ),
           highlights: [
             CellHighlight(row: 0, col: 0, type: HighlightType.selected),
@@ -448,12 +448,12 @@ class EigenSolver {
           explanationParams: {
             'lambda': lambda.toLatex(),
             'vector': pair.vectorLatex,
-            'scene': _shiftScene(lambda, pair.vectorLatex),
           },
           matrixBefore: MatrixSnapshot.fromMatrix(shifted),
           matrixAfter: MatrixSnapshot.fromMatrix(shifted),
           transformation: InformationalStepTransformation(
             'Eigenvector found for 3x3 matrix',
+            sceneLatex: _shiftScene(lambda, pair.vectorLatex),
           ),
           highlights: [
             for (int r = 0; r < 3; r++)
@@ -798,11 +798,11 @@ class EigenSolver {
   /// Caption above the matrix of an eigenvector step: the grid shows
   /// A - λI, not A, and its null space gives the vector.
   static String _shiftScene(Rational lambda, String vectorLatex) {
+    final size = lambda.abs();
+    final coefficient = size == Rational.one ? '' : size.toLatex();
     final shift = lambda.isZero
         ? 'A'
-        : lambda.isNegative
-        ? 'A + ${(-lambda).toLatex()}I'
-        : 'A - ${lambda.toLatex()}I';
+        : '${lambda.isNegative ? 'A +' : 'A -'} ${coefficient}I';
     return '$shift \\;\\Rightarrow\\; $vectorLatex';
   }
 

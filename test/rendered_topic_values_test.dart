@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matriks/core/theme/app_theme.dart';
+import 'package:matriks/core/widgets/math_text.dart';
 import 'package:matriks/features/settings/cubit/settings_cubit.dart';
 import 'package:matriks/features/step_player/cubit/player_cubit.dart';
 import 'package:matriks/features/step_player/views/step_player_screen.dart';
@@ -23,9 +24,14 @@ Widget _host(Widget child) => BlocProvider(
   ),
 );
 
-/// Every string currently rendered anywhere in the tree.
+/// Every string currently rendered anywhere in the tree, including the
+/// formulas drawn by [MathText].
 List<String> _visibleText(WidgetTester tester) {
-  final out = <String>[];
+  final out = <String>[
+    for (final element in find.byType(MathText).evaluate())
+      if ((element.widget as MathText).latex.trim().isNotEmpty)
+        (element.widget as MathText).latex.trim(),
+  ];
   for (final element in find.byType(Text).evaluate()) {
     final widget = element.widget as Text;
     final value = widget.data ?? widget.textSpan?.toPlainText();

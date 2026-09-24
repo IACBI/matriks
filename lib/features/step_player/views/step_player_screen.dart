@@ -282,14 +282,15 @@ class _StepPlayerViewState extends State<_StepPlayerView>
         );
         final matrixGridWidget = MatrixDisplayGrid(
           key: _matrixKey,
-          sceneFormula:
-              currentStep.transformation is InformationalStepTransformation
-              ? (currentStep.explanationParams['scene'] ??
-                        currentStep.explanationParams['vector'] ??
-                        currentStep.explanationParams['poly'] ??
-                        currentStep.explanationParams['formula'])
-                    ?.toString()
-              : null,
+          sceneFormula: switch (currentStep.transformation) {
+            InformationalStepTransformation(:final sceneLatex?) => sceneLatex,
+            InformationalStepTransformation() =>
+              (currentStep.explanationParams['vector'] ??
+                      currentStep.explanationParams['poly'] ??
+                      currentStep.explanationParams['formula'])
+                  ?.toString(),
+            _ => null,
+          },
           staticStep: state.mode == SolutionMode.steps,
           showExplanation:
               settingsState.explanationLevel != ExplanationLevel.hidden,
