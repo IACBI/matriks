@@ -398,8 +398,7 @@ class EigenSolver {
         explanationParams: {
           'poly': polyLatex,
           'roots': rootsLatex,
-          if (complexLatex != null)
-            'complex': complexLatex,
+          'complex': ?complexLatex,
         },
         matrixBefore: snap,
         matrixAfter: snap,
