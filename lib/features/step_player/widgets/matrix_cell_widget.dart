@@ -202,13 +202,20 @@ class MatrixCellWidget extends StatelessWidget {
                   color: AppTheme.accentCyan,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Text(
-                  '0 ✓',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
+                // The check is an icon: the bundled text font has no ✓.
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '0',
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Icon(Icons.check_rounded, size: 10, color: Colors.white),
+                  ],
                 ),
               ),
             ),

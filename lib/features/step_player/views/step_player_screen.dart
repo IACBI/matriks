@@ -402,9 +402,15 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                       }
                     },
                     itemBuilder: (_) => [
+                      // A leading icon lines the text up with the checked
+                      // items below it.
                       PopupMenuItem(
                         value: _PlayerMenu.result,
-                        child: Text(l10n.showResult),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.last_page_rounded),
+                          title: Text(l10n.showResult),
+                        ),
                       ),
                       const PopupMenuDivider(),
                       CheckedPopupMenuItem(

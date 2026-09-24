@@ -92,6 +92,13 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
       parent: _animController,
       curve: Curves.easeInOutCubic,
     );
+    // Opened with a matrix (from an eigen result): show it acting on the
+    // plane right away instead of waiting on the identity.
+    if (widget.initial != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _playAnimation();
+      });
+    }
   }
 
   @override

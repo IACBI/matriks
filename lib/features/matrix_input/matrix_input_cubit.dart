@@ -9,24 +9,112 @@ import 'models/matrix_input_state.dart';
 class MatrixInputCubit extends Cubit<MatrixInputState> {
   final Random _random = Random();
 
-  MatrixInputCubit(TopicItem topic)
-    : super(
-        MatrixInputState(
-          topic: topic,
-          rowsA: 3,
-          colsA: topic.isAugmentedSystem ? 4 : 3,
-          dataA: _createDefaultData(3, topic.isAugmentedSystem ? 4 : 3),
-          rowsB: 3,
-          colsB: 3,
-          dataB: _createDefaultData(3, 3),
-        ),
-      ) {
-    if (topic.requiresSquare) {
-      setDimensionsA(3, 3);
-    } else if (topic.isAugmentedSystem) {
-      setDimensionsA(3, 4);
-    }
+  MatrixInputCubit(TopicItem topic) : super(_initialState(topic));
+
+  /// Opens on a small worked example rather than the identity, whose steps
+  /// teach little (1·1 + 0·0 + 0·0) and whose eigenvalues all coincide.
+  static MatrixInputState _initialState(TopicItem topic) {
+    final (a, b) = _example(topic.type);
+    List<List<String>> text(List<List<int>> m) => [
+      for (final row in m) [for (final v in row) '$v'],
+    ];
+    return MatrixInputState(
+      topic: topic,
+      rowsA: a.length,
+      colsA: a.first.length,
+      dataA: text(a),
+      rowsB: b?.length ?? 3,
+      colsB: b?.first.length ?? 3,
+      dataB: b == null ? _createDefaultData(3, 3) : text(b),
+    );
   }
+
+  static (List<List<int>>, List<List<int>>?) _example(TopicType type) =>
+      switch (type) {
+        TopicType.gauss || TopicType.rref => (
+          [
+            [1, 2, 1],
+            [2, 5, 4],
+            [1, 3, 3],
+          ],
+          null,
+        ),
+        // x = 5, y = 3, z = -2.
+        TopicType.linearSystems => (
+          [
+            [1, 1, 1, 6],
+            [0, 2, 5, -4],
+            [2, 5, -1, 27],
+          ],
+          null,
+        ),
+        TopicType.determinant => (
+          [
+            [2, -1, 3],
+            [1, 4, 0],
+            [5, 2, 1],
+          ],
+          null,
+        ),
+        // det = 1, so the inverse has integer entries.
+        TopicType.inverse => (
+          [
+            [1, 2, 3],
+            [0, 1, 4],
+            [5, 6, 0],
+          ],
+          null,
+        ),
+        TopicType.rankNullity => (
+          [
+            [1, 2, 3],
+            [2, 4, 6],
+            [1, 0, 1],
+          ],
+          null,
+        ),
+        // Eigenvalues 2 and 5.
+        TopicType.eigen => (
+          [
+            [4, 1],
+            [2, 3],
+          ],
+          null,
+        ),
+        TopicType.lu => (
+          [
+            [2, 1, 1],
+            [4, 3, 3],
+            [8, 7, 9],
+          ],
+          null,
+        ),
+        TopicType.add => (
+          [
+            [1, -2],
+            [3, 0],
+          ],
+          [
+            [4, 1],
+            [-1, 2],
+          ],
+        ),
+        TopicType.multiply => (
+          [
+            [1, 2],
+            [3, 4],
+          ],
+          [
+            [2, 0],
+            [1, -1],
+          ],
+        ),
+        TopicType.transform2d || TopicType.practice => (_identity(3), null),
+      };
+
+  static List<List<int>> _identity(int n) => [
+    for (var r = 0; r < n; r++) [for (var c = 0; c < n; c++) r == c ? 1 : 0],
+  ];
 
   static List<List<String>> _createDefaultData(int rows, int cols) {
     return List.generate(

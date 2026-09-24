@@ -69,7 +69,9 @@ class InstructionLesson {
   }) {
     final original = before ?? after;
     final trans = transformation;
-    String math(Rational value) => '(${value.toLatex()})';
+    // Only a negative operand needs brackets: 5 - 2 \cdot 2, but 5 - (-2).
+    String math(Rational value) =>
+        value.isNegative ? '(${value.toLatex()})' : value.toLatex();
     if (trans is MatrixElementAdditionTransformation) {
       return InstructionLesson._(
         source: l10n?.guideAddSource ?? 'Match the same position in A and B.',
@@ -242,12 +244,16 @@ class InstructionLesson {
     }
     if (trans is DeterminantDiagonalProductTransformation) {
       var product = trans.sign;
-      final factors = <String>[math(trans.sign)];
+      // A factor of 1 says nothing; −1 records the row swaps.
+      final factors = <String>[if (trans.sign.isNegative) math(trans.sign)];
       final lines = <String>[];
       for (final value in trans.diagonalElements) {
         product *= value;
         factors.add(math(value));
-        lines.add('${factors.join(r' \cdot ')} = ${product.toLatex()}');
+        // A single factor equals itself; the first line is the first product.
+        if (factors.length > 1) {
+          lines.add('${factors.join(r' \cdot ')} = ${product.toLatex()}');
+        }
       }
       return InstructionLesson._(
         source: l10n?.guideDiagSource ?? 'In a triangular matrix the determinant is the product of the diagonal.',
@@ -425,6 +431,12 @@ class InstructionExplanation extends StatelessWidget {
         // One sentence at a time, like a subtitle under the matrix.
         AnimatedSwitcher(
           duration: AppTheme.motion(context, AppTheme.stateMs),
+          // Start-aligned like the phase dots and calculations around it;
+          // the default layout would centre each sentence.
+          layoutBuilder: (current, previous) => Stack(
+            alignment: AlignmentDirectional.topStart,
+            children: [...previous, ?current],
+          ),
           child: Text(
             showAllPhases
                 ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'

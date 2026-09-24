@@ -127,10 +127,16 @@ List<ResultCheck> resultChecks(StepSolution solution, AppLocalizations l) {
               final lv = _column([
                 for (final e in pair.eigenvector) e * pair.eigenvalue,
               ]);
+              // λv written as mathematicians do: v, -v, 3v.
+              final lambda = pair.eigenvalue == Rational.one
+                  ? ''
+                  : pair.eigenvalue == Rational.minusOne
+                  ? '-'
+                  : '${pair.eigenvalue.toLatex()}\\,';
               return ResultCheck(
                 description: l.checkEigen,
                 latex:
-                    'A\\mathbf{v}_{${index + 1}} = ${av.toLatex()} = ${pair.eigenvalue.toLatex()}\\,\\mathbf{v}_{${index + 1}}',
+                    'A\\mathbf{v}_{${index + 1}} = ${av.toLatex()} = $lambda\\mathbf{v}_{${index + 1}}',
                 holds: av == lv,
               );
             }(),

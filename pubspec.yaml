@@ -62,8 +62,17 @@ flutter:
     # source for tool/export_branding.py and is not bundled.
     - assets/branding/matriks_icon.png
     - assets/flags/
+    - assets/fonts/LICENSE-MatriksSymbols.txt
   generate: true
   uses-material-design: true
+
+  # Arrows, sub/superscripts and math symbols that the bundled text font
+  # lacks; used as a fallback so the web build needs no font download for
+  # them. Rebuild with tool/build_symbol_font.py.
+  fonts:
+    - family: MatriksSymbols
+      fonts:
+        - asset: assets/fonts/MatriksSymbols-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

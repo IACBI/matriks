@@ -95,13 +95,27 @@ class SolutionSummary extends StatelessWidget {
               error,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-          if (solution.resultLatex != null)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: MathText(solution.resultLatex!, fontSize: 24),
+          // A matrix result is drawn below as the matrix itself; its TeX line
+          // would only repeat it, with cramped fractions.
+          // Separate parts (each eigenpair; P, L and U) sit side by side
+          // when they fit and stack on a narrow screen.
+          if (solution.resultLatex != null && solution.result is! Matrix)
+            Wrap(
+              spacing: 32,
+              runSpacing: 12,
+              children: [
+                for (final part in solution.resultLatex!.split(r' \quad '))
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: MathText(part, fontSize: 24),
+                  ),
+              ],
             ),
           const SizedBox(height: 24),
-          if (solution.isSuccess)
+          // Only a matrix result is drawn as a matrix. For a determinant,
+          // LU or eigen result the final matrix would stand unlabelled under
+          // the answer (U again, or A itself).
+          if (solution.isSuccess && solution.result is Matrix)
             MatrixDisplayGrid(
               snapshot: MatrixSnapshot.fromMatrix(solution.finalMatrix),
               highlights: const [],

@@ -1102,7 +1102,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quizQ1Explanation =>
-      'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.';
+      'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.';
 
   @override
   String get quizQ1Hint =>

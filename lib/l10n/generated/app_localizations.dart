@@ -1900,7 +1900,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizQ1Explanation.
   ///
   /// In en, this message translates to:
-  /// **'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.'**
+  /// **'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.'**
   String get quizQ1Explanation;
 
   /// No description provided for @quizQ1Hint.

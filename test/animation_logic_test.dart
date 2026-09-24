@@ -61,7 +61,7 @@ void main() {
     expect(lesson.calculations, hasLength(2));
     expect(
       lesson.calculations.first,
-      startsWith('(${step.matrixBefore.get(t.targetRow, 1)})'),
+      startsWith('${step.matrixBefore.get(t.targetRow, 1)} '),
     );
   });
 

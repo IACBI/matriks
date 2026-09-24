@@ -97,7 +97,12 @@ class InstructionTimeline {
     if (step is MatrixElementMultiplicationTransformation) {
       count = step.rowElements.length.clamp(1, 5);
     } else if (step is DeterminantDiagonalProductTransformation) {
-      count = step.diagonalElements.length;
+      // One line per product; without a −1 from row swaps the first
+      // diagonal entry starts the product rather than making a line.
+      count = math.max(
+        1,
+        step.diagonalElements.length - (step.sign.isNegative ? 0 : 1),
+      );
     } else if (step is DeterminantSarrusTransformation) {
       // A recap only combines the two totals already shown.
       count = step.recap ? 1 : (step.phase == 3 ? 6 : 3);

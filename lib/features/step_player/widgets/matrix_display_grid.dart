@@ -360,8 +360,14 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     if (reserveOperation &&
         !widget.staticStep &&
         !MediaQuery.disableAnimationsOf(context)) {
-      // Reserve space for a readable operation and keep geometry stable through its result.
-      _cellWidth = math.max(_cellWidth, 120 * scale);
+      // Reserve space for a readable operation and keep geometry stable
+      // through its result, but only as much as the width allows: a formula
+      // that does not fit shrinks to 14 px and then scrolls inside its cell,
+      // which is better than pushing a whole column off a phone screen.
+      final fitting = available.isFinite
+          ? (available - extras) / widget.snapshot.cols
+          : double.infinity;
+      _cellWidth = math.max(_cellWidth, math.min(120 * scale, fitting));
     }
     _cellHeight = 64 * scale;
     if (previousGeometry != (_cellWidth, _cellHeight, _fontSize)) {
@@ -1228,9 +1234,10 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     }
     if (trans is RowEliminationTransformation) {
       final sign = trans.factor.isNegative ? '-' : '+';
+      // The factor is written without its sign, so it needs no brackets.
       final factor = trans.factor.abs() == Rational.one
           ? ''
-          : '(${trans.factor.abs().toLatex()})';
+          : trans.factor.abs().toLatex();
       final operation = MathText(
         'R_{${trans.targetRow + 1}} \\leftarrow R_{${trans.targetRow + 1}} $sign $factor R_{${trans.sourceRow + 1}}',
         fontSize: 20,

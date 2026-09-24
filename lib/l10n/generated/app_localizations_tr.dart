@@ -1103,7 +1103,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ1Explanation =>
-      '2. satırın ilk elemanı 2, pivot ise 1 dir. 2 - 2(1) = 0 elde etmek için R_2 \\leftarrow R_2 - 2R_1 işlemi uygulanmalıdır.';
+      '2. satırın ilk elemanı 2, pivot ise 1\'dir. 2 - 2 \\cdot 1 = 0 elde etmek için R_2 \\leftarrow R_2 - 2R_1 işlemi uygulanmalıdır.';
 
   @override
   String get quizQ1Hint =>
@@ -1196,7 +1196,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ4Explanation =>
-      'Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2 dir.';
+      'Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2\'dir.';
 
   @override
   String get quizQ4Hint => 'Eşelon formdaki sıfırdan farklı satırları say.';

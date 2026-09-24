@@ -477,7 +477,7 @@
   "guideAddResult": "Their sum belongs in the same position in C.",
   "quizQ1QuestionTitle": "Gaussian Elimination: Pivot & Elimination",
   "quizQ1Prompt": "In the matrix below, the first pivot is at cell (1,1). Which elementary row operation eliminates the first entry in row 2?",
-  "quizQ1Explanation": "The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.",
+  "quizQ1Explanation": "The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.",
   "quizQ1Hint": "Subtract a multiple of the pivot row from the target row to create a zero.",
   "quizQ1Feedback0": "Subtracting twice row 1 creates 2 − 2 = 0.",
   "quizQ1Feedback1": "Adding twice row 1 gives 2 + 2 = 4, not zero.",

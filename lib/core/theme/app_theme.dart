@@ -34,6 +34,11 @@ class AppTheme {
   static const stateMs = 180;
   static const panelMs = 220;
 
+  /// Bundled glyphs for arrows, sub/superscripts and math symbols that the
+  /// default text font lacks (see pubspec.yaml). Without it the web build
+  /// fetches a fallback font from Google at runtime, and shows boxes offline.
+  static const symbolFallback = ['MatriksSymbols'];
+
   static Duration motion(BuildContext context, [int milliseconds = stateMs]) =>
       MediaQuery.disableAnimationsOf(context)
       ? Duration.zero
@@ -73,7 +78,11 @@ class AppTheme {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(radiusMd),
     );
-    const buttonText = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
+    const buttonText = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      fontFamilyFallback: symbolFallback,
+    );
     return base.copyWith(
       listTileTheme: ListTileThemeData(
         minTileHeight: compact ? 48 : 64,
@@ -137,7 +146,8 @@ class AppTheme {
               fontWeight: FontWeight.w600,
               color: secondaryInk,
             ),
-          ),
+          )
+          .apply(fontFamilyFallback: symbolFallback),
       appBarTheme: AppBarTheme(
         backgroundColor: background,
         foregroundColor: ink,
@@ -146,6 +156,7 @@ class AppTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
+          fontFamilyFallback: symbolFallback,
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: ink,
@@ -207,7 +218,10 @@ class AppTheme {
           horizontal: 16,
           vertical: 16,
         ),
-        hintStyle: TextStyle(color: secondaryInk),
+        hintStyle: TextStyle(
+          color: secondaryInk,
+          fontFamilyFallback: symbolFallback,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
         ),
@@ -225,7 +239,11 @@ class AppTheme {
         selectedColor: primary.withValues(alpha: 0.12),
         side: BorderSide(color: border),
         shape: shape,
-        labelStyle: TextStyle(fontSize: 13, color: ink),
+        labelStyle: TextStyle(
+          fontSize: 13,
+          color: ink,
+          fontFamilyFallback: symbolFallback,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),
       dialogTheme: DialogThemeData(
@@ -243,7 +261,11 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: dark ? textPrimaryDark : textPrimaryLight,
-        contentTextStyle: TextStyle(color: background, fontSize: 14),
+        contentTextStyle: TextStyle(
+          color: background,
+          fontSize: 14,
+          fontFamilyFallback: symbolFallback,
+        ),
         shape: shape,
       ),
       dividerTheme: DividerThemeData(color: border, thickness: 1, space: 1),
@@ -252,7 +274,11 @@ class AppTheme {
           color: ink,
           borderRadius: BorderRadius.circular(radiusSm),
         ),
-        textStyle: TextStyle(color: background, fontSize: 12),
+        textStyle: TextStyle(
+          color: background,
+          fontSize: 12,
+          fontFamilyFallback: symbolFallback,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );
