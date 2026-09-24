@@ -88,6 +88,8 @@ void main() {
 
     for (var index = 0; index < solution.steps.length; index++) {
       cubit.jumpToStep(index);
+      // The step starts after this frame; its first tick starts the clock.
+      await tester.pump();
       await tester.pump();
       await tester.pump(const Duration(seconds: 12));
 
