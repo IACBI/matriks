@@ -1008,6 +1008,44 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resultApproximate => 'Aproximado';
 
   @override
+  String get checkTitle => 'Comprueba el resultado';
+
+  @override
+  String get checkHolds => 'Se cumple';
+
+  @override
+  String get checkFails => 'No se cumple';
+
+  @override
+  String get checkInverse =>
+      'Al multiplicar A por su inversa se obtiene la matriz identidad.';
+
+  @override
+  String get checkDetRows =>
+      'Reducir por filas a una matriz triangular da el mismo valor.';
+
+  @override
+  String get checkDetCofactor =>
+      'El desarrollo por cofactores de la primera fila da el mismo valor.';
+
+  @override
+  String get checkLu =>
+      'Multiplicar L por U devuelve A, con las filas en el orden que indica P.';
+
+  @override
+  String get checkSystem => 'Sustituir x en las ecuaciones da b.';
+
+  @override
+  String get checkRank =>
+      'El rango más la nulidad es igual al número de columnas n.';
+
+  @override
+  String get checkEigen => 'A solo estira v: Av es igual a λv.';
+
+  @override
+  String get seeAsTransform => 'Verlo como transformación';
+
+  @override
   String get resultComplete => 'Completo';
 
   @override

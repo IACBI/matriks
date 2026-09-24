@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../transform_visualizer/models/transform_matrix.dart';
+import '../../transform_visualizer/views/transform_visualizer_screen.dart';
+import '../result_check.dart';
 import '../step_text.dart';
 import 'matrix_display_grid.dart';
 
@@ -105,18 +109,116 @@ class SolutionSummary extends StatelessWidget {
               showExplanation: false,
               isDecimalView: decimal,
             ),
+          ResultChecks(solution: solution),
           const SizedBox(height: 24),
-          if (solution.steps.isNotEmpty)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: FilledButton.icon(
-                onPressed: onViewSteps,
-                icon: const Icon(Icons.layers_outlined),
-                label: Text(l.viewSteps),
-              ),
-            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (solution.steps.isNotEmpty)
+                FilledButton.icon(
+                  onPressed: onViewSteps,
+                  icon: const Icon(Icons.layers_outlined),
+                  label: Text(l.viewSteps),
+                ),
+              ?TransformLink.forSolution(solution),
+            ],
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// Independent confirmations of the result (A·A⁻¹ = I, Av = λv, ...),
+/// computed exactly; nothing is shown for operations without one.
+class ResultChecks extends StatelessWidget {
+  final StepSolution solution;
+  const ResultChecks({super.key, required this.solution});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final checks = resultChecks(solution, l);
+    if (checks.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Card(
+      key: const ValueKey('result-checks'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l.checkTitle, style: theme.textTheme.titleMedium),
+            for (final check in checks) ...[
+              const SizedBox(height: 12),
+              Text(check.description, style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 6),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: MathText(check.latex, fontSize: 18),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Icon(
+                    check.holds
+                        ? Icons.check_circle_outline_rounded
+                        : Icons.error_outline_rounded,
+                    size: 18,
+                    color: check.holds
+                        ? AppTheme.accentGreen
+                        : theme.colorScheme.error,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    check.holds ? l.checkHolds : l.checkFails,
+                    style: theme.textTheme.labelLarge,
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Opens a 2×2 eigen problem in the transformation view, where the
+/// eigenvectors are the directions the grid only stretches.
+class TransformLink extends StatelessWidget {
+  final TransformMatrix matrix;
+  const TransformLink({super.key, required this.matrix});
+
+  /// Null unless [solution] is a 2×2 eigen analysis whose entries the
+  /// transformation view accepts ([-1000, 1000]).
+  static TransformLink? forSolution(StepSolution solution) {
+    final a = solution.initialMatrix;
+    if (solution.operationKey != 'op_eigen' || a.rows != 2 || a.cols != 2) {
+      return null;
+    }
+    final values = [
+      for (var r = 0; r < 2; r++)
+        for (var c = 0; c < 2; c++) a.get(r, c).toDouble(),
+    ];
+    if (values.any((v) => !v.isFinite || v.abs() > 1000)) return null;
+    return TransformLink(
+      key: const ValueKey('transform-link'),
+      matrix: TransformMatrix(values[0], values[1], values[2], values[3]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => TransformVisualizerScreen(initial: matrix),
+        ),
+      ),
+      icon: const Icon(Icons.open_in_new_rounded),
+      label: Text(AppLocalizations.of(context)!.seeAsTransform),
     );
   }
 }

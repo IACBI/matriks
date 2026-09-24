@@ -338,6 +338,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                     ? l10n.tryOwnMatrix
                     : l10n.editMatrix,
                 onOwnMatrix: widget.onOwnMatrix,
+                transformLink: TransformLink.forSolution(state.solution),
               )
             : null;
 
@@ -467,6 +468,8 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                               if (lessonEnd != null) ...[
                                 const SizedBox(height: 16),
                                 lessonEnd,
+                                const SizedBox(height: 12),
+                                ResultChecks(solution: state.solution),
                               ],
                             ],
                           ),
@@ -523,12 +526,14 @@ class _LessonComplete extends StatelessWidget {
   final VoidCallback onReplay;
   final String? ownMatrixLabel;
   final VoidCallback? onOwnMatrix;
+  final Widget? transformLink;
 
   const _LessonComplete({
     required this.onShowResult,
     required this.onReplay,
     this.ownMatrixLabel,
     this.onOwnMatrix,
+    this.transformLink,
   });
 
   @override
@@ -580,6 +585,7 @@ class _LessonComplete extends StatelessWidget {
                     icon: const Icon(Icons.edit_outlined),
                     label: Text(ownMatrixLabel!),
                   ),
+                ?transformLink,
               ],
             ),
           ],

@@ -1010,6 +1010,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get resultApproximate => 'Yaklaşık';
 
   @override
+  String get checkTitle => 'Sonucu doğrula';
+
+  @override
+  String get checkHolds => 'Doğru';
+
+  @override
+  String get checkFails => 'Sağlanmıyor';
+
+  @override
+  String get checkInverse => 'A\'yı tersiyle çarpınca birim matris çıkar.';
+
+  @override
+  String get checkDetRows =>
+      'Satır işlemleriyle üçgen matrise indirgemek aynı değeri verir.';
+
+  @override
+  String get checkDetCofactor =>
+      'İlk satır boyunca kofaktör açılımı aynı değeri verir.';
+
+  @override
+  String get checkLu =>
+      'L ile U\'yu çarpmak A\'yı geri verir; satırlar P\'nin gösterdiği sıradadır.';
+
+  @override
+  String get checkSystem => 'x\'i denklemlerde yerine koyunca b elde edilir.';
+
+  @override
+  String get checkRank =>
+      'Rank ile sıfırlığın toplamı sütun sayısı n\'ye eşittir.';
+
+  @override
+  String get checkEigen => 'A, v\'yi yalnızca uzatır: Av, λv\'ye eşittir.';
+
+  @override
+  String get seeAsTransform => 'Dönüşüm olarak gör';
+
+  @override
   String get resultComplete => 'Tam';
 
   @override

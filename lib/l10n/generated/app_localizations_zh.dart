@@ -966,6 +966,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resultApproximate => '近似';
 
   @override
+  String get checkTitle => '验证结果';
+
+  @override
+  String get checkHolds => '成立';
+
+  @override
+  String get checkFails => '不成立';
+
+  @override
+  String get checkInverse => 'A 乘以它的逆矩阵得到单位矩阵。';
+
+  @override
+  String get checkDetRows => '通过行化简化为三角矩阵得到相同的值。';
+
+  @override
+  String get checkDetCofactor => '按第一行的余子式展开得到相同的值。';
+
+  @override
+  String get checkLu => 'L 乘以 U 得回 A，行的顺序由 P 记录。';
+
+  @override
+  String get checkSystem => '将 x 代回方程组得到 b。';
+
+  @override
+  String get checkRank => '秩加零度等于列数 n。';
+
+  @override
+  String get checkEigen => 'A 只拉伸 v：Av 等于 λv。';
+
+  @override
+  String get seeAsTransform => '作为变换查看';
+
+  @override
   String get resultComplete => '完整';
 
   @override

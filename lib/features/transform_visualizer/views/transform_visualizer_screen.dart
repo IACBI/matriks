@@ -12,7 +12,11 @@ import '../widgets/coefficient_field.dart';
 import '../models/transform_matrix.dart';
 
 class TransformVisualizerScreen extends StatefulWidget {
-  const TransformVisualizerScreen({super.key});
+  /// Opens with this matrix instead of the shear preset, for example from a
+  /// 2×2 eigen result.
+  final TransformMatrix? initial;
+
+  const TransformVisualizerScreen({super.key, this.initial});
 
   @override
   State<TransformVisualizerScreen> createState() =>
@@ -21,11 +25,11 @@ class TransformVisualizerScreen extends StatefulWidget {
 
 class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  String? _selectedPreset = 'shear';
-  double a = 1.0;
-  double b = 1.0;
-  double c = 0.0;
-  double d = 1.0;
+  late String? _selectedPreset = widget.initial == null ? 'shear' : null;
+  late double a = widget.initial?.a ?? 1.0;
+  late double b = widget.initial?.b ?? 1.0;
+  late double c = widget.initial?.c ?? 0.0;
+  late double d = widget.initial?.d ?? 1.0;
 
   late AnimationController _animController;
   late CurvedAnimation _animation;

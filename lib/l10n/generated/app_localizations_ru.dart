@@ -1001,6 +1001,43 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resultApproximate => 'Приближённо';
 
   @override
+  String get checkTitle => 'Проверка результата';
+
+  @override
+  String get checkHolds => 'Верно';
+
+  @override
+  String get checkFails => 'Не выполняется';
+
+  @override
+  String get checkInverse =>
+      'Произведение A на обратную матрицу даёт единичную матрицу.';
+
+  @override
+  String get checkDetRows =>
+      'Приведение к треугольному виду даёт то же значение.';
+
+  @override
+  String get checkDetCofactor =>
+      'Разложение по первой строке даёт то же значение.';
+
+  @override
+  String get checkLu =>
+      'Произведение L на U возвращает A со строками в порядке, заданном P.';
+
+  @override
+  String get checkSystem => 'Подстановка x в уравнения даёт b.';
+
+  @override
+  String get checkRank => 'Ранг плюс дефект равен числу столбцов n.';
+
+  @override
+  String get checkEigen => 'A лишь растягивает v: Av равно λv.';
+
+  @override
+  String get seeAsTransform => 'Показать как преобразование';
+
+  @override
   String get resultComplete => 'Полностью';
 
   @override

@@ -1735,6 +1735,72 @@ abstract class AppLocalizations {
   /// **'Approximate'**
   String get resultApproximate;
 
+  /// No description provided for @checkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the result'**
+  String get checkTitle;
+
+  /// No description provided for @checkHolds.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds'**
+  String get checkHolds;
+
+  /// No description provided for @checkFails.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not hold'**
+  String get checkFails;
+
+  /// No description provided for @checkInverse.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplying A by its inverse gives the identity matrix.'**
+  String get checkInverse;
+
+  /// No description provided for @checkDetRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Row reduction to a triangular matrix gives the same value.'**
+  String get checkDetRows;
+
+  /// No description provided for @checkDetCofactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Cofactor expansion along the first row gives the same value.'**
+  String get checkDetCofactor;
+
+  /// No description provided for @checkLu.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplying L by U gives back A, with its rows in the order P records.'**
+  String get checkLu;
+
+  /// No description provided for @checkSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Substituting x back into the equations gives b.'**
+  String get checkSystem;
+
+  /// No description provided for @checkRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank plus nullity equals the number of columns n.'**
+  String get checkRank;
+
+  /// No description provided for @checkEigen.
+  ///
+  /// In en, this message translates to:
+  /// **'A only stretches v: Av equals λv.'**
+  String get checkEigen;
+
+  /// No description provided for @seeAsTransform.
+  ///
+  /// In en, this message translates to:
+  /// **'See it as a transformation'**
+  String get seeAsTransform;
+
   /// No description provided for @resultComplete.
   ///
   /// In en, this message translates to:
