@@ -286,4 +286,4 @@ Every solver's steps were replayed in code against what the player shows. Logic 
 - Steps without a specific lesson showed empty source/operation/result phases; they now show only the description. The step description is hidden where the phase explanation already says the same thing.
 - Three Turkish step titles did not say what the step does (swap, scale, eliminate); they now do.
 
-Verification is in the table of the pass above only up to `08547d0`; see the CI runs on the branch head for this pass. The new behaviour is covered by `packages/matrix_engine/test/step_semantics_test.dart` and `test/animation_logic_test.dart`. Not inspected on a device.
+Verified in CI run 36044859287 on `187a64d`: generated localizations current, analysis clean, all application and engine tests passed, web preview built. Two intermediate runs failed and were fixed: an eigen caption stored as TeX among the prose parameters (it printed `A - 1I`), and a value test that read the addition step before its animation had started. The new behaviour is covered by `packages/matrix_engine/test/step_semantics_test.dart` and `test/animation_logic_test.dart`. Not inspected on a device.
