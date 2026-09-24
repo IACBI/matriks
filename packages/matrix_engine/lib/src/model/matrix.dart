@@ -206,8 +206,9 @@ class Matrix {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! Matrix || other.rows != rows || other.cols != cols)
+    if (other is! Matrix || other.rows != rows || other.cols != cols) {
       return false;
+    }
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
         if (_data[r][c] != other._data[r][c]) return false;
