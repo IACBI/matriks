@@ -73,7 +73,7 @@ void main() {
     );
     await tester.pumpWidget(_grid(eigen.steps.first));
     await tester.pump();
-    expect(find.textContaining('/ 3 ·'), findsNothing);
+    expect(find.byKey(const ValueKey('phase-dots')), findsNothing);
 
     final gauss = GaussJordanSolver.solve(
       Matrix.fromInts([
@@ -89,7 +89,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.textContaining('/ 3 ·'), findsOneWidget);
+    expect(find.byKey(const ValueKey('phase-dots')), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
 
@@ -224,7 +224,7 @@ void main() {
         .read<PlayerCubit>();
     expect(solution.steps.first.transformation, isA<RowSwapTransformation>());
     // A swap's description says why the rows move.
-    expect(find.text('Explanation'), findsOneWidget);
+    expect(find.byIcon(Icons.lightbulb_outline_rounded), findsOneWidget);
     player.jumpToStep(
       solution.steps.indexWhere(
         (s) => s.transformation is RowEliminationTransformation,
@@ -232,7 +232,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     // An elimination's formula is already the operation shown above the matrix.
-    expect(find.text('Explanation'), findsNothing);
+    expect(find.byIcon(Icons.lightbulb_outline_rounded), findsNothing);
     expect(find.text('Cell calculations (3)'), findsNothing);
     expect(tester.takeException(), isNull);
   });

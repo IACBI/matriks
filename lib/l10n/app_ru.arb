@@ -250,6 +250,7 @@
   "inspectOperation": "Изучить эту операцию",
   "stepExplanation": "Почему это работает",
   "cellCalculations": "Вычисления элементов",
+  "stepDetails": "Подробности",
   "chooseStep": "Выбрать шаг",
   "learningPath": "Впервые изучаете матрицы?",
   "pathEliminate": "1 · Создать нули",

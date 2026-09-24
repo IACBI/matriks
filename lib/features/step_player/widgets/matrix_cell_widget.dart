@@ -64,12 +64,14 @@ class MatrixCellWidget extends StatelessWidget {
 
     if (highlight != null) {
       switch (highlight!.type) {
+        // Two hues carry the roles of a row operation: amber for the row
+        // that is used (its pivot strongest), cyan for the row that changes.
         case HighlightType.pivot:
           bgColor = AppTheme.accentAmber.withValues(
-            alpha: isDark ? 0.18 : 0.08,
+            alpha: isDark ? 0.28 : 0.16,
           );
           borderColor = AppTheme.accentAmber;
-          borderWidth = 1.5;
+          borderWidth = 2.4;
           break;
         case HighlightType.target:
           bgColor = AppTheme.accentCyan.withValues(alpha: isDark ? 0.18 : 0.08);
@@ -77,17 +79,15 @@ class MatrixCellWidget extends StatelessWidget {
           borderWidth = 1.5;
           break;
         case HighlightType.source:
-          bgColor = AppTheme.accentPurple.withValues(
-            alpha: isDark ? 0.18 : 0.08,
+          bgColor = AppTheme.accentAmber.withValues(
+            alpha: isDark ? 0.12 : 0.05,
           );
-          borderColor = AppTheme.accentPurple;
-          borderWidth = 1.5;
+          borderColor = AppTheme.accentAmber;
+          borderWidth = 1.2;
           break;
         case HighlightType.zeroed:
-          bgColor = AppTheme.accentGreen.withValues(
-            alpha: isDark ? 0.18 : 0.08,
-          );
-          borderColor = AppTheme.accentGreen;
+          bgColor = AppTheme.accentCyan.withValues(alpha: isDark ? 0.18 : 0.08);
+          borderColor = AppTheme.accentCyan;
           borderWidth = 1.5;
           break;
         case HighlightType.inactive:
@@ -108,8 +108,8 @@ class MatrixCellWidget extends StatelessWidget {
     }
 
     if (isZeroResult) {
-      borderColor = AppTheme.accentGreen;
-      bgColor = AppTheme.accentGreen.withValues(alpha: isDark ? 0.18 : 0.08);
+      borderColor = AppTheme.accentCyan;
+      bgColor = AppTheme.accentCyan.withValues(alpha: isDark ? 0.18 : 0.08);
     }
 
     final showPlaceholder = pending && calculationLatex == null;
@@ -199,7 +199,7 @@ class MatrixCellWidget extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                 decoration: BoxDecoration(
-                  color: AppTheme.accentGreen,
+                  color: AppTheme.accentCyan,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: const Text(

@@ -734,6 +734,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cellCalculations => 'Cálculos de elementos';
 
   @override
+  String get stepDetails => 'Detalles';
+
+  @override
   String get chooseStep => 'Elegir un paso';
 
   @override

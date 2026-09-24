@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'instruction_timeline.dart';
@@ -421,24 +422,33 @@ class InstructionExplanation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // With every phase shown at once there is no phase to name.
+        // With every phase shown at once there is no phase to name. The
+        // dots show where the step is; screen readers hear the phase name.
         if (!showAllPhases) ...[
           Semantics(
             liveRegion: announce,
-            child: Text(
-              '${phase.index + 1} / 3 · $title',
-              style: theme.textTheme.labelLarge,
+            label: '${phase.index + 1} / 3 · $title',
+            child: ExcludeSemantics(
+              child: _PhaseDots(
+                key: const ValueKey('phase-dots'),
+                phase: phase,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
         ],
-        Text(
-          showAllPhases
-              ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'
-              : description,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            height: 1.5,
-            color: theme.colorScheme.onSurfaceVariant,
+        // One sentence at a time, like a subtitle under the matrix.
+        AnimatedSwitcher(
+          duration: AppTheme.motion(context, AppTheme.stateMs),
+          child: Text(
+            showAllPhases
+                ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'
+                : description,
+            key: ValueKey(showAllPhases ? -1 : phase.index),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         if (visibleCalculations > 0) ...[
@@ -483,6 +493,35 @@ class InstructionExplanation extends StatelessWidget {
               ),
             );
           }),
+        ],
+      ],
+    );
+  }
+}
+
+class _PhaseDots extends StatelessWidget {
+  final InstructionPhase phase;
+
+  const _PhaseDots({super.key, required this.phase});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        for (final p in InstructionPhase.values) ...[
+          AnimatedContainer(
+            duration: AppTheme.motion(context, AppTheme.stateMs),
+            width: p == phase ? 22 : 10,
+            height: 4,
+            decoration: BoxDecoration(
+              color: p.index <= phase.index
+                  ? scheme.primary
+                  : scheme.outlineVariant,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 4),
         ],
       ],
     );

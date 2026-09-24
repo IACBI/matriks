@@ -250,6 +250,7 @@
   "inspectOperation": "查看本次运算",
   "stepExplanation": "为什么这样做",
   "cellCalculations": "元素计算",
+  "stepDetails": "详细信息",
   "chooseStep": "选择步骤",
   "learningPath": "刚开始学习矩阵？",
   "pathEliminate": "1 · 消为零",

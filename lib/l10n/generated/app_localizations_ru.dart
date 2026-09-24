@@ -730,6 +730,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cellCalculations => 'Вычисления элементов';
 
   @override
+  String get stepDetails => 'Подробности';
+
+  @override
   String get chooseStep => 'Выбрать шаг';
 
   @override

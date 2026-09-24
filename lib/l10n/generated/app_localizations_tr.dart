@@ -735,6 +735,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cellCalculations => 'Hücre hesapları';
 
   @override
+  String get stepDetails => 'Ayrıntılar';
+
+  @override
   String get chooseStep => 'Adım seç';
 
   @override

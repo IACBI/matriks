@@ -13,6 +13,7 @@ import 'determinant_lines_painter.dart';
 import 'matrix_cell_widget.dart';
 import 'multiplication_sources.dart';
 import 'row_swap_brackets_painter.dart';
+import 'step_card.dart';
 import 'instruction_timeline.dart';
 import 'instruction_lesson.dart';
 
@@ -117,6 +118,19 @@ class MatrixDisplayGrid extends StatefulWidget {
   final void Function(int row, int col)? onCellTap;
   final MatrixLayoutHint? layoutHint;
 
+  /// Why the operation works and the cell formulas, kept in the drawer under
+  /// the caption together with scrubbing and replay.
+  final Widget? details;
+  final bool detailsInitiallyExpanded;
+
+  /// Text that belongs directly under the caption, such as the solver's
+  /// reason for the step when the caption does not already give it.
+  final Widget? note;
+
+  /// Called when the learner opens the drawer; the lesson pauses so the
+  /// drawer does not scroll away under them.
+  final VoidCallback? onDetailsOpened;
+
   const MatrixDisplayGrid({
     this.sceneFormula,
     this.staticStep = false,
@@ -137,6 +151,10 @@ class MatrixDisplayGrid extends StatefulWidget {
     this.onReplay,
     this.onCellTap,
     this.layoutHint,
+    this.details,
+    this.detailsInitiallyExpanded = false,
+    this.note,
+    this.onDetailsOpened,
   });
 
   @override
@@ -632,10 +650,14 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
               },
             ),
           ),
+          if (RoleLegend.hasRoles(widget.highlights)) ...[
+            const SizedBox(height: 8),
+            RoleLegend(highlights: widget.highlights),
+          ],
           // Steps without step-specific teaching text rely on the solver's
           // description; three placeholder phases would add nothing.
           if (widget.showExplanation && !lesson.generic)
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
           if (widget.showExplanation && !lesson.generic)
             AnimatedBuilder(
               animation: _animController,
@@ -664,21 +686,32 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                 );
               },
             ),
+          if (widget.note != null) ...[
+            const SizedBox(height: 16),
+            widget.note!,
+          ],
           const SizedBox(height: 8),
-          if (!widget.staticStep)
+          if (!widget.staticStep || widget.details != null)
             ExpansionTile(
               key: const ValueKey('operation-inspector'),
               maintainState: true,
+              initiallyExpanded: widget.detailsInitiallyExpanded,
               tilePadding: EdgeInsets.zero,
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               title: Text(
-                l10n?.inspectOperation ?? 'Inspect this operation',
+                widget.details != null
+                    ? l10n?.stepDetails ?? 'Details'
+                    : l10n?.inspectOperation ?? 'Inspect this operation',
                 style: theme.textTheme.labelLarge,
               ),
               onExpansionChanged: (open) {
-                if (open) widget.onScrubStart?.call();
+                if (!open || widget.staticStep) return;
+                (widget.onDetailsOpened ?? widget.onScrubStart)?.call();
               },
               children: [
-                Row(
+                ?widget.details,
+                if (!widget.staticStep)
+                  Row(
                   children: [
                     Expanded(
                       child: AnimatedBuilder(
@@ -972,7 +1005,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
               height: 42,
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: isDark ? AppTheme.accentIndigo : const Color(0xFF818CF8),
+                color: Theme.of(context).colorScheme.outline,
                 borderRadius: BorderRadius.circular(1),
               ),
             ),
@@ -1156,7 +1189,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
             width: widget.snapshot.cols * cellWidth,
             height: cellHeight,
             decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.accentPurple, width: 2),
+              border: Border.all(color: AppTheme.accentAmber, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -1235,7 +1268,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         } else if (h.type == HighlightType.target && activeColor == null) {
           activeColor = AppTheme.accentCyan;
         } else if (h.type == HighlightType.source && activeColor == null) {
-          activeColor = AppTheme.accentPurple;
+          activeColor = AppTheme.accentAmber;
         }
       }
     }

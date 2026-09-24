@@ -273,11 +273,17 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           step: currentStep,
           localizedTitle: title,
           localizedDescription: description,
-          rationale: lesson.rationale,
           showDescription: lesson.generic || !lesson.coversDescription,
-          showCellCalculations: lesson.calculations.isEmpty,
-          onExpandCalculations: playerCubit.pause,
-          onSubCalculationTap: (sub) =>
+        );
+        final details = StepDetails(
+          rationale: settingsState.explanationLevel == ExplanationLevel.hidden
+              ? null
+              : lesson.rationale,
+          // The caption already lists these when it has calculations.
+          calculations: lesson.calculations.isEmpty
+              ? currentStep.subCalculations
+              : const [],
+          onCalculationTap: (sub) =>
               playerCubit.inspectCell(sub.targetRow, sub.targetCol),
         );
         final matrixGridWidget = MatrixDisplayGrid(
@@ -311,6 +317,11 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           onReplay: playerCubit.replay,
           onCellTap: (r, c) => playerCubit.inspectCell(r, c),
           layoutHint: _layoutFor(state.solution, settingsState.isDecimalView),
+          note: stepCard,
+          details: details.isEmpty ? null : details,
+          detailsInitiallyExpanded:
+              settingsState.explanationLevel == ExplanationLevel.detailed,
+          onDetailsOpened: playerCubit.pause,
         );
         final lessonEnd = state.isLastStep && state.hasCompletedAnimation
             ? _LessonComplete(
@@ -418,134 +429,62 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                     ),
                   ),
 
-                  // Main Content Canvas: Side-by-Side on wide screens, Stacked on mobile
+                  // One stage at every width: the matrix, its caption and
+                  // the step's reason read top to bottom; wide screens only
+                  // get more room around it.
                   Expanded(
-                    child: isWideScreen
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isWideScreen ? 32 : 16,
+                        vertical: isWideScreen ? 24 : 12,
+                      ),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 880),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // Left: Animated Matrix Canvas (scrollable to prevent overflow)
-                              Expanded(
-                                flex: 3,
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: SingleChildScrollView(
-                                    padding: const EdgeInsets.all(24.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Semantics(
-                                            header: true,
-                                            liveRegion: true,
-                                            child: Text(
-                                              title,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 24),
-                                        if (prediction)
-                                          PredictionCard(
-                                            key: ValueKey(
-                                              currentStep.stepIndex,
-                                            ),
-                                            transformation:
-                                                currentStep.transformation
-                                                    as RowEliminationTransformation,
-                                            seed: state.currentStepIndex,
-                                            onContinue: () => setState(() {
-                                              _predicted.add(
-                                                state.currentStepIndex,
-                                              );
-                                              _pendingPrediction = null;
-                                              playerCubit.play();
-                                            }),
-                                          ),
-                                        matrixGridWidget,
-                                        if (state.solution.result
-                                            is EigenResult)
-                                          SolutionStatus(
-                                            solution: state.solution,
-                                          ),
-                                      ],
-                                    ),
-                                  ),
+                              Semantics(
+                                header: true,
+                                liveRegion: true,
+                                child: Text(
+                                  title,
+                                  style: isWideScreen
+                                      ? Theme.of(context).textTheme.headlineSmall
+                                      : Theme.of(context).textTheme.titleLarge,
                                 ),
                               ),
-                              // Right: StepCard
-                              Expanded(
-                                flex: 2,
-                                child: SingleChildScrollView(
-                                  padding: const EdgeInsets.all(24.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      stepCard,
-                                      if (lessonEnd != null) ...[
-                                        const SizedBox(height: 16),
-                                        lessonEnd,
-                                      ],
-                                    ],
-                                  ),
+                              if (prediction)
+                                PredictionCard(
+                                  key: ValueKey(currentStep.stepIndex),
+                                  transformation:
+                                      currentStep.transformation
+                                          as RowEliminationTransformation,
+                                  seed: state.currentStepIndex,
+                                  onContinue: () => setState(() {
+                                    _predicted.add(state.currentStepIndex);
+                                    _pendingPrediction = null;
+                                    playerCubit.play();
+                                  }),
                                 ),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                child: matrixGridWidget,
                               ),
-                            ],
-                          )
-                        : SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 12.0,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Semantics(
-                                  header: true,
-                                  liveRegion: true,
-                                  child: Text(
-                                    title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge,
-                                  ),
-                                ),
-                                if (prediction)
-                                  PredictionCard(
-                                    key: ValueKey(currentStep.stepIndex),
-                                    transformation:
-                                        currentStep.transformation
-                                            as RowEliminationTransformation,
-                                    seed: state.currentStepIndex,
-                                    onContinue: () => setState(() {
-                                      _predicted.add(state.currentStepIndex);
-                                      _pendingPrediction = null;
-                                      playerCubit.play();
-                                    }),
-                                  ),
-                                const SizedBox(height: 12),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  child: matrixGridWidget,
-                                ),
-                                if (state.solution.result is EigenResult)
-                                  SolutionStatus(solution: state.solution),
-                                const SizedBox(height: 8),
-                                stepCard,
-                                if (lessonEnd != null) ...[
-                                  const SizedBox(height: 16),
-                                  lessonEnd,
-                                ],
+                              if (state.solution.result is EigenResult)
+                                SolutionStatus(solution: state.solution),
+                              if (lessonEnd != null) ...[
+                                const SizedBox(height: 16),
+                                lessonEnd,
                               ],
-                            ),
+                            ],
                           ),
+                        ),
+                      ),
+                    ),
                   ),
 
                   // Bottom Player Controls

@@ -435,9 +435,8 @@ void main() {
       final text = tester.widget<Text>(find.text('badge'));
       final background = switch (type) {
         HighlightType.pivot => AppTheme.accentAmber,
-        HighlightType.source => AppTheme.accentPurple,
-        HighlightType.target => AppTheme.accentCyan,
-        _ => AppTheme.accentGreen,
+        HighlightType.source => AppTheme.accentAmber,
+        _ => AppTheme.accentCyan,
       };
       final a = text.style!.color!.computeLuminance();
       final b = background.computeLuminance();

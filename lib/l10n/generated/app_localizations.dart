@@ -1273,6 +1273,12 @@ abstract class AppLocalizations {
   /// **'Cell calculations'**
   String get cellCalculations;
 
+  /// No description provided for @stepDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get stepDetails;
+
   /// No description provided for @chooseStep.
   ///
   /// In en, this message translates to:

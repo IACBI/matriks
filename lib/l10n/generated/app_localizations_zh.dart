@@ -708,6 +708,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cellCalculations => '元素计算';
 
   @override
+  String get stepDetails => '详细信息';
+
+  @override
   String get chooseStep => '选择步骤';
 
   @override

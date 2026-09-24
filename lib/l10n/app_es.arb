@@ -250,6 +250,7 @@
   "inspectOperation": "Inspeccionar esta operación",
   "stepExplanation": "Por qué funciona",
   "cellCalculations": "Cálculos de elementos",
+  "stepDetails": "Detalles",
   "chooseStep": "Elegir un paso",
   "learningPath": "¿Empiezas con matrices?",
   "pathEliminate": "1 · Crear ceros",

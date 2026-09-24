@@ -28,7 +28,7 @@ class RowSwapBracketsPainter extends CustomPainter {
     final end = Offset(size.width - 4, bottomRow * cellHeight + cellHeight / 2);
     final control = Offset(start.dx - 18, (start.dy + end.dy) / 2);
 
-    final color = AppTheme.accentPurple.withValues(alpha: 0.8);
+    final color = AppTheme.accentAmber.withValues(alpha: 0.8);
     final path = Path()
       ..moveTo(start.dx, start.dy)
       ..quadraticBezierTo(control.dx, control.dy, end.dx, end.dy);

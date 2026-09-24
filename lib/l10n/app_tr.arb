@@ -233,6 +233,7 @@
   "inspectOperation": "Bu işlemi incele",
   "stepExplanation": "Neden bu işlem?",
   "cellCalculations": "Hücre hesapları",
+  "stepDetails": "Ayrıntılar",
   "chooseStep": "Adım seç",
   "learningPath": "Matrislere yeni mi başlıyorsun?",
   "pathEliminate": "1 · Sıfırları oluştur",

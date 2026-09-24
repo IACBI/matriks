@@ -91,7 +91,7 @@ class MultiplicationSources extends StatelessWidget {
               l10n.multiplicationSourceRow('${transformation.targetRow + 1}'),
               transformation.rowElements,
               false,
-              AppTheme.accentPurple,
+              AppTheme.accentAmber,
             ),
             const SizedBox(width: 24),
             vector(

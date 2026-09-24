@@ -233,6 +233,7 @@
   "inspectOperation": "Inspect this operation",
   "stepExplanation": "Why this works",
   "cellCalculations": "Cell calculations",
+  "stepDetails": "Details",
   "chooseStep": "Choose a step",
   "learningPath": "New to matrices?",
   "pathEliminate": "1 · Create zeros",
