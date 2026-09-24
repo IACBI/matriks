@@ -6,6 +6,7 @@ import 'package:matriks/core/theme/app_theme.dart';
 import 'package:matriks/core/widgets/math_text.dart';
 import 'package:matriks/features/matrix_input/matrix_input_cubit.dart';
 import 'package:matriks/features/settings/cubit/settings_cubit.dart';
+import 'package:matriks/features/settings/views/settings_screen.dart';
 import 'package:matriks/features/step_player/widgets/matrix_cell_widget.dart';
 import 'package:matriks/features/step_player/widgets/matrix_display_grid.dart';
 import 'package:matriks/features/step_player/widgets/solution_summary.dart';
@@ -218,5 +219,30 @@ void main() {
     );
     expect(eigen.completeness, ResultCompleteness.complete);
     expect(eigen.accuracy, ResultAccuracy.exact);
+  });
+
+  testWidgets('More options is its own control, not part of its card', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      BlocProvider(
+        create: (_) => SettingsCubit(),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SettingsScreen(),
+        ),
+      ),
+    );
+    // On the web the tile's tap was merged into the whole Learning card.
+    expect(
+      find.ancestor(
+        of: find.byKey(const ValueKey('more-settings')),
+        matching: find.byWidgetPredicate(
+          (w) => w is Semantics && w.properties.container == true,
+        ),
+      ),
+      findsWidgets,
+    );
   });
 }

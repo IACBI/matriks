@@ -117,36 +117,47 @@ class SettingsScreen extends StatelessWidget {
                     value: s.reduceMotion,
                     onChanged: (v) => cubit.update(s.copyWith(reduceMotion: v)),
                   ),
-                  ExpansionTile(
-                    key: const ValueKey('more-settings'),
-                    tilePadding: EdgeInsets.zero,
-                    childrenPadding: EdgeInsets.zero,
-                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-                    title: Text(l.moreOptions),
-                    children: [
-                      choice(l.solutionModeLabel, s.solutionMode, {
-                        SolutionMode.guided: l.guidedMode,
-                        SolutionMode.steps: l.stepsMode,
-                        SolutionMode.result: l.resultMode,
-                      }, (v) => cubit.update(s.copyWith(solutionMode: v))),
-                      _SpeedSetting(
-                        value: s.defaultPlaybackSpeed,
-                        onCommit: cubit.setDefaultSpeed,
-                      ),
-                      choice(l.explanation, s.explanationLevel, {
-                        ExplanationLevel.short: l.shortExplanation,
-                        ExplanationLevel.detailed: l.detailedExplanation,
-                        ExplanationLevel.hidden: l.hiddenExplanation,
-                      }, (v) => cubit.update(s.copyWith(explanationLevel: v))),
-                      choice(l.numberView, s.isDecimalView, {
-                        false: l.fractionView,
-                        true: l.decimalView,
-                      }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
-                      choice(l.densityLabel, s.compact, {
-                        false: l.comfortable,
-                        true: l.compact,
-                      }, (v) => cubit.update(s.copyWith(compact: v))),
-                    ],
+                  // Its own semantics node: inside the card it was merged
+                  // into the section, so screen readers heard the whole card
+                  // as one control.
+                  Semantics(
+                    container: true,
+                    child: ExpansionTile(
+                      key: const ValueKey('more-settings'),
+                      tilePadding: EdgeInsets.zero,
+                      childrenPadding: EdgeInsets.zero,
+                      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                      title: Text(l.moreOptions),
+                      children: [
+                        choice(l.solutionModeLabel, s.solutionMode, {
+                          SolutionMode.guided: l.guidedMode,
+                          SolutionMode.steps: l.stepsMode,
+                          SolutionMode.result: l.resultMode,
+                        }, (v) => cubit.update(s.copyWith(solutionMode: v))),
+                        _SpeedSetting(
+                          value: s.defaultPlaybackSpeed,
+                          onCommit: cubit.setDefaultSpeed,
+                        ),
+                        choice(
+                          l.explanation,
+                          s.explanationLevel,
+                          {
+                            ExplanationLevel.short: l.shortExplanation,
+                            ExplanationLevel.detailed: l.detailedExplanation,
+                            ExplanationLevel.hidden: l.hiddenExplanation,
+                          },
+                          (v) => cubit.update(s.copyWith(explanationLevel: v)),
+                        ),
+                        choice(l.numberView, s.isDecimalView, {
+                          false: l.fractionView,
+                          true: l.decimalView,
+                        }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
+                        choice(l.densityLabel, s.compact, {
+                          false: l.comfortable,
+                          true: l.compact,
+                        }, (v) => cubit.update(s.copyWith(compact: v))),
+                      ],
+                    ),
                   ),
                 ]),
                 const SizedBox(height: 16),
