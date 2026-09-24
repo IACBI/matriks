@@ -21,5 +21,8 @@ for size in [192,512]:
     export(f'web/icons/Icon-{size}.png',size)
     export(f'web/icons/Icon-maskable-{size}.png',size,round(size*.15))
 export('web/favicon.png',32)
+# In-app logo: shown at 32-48 logical px, so 192 px covers a 4x display
+# without shipping the full-size master in the app bundle.
+master.resize((192,192),Image.Resampling.LANCZOS).save(ROOT/'assets/branding/matriks_icon.png', optimize=True)
 master.resize((256,256),Image.Resampling.LANCZOS).save(ROOT/'windows/runner/resources/app_icon.ico',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
-print('Android, iOS, Windows and web icons exported.')
+print('Android, iOS, Windows, web and in-app icons exported.')

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:matrix_engine/matrix_engine.dart';
 
 /// Reading time belongs to the lesson; only spatial movement is eased.
@@ -14,7 +16,16 @@ class InstructionTimeline {
     this.resultMs = 2200,
   });
 
-  factory InstructionTimeline.forTransformation(StepTransformation? step) {
+  /// Reading time for one row operation column. Elimination and scaling
+  /// reveal one column at a time, so wider rows get proportionally longer;
+  /// three columns or fewer keep the 3600 ms operation phase.
+  static const rowOperationColumnMs = 1200;
+
+  /// [columns] is the width of the matrix being transformed.
+  factory InstructionTimeline.forTransformation(
+    StepTransformation? step, {
+    int columns = 3,
+  }) {
     if (step is RowSwapTransformation) {
       return const InstructionTimeline(
         sourceMs: 1200,
@@ -24,9 +35,9 @@ class InstructionTimeline {
     }
     if (step is RowEliminationTransformation ||
         step is RowScaleTransformation) {
-      return const InstructionTimeline(
+      return InstructionTimeline(
         sourceMs: 1500,
-        operationMs: 3600,
+        operationMs: math.max(3, columns) * rowOperationColumnMs,
         resultMs: 2400,
       );
     }

@@ -110,7 +110,6 @@
   "close": "关闭",
   "toggleTheme": "切换主题",
   "changeLanguage": "语言",
-  "solveError": "错误：{error}",
   "solveFallbackError": "无法完成矩阵求解。",
   "legendPivot": "主元",
   "legendSource": "来源",

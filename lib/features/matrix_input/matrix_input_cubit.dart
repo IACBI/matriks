@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matrix_engine/matrix_engine.dart';
 
 import '../topics/models/topic_item.dart';
 import 'models/matrix_input_state.dart';
@@ -168,7 +169,11 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     if (currentVal == '0' && key != '.' && key != '/') {
       newVal = key;
     } else if (key == '-') {
-      newVal = currentVal.startsWith('-')
+      // Toggling the sign of a lone minus returns to zero, never to an empty
+      // cell that reads as a value.
+      newVal = currentVal == '-'
+          ? '0'
+          : currentVal.startsWith('-')
           ? currentVal.substring(1)
           : '-$currentVal';
     } else {
@@ -220,6 +225,12 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     emit(state.copyWith(focusedRow: nextR, focusedCol: nextC));
   }
 
+  /// Moves down one row in the same column, wrapping to the top.
+  void onNextRow() {
+    final rows = state.activeMatrix == 0 ? state.rowsA : state.rowsB;
+    emit(state.copyWith(focusedRow: (state.focusedRow + 1) % rows));
+  }
+
   void onPrevCell() {
     final isA = state.activeMatrix == 0;
     final maxR = isA ? state.rowsA : state.rowsB;
@@ -238,52 +249,150 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     emit(state.copyWith(focusedRow: prevR, focusedCol: prevC));
   }
 
+  MatrixInputState? _beforePreset;
+
+  /// Restores the matrix replaced by the last preset.
+  void undoPreset() {
+    final previous = _beforePreset;
+    if (previous == null) return;
+    _beforePreset = null;
+    emit(
+      state.copyWith(
+        dataA: previous.dataA,
+        dataB: previous.dataB,
+        rowsA: previous.rowsA,
+        colsA: previous.colsA,
+        rowsB: previous.rowsB,
+        colsB: previous.colsB,
+      ),
+    );
+  }
+
+  void _applyPreset(List<List<String>> data) {
+    _beforePreset = state;
+    emit(
+      state.activeMatrix == 0
+          ? state.copyWith(dataA: data)
+          : state.copyWith(dataB: data),
+    );
+  }
+
+  /// Random entries suited to the topic: eigen examples get integer
+  /// eigenvalues and inverse examples are invertible, so a random matrix is
+  /// a useful lesson rather than an approximation or an error.
   void presetRandom() {
     final isA = state.activeMatrix == 0;
     final rows = isA ? state.rowsA : state.rowsB;
     final cols = isA ? state.colsA : state.colsB;
+    final type = state.topic.type;
 
-    final newData = List.generate(
-      rows,
-      (_) => List.generate(cols, (_) => (_random.nextInt(11) - 3).toString()),
-    );
+    List<List<int>> generate() =>
+        List.generate(rows, (_) => List.generate(cols, (_) => _random.nextInt(11) - 3));
 
-    if (isA) {
-      emit(state.copyWith(dataA: newData));
+    List<List<int>> data;
+    if (isA && type == TopicType.eigen) {
+      data = _integerSpectrum(rows);
+    } else if (isA &&
+        (type == TopicType.inverse || type == TopicType.lu) &&
+        rows == cols) {
+      data = generate();
+      for (var attempt = 0; attempt < 20; attempt++) {
+        if (!_integerDeterminant(data).isZero) break;
+        data = generate();
+      }
     } else {
-      emit(state.copyWith(dataB: newData));
+      data = generate();
     }
+    _applyPreset([
+      for (final row in data) [for (final value in row) '$value'],
+    ]);
+  }
+
+  /// P D P⁻¹ with a random diagonal D and a unimodular integer P, so the
+  /// entries stay integers and the eigenvalues are the diagonal of D.
+  List<List<int>> _integerSpectrum(int n) {
+    final d = List.generate(n, (_) => _random.nextInt(9) - 4);
+    var p = _elementary(n, 0, 0, 0);
+    var pInv = p;
+    for (var step = 0; step < 2; step++) {
+      final i = _random.nextInt(n);
+      final j = (i + 1 + _random.nextInt(n - 1)) % n;
+      final k = _random.nextBool() ? 1 : -1;
+      // P ← P·E and P⁻¹ ← E⁻¹·P⁻¹, where E = I + k·e(i,j), E⁻¹ = I − k·e(i,j).
+      p = _multiply(p, _elementary(n, i, j, k));
+      pInv = _multiply(_elementary(n, i, j, -k), pInv);
+    }
+    final diagonal = List.generate(
+      n,
+      (r) => List.generate(n, (c) => r == c ? d[r] : 0),
+    );
+    return _multiply(_multiply(p, diagonal), pInv);
+  }
+
+  /// The identity plus [k] at (i, j); with k = 0 it is the identity.
+  static List<List<int>> _elementary(int n, int i, int j, int k) =>
+      List.generate(
+        n,
+        (r) => List.generate(
+          n,
+          (c) => (r == c ? 1 : 0) + (r == i && c == j && i != j ? k : 0),
+        ),
+      );
+
+  static List<List<int>> _multiply(List<List<int>> a, List<List<int>> b) =>
+      List.generate(
+        a.length,
+        (r) => List.generate(b.first.length, (c) {
+          var sum = 0;
+          for (var m = 0; m < b.length; m++) {
+            sum += a[r][m] * b[m][c];
+          }
+          return sum;
+        }),
+      );
+
+  static Rational _integerDeterminant(List<List<int>> data) {
+    var matrix = Matrix.fromInts(data);
+    var det = Rational.one;
+    for (var c = 0; c < matrix.cols; c++) {
+      var pivot = -1;
+      for (var r = c; r < matrix.rows; r++) {
+        if (!matrix.get(r, c).isZero) {
+          pivot = r;
+          break;
+        }
+      }
+      if (pivot < 0) return Rational.zero;
+      if (pivot != c) {
+        matrix = matrix.swapRows(pivot, c);
+        det = -det;
+      }
+      det = det * matrix.get(c, c);
+      for (var r = c + 1; r < matrix.rows; r++) {
+        matrix = matrix.addRowMultiple(
+          r,
+          c,
+          -(matrix.get(r, c) / matrix.get(c, c)),
+        );
+      }
+    }
+    return det;
   }
 
   void presetIdentity() {
     final isA = state.activeMatrix == 0;
     final rows = isA ? state.rowsA : state.rowsB;
     final cols = isA ? state.colsA : state.colsB;
-
-    final newData = List.generate(
-      rows,
-      (r) => List.generate(cols, (c) => r == c ? '1' : '0'),
+    _applyPreset(
+      List.generate(rows, (r) => List.generate(cols, (c) => r == c ? '1' : '0')),
     );
-
-    if (isA) {
-      emit(state.copyWith(dataA: newData));
-    } else {
-      emit(state.copyWith(dataB: newData));
-    }
   }
 
   void presetClear() {
     final isA = state.activeMatrix == 0;
     final rows = isA ? state.rowsA : state.rowsB;
     final cols = isA ? state.colsA : state.colsB;
-
-    final newData = List.generate(rows, (_) => List.generate(cols, (_) => '0'));
-
-    if (isA) {
-      emit(state.copyWith(dataA: newData));
-    } else {
-      emit(state.copyWith(dataB: newData));
-    }
+    _applyPreset(List.generate(rows, (_) => List.generate(cols, (_) => '0')));
   }
 
   void _updateCell(bool isA, int r, int c, String val) {

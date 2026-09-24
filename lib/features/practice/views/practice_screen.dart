@@ -4,6 +4,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/matrix_bracket.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/widgets/language_menu.dart';
 import '../../step_player/widgets/matrix_cell_widget.dart';
@@ -242,9 +243,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Score Badge
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
+                          // Score Badge, sized to its content rather than the
+                          // full column width.
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
@@ -284,6 +287,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 ),
                               ],
                             ),
+                          ),
                           ),
                           const SizedBox(height: 12),
                           // Question Header & Tag
@@ -414,7 +418,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                       ? AppTheme.borderDark
                                       : AppTheme.borderLight,
                                 ),
-                                boxShadow: AppTheme.cardShadow(isDark),
                               ),
                               child: _buildMatrixPreview(q.matrix, isDark),
                             ),
@@ -546,16 +549,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Widget _buildMatrixPreview(Matrix m, bool isDark) {
-    final bracketColor = isDark
-        ? const Color(0xFF64748B)
-        : const Color(0xFF475569);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildBracket(
-            bracketColor,
+          MatrixBracket(
+            width: 8,
+            thickness: 2.2,
             height:
                 (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
@@ -583,8 +584,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
             }),
           ),
           const SizedBox(width: 4),
-          _buildBracket(
-            bracketColor,
+          MatrixBracket(
+            width: 8,
+            thickness: 2.2,
             height:
                 (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
@@ -692,28 +694,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBracket(
-    Color color, {
-    required double height,
-    required bool isLeft,
-  }) {
-    return Container(
-      width: 8,
-      height: height,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: color, width: 2.2),
-          bottom: BorderSide(color: color, width: 2.2),
-          left: isLeft ? BorderSide(color: color, width: 2.2) : BorderSide.none,
-          right: !isLeft
-              ? BorderSide(color: color, width: 2.2)
-              : BorderSide.none,
         ),
       ),
     );

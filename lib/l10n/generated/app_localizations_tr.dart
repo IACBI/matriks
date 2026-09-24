@@ -186,11 +186,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get changeLanguage => 'Dil';
 
   @override
-  String solveError(Object error) {
-    return 'Hata: $error';
-  }
-
-  @override
   String get solveFallbackError => 'Matris çözülemedi.';
 
   @override

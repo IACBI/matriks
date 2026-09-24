@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -76,6 +77,42 @@ class SettingsState {
         ? shortcutOverrides
         : Map.unmodifiable(shortcuts),
     storageError: storageError ?? this.storageError,
+  );
+
+  // Value equality lets the cubit skip emitting an unchanged state, which
+  // rebuilt the whole MaterialApp (and both themes) after every save.
+  @override
+  bool operator ==(Object other) =>
+      other is SettingsState &&
+      other.themeMode == themeMode &&
+      other.locale == locale &&
+      other.isDecimalView == isDecimalView &&
+      other.defaultPlaybackSpeed == defaultPlaybackSpeed &&
+      other.solutionMode == solutionMode &&
+      other.explanationLevel == explanationLevel &&
+      other.accentPalette == accentPalette &&
+      other.reduceMotion == reduceMotion &&
+      other.predictions == predictions &&
+      other.compact == compact &&
+      mapEquals(other.shortcuts, shortcuts) &&
+      other.storageError == storageError;
+
+  @override
+  int get hashCode => Object.hash(
+    themeMode,
+    locale,
+    isDecimalView,
+    defaultPlaybackSpeed,
+    solutionMode,
+    explanationLevel,
+    accentPalette,
+    reduceMotion,
+    predictions,
+    compact,
+    Object.hashAllUnordered(
+      shortcuts.entries.map((e) => Object.hash(e.key, e.value)),
+    ),
+    storageError,
   );
 
   Map<String, Object?> toJson() => {

@@ -54,7 +54,6 @@
   "close": "Kapat",
   "toggleTheme": "Temayı Değiştir",
   "changeLanguage": "Dil",
-  "solveError": "Hata: {error}",
   "solveFallbackError": "Matris çözülemedi.",
   "legendPivot": "Pivot",
   "legendSource": "Kaynak",

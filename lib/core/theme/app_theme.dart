@@ -9,11 +9,7 @@ class AppTheme {
   static const accentPurple = Color(0xFF8664C4);
   static const accentGreen = Color(0xFF208466);
   static const accentRed = Color(0xFFD14848);
-  static const accentTeal = Color(0xFF25877E);
-  static const accentPink = Color(0xFFBC5387);
   static const accentIndigo = Color(0xFF6575C5);
-  static const accentOrange = Color(0xFFBE702B);
-  static const accentRose = Color(0xFFB84B69);
   static const scaffoldLight = Color(0xFFF5F7FA);
   static const surfaceLight = Color(0xFFFFFFFF);
   static const surfaceVariantLight = Color(0xFFEDF0F4);
@@ -43,10 +39,6 @@ class AppTheme {
       MediaQuery.disableAnimationsOf(context)
       ? Duration.zero
       : Duration(milliseconds: milliseconds);
-  static List<BoxShadow> cardShadow(bool isDark) => const [];
-  static List<BoxShadow> elevatedShadow(bool isDark) => const [
-    BoxShadow(color: Color(0x14000000), blurRadius: 24, offset: Offset(0, 8)),
-  ];
   static final ThemeData lightTheme = _build(false);
   static final ThemeData darkTheme = _build(true);
 

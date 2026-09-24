@@ -58,7 +58,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/branding/
+    # Only the in-app logo; the full-size master in assets/branding/ is the
+    # source for tool/export_branding.py and is not bundled.
+    - assets/branding/matriks_icon.png
     - assets/flags/
   generate: true
   uses-material-design: true

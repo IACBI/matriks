@@ -3,6 +3,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/widgets/math_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../step_text.dart';
 import 'matrix_display_grid.dart';
 
 class SolutionStatus extends StatelessWidget {
@@ -23,7 +24,12 @@ class SolutionStatus extends StatelessWidget {
           children: [
             if (solution.isSuccess)
               Chip(
-                avatar: const Icon(Icons.verified_outlined, size: 18),
+                avatar: Icon(
+                  solution.accuracy == ResultAccuracy.exact
+                      ? Icons.verified_outlined
+                      : Icons.data_usage_rounded,
+                  size: 18,
+                ),
                 label: Text(
                   solution.accuracy == ResultAccuracy.exact
                       ? l.resultExact
@@ -67,14 +73,7 @@ class SolutionSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final error = switch (solution.errorMessageKey) {
-      'error_matrix_is_singular' => l.error_matrix_is_singular,
-      'error_inverse_not_square' => l.error_inverse_not_square,
-      'error_dimension_mismatch_add' => l.error_dimension_mismatch_add,
-      'error_dimension_mismatch_multiply' =>
-        l.error_dimension_mismatch_multiply,
-      _ => l.solveFallbackError,
-    };
+    final error = localizedSolverError(l, solution.errorMessageKey);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(

@@ -110,7 +110,6 @@
   "close": "Cerrar",
   "toggleTheme": "Cambiar tema",
   "changeLanguage": "Idioma",
-  "solveError": "Error: {error}",
   "solveFallbackError": "No se pudo resolver la matriz.",
   "legendPivot": "Pivote",
   "legendSource": "Origen",

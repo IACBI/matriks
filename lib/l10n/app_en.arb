@@ -54,7 +54,6 @@
   "close": "Close",
   "toggleTheme": "Toggle Theme",
   "changeLanguage": "Language",
-  "solveError": "Error: {error}",
   "solveFallbackError": "Could not solve matrix.",
   "legendPivot": "Pivot",
   "legendSource": "Source",

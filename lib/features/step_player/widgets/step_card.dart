@@ -45,8 +45,10 @@ class StepCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // The rationale below is titled "Why this works"; this card holds the
+          // step's explanation, so it is headed as such.
           Text(
-            l10n?.stepExplanation ?? 'Why this works',
+            l10n?.explanation ?? 'Explanation',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           if (showTitle) ...[

@@ -176,11 +176,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get changeLanguage => '语言';
 
   @override
-  String solveError(Object error) {
-    return '错误：$error';
-  }
-
-  @override
   String get solveFallbackError => '无法完成矩阵求解。';
 
   @override

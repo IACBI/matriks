@@ -428,12 +428,6 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get changeLanguage;
 
-  /// No description provided for @solveError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error: {error}'**
-  String solveError(Object error);
-
   /// No description provided for @solveFallbackError.
   ///
   /// In en, this message translates to:

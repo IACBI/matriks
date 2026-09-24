@@ -19,17 +19,23 @@ import '../widgets/instruction_lesson.dart';
 import '../widgets/solution_summary.dart';
 import '../widgets/prediction_card.dart';
 import '../../settings/cubit/settings_state.dart';
+import '../step_text.dart';
 
 class StepPlayerScreen extends StatelessWidget {
   final StepSolution solution;
   final String topicTitle;
   final bool workedExample;
 
+  /// Offered when the lesson ends: a worked example opens the editor for the
+  /// same topic, a solved input returns to its matrix.
+  final VoidCallback? onOwnMatrix;
+
   const StepPlayerScreen({
     super.key,
     required this.solution,
     required this.topicTitle,
     this.workedExample = false,
+    this.onOwnMatrix,
   });
 
   @override
@@ -46,6 +52,7 @@ class StepPlayerScreen extends StatelessWidget {
       child: _StepPlayerView(
         topicTitle: topicTitle,
         workedExample: workedExample,
+        onOwnMatrix: onOwnMatrix,
       ),
     );
   }
@@ -54,10 +61,12 @@ class StepPlayerScreen extends StatelessWidget {
 class _StepPlayerView extends StatefulWidget {
   final String topicTitle;
   final bool workedExample;
+  final VoidCallback? onOwnMatrix;
 
   const _StepPlayerView({
     required this.topicTitle,
     required this.workedExample,
+    this.onOwnMatrix,
   });
 
   @override
@@ -69,7 +78,22 @@ class _StepPlayerViewState extends State<_StepPlayerView>
   final _matrixKey = GlobalKey();
   final Set<int> _predicted = {};
   int? _pendingPrediction;
+  (StepSolution, bool, MatrixLayoutHint)? _layout;
   String get topicTitle => widget.topicTitle;
+
+  /// Measured once per solution and number view so the matrix keeps its size
+  /// from step to step.
+  MatrixLayoutHint _layoutFor(StepSolution solution, bool decimal) {
+    final cached = _layout;
+    if (cached != null &&
+        identical(cached.$1, solution) &&
+        cached.$2 == decimal) {
+      return cached.$3;
+    }
+    final hint = MatrixLayoutHint.forSolution(solution, decimal: decimal);
+    _layout = (solution, decimal, hint);
+    return hint;
+  }
 
   @override
   void initState() {
@@ -90,7 +114,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocConsumer<PlayerCubit, PlayerState>(
@@ -143,10 +167,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
             appBar: AppBar(title: Text(topicTitle)),
             body: Center(
               child: Text(
-                state.solution.errorMessageKey != null
-                    ? _resolveKey(l10n, state.solution.errorMessageKey!)
-                    : (l10n?.solveFallbackError ??
-                          'No solution steps generated.'),
+                localizedSolverError(l10n, state.solution.errorMessageKey),
               ),
             ),
           );
@@ -171,9 +192,13 @@ class _StepPlayerViewState extends State<_StepPlayerView>
         // the step list all show this as prose, and a title carrying TeX reached
         // the heading unconverted when only the card was wrapped.
         final title = readableMathProse(
-          _resolveString(l10n, currentStep.titleKey, currentStep.titleParams),
+          localizedStepText(
+            l10n,
+            currentStep.titleKey,
+            currentStep.titleParams,
+          ),
         );
-        final description = _resolveString(
+        final description = localizedStepText(
           l10n,
           currentStep.explanationKey,
           currentStep.explanationParams,
@@ -253,7 +278,23 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           onScrubStart: playerCubit.scrub,
           onReplay: playerCubit.replay,
           onCellTap: (r, c) => playerCubit.inspectCell(r, c),
+          layoutHint: _layoutFor(state.solution, settingsState.isDecimalView),
         );
+        final lessonEnd = state.isLastStep && state.hasCompletedAnimation
+            ? _LessonComplete(
+                onShowResult: playerCubit.showResult,
+                onReplay: () {
+                  playerCubit.jumpToStep(0);
+                  playerCubit.play();
+                },
+                ownMatrixLabel: widget.onOwnMatrix == null
+                    ? null
+                    : widget.workedExample
+                    ? l10n.tryOwnMatrix
+                    : l10n.editMatrix,
+                onOwnMatrix: widget.onOwnMatrix,
+              )
+            : null;
 
         return Focus(
           autofocus: true,
@@ -269,13 +310,13 @@ class _StepPlayerViewState extends State<_StepPlayerView>
               ),
               actions: [
                 IconButton(
-                  tooltip: l10n!.showResult,
+                  tooltip: l10n.showResult,
                   onPressed: playerCubit.showResult,
                   icon: const Icon(Icons.last_page_rounded),
                 ),
                 PopupMenuButton<SolutionMode>(
                   tooltip: l10n.solutionModeLabel,
-                  icon: const Icon(Icons.tune_rounded),
+                  icon: const Icon(Icons.slideshow_rounded),
                   initialValue: state.mode,
                   onSelected: playerCubit.setMode,
                   itemBuilder: (_) => [
@@ -306,8 +347,8 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: settingsState.isDecimalView
-                            ? AppTheme.accentCyan
-                            : (isDark ? const Color(0xFF475569) : Colors.grey),
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outline,
                       ),
                     ),
                     child: Text(
@@ -316,7 +357,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: settingsState.isDecimalView
-                            ? AppTheme.accentCyan
+                            ? Theme.of(context).colorScheme.primary
                             : null,
                       ),
                     ),
@@ -336,8 +377,10 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                       backgroundColor: isDark
                           ? AppTheme.surfaceVariantDark
                           : AppTheme.borderLight,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        AppTheme.primaryBlue,
+                      // Follows the accent palette and keeps its contrast on
+                      // the dark surface, which the fixed light-theme blue lost.
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.primary,
                       ),
                       minHeight: 3,
                     ),
@@ -362,11 +405,15 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                       children: [
                                         Align(
                                           alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineSmall,
+                                          child: Semantics(
+                                            header: true,
+                                            liveRegion: true,
+                                            child: Text(
+                                              title,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineSmall,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(height: 24),
@@ -378,6 +425,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                             transformation:
                                                 currentStep.transformation
                                                     as RowEliminationTransformation,
+                                            seed: state.currentStepIndex,
                                             onContinue: () => setState(() {
                                               _predicted.add(
                                                 state.currentStepIndex,
@@ -402,26 +450,36 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                 flex: 2,
                                 child: SingleChildScrollView(
                                   padding: const EdgeInsets.all(24.0),
-                                  child: StepCard(
-                                    showTitle: false,
-                                    explanationLevel:
-                                        settingsState.explanationLevel,
-                                    step: currentStep,
-                                    localizedTitle: title,
-                                    localizedDescription: description,
-                                    rationale: InstructionLesson.forStep(
-                                      transformation:
-                                          currentStep.transformation,
-                                      before: currentStep.matrixBefore,
-                                      after: currentStep.matrixAfter,
-                                      l10n: l10n,
-                                    ).rationale,
-                                    onExpandCalculations: playerCubit.pause,
-                                    onSubCalculationTap: (sub) =>
-                                        playerCubit.inspectCell(
-                                          sub.targetRow,
-                                          sub.targetCol,
-                                        ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      StepCard(
+                                        showTitle: false,
+                                        explanationLevel:
+                                            settingsState.explanationLevel,
+                                        step: currentStep,
+                                        localizedTitle: title,
+                                        localizedDescription: description,
+                                        rationale: InstructionLesson.forStep(
+                                          transformation:
+                                              currentStep.transformation,
+                                          before: currentStep.matrixBefore,
+                                          after: currentStep.matrixAfter,
+                                          l10n: l10n,
+                                        ).rationale,
+                                        onExpandCalculations: playerCubit.pause,
+                                        onSubCalculationTap: (sub) =>
+                                            playerCubit.inspectCell(
+                                              sub.targetRow,
+                                              sub.targetCol,
+                                            ),
+                                      ),
+                                      if (lessonEnd != null) ...[
+                                        const SizedBox(height: 16),
+                                        lessonEnd,
+                                      ],
+                                    ],
                                   ),
                                 ),
                               ),
@@ -437,6 +495,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                               children: [
                                 Semantics(
                                   header: true,
+                                  liveRegion: true,
                                   child: Text(
                                     title,
                                     style: Theme.of(context)
@@ -450,6 +509,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                     transformation:
                                         currentStep.transformation
                                             as RowEliminationTransformation,
+                                    seed: state.currentStepIndex,
                                     onContinue: () => setState(() {
                                       _predicted.add(state.currentStepIndex);
                                       _pendingPrediction = null;
@@ -486,6 +546,10 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                         sub.targetCol,
                                       ),
                                 ),
+                                if (lessonEnd != null) ...[
+                                  const SizedBox(height: 16),
+                                  lessonEnd,
+                                ],
                               ],
                             ),
                           ),
@@ -493,6 +557,9 @@ class _StepPlayerViewState extends State<_StepPlayerView>
 
                   // Bottom Player Controls
                   PlayerControlBar(
+                    // Static steps have nothing to play; only a prediction
+                    // temporarily disables the control.
+                    showPlayback: state.mode == SolutionMode.guided,
                     animationEnabled:
                         state.mode == SolutionMode.guided && !prediction,
                     currentStepIndex: state.currentStepIndex,
@@ -500,7 +567,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                     stepTitles: state.solution.steps
                         .map(
                           (step) => readableMathProse(
-                            _resolveString(
+                            localizedStepText(
                               l10n,
                               step.titleKey,
                               step.titleParams,
@@ -528,319 +595,76 @@ class _StepPlayerViewState extends State<_StepPlayerView>
       },
     );
   }
+}
 
-  String _resolveKey(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'stepAlreadyReducedTitle':
-        return l10n.stepAlreadyReducedTitle;
-      case 'stepAlreadyReducedDesc':
-        return l10n.stepAlreadyReducedDesc;
-      case 'error_matrix_is_singular':
-        return l10n.error_matrix_is_singular;
-      case 'error_inverse_not_square':
-        return l10n.error_inverse_not_square;
-      case 'error_dimension_mismatch_add':
-        return l10n.error_dimension_mismatch_add;
-      case 'error_dimension_mismatch_multiply':
-        return l10n.error_dimension_mismatch_multiply;
-      default:
-        return key;
-    }
-  }
+/// Shown under the explanation once the last step has finished.
+class _LessonComplete extends StatelessWidget {
+  final VoidCallback onShowResult;
+  final VoidCallback onReplay;
+  final String? ownMatrixLabel;
+  final VoidCallback? onOwnMatrix;
 
-  String _resolveString(
-    AppLocalizations? l10n,
-    String key,
-    Map<String, dynamic> params,
-  ) {
-    if (l10n == null) return key;
-    try {
-      switch (key) {
-        case 'stepAlreadyReducedTitle':
-          return l10n.stepAlreadyReducedTitle;
-        case 'stepAlreadyReducedDesc':
-          return l10n.stepAlreadyReducedDesc;
-        case 'step_row_swap_title':
-          return l10n.step_row_swap_title(
-            params['rowA'] ?? 0,
-            params['rowB'] ?? 0,
-          );
-        case 'step_row_swap_desc':
-          return l10n.step_row_swap_desc(
-            params['col'] ?? 0,
-            params['pivot']?.toString() ?? '',
-            params['rowA'] ?? 0,
-            params['rowB'] ?? 0,
-          );
-        case 'step_row_scale_title':
-          return l10n.step_row_scale_title(params['row'] ?? 0);
-        case 'step_row_scale_desc':
-          return l10n.step_row_scale_desc(
-            params['factor']?.toString() ?? '',
-            params['row'] ?? 0,
-          );
-        case 'step_row_elimination_title':
-          return l10n.step_row_elimination_title(params['target'] ?? 0);
-        case 'step_row_elimination_desc':
-          return l10n.step_row_elimination_desc(
-            params['col'] ?? 0,
-            params['multiplier']?.toString() ?? '',
-            params['source'] ?? 0,
-            params['target'] ?? 0,
-          );
+  const _LessonComplete({
+    required this.onShowResult,
+    required this.onReplay,
+    this.ownMatrixLabel,
+    this.onOwnMatrix,
+  });
 
-        // Determinant keys
-        case 'det_1x1_title':
-          return l10n.det_1x1_title;
-        case 'det_1x1_desc':
-          return l10n.det_1x1_desc(params['val']?.toString() ?? '');
-        case 'det_2x2_main_diagonal_title':
-          return l10n.det_2x2_main_diagonal_title;
-        case 'det_2x2_main_diagonal_desc':
-          return l10n.det_2x2_main_diagonal_desc(
-            params['a']?.toString() ?? '',
-            params['d']?.toString() ?? '',
-            params['product']?.toString() ?? '',
-          );
-        case 'det_2x2_anti_diagonal_title':
-          return l10n.det_2x2_anti_diagonal_title;
-        case 'det_2x2_anti_diagonal_desc':
-          return l10n.det_2x2_anti_diagonal_desc(
-            params['b']?.toString() ?? '',
-            params['c']?.toString() ?? '',
-            params['product']?.toString() ?? '',
-          );
-        case 'det_2x2_final_title':
-          return l10n.det_2x2_final_title;
-        case 'det_2x2_final_desc':
-          return l10n.det_2x2_final_desc(
-            params['anti']?.toString() ?? '',
-            params['det']?.toString() ?? '',
-            params['main']?.toString() ?? '',
-          );
-        case 'det_sarrus_pos_title':
-          return l10n.det_sarrus_pos_title;
-        case 'det_sarrus_pos_desc':
-          return l10n.det_sarrus_pos_desc(
-            params['p1']?.toString() ?? '',
-            params['p2']?.toString() ?? '',
-            params['p3']?.toString() ?? '',
-            params['total']?.toString() ?? '',
-          );
-        case 'det_sarrus_neg_title':
-          return l10n.det_sarrus_neg_title;
-        case 'det_sarrus_neg_desc':
-          return l10n.det_sarrus_neg_desc(
-            params['n1']?.toString() ?? '',
-            params['n2']?.toString() ?? '',
-            params['n3']?.toString() ?? '',
-            params['total']?.toString() ?? '',
-          );
-        case 'det_sarrus_final_title':
-          return l10n.det_sarrus_final_title;
-        case 'det_sarrus_final_desc':
-          return l10n.det_sarrus_final_desc(
-            params['det']?.toString() ?? '',
-            params['neg']?.toString() ?? '',
-            params['pos']?.toString() ?? '',
-          );
-        case 'det_singular_column_title':
-          return l10n.det_singular_column_title;
-        case 'det_singular_column_desc':
-          return l10n.det_singular_column_desc(params['col'] ?? 0);
-        case 'det_row_swap_title':
-          return l10n.det_row_swap_title;
-        case 'det_row_swap_desc':
-          return l10n.det_row_swap_desc(
-            params['rowA'] ?? 0,
-            params['rowB'] ?? 0,
-          );
-        case 'det_diagonal_product_title':
-          return l10n.det_diagonal_product_title;
-        case 'det_diagonal_product_desc':
-          return l10n.det_diagonal_product_desc(
-            params['det']?.toString() ?? '',
-            params['diagonals']?.toString() ?? '',
-            params['sign']?.toString() ?? '',
-          );
-
-        // Inverse keys
-        case 'inverse_singular_title':
-          return l10n.inverse_singular_title;
-        case 'inverse_singular_desc':
-          return l10n.inverse_singular_desc;
-        case 'inverse_2x2_det_title':
-          return l10n.inverse_2x2_det_title;
-        case 'inverse_2x2_det_desc':
-          return l10n.inverse_2x2_det_desc(
-            params['det']?.toString() ?? '',
-            params['formula']?.toString() ?? '',
-          );
-        case 'inverse_2x2_adjoint_title':
-          return l10n.inverse_2x2_adjoint_title;
-        case 'inverse_2x2_adjoint_desc':
-          return l10n.inverse_2x2_adjoint_desc;
-        case 'inverse_2x2_scale_title':
-          return l10n.inverse_2x2_scale_title;
-        case 'inverse_2x2_scale_desc':
-          return l10n.inverse_2x2_scale_desc(
-            params['factor']?.toString() ?? '',
-          );
-        case 'inverse_block_init_title':
-          return l10n.inverse_block_init_title;
-        case 'inverse_block_init_desc':
-          return l10n.inverse_block_init_desc(params['n'] ?? 0);
-        case 'inverse_block_extract_title':
-          return l10n.inverse_block_extract_title;
-        case 'inverse_block_extract_desc':
-          return l10n.inverse_block_extract_desc;
-
-        // Arithmetic keys
-        case 'arithmetic_add_cell_title':
-          return l10n.arithmetic_add_cell_title(
-            params['col'] ?? 0,
-            params['row'] ?? 0,
-          );
-        case 'arithmetic_add_cell_desc':
-          return l10n.arithmetic_add_cell_desc(
-            params['formula']?.toString() ?? '',
-          );
-        case 'arithmetic_mult_cell_title':
-          return l10n.arithmetic_mult_cell_title(
-            params['col'] ?? 0,
-            params['row'] ?? 0,
-          );
-        case 'arithmetic_mult_cell_desc':
-          return l10n.arithmetic_mult_cell_desc(
-            params['col'] ?? 0,
-            params['formula']?.toString() ?? '',
-            params['row'] ?? 0,
-          );
-
-        // Linear systems
-        case 'system_inconsistent_title':
-          return l10n.system_inconsistent_title(params['row'] ?? 0);
-        case 'system_inconsistent_desc':
-          return l10n.system_inconsistent_desc(
-            params['row'] ?? 0,
-            params['val']?.toString() ?? '',
-          );
-        case 'system_unique_title':
-          return l10n.system_unique_title;
-        case 'system_unique_desc':
-          return l10n.system_unique_desc(params['solution']?.toString() ?? '');
-        case 'system_infinite_title':
-          return l10n.system_infinite_title(params['count'] ?? 0);
-        case 'system_infinite_desc':
-          return l10n.system_infinite_desc(
-            params['freeVars']?.toString() ?? '',
-            params['params']?.toString() ?? '',
-          );
-
-        // Rank-nullity
-        case 'rank_nullity_title':
-          return l10n.rank_nullity_title(
-            params['nullity'] ?? 0,
-            params['rank'] ?? 0,
-          );
-        case 'rank_nullity_desc':
-          return l10n.rank_nullity_desc(
-            params['cols'] ?? 0,
-            params['nullity'] ?? 0,
-            params['rank'] ?? 0,
-          );
-
-        case 'eigen_vector_approx_title':
-          return l10n.eigen_vector_approx_title(
-            params['index'].toString(),
-            params['lambda'].toString(),
-          );
-        case 'eigen_vector_approx_desc':
-          return l10n.eigen_vector_approx_desc(
-            params['lambda'].toString(),
-            params['vector'].toString(),
-          );
-        // Eigen
-        case 'eigen_char_poly_title':
-          return l10n.eigen_char_poly_title;
-        case 'eigen_trace_det_desc':
-          return l10n.eigen_trace_det_desc(
-            params['det']?.toString() ?? '',
-            params['trace']?.toString() ?? '',
-          );
-        case 'eigen_complex_title':
-          return l10n.eigen_complex_title;
-        case 'eigen_complex_desc':
-          return l10n.eigen_complex_desc(
-            params['poly']?.toString() ?? '',
-            params['roots']?.toString() ?? '',
-          );
-        case 'eigen_roots_title':
-          return l10n.eigen_roots_title;
-        case 'eigen_roots_approx_desc':
-          return l10n.eigen_roots_approx_desc(
-            params['poly']?.toString() ?? '',
-            params['roots']?.toString() ?? '',
-          );
-        case 'eigen_roots_desc':
-          return l10n.eigen_roots_desc(
-            params['poly']?.toString() ?? '',
-            params['roots']?.toString() ?? '',
-          );
-        case 'eigen_vector_title':
-          return l10n.eigen_vector_title(
-            params['index'] ?? 0,
-            params['lambda']?.toString() ?? '',
-          );
-        case 'eigen_vector_desc':
-          return l10n.eigen_vector_desc(
-            params['lambda']?.toString() ?? '',
-            params['vector']?.toString() ?? '',
-          );
-        case 'eigen_3x3_poly_desc':
-          return l10n.eigen_3x3_poly_desc(
-            params['det']?.toString() ?? '',
-            params['poly']?.toString() ?? '',
-            params['trace']?.toString() ?? '',
-          );
-        case 'eigen_cubic_complex_desc':
-          return l10n.eigen_cubic_complex_desc(
-            params['complex']?.toString() ?? '',
-            params['poly']?.toString() ?? '',
-            params['roots']?.toString() ?? '',
-          );
-        case 'eigen_irrational_desc':
-          return l10n.eigen_irrational_desc(params['poly']?.toString() ?? '');
-
-        // LU Decomposition
-        case 'lu_init_title':
-          return l10n.lu_init_title;
-        case 'lu_init_desc':
-          return l10n.lu_init_desc;
-        case 'lu_swap_desc':
-          return l10n.lu_swap_desc(params['rowA'] ?? 0, params['rowB'] ?? 0);
-        case 'lu_elim_title':
-          return l10n.lu_elim_title(
-            params['source'] ?? 0,
-            params['target'] ?? 0,
-          );
-        case 'lu_elim_desc':
-          return l10n.lu_elim_desc(
-            params['multiplier']?.toString() ?? '',
-            params['source'] ?? 0,
-            params['target'] ?? 0,
-          );
-        case 'lu_final_title':
-          return l10n.lu_final_title;
-        case 'lu_final_desc':
-          return l10n.lu_final_desc;
-
-        default:
-          return key;
-      }
-    } catch (_) {
-      return key;
-    }
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    return Card(
+      key: const ValueKey('lesson-complete'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.flag_rounded, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      l10n.lessonComplete,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(l10n.lessonCompleteHint, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  onPressed: onShowResult,
+                  icon: const Icon(Icons.last_page_rounded),
+                  label: Text(l10n.showResult),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onReplay,
+                  icon: const Icon(Icons.restart_alt_rounded),
+                  label: Text(l10n.replayLesson),
+                ),
+                if (onOwnMatrix != null && ownMatrixLabel != null)
+                  OutlinedButton.icon(
+                    onPressed: onOwnMatrix,
+                    icon: const Icon(Icons.edit_outlined),
+                    label: Text(ownMatrixLabel!),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

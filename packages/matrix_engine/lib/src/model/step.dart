@@ -119,7 +119,8 @@ class RowScaleTransformation extends StepTransformation {
 class RowEliminationTransformation extends StepTransformation {
   final int targetRow;
   final int sourceRow;
-  final Rational factor; // targetRow = targetRow - (factor * sourceRow)
+  /// targetRow ← targetRow + factor · sourceRow (the negated multiplier).
+  final Rational factor;
   const RowEliminationTransformation({
     required this.targetRow,
     required this.sourceRow,
@@ -156,21 +157,6 @@ class DeterminantSarrusTransformation extends StepTransformation {
     required this.positiveProducts,
     required this.negativeProducts,
     this.phase = 3,
-  });
-}
-
-class DeterminantCofactorTransformation extends StepTransformation {
-  final int pivotRow;
-  final int pivotCol;
-  final Rational element;
-  final Rational sign; // +1 or -1
-  final MatrixSnapshot minorMatrix;
-  const DeterminantCofactorTransformation({
-    required this.pivotRow,
-    required this.pivotCol,
-    required this.element,
-    required this.sign,
-    required this.minorMatrix,
   });
 }
 

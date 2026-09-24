@@ -9,6 +9,8 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_numpad.dart';
+import '../../../core/widgets/matrix_bracket.dart';
+import '../../step_player/step_text.dart';
 import '../../step_player/views/step_player_screen.dart';
 import '../../topics/models/topic_item.dart';
 import '../matrix_input_cubit.dart';
@@ -45,7 +47,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -120,15 +122,18 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
         final canDecrementCols = currentCols > minCols;
         final canIncrementCols = currentCols < 5;
 
+        // B's rows follow A's columns in a product; say why they are locked.
+        final rowsLocked = !isA && topic.type == TopicType.multiply;
+
         Widget buildDimensionRow() {
-          return Wrap(
+          final row = Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 4,
             runSpacing: 8,
             children: [
               Text(
-                '${l10n?.size ?? 'Size'}: ',
+                '${l10n.size}: ',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               _buildDimensionChip(
@@ -137,9 +142,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 canDecrement: canDecrementRows,
                 canIncrement: canIncrementRows,
                 decrementTooltip:
-                    l10n?.decreaseDimension ?? 'Decrease dimension',
+                    l10n.decreaseDimension,
                 incrementTooltip:
-                    l10n?.increaseDimension ?? 'Increase dimension',
+                    l10n.increaseDimension,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows - 1, currentCols);
@@ -169,9 +174,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 canDecrement: canDecrementCols,
                 canIncrement: canIncrementCols,
                 decrementTooltip:
-                    l10n?.decreaseDimension ?? 'Decrease dimension',
+                    l10n.decreaseDimension,
                 incrementTooltip:
-                    l10n?.increaseDimension ?? 'Increase dimension',
+                    l10n.increaseDimension,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows, currentCols - 1);
@@ -189,6 +194,35 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
               ),
             ],
           );
+          if (!rowsLocked) return row;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              row,
+              const SizedBox(height: 6),
+              Text(
+                l10n.multiplyRowsLocked,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          );
+        }
+
+        void applyPreset(VoidCallback preset) {
+          preset();
+          final messenger = ScaffoldMessenger.of(context);
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(l10n.presetApplied(isA ? 'A' : 'B')),
+                action: SnackBarAction(
+                  label: l10n.undo,
+                  onPressed: cubit.undoPreset,
+                ),
+              ),
+            );
         }
 
         Widget buildMatrixCanvas() {
@@ -200,8 +234,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                   liveRegion: true,
                   child: Text(
                     visibleError ??
-                        l10n?.inputHelp ??
-                        'Select a cell and enter a number.',
+                        l10n.inputHelp,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: visibleError != null
@@ -221,8 +254,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _buildBracket(
-                              isDark,
+                            MatrixBracket(
                               height: currentRows * 60 - 8,
                               isLeft: true,
                             ),
@@ -243,7 +275,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                         Rational.tryParse(cellVal) == null;
 
                                     final cellWidget = Semantics(
-                                      label: l10n?.inputCell(
+                                      label: l10n.inputCell(
                                         isA ? 'A' : 'B',
                                         r + 1,
                                         c + 1,
@@ -340,8 +372,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                               }),
                             ),
                             const SizedBox(width: 4),
-                            _buildBracket(
-                              isDark,
+                            MatrixBracket(
                               height: currentRows * 60 - 8,
                               isLeft: false,
                             ),
@@ -377,8 +408,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                     : const Icon(Icons.play_arrow_rounded),
                 label: Text(
                   _isSolving
-                      ? (l10n?.calculating ?? 'Calculating…')
-                      : (l10n?.calculate ?? 'Solve & Animate'),
+                      ? (l10n.calculating)
+                      : (l10n.calculate),
                 ),
               ),
             ),
@@ -397,22 +428,22 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           },
           child: Scaffold(
             appBar: AppBar(
-              title: Text(_resolveTopicTitle(l10n, topic.titleKey)),
+              title: Text(topic.title(l10n)),
               actions: [
                 IconButton(
-                  tooltip: l10n?.presetRandom ?? 'Random',
+                  tooltip: l10n.presetRandom,
                   icon: const Icon(Icons.casino_outlined),
-                  onPressed: cubit.presetRandom,
+                  onPressed: () => applyPreset(cubit.presetRandom),
                 ),
                 IconButton(
-                  tooltip: l10n?.presetIdentity ?? 'Identity',
+                  tooltip: l10n.presetIdentity,
                   icon: const Icon(Icons.grid_3x3),
-                  onPressed: cubit.presetIdentity,
+                  onPressed: () => applyPreset(cubit.presetIdentity),
                 ),
                 IconButton(
-                  tooltip: l10n?.presetClear ?? 'Clear',
+                  tooltip: l10n.presetClear,
                   icon: const Icon(Icons.delete_outline),
-                  onPressed: cubit.presetClear,
+                  onPressed: () => applyPreset(cubit.presetClear),
                 ),
               ],
             ),
@@ -434,16 +465,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                           // Left: Dimension Selector + Matrix Canvas
                           Expanded(
                             flex: 5,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0,
-                                  ),
-                                  child: const SizedBox.shrink(),
-                                ),
-                                Expanded(child: buildMatrixCanvas()),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: buildMatrixCanvas(),
                             ),
                           ),
                           VerticalDivider(
@@ -474,13 +498,13 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                           ButtonSegment(
                                             value: 0,
                                             label: Text(
-                                              l10n?.matrixA ?? 'Matrix A',
+                                              l10n.matrixA,
                                             ),
                                           ),
                                           ButtonSegment(
                                             value: 1,
                                             label: Text(
-                                              l10n?.matrixB ?? 'Matrix B',
+                                              l10n.matrixB,
                                             ),
                                           ),
                                         ],
@@ -503,6 +527,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                     onBackspace: cubit.onBackspace,
                                     onClear: cubit.onClear,
                                     onNextCell: cubit.onNextCell,
+                                    onNextRow: cubit.onNextRow,
                                     onPrevCell: cubit.onPrevCell,
                                   ),
                                 ],
@@ -528,11 +553,11 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                 segments: [
                                   ButtonSegment(
                                     value: 0,
-                                    label: Text(l10n?.matrixA ?? 'Matrix A'),
+                                    label: Text(l10n.matrixA),
                                   ),
                                   ButtonSegment(
                                     value: 1,
-                                    label: Text(l10n?.matrixB ?? 'Matrix B'),
+                                    label: Text(l10n.matrixB),
                                   ),
                                 ],
                                 selected: {state.activeMatrix},
@@ -564,6 +589,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                         onBackspace: cubit.onBackspace,
                         onClear: cubit.onClear,
                         onNextCell: cubit.onNextCell,
+                        onNextRow: cubit.onNextRow,
                         onPrevCell: cubit.onPrevCell,
                       ),
                     ];
@@ -633,80 +659,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
     );
   }
 
-  Widget _buildBracket(
-    bool isDark, {
-    required double height,
-    required bool isLeft,
-  }) {
-    final color = isDark ? const Color(0xFF64748B) : const Color(0xFF475569);
-    return Container(
-      width: 10,
-      height: height,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: color, width: 2.5),
-          bottom: BorderSide(color: color, width: 2.5),
-          left: isLeft ? BorderSide(color: color, width: 2.5) : BorderSide.none,
-          right: !isLeft
-              ? BorderSide(color: color, width: 2.5)
-              : BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  String _resolveKey(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'error_matrix_is_singular':
-        return l10n.error_matrix_is_singular;
-      case 'error_inverse_not_square':
-        return l10n.error_inverse_not_square;
-      case 'error_dimension_mismatch_add':
-        return l10n.error_dimension_mismatch_add;
-      case 'error_dimension_mismatch_multiply':
-        return l10n.error_dimension_mismatch_multiply;
-      default:
-        return key;
-    }
-  }
-
-  String _resolveTopicTitle(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'topicGauss':
-        return l10n.topicGauss;
-      case 'topicRref':
-        return l10n.topicRref;
-      case 'topicLinearSystems':
-        return l10n.topicLinearSystems;
-      case 'topicDeterminant':
-        return l10n.topicDeterminant;
-      case 'topicInverse':
-        return l10n.topicInverse;
-      case 'topicRankNullity':
-        return l10n.topicRankNullity;
-      case 'topicEigen':
-        return l10n.topicEigen;
-      case 'topicLu':
-        return l10n.topicLu;
-      case 'topicPractice':
-        return l10n.topicPractice;
-      case 'topicTransform2d':
-        return l10n.topicTransform2d;
-      case 'topicAdd':
-        return l10n.topicAdd;
-      case 'topicMultiply':
-        return l10n.topicMultiply;
-      default:
-        return key;
-    }
-  }
-
   void _solveAndAnimate(BuildContext context, MatrixInputState state) async {
     if (_isSolving) return;
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     for (var index = 0; index < (topic.isDualMatrix ? 2 : 1); index++) {
       final data = index == 0 ? state.dataA : state.dataB;
       for (var r = 0; r < data.length; r++) {
@@ -716,8 +671,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
             _invalidCell = (index, r, c);
             setState(
               () => _inputError =
-                  l10n?.inputInvalid(index == 0 ? 'A' : 'B', r + 1, c + 1) ??
-                  'Enter a complete number with a nonzero denominator.',
+                  l10n.inputInvalid(index == 0 ? 'A' : 'B', r + 1, c + 1),
             );
             return;
           }
@@ -768,10 +722,12 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           solution = await compute(_solveMultiplyTask, (matrixA, matrixB));
           break;
       }
-    } catch (e) {
+    } catch (error, stack) {
+      // An exception text is for developers; the learner gets a plain message.
+      debugPrint('Solve failed: $error\n$stack');
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n?.solveError(e) ?? 'Error: $e')),
+        SnackBar(content: Text(l10n.solveFallbackError)),
       );
       return;
     } finally {
@@ -785,8 +741,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
         SnackBar(
           content: Text(
             solution.errorMessageKey != null
-                ? _resolveKey(l10n, solution.errorMessageKey!)
-                : (l10n?.solveFallbackError ?? 'Could not solve matrix.'),
+                ? localizedSolverError(l10n, solution.errorMessageKey!)
+                : l10n.solveFallbackError,
           ),
         ),
       );
@@ -797,7 +753,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
       MaterialPageRoute(
         builder: (_) => StepPlayerScreen(
           solution: solution,
-          topicTitle: _resolveTopicTitle(l10n, topic.titleKey),
+          topicTitle: topic.title(l10n),
+          onOwnMatrix: () => Navigator.of(context).pop(),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/number_format.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../cubit/settings_cubit.dart';
@@ -114,18 +115,9 @@ class SettingsScreen extends StatelessWidget {
                     SolutionMode.steps: l.stepsMode,
                     SolutionMode.result: l.resultMode,
                   }, (v) => cubit.update(s.copyWith(solutionMode: v))),
-                  Text(
-                    l.playbackSpeed(s.defaultPlaybackSpeed.toStringAsFixed(2)),
-                  ),
-                  Slider(
+                  _SpeedSetting(
                     value: s.defaultPlaybackSpeed,
-                    min: .25,
-                    max: 4,
-                    divisions: 15,
-                    label: '${s.defaultPlaybackSpeed}×',
-                    semanticFormatterCallback: (v) =>
-                        '${v.toStringAsFixed(2)}×',
-                    onChanged: cubit.setDefaultSpeed,
+                    onCommit: cubit.setDefaultSpeed,
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
@@ -160,12 +152,7 @@ class SettingsScreen extends StatelessWidget {
                       title: Text(e.value),
                       trailing: OutlinedButton(
                         onPressed: () => _capture(context, cubit, e.key),
-                        child: Text(
-                          s.shortcuts[e.key] == LogicalKeyboardKey.space.keyId
-                              ? l.spaceKey
-                              : LogicalKeyboardKey(s.shortcuts[e.key]!)
-                                    .keyLabel,
-                        ),
+                        child: Text(_keyName(l, s.shortcuts[e.key]!)),
                       ),
                     ),
                 ]),
@@ -213,7 +200,13 @@ class SettingsScreen extends StatelessWidget {
             if (!modified && cubit.setShortcut(action, event.logicalKey)) {
               Navigator.pop(dialogContext);
             } else {
-              setState(() => error = l.shortcutConflict);
+              // A key outside the assignable set is not a conflict; repeat
+              // which keys are allowed instead.
+              final assignable =
+                  !modified && SettingsState.isAssignableKey(event.logicalKey);
+              setState(
+                () => error = assignable ? l.shortcutConflict : l.shortcutHelp,
+              );
             }
             return KeyEventResult.handled;
           },
@@ -229,6 +222,59 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// Readable name of an assignable key: letters as themselves, arrows as
+  /// arrows rather than the platform's English "Arrow Left".
+  static String _keyName(AppLocalizations l, int keyId) {
+    if (keyId == LogicalKeyboardKey.space.keyId) return l.spaceKey;
+    if (keyId == LogicalKeyboardKey.arrowLeft.keyId) return '←';
+    if (keyId == LogicalKeyboardKey.arrowRight.keyId) return '→';
+    return LogicalKeyboardKey(keyId).keyLabel;
+  }
+}
+
+/// Default playback speed. The slider moves freely and the preference is
+/// saved once, when the drag ends, instead of on every intermediate value.
+class _SpeedSetting extends StatefulWidget {
+  final double value;
+  final ValueChanged<double> onCommit;
+  const _SpeedSetting({required this.value, required this.onCommit});
+
+  @override
+  State<_SpeedSetting> createState() => _SpeedSettingState();
+}
+
+class _SpeedSettingState extends State<_SpeedSetting> {
+  late double _value = widget.value;
+
+  @override
+  void didUpdateWidget(_SpeedSetting oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) _value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final text = formatSpeed(_value, locale);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(l.playbackSpeed(text)),
+        Slider(
+          value: _value,
+          min: .25,
+          max: 4,
+          divisions: 15,
+          label: text,
+          semanticFormatterCallback: (v) => formatSpeed(v, locale),
+          onChanged: (v) => setState(() => _value = v),
+          onChangeEnd: widget.onCommit,
+        ),
+      ],
     );
   }
 }

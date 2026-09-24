@@ -184,11 +184,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get changeLanguage => 'Язык';
 
   @override
-  String solveError(Object error) {
-    return 'Ошибка: $error';
-  }
-
-  @override
   String get solveFallbackError => 'Не удалось выполнить вычисление.';
 
   @override

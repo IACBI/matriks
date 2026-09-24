@@ -29,7 +29,10 @@ class QuizQuestion {
 }
 
 class QuizBank {
-  static List<QuizQuestion> get questions => getQuestions(language: 'tr');
+  /// Correct answers sit at different letters (A, C, D, B, C) so the position
+  /// of the right choice carries no information. Option and feedback lists
+  /// are reordered together; the ARB feedback keys keep their original
+  /// numbering.
   static List<QuizQuestion> getQuestions({String language = 'tr'}) {
     final l = lookupAppLocalizations(
       Locale(
@@ -72,17 +75,17 @@ class QuizBank {
         ]),
         optionsLatex: [
           r'R_1 \leftarrow R_1 + R_2',
-          r'R_1 \leftrightarrow R_2',
           r'R_2 \leftarrow R_2 - 3R_3',
+          r'R_1 \leftrightarrow R_2',
           r'R_3 \leftarrow \frac{1}{2} R_3',
         ],
-        correctIndex: 1,
+        correctIndex: 2,
         explanation: l.quizQ2Explanation,
         hint: l.quizQ2Hint,
         optionFeedback: [
           l.quizQ2Feedback0,
-          l.quizQ2Feedback1,
           l.quizQ2Feedback2,
+          l.quizQ2Feedback1,
           l.quizQ2Feedback3,
         ],
       ),
@@ -97,18 +100,18 @@ class QuizBank {
         ]),
         optionsLatex: [
           r'R_2 \leftarrow R_2 + 4R_1',
-          r'R_2 \leftarrow -\frac{1}{3} R_2',
           r'R_2 \leftarrow 3 R_2',
           r'R_2 \leftrightarrow R_3',
+          r'R_2 \leftarrow -\frac{1}{3} R_2',
         ],
-        correctIndex: 1,
+        correctIndex: 3,
         explanation: l.quizQ3Explanation,
         hint: l.quizQ3Hint,
         optionFeedback: [
           l.quizQ3Feedback0,
-          l.quizQ3Feedback1,
           l.quizQ3Feedback2,
           l.quizQ3Feedback3,
+          l.quizQ3Feedback1,
         ],
       ),
       QuizQuestion(
@@ -147,17 +150,17 @@ class QuizBank {
         ]),
         optionsLatex: [
           r'\det(A) = 2 + 3 + 4 = 9',
-          r'\det(A) = 2 \cdot 3 \cdot 4 = 24',
           r'\det(A) = 0',
+          r'\det(A) = 2 \cdot 3 \cdot 4 = 24',
           r'\det(A) = -24',
         ],
-        correctIndex: 1,
+        correctIndex: 2,
         explanation: l.quizQ5Explanation,
         hint: l.quizQ5Hint,
         optionFeedback: [
           l.quizQ5Feedback0,
-          l.quizQ5Feedback1,
           l.quizQ5Feedback2,
+          l.quizQ5Feedback1,
           l.quizQ5Feedback3,
         ],
       ),

@@ -187,11 +187,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeLanguage => 'Language';
 
   @override
-  String solveError(Object error) {
-    return 'Error: $error';
-  }
-
-  @override
   String get solveFallbackError => 'Could not solve matrix.';
 
   @override

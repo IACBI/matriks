@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +33,47 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
   int _coefficientRevision = 0;
   TransformMatrix get _target => TransformMatrix(a, b, c, d);
   TransformMatrix get _current => _start.interpolate(_target, _animation.value);
+
+  /// Units from the centre to the shorter canvas edge. Taken from both ends
+  /// of the animation so the view stays still while the grid moves, and wide
+  /// enough that a large coefficient does not leave the canvas empty.
+  double get _viewRadius {
+    double reach(TransformMatrix m) =>
+        math.max(m.a.abs() + m.b.abs(), m.c.abs() + m.d.abs());
+    return math.max(3.5, 1.4 * math.max(reach(_start), reach(_target)));
+  }
+
+  /// Unit directions (canvas orientation, y down) of the target's real
+  /// eigenvectors. None for complex eigenvalues or a multiple of the
+  /// identity, where every direction qualifies.
+  List<Offset> get _eigenDirections {
+    final t = _target;
+    if (t.b.abs() < 1e-9 && t.c.abs() < 1e-9 && (t.a - t.d).abs() < 1e-9) {
+      return const [];
+    }
+    final trace = t.a + t.d;
+    final disc = trace * trace - 4 * t.determinant;
+    if (disc < -1e-12) return const [];
+    final root = math.sqrt(math.max(disc, 0));
+    final directions = <Offset>[];
+    for (final lambda in {(trace + root) / 2, (trace - root) / 2}) {
+      var v = Offset(t.b, lambda - t.a);
+      if (v.distance < 1e-9) v = Offset(lambda - t.d, t.c);
+      if (v.distance < 1e-9) continue;
+      final unit = Offset(v.dx, -v.dy) / v.distance;
+      if (directions.every(
+        (u) => (u.dx * unit.dy - u.dy * unit.dx).abs() > 1e-6,
+      )) {
+        directions.add(unit);
+      }
+    }
+    return directions;
+  }
+
+  static String _short(double value) => value
+      .toStringAsFixed(2)
+      .replaceFirst(RegExp(r'0+$'), '')
+      .replaceFirst(RegExp(r'\.$'), '');
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -137,7 +180,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final det = (a * d) - (b * c);
@@ -151,10 +194,10 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(l10n?.transformScreenTitle ?? '2D Linear Transformation'),
+          title: Text(l10n.transformScreenTitle),
           actions: [
             IconButton(
-              tooltip: l10n?.toggleTheme ?? 'Toggle Theme',
+              tooltip: l10n.toggleTheme,
               icon: Icon(
                 isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
               ),
@@ -203,6 +246,11 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                               isDark: isDark,
                               textScale: MediaQuery.textScalerOf(context)
                                   .scale(1),
+                              viewRadius: _viewRadius,
+                              // Same colours as the basis vector labels.
+                              iColor: theme.colorScheme.primary,
+                              jColor: AppTheme.accentGreen,
+                              eigenDirections: _eigenDirections,
                             ),
                           ),
                         );
@@ -229,27 +277,27 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                           runSpacing: 6,
                           children: [
                             _buildPresetChip(
-                              l10n?.presetShear ?? 'Shear',
+                              l10n.presetShear,
                               'shear',
                             ),
                             _buildPresetChip(
-                              l10n?.presetRotation ?? 'Rotation 45°',
+                              l10n.presetRotation,
                               'rotation',
                             ),
                             _buildPresetChip(
-                              l10n?.presetScale ?? 'Scale',
+                              l10n.presetScale,
                               'scale',
                             ),
                             _buildPresetChip(
-                              l10n?.presetReflection ?? 'Reflection',
+                              l10n.presetReflection,
                               'reflection',
                             ),
                             _buildPresetChip(
-                              l10n?.presetProjection ?? 'Projection (det=0)',
+                              l10n.presetProjection,
                               'projection',
                             ),
                             _buildPresetChip(
-                              l10n?.presetReset ?? 'Reset (I)',
+                              l10n.presetReset,
                               'identity',
                             ),
                           ],
@@ -285,13 +333,12 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 Text(
-                                  l10n?.transformCoefficients ??
-                                      'Transformation matrix',
+                                  l10n.transformCoefficients,
                                   style: theme.textTheme.titleMedium,
                                 ),
                                 if (_selectedPreset == null)
                                   Text(
-                                    l10n?.customTransform ?? 'Custom',
+                                    l10n.customTransform,
                                     style: theme.textTheme.labelMedium,
                                   ),
                               ],
@@ -364,8 +411,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                l10n?.basisVectors ??
-                                    'Transformed basis vectors',
+                                l10n.basisVectors,
                                 style: theme.textTheme.labelMedium,
                               ),
                               Wrap(
@@ -374,26 +420,24 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                 children: [
                                   _buildBadge(
                                     label:
-                                        l10n?.basisVectorI(
-                                          currentA.toStringAsFixed(1),
-                                          currentC.toStringAsFixed(1),
-                                        ) ??
-                                        'i = ($currentA, $currentC)',
+                                        l10n.basisVectorI(
+                                          _short(currentA),
+                                          _short(currentC),
+                                        ),
                                     color: theme.colorScheme.primary,
                                   ),
                                   _buildBadge(
                                     label:
-                                        l10n?.basisVectorJ(
-                                          currentB.toStringAsFixed(1),
-                                          currentD.toStringAsFixed(1),
-                                        ) ??
-                                        'j = ($currentB, $currentD)',
+                                        l10n.basisVectorJ(
+                                          _short(currentB),
+                                          _short(currentD),
+                                        ),
                                     color: AppTheme.accentGreen,
                                   ),
                                 ],
                               ),
                               Text(
-                                '${l10n?.targetDeterminant ?? 'Target determinant'}: ${formatCoefficient(det)}',
+                                '${l10n.targetDeterminant}: ${formatCoefficient(det)}',
                                 style: theme.textTheme.bodyMedium,
                               ),
                             ],
@@ -409,8 +453,8 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                             children: [
                               IconButton(
                                 tooltip: _animController.isAnimating
-                                    ? (l10n?.pause ?? 'Pause')
-                                    : (l10n?.play ?? 'Play'),
+                                    ? (l10n.pause)
+                                    : (l10n.play),
                                 onPressed: _playAnimation,
                                 icon: Icon(
                                   _animController.isAnimating
@@ -434,7 +478,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                         .primary,
                                   ),
                                   child: Semantics(
-                                    label: l10n!.transformProgress,
+                                    label: l10n.transformProgress,
                                     child: Slider(
                                       semanticFormatterCallback: (value) =>
                                           l10n.progressPercent(
@@ -467,9 +511,29 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                         child!,
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                          child: Text(
-                            l10n.transformTransitionHint,
-                            style: theme.textTheme.bodySmall,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                l10n.transformLegendOriginal,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                              if (_eigenDirections.isNotEmpty)
+                                Text(
+                                  l10n.transformLegendEigen,
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              const SizedBox(height: 8),
+                              Text(
+                                l10n.transformTransitionHint,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                l10n.transformShortcutsHint,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            ],
                           ),
                         ),
                       ],

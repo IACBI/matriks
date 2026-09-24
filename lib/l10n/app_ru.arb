@@ -110,7 +110,6 @@
   "close": "Закрыть",
   "toggleTheme": "Сменить тему",
   "changeLanguage": "Язык",
-  "solveError": "Ошибка: {error}",
   "solveFallbackError": "Не удалось выполнить вычисление.",
   "legendPivot": "Ведущий элемент",
   "legendSource": "Источник",

@@ -97,8 +97,8 @@ void main() {
   ) async {
     await tester.pumpWidget(host(const TopicsScreen()));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('New to matrices?'));
-    await tester.pumpAndSettle();
+    // The starter lessons are listed without expanding anything first.
+    expect(find.text('New to matrices?'), findsOneWidget);
     final start = find.text('1 · Create zeros');
     await tester.ensureVisible(start);
     await tester.tap(start);

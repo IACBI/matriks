@@ -14,14 +14,21 @@ import '../../practice/views/practice_screen.dart';
 import '../models/topic_item.dart';
 import '../search_fold.dart';
 
+/// Shell destinations a catalog entry can switch to instead of opening a
+/// second, independent copy of the same screen.
+enum StudioSection { practice, transform }
+
 class TopicsScreen extends StatefulWidget {
-  const TopicsScreen({super.key});
+  /// Switches the shell to the practice or transform destination. Without it
+  /// (a screen hosted on its own) those topics open as pushed pages.
+  final ValueChanged<StudioSection>? onOpenSection;
+  const TopicsScreen({super.key, this.onOpenSection});
   @override
   State<TopicsScreen> createState() => _TopicsScreenState();
 }
 
 class _TopicsScreenState extends State<TopicsScreen> {
-  String _selectedCategory = 'categoryAll';
+  TopicCategory? _selectedCategory;
   final _searchController = TextEditingController();
   final _searchFocus = FocusNode();
 
@@ -33,6 +40,16 @@ class _TopicsScreenState extends State<TopicsScreen> {
   }
 
   void _openTopic(TopicItem topic) {
+    final section = switch (topic.type) {
+      TopicType.transform2d => StudioSection.transform,
+      TopicType.practice => StudioSection.practice,
+      _ => null,
+    };
+    final open = widget.onOpenSection;
+    if (section != null && open != null) {
+      open(section);
+      return;
+    }
     final Widget screen = switch (topic.type) {
       TopicType.transform2d => const TransformVisualizerScreen(),
       TopicType.practice => const PracticeScreen(),
@@ -42,7 +59,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
   }
 
   void _openLesson(TopicType type) {
-    final topic = TopicItem.allTopics.firstWhere((topic) => topic.type == type);
+    final topic = TopicItem.of(type);
     final solution = type == TopicType.linearSystems
         ? LinearSystemsSolver.solve(
             Matrix.fromInts([
@@ -61,42 +78,42 @@ class _TopicsScreenState extends State<TopicsScreen> {
               normalizePivotToOne: type == TopicType.rref,
             ),
           );
-    final title = _resolveTopicTitle(
-      AppLocalizations.of(context),
-      topic.titleKey,
-    );
-    Navigator.of(context).push(
+    final navigator = Navigator.of(context);
+    navigator.push(
       MaterialPageRoute<void>(
         builder: (_) => StepPlayerScreen(
           solution: solution,
-          topicTitle: title,
+          topicTitle: topic.title(AppLocalizations.of(context)!),
           workedExample: true,
+          // The finished example hands over to the editor for the same topic.
+          onOwnMatrix: () => navigator.pushReplacement(
+            MaterialPageRoute<void>(
+              builder: (_) => MatrixInputScreen(topic: topic),
+            ),
+          ),
         ),
       ),
     );
   }
 
+  void _resetFilters() => setState(() {
+    _searchController.clear();
+    _selectedCategory = null;
+  });
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final compact = context.watch<SettingsCubit>().state.compact;
     final query = foldForSearch(_searchController.text.trim());
-    const categories = [
-      'categoryAll',
-      'categoryElimination',
-      'categoryAlgebra',
-      'categoryAdvanced',
-      'categoryVisual',
-    ];
     final topics = TopicItem.allTopics.where((topic) {
       final matchesCategory =
-          _selectedCategory == 'categoryAll' ||
-          topic.categoryKey == _selectedCategory;
+          _selectedCategory == null || topic.category == _selectedCategory;
       final searchable = foldForSearch(
-        '${_resolveTopicTitle(l10n, topic.titleKey)} '
-        '${_resolveTopicDesc(l10n, topic.descKey)} ${topic.tagText}',
+        '${topic.title(l10n)} ${topic.description(l10n)} ${topic.tagText}',
       );
       return matchesCategory && (query.isEmpty || searchable.contains(query));
     }).toList();
@@ -108,13 +125,13 @@ class _TopicsScreenState extends State<TopicsScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.asset(
-                'assets/branding/matriks.png',
+                'assets/branding/matriks_icon.png',
                 width: 32,
                 height: 32,
               ),
             ),
-            SizedBox(width: 10),
-            Flexible(
+            const SizedBox(width: 10),
+            const Flexible(
               child: Text(
                 'Matriks',
                 overflow: TextOverflow.ellipsis,
@@ -127,14 +144,9 @@ class _TopicsScreenState extends State<TopicsScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: l10n?.searchTopics ?? 'Search topics',
-            icon: const Icon(Icons.search_rounded),
-            onPressed: _searchFocus.requestFocus,
-          ),
           const LanguageMenu(),
           IconButton(
-            tooltip: l10n?.toggleTheme ?? 'Toggle Theme',
+            tooltip: l10n.toggleTheme,
             icon: Icon(
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
             ),
@@ -158,13 +170,13 @@ class _TopicsScreenState extends State<TopicsScreen> {
                 Semantics(
                   header: true,
                   child: Text(
-                    l10n?.selectTopic ?? 'Select a Linear Algebra Topic',
+                    l10n.selectTopic,
                     style: theme.textTheme.headlineMedium,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  l10n?.topicSubtitle ?? 'Learn step-by-step with interactive, animated solutions.',
+                  l10n.topicSubtitle,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: scheme.onSurfaceVariant,
                   ),
@@ -176,12 +188,12 @@ class _TopicsScreenState extends State<TopicsScreen> {
                   onChanged: (_) => setState(() {}),
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
-                    hintText: l10n?.searchTopics ?? 'Search topics...',
+                    hintText: l10n.searchTopics,
                     prefixIcon: const Icon(Icons.search_rounded),
                     suffixIcon: query.isEmpty
                         ? null
                         : IconButton(
-                            tooltip: l10n?.clearSearch ?? 'Clear Search',
+                            tooltip: l10n.clearSearch,
                             icon: const Icon(Icons.close_rounded),
                             onPressed: () => setState(_searchController.clear),
                           ),
@@ -191,53 +203,55 @@ class _TopicsScreenState extends State<TopicsScreen> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: categories
-                      .map(
-                        (key) => ChoiceChip(
-                          label: Text(_resolveCategoryTitle(l10n, key)),
-                          selected: _selectedCategory == key,
-                          showCheckmark: false,
-                          onSelected: (_) =>
-                              setState(() => _selectedCategory = key),
-                        ),
-                      )
-                      .toList(),
+                  children: [
+                    for (final category in <TopicCategory?>[
+                      null,
+                      ...TopicCategory.values,
+                    ])
+                      ChoiceChip(
+                        label: Text(category.label(l10n)),
+                        selected: _selectedCategory == category,
+                        showCheckmark: false,
+                        onSelected: (_) =>
+                            setState(() => _selectedCategory = category),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 16),
-                if (query.isEmpty && _selectedCategory == 'categoryAll') ...[
+                if (query.isEmpty && _selectedCategory == null) ...[
+                  // Open by default: the starter lessons are the intended
+                  // first step for a new learner and were easy to miss folded.
                   ExpansionTile(
+                    initiallyExpanded: true,
                     tilePadding: const EdgeInsets.symmetric(horizontal: 12),
                     childrenPadding: const EdgeInsets.all(12),
                     leading: Icon(
                       Icons.auto_awesome_outlined,
                       color: scheme.primary,
                     ),
-                    title: Text(l10n?.learningPath ?? 'New to matrices?'),
+                    title: Text(l10n.learningPath),
                     children: [
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          FilledButton(
-                            onPressed: () => _openLesson(TopicType.gauss),
-                            child: Text(
-                              l10n?.pathEliminate ?? '1 · Create zeros',
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            FilledButton(
+                              onPressed: () => _openLesson(TopicType.gauss),
+                              child: Text(l10n.pathEliminate),
                             ),
-                          ),
-                          OutlinedButton(
-                            onPressed: () => _openLesson(TopicType.rref),
-                            child: Text(
-                              l10n?.pathReduce ?? '2 · Find the pivots',
+                            OutlinedButton(
+                              onPressed: () => _openLesson(TopicType.rref),
+                              child: Text(l10n.pathReduce),
                             ),
-                          ),
-                          OutlinedButton(
-                            onPressed: () =>
-                                _openLesson(TopicType.linearSystems),
-                            child: Text(
-                              l10n?.pathSolve ?? '3 · Solve a system',
+                            OutlinedButton(
+                              onPressed: () =>
+                                  _openLesson(TopicType.linearSystems),
+                              child: Text(l10n.pathSolve),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -255,32 +269,31 @@ class _TopicsScreenState extends State<TopicsScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          l10n?.noTopicsFound ?? 'No matching topics found',
+                          l10n.noTopicsFound,
                           style: theme.textTheme.titleMedium,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          l10n?.noTopicsFoundDesc ??
-                              'Try another keyword or category.',
+                          l10n.noTopicsFoundDesc,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
                         OutlinedButton.icon(
-                          onPressed: () => setState(() {
-                            _searchController.clear();
-                            _selectedCategory = 'categoryAll';
-                          }),
+                          onPressed: _resetFilters,
                           icon: const Icon(Icons.refresh_rounded),
-                          label: Text(l10n?.clearSearch ?? 'Clear Search'),
+                          label: Text(l10n.clearSearch),
                         ),
                       ],
                     ),
                   )
                 else
-                  ...topics.map(
-                    (topic) => _buildTopicRow(context, topic, l10n),
-                  ),
+                  for (final topic in topics)
+                    _TopicRow(
+                      topic: topic,
+                      compact: compact,
+                      onTap: () => _openTopic(topic),
+                    ),
               ],
             ),
           ),
@@ -288,19 +301,26 @@ class _TopicsScreenState extends State<TopicsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildTopicRow(
-    BuildContext context,
-    TopicItem topic,
-    AppLocalizations? l10n,
-  ) {
+class _TopicRow extends StatelessWidget {
+  final TopicItem topic;
+  final bool compact;
+  final VoidCallback onTap;
+
+  const _TopicRow({
+    required this.topic,
+    required this.compact,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final title = Text(
-      _resolveTopicTitle(l10n, topic.titleKey),
-      style: theme.textTheme.titleMedium,
-    );
+    final title = Text(topic.title(l10n), style: theme.textTheme.titleMedium);
     final description = Text(
-      _resolveTopicDesc(l10n, topic.descKey),
+      topic.description(l10n),
       style: theme.textTheme.bodyMedium?.copyWith(
         color: theme.colorScheme.onSurfaceVariant,
       ),
@@ -318,10 +338,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
         clipBehavior: Clip.antiAlias,
         color: theme.colorScheme.surface,
         child: InkWell(
-          onTap: () => _openTopic(topic),
+          onTap: onTap,
           child: Container(
             padding: EdgeInsets.symmetric(
-              vertical: context.watch<SettingsCubit>().state.compact ? 12 : 20,
+              vertical: compact ? 12 : 20,
               horizontal: 20,
             ),
             decoration: BoxDecoration(
@@ -378,87 +398,5 @@ class _TopicsScreenState extends State<TopicsScreen> {
         ),
       ),
     );
-  }
-
-  String _resolveCategoryTitle(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'categoryAll':
-        return l10n.categoryAll;
-      case 'categoryElimination':
-        return l10n.categoryElimination;
-      case 'categoryAlgebra':
-        return l10n.categoryAlgebra;
-      case 'categoryAdvanced':
-        return l10n.categoryAdvanced;
-      case 'categoryVisual':
-        return l10n.categoryVisual;
-      default:
-        return key;
-    }
-  }
-
-  String _resolveTopicTitle(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'topicGauss':
-        return l10n.topicGauss;
-      case 'topicRref':
-        return l10n.topicRref;
-      case 'topicLinearSystems':
-        return l10n.topicLinearSystems;
-      case 'topicDeterminant':
-        return l10n.topicDeterminant;
-      case 'topicInverse':
-        return l10n.topicInverse;
-      case 'topicRankNullity':
-        return l10n.topicRankNullity;
-      case 'topicEigen':
-        return l10n.topicEigen;
-      case 'topicLu':
-        return l10n.topicLu;
-      case 'topicPractice':
-        return l10n.topicPractice;
-      case 'topicTransform2d':
-        return l10n.topicTransform2d;
-      case 'topicAdd':
-        return l10n.topicAdd;
-      case 'topicMultiply':
-        return l10n.topicMultiply;
-      default:
-        return key;
-    }
-  }
-
-  String _resolveTopicDesc(AppLocalizations? l10n, String key) {
-    if (l10n == null) return key;
-    switch (key) {
-      case 'topicGaussDesc':
-        return l10n.topicGaussDesc;
-      case 'topicRrefDesc':
-        return l10n.topicRrefDesc;
-      case 'topicLinearSystemsDesc':
-        return l10n.topicLinearSystemsDesc;
-      case 'topicDeterminantDesc':
-        return l10n.topicDeterminantDesc;
-      case 'topicInverseDesc':
-        return l10n.topicInverseDesc;
-      case 'topicRankNullityDesc':
-        return l10n.topicRankNullityDesc;
-      case 'topicEigenDesc':
-        return l10n.topicEigenDesc;
-      case 'topicLuDesc':
-        return l10n.topicLuDesc;
-      case 'topicPracticeDesc':
-        return l10n.topicPracticeDesc;
-      case 'topicTransform2dDesc':
-        return l10n.topicTransform2dDesc;
-      case 'topicAddDesc':
-        return l10n.topicAddDesc;
-      case 'topicMultiplyDesc':
-        return l10n.topicMultiplyDesc;
-      default:
-        return key;
-    }
   }
 }

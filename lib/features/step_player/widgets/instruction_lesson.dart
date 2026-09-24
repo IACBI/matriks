@@ -239,12 +239,17 @@ class InstructionExplanation extends StatelessWidget {
   final int activeCalculation;
   final bool showAllPhases;
 
+  /// Whether a screen reader announces phase changes. Off while the lesson
+  /// plays, when phases change every few seconds.
+  final bool announce;
+
   const InstructionExplanation({
     super.key,
     required this.lesson,
     required this.phase,
     this.activeCalculation = -1,
     this.showAllPhases = false,
+    this.announce = true,
   });
 
   @override
@@ -272,7 +277,7 @@ class InstructionExplanation extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Semantics(
-          liveRegion: true,
+          liveRegion: announce,
           child: Text(
             showAllPhases
                 ? (l10n?.stepExplanation ?? 'Why this works')

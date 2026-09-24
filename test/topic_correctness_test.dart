@@ -27,7 +27,7 @@ void main() {
   test('All five quiz answer keys agree with their matrix operations in every language', () {
     for (final locale in ['en', 'tr', 'zh', 'es', 'ru']) {
       final questions = QuizBank.getQuestions(language: locale);
-      expect(questions.map((q) => q.correctIndex), [0, 1, 1, 1, 1]);
+      expect(questions.map((q) => q.correctIndex), [0, 2, 3, 1, 2]);
       expect(
         questions[0].matrix.addRowMultiple(1, 0, Rational(-2)).get(1, 0),
         Rational.zero,
