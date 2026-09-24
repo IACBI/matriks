@@ -743,6 +743,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get learningPath => '¿Empiezas con matrices?';
 
   @override
+  String get continueLearning => 'Continúa donde lo dejaste';
+
+  @override
+  String get continueAction => 'Continuar';
+
+  @override
+  String get topicCompleted => 'Completado';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$done de $total temas completados';
+  }
+
+  @override
   String get pathEliminate => '1 · Crear ceros';
 
   @override
@@ -1218,6 +1232,131 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get quizQ5Feedback3 =>
       'Todos los elementos diagonales son positivos; no hay signo negativo adicional.';
+
+  @override
+  String get genDetTitle => 'Determinante 2×2';
+
+  @override
+  String get genDetPrompt => '¿Cuánto vale det(A) para la matriz de abajo?';
+
+  @override
+  String get genDetHint =>
+      'En una matriz 2×2, multiplica la diagonal principal y resta el producto de la otra diagonal: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Eso suma los dos productos diagonales; el segundo se resta.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Eso multiplica a lo largo de las filas. El determinante usa las diagonales.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'El orden está invertido: primero va la diagonal principal, así que el signo cambia.';
+
+  @override
+  String get genElimTitle => 'Elegir el multiplicador';
+
+  @override
+  String get genElimPrompt =>
+      '¿Qué operación de fila anula la primera entrada de la fila 2?';
+
+  @override
+  String get genElimHint =>
+      'Divide la entrada que quieres anular entre el pivote que tiene encima.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'El multiplicador es la entrada dividida entre el pivote: $entry ÷ $pivot = $factor. Restar $factor veces la fila 1 deja la entrada en 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'Con el signo contrario la entrada crece en lugar de anularse.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'La razón está invertida: divide la entrada entre el pivote, no el pivote entre la entrada.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Eso cambia la fila 1, la del pivote. La fila que debe cambiar es la 2.';
+
+  @override
+  String get genProductTitle => 'Una entrada de un producto';
+
+  @override
+  String get genProductPrompt =>
+      '¿Cuál es la entrada de la fila 1, columna 2 de A·A?';
+
+  @override
+  String get genProductHint =>
+      'La fila 1 del primer factor se encuentra con la columna 2 del segundo: multiplica par a par y suma.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'La fila 1 es ($r1, $r2) y la columna 2 es ($c1, $c2), así que la entrada es $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Elevar la entrada al cuadrado no es multiplicar matrices; se usa una fila y una columna completas.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Eso empareja la fila 1 con la fila 2. El segundo factor aporta una columna.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Eso empareja dos columnas. El primer factor aporta una fila.';
+
+  @override
+  String get genInverseTitle => 'Inversa de una matriz 2×2';
+
+  @override
+  String get genInversePrompt => '¿Qué matriz es A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Intercambia las entradas de la diagonal principal, cambia el signo de las otras dos y divide entre det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a y d se intercambian, b y c cambian de signo y todo se multiplica por 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'La diagonal está intercambiada, pero b y c también cambian de signo.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b y c cambian de signo, pero a y d también deben intercambiarse.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Aquí cambian de signo todas las entradas; solo cambian b y c.';
+
+  @override
+  String get newQuestions => 'Nuevas preguntas';
 
   @override
   String eigen_vector_approx_title(Object index, Object lambda) {

@@ -118,6 +118,8 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
   }
 
   void _playAnimation() {
+    // Watching a transformation completes this topic on the learning path.
+    context.read<SettingsCubit?>()?.completeTopic('transform2d');
     if (MediaQuery.disableAnimationsOf(context)) {
       setState(
         () => _animController.value = _animController.value == 1 ? 0 : 1,

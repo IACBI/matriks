@@ -10,6 +10,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_numpad.dart';
 import '../../../core/widgets/matrix_bracket.dart';
+import '../../settings/cubit/settings_cubit.dart';
 import '../../step_player/step_text.dart';
 import '../../step_player/views/step_player_screen.dart';
 import '../../topics/models/topic_item.dart';
@@ -752,12 +753,14 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
       return;
     }
 
+    final settings = context.read<SettingsCubit>();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => StepPlayerScreen(
           solution: solution,
           topicTitle: topic.title(l10n),
           onOwnMatrix: () => Navigator.of(context).pop(),
+          onLessonComplete: () => settings.completeTopic(topic.type.name),
         ),
       ),
     );

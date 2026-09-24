@@ -744,6 +744,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get learningPath => 'Matrislere yeni mi başlıyorsun?';
 
   @override
+  String get continueLearning => 'Kaldığın yerden devam et';
+
+  @override
+  String get continueAction => 'Devam et';
+
+  @override
+  String get topicCompleted => 'Tamamlandı';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$total konudan $done tanesi tamamlandı';
+  }
+
+  @override
   String get pathEliminate => '1 · Sıfırları oluştur';
 
   @override
@@ -1232,6 +1246,131 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get quizQ5Feedback3 =>
       'Köşegen elemanlarının hepsi pozitif; ek bir eksi işareti gelmez.';
+
+  @override
+  String get genDetTitle => '2×2 determinant';
+
+  @override
+  String get genDetPrompt => 'Aşağıdaki matris için det(A) kaçtır?';
+
+  @override
+  String get genDetHint =>
+      '2×2 matriste ana köşegenin çarpımından diğer köşegenin çarpımını çıkar: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Bu, iki köşegen çarpımını topluyor; ikincisi çıkarılmalı.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Bu, satırlar boyunca çarpıyor. Determinant köşegenleri kullanır.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'Sıra ters: önce ana köşegen gelir, bu yüzden işaret değişir.';
+
+  @override
+  String get genElimTitle => 'Çarpanı seçmek';
+
+  @override
+  String get genElimPrompt =>
+      'Hangi satır işlemi 2. satırın ilk elemanını sıfır yapar?';
+
+  @override
+  String get genElimHint =>
+      'Sıfırlamak istediğin elemanı üstündeki pivota böl.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'Çarpan, eleman bölü pivottur: $entry ÷ $pivot = $factor. 1. satırın $factor katını çıkarınca eleman 0 olur.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'Ters işaretle eleman sıfırlanmak yerine büyür.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'Oran ters çevrilmiş: pivotu elemana değil, elemanı pivota böl.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Bu, pivot satırı olan 1. satırı değiştirir. Değişmesi gereken satır 2. satır.';
+
+  @override
+  String get genProductTitle => 'Çarpımın bir elemanı';
+
+  @override
+  String get genProductPrompt =>
+      'A·A çarpımının 1. satır, 2. sütundaki elemanı kaçtır?';
+
+  @override
+  String get genProductHint =>
+      'İlk çarpanın 1. satırı ile ikinci çarpanın 2. sütununu eşleştir: ikişer ikişer çarp ve topla.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return '1. satır ($r1, $r2), 2. sütun ($c1, $c2); eleman $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Elemanın karesini almak matris çarpımı değildir; bütün bir satır ve sütun kullanılır.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Bu, 1. satırı 2. satırla eşleştiriyor. İkinci çarpan bir sütun verir.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Bu, iki sütunu eşleştiriyor. İlk çarpan bir satır verir.';
+
+  @override
+  String get genInverseTitle => '2×2 matrisin tersi';
+
+  @override
+  String get genInversePrompt => 'Hangi matris A⁻¹\'dir?';
+
+  @override
+  String get genInverseHint =>
+      'Ana köşegendeki elemanların yerini değiştir, diğer ikisinin işaretini değiştir ve det(A)\'ya böl.';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a ile d yer değiştirir, b ile c\'nin işareti değişir ve hepsi 1/$det ile çarpılır.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'Köşegen yer değiştirmiş, ama b ile c\'nin işareti de değişmeli.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b ile c\'nin işareti değişmiş, ama a ile d de yer değiştirmeli.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Burada bütün elemanların işareti değişmiş; yalnızca b ile c\'nin işareti değişir.';
+
+  @override
+  String get newQuestions => 'Yeni sorular';
 
   @override
   String eigen_vector_approx_title(Object index, Object lambda) {

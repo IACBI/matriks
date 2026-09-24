@@ -717,6 +717,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get learningPath => '刚开始学习矩阵？';
 
   @override
+  String get continueLearning => '从上次离开的地方继续';
+
+  @override
+  String get continueAction => '继续';
+
+  @override
+  String get topicCompleted => '已完成';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '已完成 $done/$total 个主题';
+  }
+
+  @override
   String get pathEliminate => '1 · 消为零';
 
   @override
@@ -1147,6 +1161,113 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get quizQ5Feedback3 => '对角线元素均为正，没有额外的负号。';
+
+  @override
+  String get genDetTitle => '2×2 行列式';
+
+  @override
+  String get genDetPrompt => '下面矩阵的 det(A) 是多少？';
+
+  @override
+  String get genDetHint => '对于 2×2 矩阵，用主对角线的乘积减去另一条对角线的乘积：ad − bc。';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value。';
+  }
+
+  @override
+  String get genDetFeedbackSign => '这里把两条对角线的乘积相加了；第二个应当减去。';
+
+  @override
+  String get genDetFeedbackRows => '这里是按行相乘。行列式使用的是对角线。';
+
+  @override
+  String get genDetFeedbackOrder => '顺序反了：应先取主对角线，所以符号相反。';
+
+  @override
+  String get genElimTitle => '选择乘数';
+
+  @override
+  String get genElimPrompt => '哪个行变换能使第 2 行的第一个元素变为零？';
+
+  @override
+  String get genElimHint => '用要消去的元素除以它上方的主元。';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return '乘数等于元素除以主元：$entry ÷ $pivot = $factor。减去第 1 行的 $factor 倍，该元素变为 0。';
+  }
+
+  @override
+  String get genElimFeedbackSign => '符号相反时，元素会变大而不是变为零。';
+
+  @override
+  String get genElimFeedbackRatio => '比值颠倒了：应当用元素除以主元，而不是主元除以元素。';
+
+  @override
+  String get genElimFeedbackRow => '这改变的是主元所在的第 1 行，而需要改变的是第 2 行。';
+
+  @override
+  String get genProductTitle => '乘积中的一个元素';
+
+  @override
+  String get genProductPrompt => 'A·A 第 1 行第 2 列的元素是多少？';
+
+  @override
+  String get genProductHint => '第一个因子的第 1 行与第二个因子的第 2 列相遇：逐对相乘再相加。';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return '第 1 行是 ($r1, $r2)，第 2 列是 ($c1, $c2)，所以该元素为 $r1·$c1 + $r2·$c2 = $value。';
+  }
+
+  @override
+  String get genProductFeedbackSquare => '把元素平方不是矩阵乘法；要用整行和整列。';
+
+  @override
+  String get genProductFeedbackRows => '这里把第 1 行和第 2 行配对了。第二个因子提供的是列。';
+
+  @override
+  String get genProductFeedbackColumns => '这里把两列配对了。第一个因子提供的是行。';
+
+  @override
+  String get genInverseTitle => '2×2 矩阵的逆';
+
+  @override
+  String get genInversePrompt => '哪个矩阵是 A⁻¹？';
+
+  @override
+  String get genInverseHint => '交换主对角线上的元素，改变另外两个元素的符号，再除以 det(A)。';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det。a 与 d 交换，b 与 c 变号，然后整体乘以 1/$det。';
+  }
+
+  @override
+  String get genInverseFeedbackSigns => '对角线已交换，但 b 和 c 也要变号。';
+
+  @override
+  String get genInverseFeedbackSwap => 'b 和 c 已变号，但 a 和 d 也要交换位置。';
+
+  @override
+  String get genInverseFeedbackNegated => '这里所有元素都变了号；只有 b 和 c 需要变号。';
+
+  @override
+  String get newQuestions => '新题目';
 
   @override
   String eigen_vector_approx_title(Object index, Object lambda) {

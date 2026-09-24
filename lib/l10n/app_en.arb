@@ -236,6 +236,20 @@
   "stepDetails": "Details",
   "chooseStep": "Choose a step",
   "learningPath": "New to matrices?",
+  "continueLearning": "Continue where you left off",
+  "continueAction": "Continue",
+  "topicCompleted": "Completed",
+  "pathProgress": "{done} of {total} topics completed",
+  "@pathProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "pathEliminate": "1 · Create zeros",
   "pathReduce": "2 · Find the pivots",
   "pathSolve": "3 · Solve a system",
@@ -501,6 +515,93 @@
   "quizQ5Feedback1": "The diagonal product is 2 × 3 × 4 = 24.",
   "quizQ5Feedback2": "Zeros below the diagonal do not force determinant zero. A zero diagonal entry would.",
   "quizQ5Feedback3": "All diagonal entries are positive; no extra negative sign is introduced.",
+  "genDetTitle": "2×2 determinant",
+  "genDetPrompt": "What is det(A) for the matrix below?",
+  "genDetHint": "For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.",
+  "genDetExplanation": "det(A) = {a}·{d} − {b}·{c} = {value}.",
+  "@genDetExplanation": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      },
+      "d": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "genDetFeedbackSign": "That adds the two diagonal products; the second one is subtracted.",
+  "genDetFeedbackRows": "That multiplies along the rows. A determinant uses the diagonals.",
+  "genDetFeedbackOrder": "The order is reversed: the main diagonal comes first, so the sign flips.",
+  "genElimTitle": "Choosing a multiplier",
+  "genElimPrompt": "Which row operation makes the first entry of row 2 zero?",
+  "genElimHint": "Divide the entry you want to remove by the pivot above it.",
+  "genElimExplanation": "The multiplier is the entry divided by the pivot: {entry} ÷ {pivot} = {factor}. Subtracting {factor} times row 1 turns the entry into 0.",
+  "@genElimExplanation": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "genElimFeedbackSign": "With the opposite sign the entry grows instead of becoming 0.",
+  "genElimFeedbackRatio": "That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.",
+  "genElimFeedbackRow": "That changes row 1, the pivot row. The row that must change is row 2.",
+  "genProductTitle": "An entry of a product",
+  "genProductPrompt": "What is the entry in row 1, column 2 of A·A?",
+  "genProductHint": "Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.",
+  "genProductExplanation": "Row 1 is ({r1}, {r2}) and column 2 is ({c1}, {c2}), so the entry is {r1}·{c1} + {r2}·{c2} = {value}.",
+  "@genProductExplanation": {
+    "placeholders": {
+      "r1": {
+        "type": "String"
+      },
+      "r2": {
+        "type": "String"
+      },
+      "c1": {
+        "type": "String"
+      },
+      "c2": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "genProductFeedbackSquare": "Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.",
+  "genProductFeedbackRows": "That pairs row 1 with row 2. The second factor contributes a column.",
+  "genProductFeedbackColumns": "That pairs two columns. The first factor contributes a row.",
+  "genInverseTitle": "Inverse of a 2×2 matrix",
+  "genInversePrompt": "Which matrix is A⁻¹?",
+  "genInverseHint": "Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).",
+  "genInverseExplanation": "det(A) = {det}. a and d trade places, b and c change sign, and everything is multiplied by 1/{det}.",
+  "@genInverseExplanation": {
+    "placeholders": {
+      "det": {
+        "type": "String"
+      }
+    }
+  },
+  "genInverseFeedbackSigns": "The diagonal is swapped, but b and c also change sign.",
+  "genInverseFeedbackSwap": "b and c change sign, but a and d must also trade places.",
+  "genInverseFeedbackNegated": "Every entry is negated here; only b and c change sign.",
+  "newQuestions": "New questions",
   "eigen_vector_approx_title": "Approximate vector for λ_{index} ≈ {lambda}",
   "eigen_vector_approx_desc": "Using λ ≈ {lambda}, an approximate direction is {vector}. The rounded value does not give an exact null-space solution.",
   "spaceKey": "Space",

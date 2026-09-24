@@ -739,6 +739,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get learningPath => 'Впервые изучаете матрицы?';
 
   @override
+  String get continueLearning => 'Продолжите с того же места';
+
+  @override
+  String get continueAction => 'Продолжить';
+
+  @override
+  String get topicCompleted => 'Пройдено';
+
+  @override
+  String pathProgress(int done, int total) {
+    return 'Пройдено тем: $done из $total';
+  }
+
+  @override
   String get pathEliminate => '1 · Создать нули';
 
   @override
@@ -1209,6 +1223,131 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get quizQ5Feedback3 =>
       'Все диагональные элементы положительны; дополнительного минуса нет.';
+
+  @override
+  String get genDetTitle => 'Определитель 2×2';
+
+  @override
+  String get genDetPrompt => 'Чему равен det(A) для матрицы ниже?';
+
+  @override
+  String get genDetHint =>
+      'Для матрицы 2×2 из произведения главной диагонали вычтите произведение другой диагонали: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Здесь два диагональных произведения сложены; второе нужно вычесть.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Здесь перемножены элементы строк. Определитель использует диагонали.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'Порядок обратный: сначала главная диагональ, поэтому знак меняется.';
+
+  @override
+  String get genElimTitle => 'Выбор множителя';
+
+  @override
+  String get genElimPrompt =>
+      'Какое преобразование строк обнуляет первый элемент строки 2?';
+
+  @override
+  String get genElimHint =>
+      'Разделите обнуляемый элемент на ведущий элемент над ним.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'Множитель — это элемент, делённый на ведущий: $entry ÷ $pivot = $factor. Вычитание строки 1, умноженной на $factor, даёт 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'С противоположным знаком элемент растёт, а не обнуляется.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'Отношение перевёрнуто: делите элемент на ведущий, а не наоборот.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Это меняет строку 1 с ведущим элементом. Меняться должна строка 2.';
+
+  @override
+  String get genProductTitle => 'Элемент произведения';
+
+  @override
+  String get genProductPrompt =>
+      'Чему равен элемент в строке 1, столбце 2 произведения A·A?';
+
+  @override
+  String get genProductHint =>
+      'Строка 1 первого множителя встречается со столбцом 2 второго: перемножьте попарно и сложите.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'Строка 1 — ($r1, $r2), столбец 2 — ($c1, $c2), поэтому элемент равен $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Возведение элемента в квадрат — не умножение матриц; нужны целая строка и целый столбец.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Здесь строка 1 умножена на строку 2. Второй множитель даёт столбец.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Здесь перемножены два столбца. Первый множитель даёт строку.';
+
+  @override
+  String get genInverseTitle => 'Обратная матрица 2×2';
+
+  @override
+  String get genInversePrompt => 'Какая матрица является A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Поменяйте местами элементы главной диагонали, смените знак двух других и разделите на det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a и d меняются местами, b и c меняют знак, и всё умножается на 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'Диагональ переставлена, но b и c тоже должны сменить знак.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b и c сменили знак, но a и d тоже должны поменяться местами.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Здесь знак сменили все элементы; меняют знак только b и c.';
+
+  @override
+  String get newQuestions => 'Новые вопросы';
 
   @override
   String eigen_vector_approx_title(Object index, Object lambda) {

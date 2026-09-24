@@ -32,12 +32,17 @@ class StepPlayerScreen extends StatelessWidget {
   /// same topic, a solved input returns to its matrix.
   final VoidCallback? onOwnMatrix;
 
+  /// Called once when the learner reaches the end of the lesson, whether it
+  /// played through or was stepped through; not when jumping to the result.
+  final VoidCallback? onLessonComplete;
+
   const StepPlayerScreen({
     super.key,
     required this.solution,
     required this.topicTitle,
     this.workedExample = false,
     this.onOwnMatrix,
+    this.onLessonComplete,
   });
 
   @override
@@ -55,6 +60,7 @@ class StepPlayerScreen extends StatelessWidget {
         topicTitle: topicTitle,
         workedExample: workedExample,
         onOwnMatrix: onOwnMatrix,
+        onLessonComplete: onLessonComplete,
       ),
     );
   }
@@ -64,11 +70,13 @@ class _StepPlayerView extends StatefulWidget {
   final String topicTitle;
   final bool workedExample;
   final VoidCallback? onOwnMatrix;
+  final VoidCallback? onLessonComplete;
 
   const _StepPlayerView({
     required this.topicTitle,
     required this.workedExample,
     this.onOwnMatrix,
+    this.onLessonComplete,
   });
 
   @override
@@ -101,6 +109,17 @@ class _StepPlayerViewState extends State<_StepPlayerView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // A one-step solution shown as static steps is finished from the start
+    // and never changes state, so the listener below would not hear of it.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final s = context.read<PlayerCubit>().state;
+      if (s.mode != SolutionMode.result &&
+          s.isLastStep &&
+          s.hasCompletedAnimation) {
+        widget.onLessonComplete?.call();
+      }
+    });
   }
 
   @override
@@ -119,7 +138,13 @@ class _StepPlayerViewState extends State<_StepPlayerView>
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return BlocConsumer<PlayerCubit, PlayerState>(
+    bool finished(PlayerState s) =>
+        s.mode != SolutionMode.result && s.isLastStep && s.hasCompletedAnimation;
+    return BlocListener<PlayerCubit, PlayerState>(
+      listenWhen: (previous, current) =>
+          !finished(previous) && finished(current),
+      listener: (_, _) => widget.onLessonComplete?.call(),
+      child: BlocConsumer<PlayerCubit, PlayerState>(
       listenWhen: (previous, current) =>
           previous.inspectedCalculation != current.inspectedCalculation &&
           current.inspectedCalculation != null,
@@ -516,6 +541,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           ),
         );
       },
+      ),
     );
   }
 }

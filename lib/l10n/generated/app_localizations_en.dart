@@ -745,6 +745,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get learningPath => 'New to matrices?';
 
   @override
+  String get continueLearning => 'Continue where you left off';
+
+  @override
+  String get continueAction => 'Continue';
+
+  @override
+  String get topicCompleted => 'Completed';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$done of $total topics completed';
+  }
+
+  @override
   String get pathEliminate => '1 · Create zeros';
 
   @override
@@ -1230,6 +1244,130 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get quizQ5Feedback3 =>
       'All diagonal entries are positive; no extra negative sign is introduced.';
+
+  @override
+  String get genDetTitle => '2×2 determinant';
+
+  @override
+  String get genDetPrompt => 'What is det(A) for the matrix below?';
+
+  @override
+  String get genDetHint =>
+      'For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'That adds the two diagonal products; the second one is subtracted.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'That multiplies along the rows. A determinant uses the diagonals.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'The order is reversed: the main diagonal comes first, so the sign flips.';
+
+  @override
+  String get genElimTitle => 'Choosing a multiplier';
+
+  @override
+  String get genElimPrompt =>
+      'Which row operation makes the first entry of row 2 zero?';
+
+  @override
+  String get genElimHint =>
+      'Divide the entry you want to remove by the pivot above it.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'The multiplier is the entry divided by the pivot: $entry ÷ $pivot = $factor. Subtracting $factor times row 1 turns the entry into 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'With the opposite sign the entry grows instead of becoming 0.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'That changes row 1, the pivot row. The row that must change is row 2.';
+
+  @override
+  String get genProductTitle => 'An entry of a product';
+
+  @override
+  String get genProductPrompt => 'What is the entry in row 1, column 2 of A·A?';
+
+  @override
+  String get genProductHint =>
+      'Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'Row 1 is ($r1, $r2) and column 2 is ($c1, $c2), so the entry is $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'That pairs row 1 with row 2. The second factor contributes a column.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'That pairs two columns. The first factor contributes a row.';
+
+  @override
+  String get genInverseTitle => 'Inverse of a 2×2 matrix';
+
+  @override
+  String get genInversePrompt => 'Which matrix is A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a and d trade places, b and c change sign, and everything is multiplied by 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'The diagonal is swapped, but b and c also change sign.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b and c change sign, but a and d must also trade places.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Every entry is negated here; only b and c change sign.';
+
+  @override
+  String get newQuestions => 'New questions';
 
   @override
   String eigen_vector_approx_title(Object index, Object lambda) {

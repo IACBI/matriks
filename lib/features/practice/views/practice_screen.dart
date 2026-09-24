@@ -1,13 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../core/widgets/matrix_bracket.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../settings/cubit/settings_cubit.dart';
 import '../../settings/widgets/language_menu.dart';
 import '../../step_player/widgets/matrix_cell_widget.dart';
+import '../models/quiz_generator.dart';
 import '../models/quiz_question.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -21,6 +26,10 @@ class PracticeScreen extends StatefulWidget {
 class _PracticeScreenState extends State<PracticeScreen> {
   late String _language;
   late List<QuizQuestion> _questions;
+
+  /// Null for the curated first round; otherwise the seed of a generated
+  /// round, kept so a language change rebuilds the same questions.
+  int? _seed;
   int _currentIndex = 0;
   int _score = 0;
   int? _selectedOptionIndex;
@@ -32,7 +41,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _language = Localizations.localeOf(context).languageCode;
-    _questions = QuizBank.getQuestions(language: _language);
+    _questions = _buildQuestions();
+  }
+
+  List<QuizQuestion> _buildQuestions() {
+    final seed = _seed;
+    return seed == null
+        ? QuizBank.getQuestions(language: _language)
+        : QuizGenerator.generate(seed, lookupAppLocalizations(Locale(_language)));
   }
 
   @override
@@ -67,8 +83,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
     }
   }
 
-  void _restartQuiz() {
+  void _restartQuiz({bool fresh = false}) {
     setState(() {
+      if (fresh) {
+        _seed = Random().nextInt(1 << 31);
+        _questions = _buildQuestions();
+      }
       _currentIndex = 0;
       _score = 0;
       _selectedOptionIndex = null;
@@ -116,6 +136,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   void _showCompletionDialog() {
+    // Finishing a round completes the practice topic on the learning path.
+    context.read<SettingsCubit?>()?.completeTopic('practice');
     final l10n = lookupAppLocalizations(Locale(_language));
     final title = l10n.practiceCompleted;
     final scoreText = l10n.practiceTotalScore(_score, _questions.length * 10);
@@ -164,12 +186,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
             },
             child: Text(returnText),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               _restartQuiz();
             },
             child: Text(restartText),
+          ),
+          FilledButton(
+            key: const ValueKey('quiz-new-round'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _restartQuiz(fresh: true);
+            },
+            child: Text(l10n.newQuestions),
           ),
         ],
       ),

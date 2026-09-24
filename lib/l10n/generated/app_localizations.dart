@@ -1291,6 +1291,30 @@ abstract class AppLocalizations {
   /// **'New to matrices?'**
   String get learningPath;
 
+  /// No description provided for @continueLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue where you left off'**
+  String get continueLearning;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueAction;
+
+  /// No description provided for @topicCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get topicCompleted;
+
+  /// No description provided for @pathProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} topics completed'**
+  String pathProgress(int done, int total);
+
   /// No description provided for @pathEliminate.
   ///
   /// In en, this message translates to:
@@ -2100,6 +2124,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All diagonal entries are positive; no extra negative sign is introduced.'**
   String get quizQ5Feedback3;
+
+  /// No description provided for @genDetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'2×2 determinant'**
+  String get genDetTitle;
+
+  /// No description provided for @genDetPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What is det(A) for the matrix below?'**
+  String get genDetPrompt;
+
+  /// No description provided for @genDetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.'**
+  String get genDetHint;
+
+  /// No description provided for @genDetExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'det(A) = {a}·{d} − {b}·{c} = {value}.'**
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  );
+
+  /// No description provided for @genDetFeedbackSign.
+  ///
+  /// In en, this message translates to:
+  /// **'That adds the two diagonal products; the second one is subtracted.'**
+  String get genDetFeedbackSign;
+
+  /// No description provided for @genDetFeedbackRows.
+  ///
+  /// In en, this message translates to:
+  /// **'That multiplies along the rows. A determinant uses the diagonals.'**
+  String get genDetFeedbackRows;
+
+  /// No description provided for @genDetFeedbackOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'The order is reversed: the main diagonal comes first, so the sign flips.'**
+  String get genDetFeedbackOrder;
+
+  /// No description provided for @genElimTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choosing a multiplier'**
+  String get genElimTitle;
+
+  /// No description provided for @genElimPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which row operation makes the first entry of row 2 zero?'**
+  String get genElimPrompt;
+
+  /// No description provided for @genElimHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Divide the entry you want to remove by the pivot above it.'**
+  String get genElimHint;
+
+  /// No description provided for @genElimExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'The multiplier is the entry divided by the pivot: {entry} ÷ {pivot} = {factor}. Subtracting {factor} times row 1 turns the entry into 0.'**
+  String genElimExplanation(String entry, String pivot, String factor);
+
+  /// No description provided for @genElimFeedbackSign.
+  ///
+  /// In en, this message translates to:
+  /// **'With the opposite sign the entry grows instead of becoming 0.'**
+  String get genElimFeedbackSign;
+
+  /// No description provided for @genElimFeedbackRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.'**
+  String get genElimFeedbackRatio;
+
+  /// No description provided for @genElimFeedbackRow.
+  ///
+  /// In en, this message translates to:
+  /// **'That changes row 1, the pivot row. The row that must change is row 2.'**
+  String get genElimFeedbackRow;
+
+  /// No description provided for @genProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry of a product'**
+  String get genProductTitle;
+
+  /// No description provided for @genProductPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the entry in row 1, column 2 of A·A?'**
+  String get genProductPrompt;
+
+  /// No description provided for @genProductHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.'**
+  String get genProductHint;
+
+  /// No description provided for @genProductExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Row 1 is ({r1}, {r2}) and column 2 is ({c1}, {c2}), so the entry is {r1}·{c1} + {r2}·{c2} = {value}.'**
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  );
+
+  /// No description provided for @genProductFeedbackSquare.
+  ///
+  /// In en, this message translates to:
+  /// **'Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.'**
+  String get genProductFeedbackSquare;
+
+  /// No description provided for @genProductFeedbackRows.
+  ///
+  /// In en, this message translates to:
+  /// **'That pairs row 1 with row 2. The second factor contributes a column.'**
+  String get genProductFeedbackRows;
+
+  /// No description provided for @genProductFeedbackColumns.
+  ///
+  /// In en, this message translates to:
+  /// **'That pairs two columns. The first factor contributes a row.'**
+  String get genProductFeedbackColumns;
+
+  /// No description provided for @genInverseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverse of a 2×2 matrix'**
+  String get genInverseTitle;
+
+  /// No description provided for @genInversePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which matrix is A⁻¹?'**
+  String get genInversePrompt;
+
+  /// No description provided for @genInverseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).'**
+  String get genInverseHint;
+
+  /// No description provided for @genInverseExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'det(A) = {det}. a and d trade places, b and c change sign, and everything is multiplied by 1/{det}.'**
+  String genInverseExplanation(String det);
+
+  /// No description provided for @genInverseFeedbackSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'The diagonal is swapped, but b and c also change sign.'**
+  String get genInverseFeedbackSigns;
+
+  /// No description provided for @genInverseFeedbackSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'b and c change sign, but a and d must also trade places.'**
+  String get genInverseFeedbackSwap;
+
+  /// No description provided for @genInverseFeedbackNegated.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry is negated here; only b and c change sign.'**
+  String get genInverseFeedbackNegated;
+
+  /// No description provided for @newQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'New questions'**
+  String get newQuestions;
 
   /// No description provided for @eigen_vector_approx_title.
   ///

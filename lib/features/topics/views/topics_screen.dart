@@ -12,6 +12,7 @@ import '../../settings/widgets/language_menu.dart';
 import '../../transform_visualizer/views/transform_visualizer_screen.dart';
 import '../../practice/views/practice_screen.dart';
 import '../models/topic_item.dart';
+import '../widgets/topic_glyph.dart';
 import '../search_fold.dart';
 
 /// Shell destinations a catalog entry can switch to instead of opening a
@@ -40,6 +41,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
   }
 
   void _openTopic(TopicItem topic) {
+    context.read<SettingsCubit>().openTopic(topic.type.name);
     final section = switch (topic.type) {
       TopicType.transform2d => StudioSection.transform,
       TopicType.practice => StudioSection.practice,
@@ -60,6 +62,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
 
   void _openLesson(TopicType type) {
     final topic = TopicItem.of(type);
+    final settings = context.read<SettingsCubit>()..openTopic(type.name);
     final solution = type == TopicType.linearSystems
         ? LinearSystemsSolver.solve(
             Matrix.fromInts([
@@ -85,6 +88,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
           solution: solution,
           topicTitle: topic.title(AppLocalizations.of(context)!),
           workedExample: true,
+          onLessonComplete: () => settings.completeTopic(type.name),
           // The finished example hands over to the editor for the same topic.
           onOwnMatrix: () => navigator.pushReplacement(
             MaterialPageRoute<void>(
@@ -107,16 +111,27 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final compact = context.watch<SettingsCubit>().state.compact;
+    final settings = context.watch<SettingsCubit>().state;
+    final compact = settings.compact;
     final query = foldForSearch(_searchController.text.trim());
-    final topics = TopicItem.allTopics.where((topic) {
-      final matchesCategory =
-          _selectedCategory == null || topic.category == _selectedCategory;
-      final searchable = foldForSearch(
-        '${topic.title(l10n)} ${topic.description(l10n)} ${topic.tagText}',
-      );
-      return matchesCategory && (query.isEmpty || searchable.contains(query));
-    }).toList();
+    final topics =
+        TopicItem.allTopics.where((topic) {
+          final matchesCategory =
+              _selectedCategory == null || topic.category == _selectedCategory;
+          final searchable = foldForSearch(
+            '${topic.title(l10n)} ${topic.description(l10n)} ${topic.tagText}',
+          );
+          return matchesCategory &&
+              (query.isEmpty || searchable.contains(query));
+        }).toList()..sort((a, b) => a.pathIndex.compareTo(b.pathIndex));
+    final completed = TopicItem.allTopics
+        .where((t) => settings.completedTopics.contains(t.type.name))
+        .length;
+    final last = TopicType.values
+        .where((t) => t.name == settings.lastTopic)
+        .map(TopicItem.of)
+        .firstOrNull;
+    final browsing = query.isEmpty && _selectedCategory == null;
 
     return Scaffold(
       appBar: AppBar(
@@ -182,6 +197,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (browsing && last != null) ...[
+                  _ContinueCard(topic: last, onOpen: () => _openTopic(last)),
+                  const SizedBox(height: 16),
+                ],
                 TextField(
                   controller: _searchController,
                   focusNode: _searchFocus,
@@ -218,7 +237,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                if (query.isEmpty && _selectedCategory == null) ...[
+                if (browsing) ...[
                   // Open by default: the starter lessons are the intended
                   // first step for a new learner and were easy to miss folded.
                   ExpansionTile(
@@ -287,13 +306,27 @@ class _TopicsScreenState extends State<TopicsScreen> {
                       ],
                     ),
                   )
-                else
+                else ...[
+                  if (browsing)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        l10n.pathProgress(completed, TopicItem.allTopics.length),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
                   for (final topic in topics)
                     _TopicRow(
                       topic: topic,
                       compact: compact,
+                      completed: settings.completedTopics.contains(
+                        topic.type.name,
+                      ),
                       onTap: () => _openTopic(topic),
                     ),
+                ],
               ],
             ),
           ),
@@ -303,14 +336,70 @@ class _TopicsScreenState extends State<TopicsScreen> {
   }
 }
 
+class _ContinueCard extends StatelessWidget {
+  final TopicItem topic;
+  final VoidCallback onOpen;
+
+  const _ContinueCard({required this.topic, required this.onOpen});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    return Card(
+      key: const ValueKey('continue-card'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TopicGlyph(type: topic.type),
+                const SizedBox(width: 12),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.continueLearning,
+                        style: theme.textTheme.labelMedium,
+                      ),
+                      Text(
+                        topic.title(l10n),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            FilledButton.icon(
+              onPressed: onOpen,
+              icon: const Icon(Icons.play_arrow_rounded),
+              label: Text(l10n.continueAction),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _TopicRow extends StatelessWidget {
   final TopicItem topic;
   final bool compact;
+  final bool completed;
   final VoidCallback onTap;
 
   const _TopicRow({
     required this.topic,
     required this.compact,
+    required this.completed,
     required this.onTap,
   });
 
@@ -318,7 +407,24 @@ class _TopicRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final title = Text(topic.title(l10n), style: theme.textTheme.titleMedium);
+    final title = Row(
+      children: [
+        Flexible(
+          child: Text(topic.title(l10n), style: theme.textTheme.titleMedium),
+        ),
+        if (completed) ...[
+          const SizedBox(width: 8),
+          Semantics(
+            label: l10n.topicCompleted,
+            child: Icon(
+              Icons.check_circle_rounded,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ],
+      ],
+    );
     final description = Text(
       topic.description(l10n),
       style: theme.textTheme.bodyMedium?.copyWith(
@@ -359,11 +465,16 @@ class _TopicRow extends StatelessWidget {
                       ? CrossAxisAlignment.center
                       : CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      topic.icon,
-                      color: theme.colorScheme.primary,
-                      size: 26,
+                    SizedBox(
+                      width: 22,
+                      child: Text(
+                        '${topic.pathIndex + 1}',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ),
+                    TopicGlyph(type: topic.type),
                     const SizedBox(width: 16),
                     if (wide) ...[
                       Expanded(flex: 3, child: title),
