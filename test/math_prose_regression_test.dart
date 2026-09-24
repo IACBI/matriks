@@ -344,9 +344,8 @@ void main() {
   group('Eigenvector description never subtracts a negative eigenvalue', () {
     for (final locale in AppLocalizations.supportedLocales) {
       test(locale.languageCode, () {
-        final text = lookupAppLocalizations(
-          locale,
-        ).eigen_vector_desc('-4', '(1, 0)');
+        final text = lookupAppLocalizations(locale)
+            .eigen_vector_desc('-4', '(1, 0)');
         expect(text, contains('λ = -4'));
         expect(text, isNot(contains('- -4')));
         expect(text, isNot(contains('− -4')));

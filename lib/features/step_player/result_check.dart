@@ -20,9 +20,8 @@ Matrix _product(Matrix a, Matrix b) => Matrix([
   for (var r = 0; r < a.rows; r++)
     [
       for (var c = 0; c < b.cols; c++)
-        [
-          for (var k = 0; k < a.cols; k++) a.get(r, k) * b.get(k, c),
-        ].fold(Rational.zero, (sum, v) => sum + v),
+        [for (var k = 0; k < a.cols; k++) a.get(r, k) * b.get(k, c)]
+            .fold(Rational.zero, (sum, v) => sum + v),
     ],
 ]);
 
@@ -96,7 +95,9 @@ List<ResultCheck> resultChecks(StepSolution solution, AppLocalizations l) {
         for (var r = 0; r < a.rows; r++)
           [for (var c = 0; c < a.cols - 1; c++) a.get(r, c)],
       ]);
-      final b = _column([for (var r = 0; r < a.rows; r++) a.get(r, a.cols - 1)]);
+      final b = _column([
+        for (var r = 0; r < a.rows; r++) a.get(r, a.cols - 1),
+      ]);
       final ax = _product(coefficients, _column(result.uniqueSolution!));
       return [
         ResultCheck(

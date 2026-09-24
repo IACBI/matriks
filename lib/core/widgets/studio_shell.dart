@@ -141,7 +141,10 @@ class _BottomDestination extends StatelessWidget {
             children: [
               AnimatedContainer(
                 duration: AppTheme.motion(context),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: selected
                       ? scheme.primary.withValues(alpha: .14)

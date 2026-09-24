@@ -286,8 +286,10 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     final cols = isA ? state.colsA : state.colsB;
     final type = state.topic.type;
 
-    List<List<int>> generate() =>
-        List.generate(rows, (_) => List.generate(cols, (_) => _random.nextInt(11) - 3));
+    List<List<int>> generate() => List.generate(
+      rows,
+      (_) => List.generate(cols, (_) => _random.nextInt(11) - 3),
+    );
 
     List<List<int>> data;
     if (isA && type == TopicType.eigen) {
@@ -384,7 +386,10 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     final rows = isA ? state.rowsA : state.rowsB;
     final cols = isA ? state.colsA : state.colsB;
     _applyPreset(
-      List.generate(rows, (r) => List.generate(cols, (c) => r == c ? '1' : '0')),
+      List.generate(
+        rows,
+        (r) => List.generate(cols, (c) => r == c ? '1' : '0'),
+      ),
     );
   }
 

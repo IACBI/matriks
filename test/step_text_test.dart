@@ -16,10 +16,30 @@ List<StepSolution> _solutions() => [
       [2, 1, -1],
     ]),
   ),
-  GaussJordanSolver.solve(_m([[1, 0], [0, 1]])),
-  DeterminantSolver.solve(_m([[7]])),
-  DeterminantSolver.solve(_m([[2, 3], [1, 4]])),
-  DeterminantSolver.solve(_m([[1, 2, 3], [0, 1, 4], [5, 6, 0]])),
+  GaussJordanSolver.solve(
+    _m([
+      [1, 0],
+      [0, 1],
+    ]),
+  ),
+  DeterminantSolver.solve(
+    _m([
+      [7],
+    ]),
+  ),
+  DeterminantSolver.solve(
+    _m([
+      [2, 3],
+      [1, 4],
+    ]),
+  ),
+  DeterminantSolver.solve(
+    _m([
+      [1, 2, 3],
+      [0, 1, 4],
+      [5, 6, 0],
+    ]),
+  ),
   DeterminantSolver.solve(
     _m([
       [0, 1, 0, 0],
@@ -36,22 +56,97 @@ List<StepSolution> _solutions() => [
       [0, 0, 0, 1],
     ]),
   ),
-  InverseSolver.solve(_m([[4, 7], [2, 6]])),
-  InverseSolver.solve(_m([[1, 2], [2, 4]])),
-  InverseSolver.solve(_m([[1, 2, 0], [0, 1, 0], [2, 0, 1]])),
+  InverseSolver.solve(
+    _m([
+      [4, 7],
+      [2, 6],
+    ]),
+  ),
+  InverseSolver.solve(
+    _m([
+      [1, 2],
+      [2, 4],
+    ]),
+  ),
+  InverseSolver.solve(
+    _m([
+      [1, 2, 0],
+      [0, 1, 0],
+      [2, 0, 1],
+    ]),
+  ),
   MatrixArithmeticSolver.add(Matrix.identity(2), Matrix.identity(2)),
   MatrixArithmeticSolver.multiply(Matrix.identity(2), Matrix.identity(2)),
-  LinearSystemsSolver.solve(_m([[1, 2, 5], [3, 4, 11]])),
-  LinearSystemsSolver.solve(_m([[1, 2, 3], [2, 4, 6]])),
-  LinearSystemsSolver.solve(_m([[1, 2, 3], [2, 4, 7]])),
-  RankNullitySolver.solve(_m([[1, 2], [2, 4]])),
-  EigenSolver.solve(_m([[4, 1], [2, 3]])),
-  EigenSolver.solve(_m([[0, 2], [1, 0]])),
-  EigenSolver.solve(_m([[0, -1], [1, 0]])),
-  EigenSolver.solve(_m([[2, 0, 0], [0, 3, 0], [0, 0, 4]])),
-  EigenSolver.solve(_m([[3, 0, 0], [0, 0, 2], [0, 1, 0]])),
-  EigenSolver.solve(_m([[2, 0, 0], [0, 0, -1], [0, 1, 0]])),
-  EigenSolver.solve(_m([[0, 1, 0], [0, 0, 1], [1, 3, 0]])),
+  LinearSystemsSolver.solve(
+    _m([
+      [1, 2, 5],
+      [3, 4, 11],
+    ]),
+  ),
+  LinearSystemsSolver.solve(
+    _m([
+      [1, 2, 3],
+      [2, 4, 6],
+    ]),
+  ),
+  LinearSystemsSolver.solve(
+    _m([
+      [1, 2, 3],
+      [2, 4, 7],
+    ]),
+  ),
+  RankNullitySolver.solve(
+    _m([
+      [1, 2],
+      [2, 4],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [4, 1],
+      [2, 3],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [0, 2],
+      [1, 0],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [0, -1],
+      [1, 0],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [2, 0, 0],
+      [0, 3, 0],
+      [0, 0, 4],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [3, 0, 0],
+      [0, 0, 2],
+      [0, 1, 0],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [2, 0, 0],
+      [0, 0, -1],
+      [0, 1, 0],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [0, 1, 0],
+      [0, 0, 1],
+      [1, 3, 0],
+    ]),
+  ),
   EigenSolver.solve(
     Matrix([
       [Rational.parse('1${'0' * 30}'), Rational.one, Rational.zero],
@@ -59,7 +154,13 @@ List<StepSolution> _solutions() => [
       [Rational.one, Rational.zero, Rational(7)],
     ]),
   ),
-  LUDecompositionSolver.solve(_m([[0, 2, 1], [2, 1, 0], [1, 3, 2]])),
+  LUDecompositionSolver.solve(
+    _m([
+      [0, 2, 1],
+      [2, 1, 0],
+      [1, 3, 2],
+    ]),
+  ),
 ];
 
 void main() {

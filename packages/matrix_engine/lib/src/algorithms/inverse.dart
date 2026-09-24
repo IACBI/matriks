@@ -30,7 +30,9 @@ class InverseSolver {
         explanationParams: {'det': '0'},
         matrixBefore: snap,
         matrixAfter: snap,
-        transformation: InformationalStepTransformation('Determinant is 0, matrix has no inverse'),
+        transformation: InformationalStepTransformation(
+          'Determinant is 0, matrix has no inverse',
+        ),
         highlights: [
           for (int r = 0; r < matrix.rows; r++)
             for (int c = 0; c < matrix.cols; c++)
@@ -64,22 +66,25 @@ class InverseSolver {
     final snap1 = MatrixSnapshot.fromMatrix(matrix);
 
     // Step 1: Show Determinant
-    steps.add(MatrixStep(
-      stepIndex: 1,
-      titleKey: 'inverse_2x2_det_title',
-      explanationKey: 'inverse_2x2_det_desc',
-      explanationParams: {
-        'det': det.toLatex(),
-        'formula': '(${a.toLatex()} \\cdot ${d.toLatex()}) - (${b.toLatex()} \\cdot ${c.toLatex()})',
-      },
-      matrixBefore: snap1,
-      matrixAfter: snap1,
-      transformation: DeterminantCrossProductTransformation(
-        mainDiagonalProduct: a * d,
-        antiDiagonalProduct: b * c,
+    steps.add(
+      MatrixStep(
+        stepIndex: 1,
+        titleKey: 'inverse_2x2_det_title',
+        explanationKey: 'inverse_2x2_det_desc',
+        explanationParams: {
+          'det': det.toLatex(),
+          'formula':
+              '(${a.toLatex()} \\cdot ${d.toLatex()}) - (${b.toLatex()} \\cdot ${c.toLatex()})',
+        },
+        matrixBefore: snap1,
+        matrixAfter: snap1,
+        transformation: DeterminantCrossProductTransformation(
+          mainDiagonalProduct: a * d,
+          antiDiagonalProduct: b * c,
+        ),
+        highlights: const [],
       ),
-      highlights: const [],
-    ));
+    );
 
     // Step 2: Swap diagonal elements and negate off-diagonal elements (Adjoint)
     // [ d  -b ]
@@ -90,21 +95,23 @@ class InverseSolver {
     ]);
     final snap2 = MatrixSnapshot.fromMatrix(adjMatrix);
 
-    steps.add(MatrixStep(
-      stepIndex: 2,
-      titleKey: 'inverse_2x2_adjoint_title',
-      explanationKey: 'inverse_2x2_adjoint_desc',
-      explanationParams: {
-        'd': d.toLatex(),
-        'minusB': (-b).toLatex(),
-        'minusC': (-c).toLatex(),
-        'a': a.toLatex(),
-      },
-      matrixBefore: snap1,
-      matrixAfter: snap2,
-      transformation: const AdjugateTransformation(),
-      highlights: const [],
-    ));
+    steps.add(
+      MatrixStep(
+        stepIndex: 2,
+        titleKey: 'inverse_2x2_adjoint_title',
+        explanationKey: 'inverse_2x2_adjoint_desc',
+        explanationParams: {
+          'd': d.toLatex(),
+          'minusB': (-b).toLatex(),
+          'minusC': (-c).toLatex(),
+          'a': a.toLatex(),
+        },
+        matrixBefore: snap1,
+        matrixAfter: snap2,
+        transformation: const AdjugateTransformation(),
+        highlights: const [],
+      ),
+    );
 
     // Step 3: Multiply adjoint by 1/det
     final invDet = det.inverse();
@@ -115,44 +122,48 @@ class InverseSolver {
     final invMatrix = Matrix(invData);
     final snap3 = MatrixSnapshot.fromMatrix(invMatrix);
 
-    steps.add(MatrixStep(
-      stepIndex: 3,
-      titleKey: 'inverse_2x2_scale_title',
-      explanationKey: 'inverse_2x2_scale_desc',
-      explanationParams: {
-        'factor': invDet.toLatex(),
-      },
-      matrixBefore: snap2,
-      matrixAfter: snap3,
-      transformation: MatrixScaleTransformation(invDet),
-      highlights: const [],
-      subCalculations: [
-        SubCalculation(
-          targetRow: 0,
-          targetCol: 0,
-          formulaLatex: '${d.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 0).toLatex()}',
-          result: invMatrix.get(0, 0),
-        ),
-        SubCalculation(
-          targetRow: 0,
-          targetCol: 1,
-          formulaLatex: '${(-b).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 1).toLatex()}',
-          result: invMatrix.get(0, 1),
-        ),
-        SubCalculation(
-          targetRow: 1,
-          targetCol: 0,
-          formulaLatex: '${(-c).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 0).toLatex()}',
-          result: invMatrix.get(1, 0),
-        ),
-        SubCalculation(
-          targetRow: 1,
-          targetCol: 1,
-          formulaLatex: '${a.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 1).toLatex()}',
-          result: invMatrix.get(1, 1),
-        ),
-      ],
-    ));
+    steps.add(
+      MatrixStep(
+        stepIndex: 3,
+        titleKey: 'inverse_2x2_scale_title',
+        explanationKey: 'inverse_2x2_scale_desc',
+        explanationParams: {'factor': invDet.toLatex()},
+        matrixBefore: snap2,
+        matrixAfter: snap3,
+        transformation: MatrixScaleTransformation(invDet),
+        highlights: const [],
+        subCalculations: [
+          SubCalculation(
+            targetRow: 0,
+            targetCol: 0,
+            formulaLatex:
+                '${d.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 0).toLatex()}',
+            result: invMatrix.get(0, 0),
+          ),
+          SubCalculation(
+            targetRow: 0,
+            targetCol: 1,
+            formulaLatex:
+                '${(-b).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 1).toLatex()}',
+            result: invMatrix.get(0, 1),
+          ),
+          SubCalculation(
+            targetRow: 1,
+            targetCol: 0,
+            formulaLatex:
+                '${(-c).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 0).toLatex()}',
+            result: invMatrix.get(1, 0),
+          ),
+          SubCalculation(
+            targetRow: 1,
+            targetCol: 1,
+            formulaLatex:
+                '${a.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 1).toLatex()}',
+            result: invMatrix.get(1, 1),
+          ),
+        ],
+      ),
+    );
 
     return StepSolution(
       operationKey: 'op_inverse',
@@ -184,7 +195,9 @@ class InverseSolver {
       explanationParams: {'n': n},
       matrixBefore: snapInit,
       matrixAfter: snapInit,
-      transformation: InformationalStepTransformation('Augment A with identity matrix I_n'),
+      transformation: InformationalStepTransformation(
+        'Augment A with identity matrix I_n',
+      ),
       highlights: [
         for (int r = 0; r < n; r++)
           for (int c = n; c < 2 * n; c++)
@@ -206,18 +219,20 @@ class InverseSolver {
     final renumberedSteps = <MatrixStep>[initialStep];
     var counter = 1;
     for (final s in gjSolution.steps) {
-      renumberedSteps.add(MatrixStep(
-        stepIndex: ++counter,
-        titleKey: s.titleKey,
-        titleParams: s.titleParams,
-        explanationKey: s.explanationKey,
-        explanationParams: s.explanationParams,
-        matrixBefore: s.matrixBefore,
-        matrixAfter: s.matrixAfter,
-        transformation: s.transformation,
-        highlights: s.highlights,
-        subCalculations: s.subCalculations,
-      ));
+      renumberedSteps.add(
+        MatrixStep(
+          stepIndex: ++counter,
+          titleKey: s.titleKey,
+          titleParams: s.titleParams,
+          explanationKey: s.explanationKey,
+          explanationParams: s.explanationParams,
+          matrixBefore: s.matrixBefore,
+          matrixAfter: s.matrixAfter,
+          transformation: s.transformation,
+          highlights: s.highlights,
+          subCalculations: s.subCalculations,
+        ),
+      );
     }
 
     // Split final augmented matrix [I | A^-1]
@@ -231,20 +246,22 @@ class InverseSolver {
       structure: MatrixStructureType.block,
       augmentedColIndex: n,
     );
-    renumberedSteps.add(MatrixStep(
-      stepIndex: ++counter,
-      titleKey: 'inverse_block_extract_title',
-      explanationKey: 'inverse_block_extract_desc',
-      explanationParams: const {},
-      matrixBefore: blockSnap,
-      matrixAfter: blockSnap,
-      transformation: IdentitySeparationTransformation(n),
-      highlights: [
-        for (int r = 0; r < n; r++)
-          for (int c = n; c < 2 * n; c++)
-            CellHighlight(row: r, col: c, type: HighlightType.selected),
-      ],
-    ));
+    renumberedSteps.add(
+      MatrixStep(
+        stepIndex: ++counter,
+        titleKey: 'inverse_block_extract_title',
+        explanationKey: 'inverse_block_extract_desc',
+        explanationParams: const {},
+        matrixBefore: blockSnap,
+        matrixAfter: blockSnap,
+        transformation: IdentitySeparationTransformation(n),
+        highlights: [
+          for (int r = 0; r < n; r++)
+            for (int c = n; c < 2 * n; c++)
+              CellHighlight(row: r, col: c, type: HighlightType.selected),
+        ],
+      ),
+    );
 
     return StepSolution(
       operationKey: 'op_inverse',

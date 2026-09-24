@@ -182,7 +182,9 @@ class SettingsState {
       predictions: json['predictions'] != false,
       compact: json['compact'] == true,
       shortcutOverrides: Map.unmodifiable(bindings),
-      lastTopic: json['lastTopic'] is String ? json['lastTopic'] as String : null,
+      lastTopic: json['lastTopic'] is String
+          ? json['lastTopic'] as String
+          : null,
       completedTopics: Set.unmodifiable({
         if (json['completed'] case final List<Object?> names)
           for (final name in names)

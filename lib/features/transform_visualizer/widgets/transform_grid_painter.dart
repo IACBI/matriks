@@ -109,7 +109,9 @@ class TransformGridPainter extends CustomPainter {
     // 4. Transformed unit square; orange when orientation is kept, red when
     // it is flipped (negative determinant).
     final flipped = a * d - b * c < 0;
-    final areaColor = flipped ? const Color(0xFFE11D48) : const Color(0xFFF59E0B);
+    final areaColor = flipped
+        ? const Color(0xFFE11D48)
+        : const Color(0xFFF59E0B);
     final p00 = toCanvas(0, 0);
     final p10 = toCanvas(1, 0);
     final p11 = toCanvas(1, 1);

@@ -37,7 +37,9 @@ class DeterminantSolver {
         transformation: InformationalStepTransformation(
           '1x1 determinant is the element itself',
         ),
-        highlights: [CellHighlight(row: 0, col: 0, type: HighlightType.selected)],
+        highlights: [
+          CellHighlight(row: 0, col: 0, type: HighlightType.selected),
+        ],
       );
       return StepSolution(
         operationKey: 'op_determinant',

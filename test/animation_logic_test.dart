@@ -59,7 +59,10 @@ void main() {
       after: step.matrixAfter,
     );
     expect(lesson.calculations, hasLength(2));
-    expect(lesson.calculations.first, startsWith('(${step.matrixBefore.get(t.targetRow, 1)})'));
+    expect(
+      lesson.calculations.first,
+      startsWith('(${step.matrixBefore.get(t.targetRow, 1)})'),
+    );
   });
 
   testWidgets('Steps without teaching text do not show placeholder phases', (
@@ -166,35 +169,36 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('The determinant recap lists products and animates only the sum', (
-    tester,
-  ) async {
-    final step = DeterminantSolver.solve(
-      Matrix.fromInts([
-        [2, 3],
-        [1, 4],
-      ]),
-    ).steps.last;
-    await tester.pumpWidget(_grid(step));
-    await tester.pump();
-    expect(
-      tester
-          .widgetList<CustomPaint>(find.byType(CustomPaint))
-          .map((p) => p.painter)
-          .whereType<DeterminantLinesPainter>(),
-      isEmpty,
-    );
-    final explanation = find.byType(InstructionExplanation);
-    expect(
-      find.descendant(of: explanation, matching: find.byType(MathText)),
-      findsNWidgets(2),
-    );
-    await tester.pumpAndSettle();
-    expect(
-      find.descendant(of: explanation, matching: find.byType(MathText)),
-      findsNWidgets(3),
-    );
-  });
+  testWidgets(
+    'The determinant recap lists products and animates only the sum',
+    (tester) async {
+      final step = DeterminantSolver.solve(
+        Matrix.fromInts([
+          [2, 3],
+          [1, 4],
+        ]),
+      ).steps.last;
+      await tester.pumpWidget(_grid(step));
+      await tester.pump();
+      expect(
+        tester
+            .widgetList<CustomPaint>(find.byType(CustomPaint))
+            .map((p) => p.painter)
+            .whereType<DeterminantLinesPainter>(),
+        isEmpty,
+      );
+      final explanation = find.byType(InstructionExplanation);
+      expect(
+        find.descendant(of: explanation, matching: find.byType(MathText)),
+        findsNWidgets(2),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: explanation, matching: find.byType(MathText)),
+        findsNWidgets(3),
+      );
+    },
+  );
 
   testWidgets('The step description appears only when it adds something', (
     tester,

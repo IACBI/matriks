@@ -108,10 +108,7 @@ String localizedStepText(
       case 'det_row_swap_title':
         return l10n.det_row_swap_title;
       case 'det_row_swap_desc':
-        return l10n.det_row_swap_desc(
-          params['rowA'] ?? 0,
-          params['rowB'] ?? 0,
-        );
+        return l10n.det_row_swap_desc(params['rowA'] ?? 0, params['rowB'] ?? 0);
       case 'det_diagonal_product_title':
         return l10n.det_diagonal_product_title;
       case 'det_diagonal_product_desc':
@@ -140,9 +137,7 @@ String localizedStepText(
       case 'inverse_2x2_scale_title':
         return l10n.inverse_2x2_scale_title;
       case 'inverse_2x2_scale_desc':
-        return l10n.inverse_2x2_scale_desc(
-          params['factor']?.toString() ?? '',
-        );
+        return l10n.inverse_2x2_scale_desc(params['factor']?.toString() ?? '');
       case 'inverse_block_init_title':
         return l10n.inverse_block_init_title;
       case 'inverse_block_init_desc':
@@ -277,10 +272,7 @@ String localizedStepText(
       case 'lu_swap_desc':
         return l10n.lu_swap_desc(params['rowA'] ?? 0, params['rowB'] ?? 0);
       case 'lu_elim_title':
-        return l10n.lu_elim_title(
-          params['source'] ?? 0,
-          params['target'] ?? 0,
-        );
+        return l10n.lu_elim_title(params['source'] ?? 0, params['target'] ?? 0);
       case 'lu_elim_desc':
         return l10n.lu_elim_desc(
           params['multiplier']?.toString() ?? '',

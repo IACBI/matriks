@@ -114,16 +114,14 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final settings = context.watch<SettingsCubit>().state;
     final compact = settings.compact;
     final query = foldForSearch(_searchController.text.trim());
-    final topics =
-        TopicItem.allTopics.where((topic) {
-          final matchesCategory =
-              _selectedCategory == null || topic.category == _selectedCategory;
-          final searchable = foldForSearch(
-            '${topic.title(l10n)} ${topic.description(l10n)} ${topic.tagText}',
-          );
-          return matchesCategory &&
-              (query.isEmpty || searchable.contains(query));
-        }).toList()..sort((a, b) => a.pathIndex.compareTo(b.pathIndex));
+    final topics = TopicItem.allTopics.where((topic) {
+      final matchesCategory =
+          _selectedCategory == null || topic.category == _selectedCategory;
+      final searchable = foldForSearch(
+        '${topic.title(l10n)} ${topic.description(l10n)} ${topic.tagText}',
+      );
+      return matchesCategory && (query.isEmpty || searchable.contains(query));
+    }).toList()..sort((a, b) => a.pathIndex.compareTo(b.pathIndex));
     final completed = TopicItem.allTopics
         .where((t) => settings.completedTopics.contains(t.type.name))
         .length;
@@ -311,7 +309,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Text(
-                        l10n.pathProgress(completed, TopicItem.allTopics.length),
+                        l10n.pathProgress(
+                          completed,
+                          TopicItem.allTopics.length,
+                        ),
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: scheme.onSurfaceVariant,
                         ),

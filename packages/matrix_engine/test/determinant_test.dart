@@ -39,7 +39,10 @@ void main() {
     test('4x4 Determinant (Triangularization)', () {
       // Identity 4x4 -> det = 1
       final id4 = Matrix.identity(4);
-      final sol = DeterminantSolver.solve(id4, method: DeterminantMethod.triangular);
+      final sol = DeterminantSolver.solve(
+        id4,
+        method: DeterminantMethod.triangular,
+      );
       expect(sol.result, equals(Rational.one));
 
       // 4x4 upper triangular
@@ -50,7 +53,10 @@ void main() {
         [0, 0, 0, 5],
       ]);
       // det = 2 * 3 * 4 * 5 = 120
-      final solUt = DeterminantSolver.solve(ut, method: DeterminantMethod.triangular);
+      final solUt = DeterminantSolver.solve(
+        ut,
+        method: DeterminantMethod.triangular,
+      );
       expect(solUt.result, equals(Rational.fromInt(120)));
     });
   });

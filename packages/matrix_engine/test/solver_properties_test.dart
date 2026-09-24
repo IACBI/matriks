@@ -13,9 +13,8 @@ Matrix _product(Matrix a, Matrix b) => Matrix([
   for (var r = 0; r < a.rows; r++)
     [
       for (var c = 0; c < b.cols; c++)
-        [
-          for (var k = 0; k < a.cols; k++) a.get(r, k) * b.get(k, c),
-        ].fold(Rational.zero, (sum, v) => sum + v),
+        [for (var k = 0; k < a.cols; k++) a.get(r, k) * b.get(k, c)]
+            .fold(Rational.zero, (sum, v) => sum + v),
     ],
 ]);
 
@@ -36,9 +35,9 @@ Matrix _rref(Matrix m) {
   final rows = m.toList();
   var lead = 0;
   for (var r = 0; r < m.rows && lead < m.cols; lead++) {
-    final pivot = [
-      for (var i = r; i < m.rows; i++) i,
-    ].where((i) => !rows[i][lead].isZero).firstOrNull;
+    final pivot = [for (var i = r; i < m.rows; i++) i]
+        .where((i) => !rows[i][lead].isZero)
+        .firstOrNull;
     if (pivot == null) continue;
     final swap = rows[pivot];
     rows[pivot] = rows[r];
@@ -48,9 +47,7 @@ Matrix _rref(Matrix m) {
     for (var i = 0; i < m.rows; i++) {
       if (i == r || rows[i][lead].isZero) continue;
       final f = rows[i][lead];
-      rows[i] = [
-        for (var c = 0; c < m.cols; c++) rows[i][c] - f * rows[r][c],
-      ];
+      rows[i] = [for (var c = 0; c < m.cols; c++) rows[i][c] - f * rows[r][c]];
     }
     r++;
   }
@@ -76,9 +73,9 @@ bool _isRowEchelon(Matrix m) {
   var previous = -1;
   var zeroRowSeen = false;
   for (var r = 0; r < m.rows; r++) {
-    final lead = [
-      for (var c = 0; c < m.cols; c++) c,
-    ].where((c) => !m.get(r, c).isZero).firstOrNull;
+    final lead = [for (var c = 0; c < m.cols; c++) c]
+        .where((c) => !m.get(r, c).isZero)
+        .firstOrNull;
     if (lead == null) {
       zeroRowSeen = true;
       continue;
@@ -111,9 +108,7 @@ Matrix _random(Random rng, int rows, int cols, {bool fractions = true}) {
     final b = (a + 1) % rows;
     final target = (a + 2) % rows;
     final k = Rational(rng.nextInt(5) - 2);
-    data[target] = [
-      for (var c = 0; c < cols; c++) data[a][c] + k * data[b][c],
-    ];
+    data[target] = [for (var c = 0; c < cols; c++) data[a][c] + k * data[b][c]];
   }
   return Matrix(data);
 }
@@ -341,7 +336,11 @@ void main() {
         final values = result.realEigenpairs.map((p) => p.eigenvalue).toSet();
         expect(values.length, result.realEigenpairs.length);
         expect(result.hasComplexEigenvalues, isFalse);
-        expect(result.realEigenpairs.length, n, reason: 'distinct roots of\n$a');
+        expect(
+          result.realEigenpairs.length,
+          n,
+          reason: 'distinct roots of\n$a',
+        );
       }
     }
   });

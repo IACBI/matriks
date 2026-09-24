@@ -29,7 +29,10 @@ void main() {
 
     test('Division by zero throws exception', () {
       expect(() => Rational(1, 0), throwsA(isA<DivisionByZeroException>()));
-      expect(() => Rational(1, 2) / Rational.zero, throwsA(isA<DivisionByZeroException>()));
+      expect(
+        () => Rational(1, 2) / Rational.zero,
+        throwsA(isA<DivisionByZeroException>()),
+      );
     });
 
     test('Addition & Subtraction', () {

@@ -282,18 +282,9 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                           spacing: 6,
                           runSpacing: 6,
                           children: [
-                            _buildPresetChip(
-                              l10n.presetShear,
-                              'shear',
-                            ),
-                            _buildPresetChip(
-                              l10n.presetRotation,
-                              'rotation',
-                            ),
-                            _buildPresetChip(
-                              l10n.presetScale,
-                              'scale',
-                            ),
+                            _buildPresetChip(l10n.presetShear, 'shear'),
+                            _buildPresetChip(l10n.presetRotation, 'rotation'),
+                            _buildPresetChip(l10n.presetScale, 'scale'),
                             _buildPresetChip(
                               l10n.presetReflection,
                               'reflection',
@@ -302,10 +293,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                               l10n.presetProjection,
                               'projection',
                             ),
-                            _buildPresetChip(
-                              l10n.presetReset,
-                              'identity',
-                            ),
+                            _buildPresetChip(l10n.presetReset, 'identity'),
                           ],
                         ),
                       ),
@@ -425,19 +413,17 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                 runSpacing: 8,
                                 children: [
                                   _buildBadge(
-                                    label:
-                                        l10n.basisVectorI(
-                                          _short(currentA),
-                                          _short(currentC),
-                                        ),
+                                    label: l10n.basisVectorI(
+                                      _short(currentA),
+                                      _short(currentC),
+                                    ),
                                     color: theme.colorScheme.primary,
                                   ),
                                   _buildBadge(
-                                    label:
-                                        l10n.basisVectorJ(
-                                          _short(currentB),
-                                          _short(currentD),
-                                        ),
+                                    label: l10n.basisVectorJ(
+                                      _short(currentB),
+                                      _short(currentD),
+                                    ),
                                     color: AppTheme.accentGreen,
                                   ),
                                 ],

@@ -86,7 +86,13 @@ class DeterminantLinesPainter extends CustomPainter {
         Offset(_x(cell.$2), (cell.$1 + .5) * cellHeight);
     if (showAll) {
       for (final (cells, color) in paths) {
-        _drawPath(canvas, [for (final cell in cells) centre(cell)], color, 1, radius);
+        _drawPath(
+          canvas,
+          [for (final cell in cells) centre(cell)],
+          color,
+          1,
+          radius,
+        );
       }
       return;
     }

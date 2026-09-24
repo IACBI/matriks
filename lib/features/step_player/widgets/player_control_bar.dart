@@ -238,29 +238,31 @@ class PlayerControlBar extends StatelessWidget {
                         icon: const Icon(Icons.skip_previous_rounded, size: 28),
                       ),
                       if (showPlayback) ...[
-                      const SizedBox(width: 4),
-                      FloatingActionButton.small(
-                        heroTag: 'play_pause_btn',
-                        tooltip: isPlaying
-                            ? (l10n?.pause ?? 'Pause')
-                            : (l10n?.play ?? 'Play'),
-                        onPressed: animationEnabled ? onTogglePlayPause : null,
-                        backgroundColor: animationEnabled
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.surfaceContainerHighest,
-                        foregroundColor: animationEnabled
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface.withValues(
-                                alpha: .38,
-                              ),
-                        elevation: animationEnabled ? 1 : 0,
-                        child: Icon(
-                          isPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          size: 26,
+                        const SizedBox(width: 4),
+                        FloatingActionButton.small(
+                          heroTag: 'play_pause_btn',
+                          tooltip: isPlaying
+                              ? (l10n?.pause ?? 'Pause')
+                              : (l10n?.play ?? 'Play'),
+                          onPressed: animationEnabled
+                              ? onTogglePlayPause
+                              : null,
+                          backgroundColor: animationEnabled
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surfaceContainerHighest,
+                          foregroundColor: animationEnabled
+                              ? theme.colorScheme.onPrimary
+                              : theme.colorScheme.onSurface.withValues(
+                                  alpha: .38,
+                                ),
+                          elevation: animationEnabled ? 1 : 0,
+                          child: Icon(
+                            isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            size: 26,
+                          ),
                         ),
-                      ),
                       ],
                       const SizedBox(width: 4),
                       IconButton(

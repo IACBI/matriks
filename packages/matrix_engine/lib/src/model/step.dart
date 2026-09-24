@@ -119,6 +119,7 @@ class RowScaleTransformation extends StepTransformation {
 class RowEliminationTransformation extends StepTransformation {
   final int targetRow;
   final int sourceRow;
+
   /// targetRow ← targetRow + factor · sourceRow (the negated multiplier).
   final Rational factor;
   const RowEliminationTransformation({

@@ -171,8 +171,7 @@ class InstructionLesson {
         operation:
             l10n?.guideSwapApply ??
             'Move the whole rows; values do not change.',
-        result:
-            l10n?.guideSwapResult ?? 'The rows are in their new positions.',
+        result: l10n?.guideSwapResult ?? 'The rows are in their new positions.',
         // The solver's description says why the rows are exchanged.
         coversDescription: false,
       );
@@ -202,9 +201,7 @@ class InstructionLesson {
           ...terms,
           '${terms.join(' + ')} = ${trans.result.toLatex()}',
         ],
-        rationale:
-            l10n?.guideDotReason ??
-            'One output entry uses a whole row of A and a whole column of B. Multiply entries in matching positions, then add their contributions.',
+        rationale: l10n?.guideDotReason ?? 'One output entry uses a whole row of A and a whole column of B. Multiply entries in matching positions, then add their contributions.',
       );
     }
     if (trans is AdjugateTransformation && original.rows == 2) {
@@ -217,17 +214,14 @@ class InstructionLesson {
             l10n?.guideAdjSource ??
             'Look at the diagonal a, d and the other two entries b, c.',
         operation:
-            l10n?.guideAdjApply ??
-            'a and d trade places; b and c change sign.',
+            l10n?.guideAdjApply ?? 'a and d trade places; b and c change sign.',
         result:
             l10n?.guideAdjResult ??
             'This is adj(A). Dividing it by det(A) gives the inverse.',
         calculations: [
           '\\begin{pmatrix} ${a.toLatex()} & ${b.toLatex()} \\\\ ${c.toLatex()} & ${d.toLatex()} \\end{pmatrix} \\rightarrow \\begin{pmatrix} ${d.toLatex()} & ${(-b).toLatex()} \\\\ ${(-c).toLatex()} & ${a.toLatex()} \\end{pmatrix}',
         ],
-        rationale:
-            l10n?.guideAdjReason ??
-            'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.',
+        rationale: l10n?.guideAdjReason ?? 'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.',
       );
     }
     if (trans is MatrixScaleTransformation) {
@@ -256,12 +250,8 @@ class InstructionLesson {
         lines.add('${factors.join(r' \cdot ')} = ${product.toLatex()}');
       }
       return InstructionLesson._(
-        source:
-            l10n?.guideDiagSource ??
-            'In a triangular matrix the determinant is the product of the diagonal.',
-        operation:
-            l10n?.guideDiagApply ??
-            'Multiply the diagonal entries one by one. Each row swap earlier contributed a factor of −1.',
+        source: l10n?.guideDiagSource ?? 'In a triangular matrix the determinant is the product of the diagonal.',
+        operation: l10n?.guideDiagApply ?? 'Multiply the diagonal entries one by one. Each row swap earlier contributed a factor of −1.',
         result:
             l10n?.guideDiagResult ??
             'The last product is the determinant of the original matrix.',
@@ -343,14 +333,11 @@ class InstructionLesson {
               l10n?.guideDetRecapApply ??
               'Subtract the − total from the + total.',
           result:
-              l10n?.guideDetRecapResult ??
-              'The difference is the determinant.',
+              l10n?.guideDetRecapResult ?? 'The difference is the determinant.',
           calculations: lines,
           markers: markers,
           revealedAtStart: lines.length - 1,
-          rationale:
-              l10n?.guideDetReason ??
-              'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
+          rationale: l10n?.guideDetReason ?? 'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
         );
       }
       return InstructionLesson._(
@@ -365,9 +352,7 @@ class InstructionLesson {
             'Their sum is this group\'s contribution to the determinant.',
         calculations: lines,
         markers: markers,
-        rationale:
-            l10n?.guideDetReason ??
-            'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
+        rationale: l10n?.guideDetReason ?? 'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
       );
     }
     return _generic;

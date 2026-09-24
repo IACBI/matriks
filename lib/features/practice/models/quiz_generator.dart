@@ -23,9 +23,7 @@ class QuizGenerator {
     // Every kind once, then one more of a random kind, in random order.
     final kinds = [...builders, builders[rng.nextInt(builders.length)]]
       ..shuffle(rng);
-    return [
-      for (var i = 0; i < roundLength; i++) kinds[i](rng, l, i),
-    ];
+    return [for (var i = 0; i < roundLength; i++) kinds[i](rng, l, i)];
   }
 
   static int _small(Random rng, int limit, {bool nonZero = false}) {
@@ -72,7 +70,12 @@ class QuizGenerator {
     while (true) {
       final a = _small(rng, 5), b = _small(rng, 5, nonZero: true);
       final c = _small(rng, 5, nonZero: true), d = _small(rng, 5);
-      final answers = [a * d - b * c, a * d + b * c, a * b - c * d, b * c - a * d];
+      final answers = [
+        a * d - b * c,
+        a * d + b * c,
+        a * b - c * d,
+        b * c - a * d,
+      ];
       if (answers.toSet().length < answers.length) continue;
       return _question(
         rng: rng,

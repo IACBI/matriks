@@ -36,7 +36,10 @@ void main() {
         final c = m.get(1, 0), d = m.get(1, 1);
         switch (q.id.split('-').last) {
           case 'det':
-            expect(answer, (DeterminantSolver.solve(m).result as Rational).toString());
+            expect(
+              answer,
+              (DeterminantSolver.solve(m).result as Rational).toString(),
+            );
           case 'product':
             expect(answer, (a * b + b * d).toString());
             final product =

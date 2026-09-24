@@ -199,27 +199,33 @@ void main() {
     expect(scale.matrixAfter.toMatrix(), solution.result);
   });
 
-  test('Block inverse extraction keeps [I | A^-1] and marks the right block', () {
-    final solution = InverseSolver.solve(
-      Matrix.fromInts([
-        [1, 2, 0],
-        [0, 1, 0],
-        [2, 0, 1],
-      ]),
-    );
-    final extract = solution.steps.last;
-    expect(extract.transformation, isA<IdentitySeparationTransformation>());
-    expect(extract.matrixBefore.cols, 6);
-    expect(extract.matrixAfter.cols, 6);
-    for (var r = 0; r < 3; r++) {
-      for (var c = 0; c < 3; c++) {
-        expect(extract.matrixAfter.get(r, c), r == c ? Rational.one : Rational.zero);
-        expect(
-          extract.matrixAfter.get(r, c + 3),
-          (solution.result as Matrix).get(r, c),
-        );
+  test(
+    'Block inverse extraction keeps [I | A^-1] and marks the right block',
+    () {
+      final solution = InverseSolver.solve(
+        Matrix.fromInts([
+          [1, 2, 0],
+          [0, 1, 0],
+          [2, 0, 1],
+        ]),
+      );
+      final extract = solution.steps.last;
+      expect(extract.transformation, isA<IdentitySeparationTransformation>());
+      expect(extract.matrixBefore.cols, 6);
+      expect(extract.matrixAfter.cols, 6);
+      for (var r = 0; r < 3; r++) {
+        for (var c = 0; c < 3; c++) {
+          expect(
+            extract.matrixAfter.get(r, c),
+            r == c ? Rational.one : Rational.zero,
+          );
+          expect(
+            extract.matrixAfter.get(r, c + 3),
+            (solution.result as Matrix).get(r, c),
+          );
+        }
       }
-    }
-    expect(extract.highlights.every((h) => h.col >= 3), isTrue);
-  });
+      expect(extract.highlights.every((h) => h.col >= 3), isTrue);
+    },
+  );
 }

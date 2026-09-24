@@ -481,8 +481,7 @@ class EigenSolver {
         else
           '\\lambda \\approx ${_roundedLatex(eigenpairs[i].eigenvalue)} '
               '\\implies ${eigenpairs[i].vectorLatexWith(_roundedLatex)}',
-      if (complexLatex != null)
-        '\\lambda \\approx $complexLatex',
+      if (complexLatex != null) '\\lambda \\approx $complexLatex',
     ].join(r' \quad ');
 
     return StepSolution(
@@ -504,8 +503,7 @@ class EigenSolver {
           : complexLatex != null
           ? 2
           : null,
-      completeness:
-          spectrum.missing || repeated || complexLatex != null
+      completeness: spectrum.missing || repeated || complexLatex != null
           ? ResultCompleteness.partial
           : ResultCompleteness.complete,
     );
@@ -829,9 +827,7 @@ class EigenSolver {
   /// without trailing zeros: 1.618, 0.5, -2.
   static String _roundedLatex(Rational value) {
     final text = value.toDecimalString(3);
-    return text.contains('.')
-        ? text.replaceFirst(RegExp(r'\.?0+$'), '')
-        : text;
+    return text.contains('.') ? text.replaceFirst(RegExp(r'\.?0+$'), '') : text;
   }
 
   static int _multiplicity(Rational root, Rational c2, Rational c1) {

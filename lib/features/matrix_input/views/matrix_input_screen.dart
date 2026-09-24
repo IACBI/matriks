@@ -142,10 +142,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 label: '$currentRows',
                 canDecrement: canDecrementRows,
                 canIncrement: canIncrementRows,
-                decrementTooltip:
-                    l10n.decreaseDimension,
-                incrementTooltip:
-                    l10n.increaseDimension,
+                decrementTooltip: l10n.decreaseDimension,
+                incrementTooltip: l10n.increaseDimension,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows - 1, currentCols);
@@ -174,10 +172,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 enabled: !topic.requiresSquare,
                 canDecrement: canDecrementCols,
                 canIncrement: canIncrementCols,
-                decrementTooltip:
-                    l10n.decreaseDimension,
-                incrementTooltip:
-                    l10n.increaseDimension,
+                decrementTooltip: l10n.decreaseDimension,
+                incrementTooltip: l10n.increaseDimension,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows, currentCols - 1);
@@ -234,8 +230,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 child: Semantics(
                   liveRegion: true,
                   child: Text(
-                    visibleError ??
-                        l10n.inputHelp,
+                    visibleError ?? l10n.inputHelp,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: visibleError != null
@@ -407,11 +402,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.play_arrow_rounded),
-                label: Text(
-                  _isSolving
-                      ? (l10n.calculating)
-                      : (l10n.calculate),
-                ),
+                label: Text(_isSolving ? (l10n.calculating) : (l10n.calculate)),
               ),
             ),
           );
@@ -498,15 +489,11 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                         segments: [
                                           ButtonSegment(
                                             value: 0,
-                                            label: Text(
-                                              l10n.matrixA,
-                                            ),
+                                            label: Text(l10n.matrixA),
                                           ),
                                           ButtonSegment(
                                             value: 1,
-                                            label: Text(
-                                              l10n.matrixB,
-                                            ),
+                                            label: Text(l10n.matrixB),
                                           ),
                                         ],
                                         selected: {state.activeMatrix},
@@ -671,8 +658,11 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
             context.read<MatrixInputCubit>().setFocus(r, c, index);
             _invalidCell = (index, r, c);
             setState(
-              () => _inputError =
-                  l10n.inputInvalid(index == 0 ? 'A' : 'B', r + 1, c + 1),
+              () => _inputError = l10n.inputInvalid(
+                index == 0 ? 'A' : 'B',
+                r + 1,
+                c + 1,
+              ),
             );
             return;
           }
@@ -727,9 +717,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
       // An exception text is for developers; the learner gets a plain message.
       debugPrint('Solve failed: $error\n$stack');
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.solveFallbackError)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.solveFallbackError)));
       return;
     } finally {
       if (mounted) setState(() => _isSolving = false);

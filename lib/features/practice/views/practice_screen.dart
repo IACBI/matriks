@@ -48,7 +48,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
     final seed = _seed;
     return seed == null
         ? QuizBank.getQuestions(language: _language)
-        : QuizGenerator.generate(seed, lookupAppLocalizations(Locale(_language)));
+        : QuizGenerator.generate(
+            seed,
+            lookupAppLocalizations(Locale(_language)),
+          );
   }
 
   @override
@@ -278,46 +281,46 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.accentAmber.withValues(
-                                alpha: isDark ? 0.25 : 0.15,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
                               ),
-                              borderRadius: BorderRadius.circular(
-                                AppTheme.radiusMd,
-                              ),
-                              border: Border.all(
+                              decoration: BoxDecoration(
                                 color: AppTheme.accentAmber.withValues(
-                                  alpha: 0.6,
+                                  alpha: isDark ? 0.25 : 0.15,
                                 ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.star_rounded,
-                                  color: AppTheme.accentAmber,
-                                  size: 18,
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusMd,
                                 ),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    scoreLabel,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark
-                                          ? AppTheme.accentAmber
-                                          : const Color(0xFFB45309),
-                                    ),
+                                border: Border.all(
+                                  color: AppTheme.accentAmber.withValues(
+                                    alpha: 0.6,
                                   ),
                                 ),
-                              ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: AppTheme.accentAmber,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      scoreLabel,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark
+                                            ? AppTheme.accentAmber
+                                            : const Color(0xFFB45309),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
                           ),
                           const SizedBox(height: 12),
                           // Question Header & Tag

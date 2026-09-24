@@ -7,31 +7,37 @@ class Matrix {
   final List<List<Rational>> _data;
 
   Matrix(List<List<Rational>> data)
-      : rows = data.length,
-        cols = data.isEmpty ? 0 : data.first.length,
-        _data = List.unmodifiable(
-          data.map((row) => List<Rational>.unmodifiable(row)).toList(),
-        ) {
+    : rows = data.length,
+      cols = data.isEmpty ? 0 : data.first.length,
+      _data = List.unmodifiable(
+        data.map((row) => List<Rational>.unmodifiable(row)).toList(),
+      ) {
     if (rows == 0 || cols == 0) {
       throw ArgumentError('Matrix dimensions must be greater than zero.');
     }
     for (int r = 1; r < rows; r++) {
       if (data[r].length != cols) {
-        throw ArgumentError('All rows in a Matrix must have the same column length.');
+        throw ArgumentError(
+          'All rows in a Matrix must have the same column length.',
+        );
       }
     }
   }
 
   factory Matrix.fromInts(List<List<int>> data) {
     return Matrix(
-      data.map((row) => row.map((val) => Rational.fromInt(val)).toList()).toList(),
+      data
+          .map((row) => row.map((val) => Rational.fromInt(val)).toList())
+          .toList(),
     );
   }
 
   factory Matrix.fromDoubles(List<List<double>> data) {
     return Matrix(
       data
-          .map((row) => row.map((val) => Rational.parse(val.toString())).toList())
+          .map(
+            (row) => row.map((val) => Rational.parse(val.toString())).toList(),
+          )
           .toList(),
     );
   }
@@ -54,10 +60,7 @@ class Matrix {
   }
 
   factory Matrix.fill(int rows, int cols, Rational value) {
-    final data = List.generate(
-      rows,
-      (_) => List.generate(cols, (_) => value),
-    );
+    final data = List.generate(rows, (_) => List.generate(cols, (_) => value));
     return Matrix(data);
   }
 
@@ -100,7 +103,8 @@ class Matrix {
     if (factor.isZero) return this;
     final mutable = _toMutable();
     for (int c = 0; c < cols; c++) {
-      mutable[targetRow][c] = mutable[targetRow][c] + (factor * mutable[sourceRow][c]);
+      mutable[targetRow][c] =
+          mutable[targetRow][c] + (factor * mutable[sourceRow][c]);
     }
     return Matrix(mutable);
   }
@@ -117,28 +121,23 @@ class Matrix {
   /// Horizontally augments this matrix with [other] -> [this | other]
   Matrix augment(Matrix other) {
     if (rows != other.rows) {
-      throw ArgumentError('Cannot augment matrices with different row counts: $rows vs ${other.rows}');
+      throw ArgumentError(
+        'Cannot augment matrices with different row counts: $rows vs ${other.rows}',
+      );
     }
-    final data = List.generate(
-      rows,
-      (r) => [..._data[r], ...other._data[r]],
-    );
+    final data = List.generate(rows, (r) => [..._data[r], ...other._data[r]]);
     return Matrix(data);
   }
 
   /// Splits this matrix at column index [colSplit] -> (Left, Right)
   (Matrix, Matrix) split(int colSplit) {
     if (colSplit <= 0 || colSplit >= cols) {
-      throw RangeError('Split column $colSplit is out of range (1..${cols - 1})');
+      throw RangeError(
+        'Split column $colSplit is out of range (1..${cols - 1})',
+      );
     }
-    final leftData = List.generate(
-      rows,
-      (r) => _data[r].sublist(0, colSplit),
-    );
-    final rightData = List.generate(
-      rows,
-      (r) => _data[r].sublist(colSplit),
-    );
+    final leftData = List.generate(rows, (r) => _data[r].sublist(0, colSplit));
+    final rightData = List.generate(rows, (r) => _data[r].sublist(colSplit));
     return (Matrix(leftData), Matrix(rightData));
   }
 
@@ -174,7 +173,10 @@ class Matrix {
   List<List<Rational>> toList() => _toMutable();
 
   String toLatex() {
-    final buffer = StringBuffer(r'\begin{pmatrix}' '\n');
+    final buffer = StringBuffer(
+      r'\begin{pmatrix}'
+      '\n',
+    );
     for (int r = 0; r < rows; r++) {
       buffer.write('  ');
       for (int c = 0; c < cols; c++) {
@@ -204,7 +206,8 @@ class Matrix {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! Matrix || other.rows != rows || other.cols != cols) return false;
+    if (other is! Matrix || other.rows != rows || other.cols != cols)
+      return false;
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
         if (_data[r][c] != other._data[r][c]) return false;

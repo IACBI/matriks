@@ -712,26 +712,26 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                 ?widget.details,
                 if (!widget.staticStep)
                   Row(
-                  children: [
-                    Expanded(
-                      child: AnimatedBuilder(
-                        animation: _animController,
-                        builder: (context, _) => Slider(
-                          key: const ValueKey('instruction-progress'),
-                          semanticFormatterCallback: (value) =>
-                              '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
-                          value: _animController.value,
-                          onChanged: _onScrub,
+                    children: [
+                      Expanded(
+                        child: AnimatedBuilder(
+                          animation: _animController,
+                          builder: (context, _) => Slider(
+                            key: const ValueKey('instruction-progress'),
+                            semanticFormatterCallback: (value) =>
+                                '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
+                            value: _animController.value,
+                            onChanged: _onScrub,
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      tooltip: l10n?.replayAnimation ?? 'Replay animation',
-                      onPressed: _replay,
-                      icon: const Icon(Icons.replay_rounded),
-                    ),
-                  ],
-                ),
+                      IconButton(
+                        tooltip: l10n?.replayAnimation ?? 'Replay animation',
+                        onPressed: _replay,
+                        icon: const Icon(Icons.replay_rounded),
+                      ),
+                    ],
+                  ),
               ],
             ),
         ],
@@ -956,7 +956,8 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     };
     final pending =
         current != null &&
-        (order > current || (order == current && !reduceMotion && progress < 1));
+        (order > current ||
+            (order == current && !reduceMotion && progress < 1));
     final cacheKey = (
       r,
       c,
@@ -1131,8 +1132,10 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                   for (var c = 0; c < lower.cols; c++)
                     Container(
                       constraints: BoxConstraints(
-                        minWidth: 44 * MediaQuery.textScalerOf(context).scale(1),
-                        minHeight: 40 * MediaQuery.textScalerOf(context).scale(1),
+                        minWidth:
+                            44 * MediaQuery.textScalerOf(context).scale(1),
+                        minHeight:
+                            40 * MediaQuery.textScalerOf(context).scale(1),
                       ),
                       margin: const EdgeInsets.all(1),
                       alignment: Alignment.center,
@@ -1235,7 +1238,11 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
       if (trans is! LUEliminationTransformation) return operation;
       return Column(
         mainAxisSize: MainAxisSize.min,
-        children: [operation, const SizedBox(height: 12), _buildLowerMatrix(trans)],
+        children: [
+          operation,
+          const SizedBox(height: 12),
+          _buildLowerMatrix(trans),
+        ],
       );
     }
     if (trans is AdjugateTransformation) {

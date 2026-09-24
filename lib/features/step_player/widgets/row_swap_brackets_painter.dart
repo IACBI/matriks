@@ -47,7 +47,12 @@ class RowSwapBracketsPainter extends CustomPainter {
     _drawArrowHead(canvas, end, end - control, color);
   }
 
-  void _drawArrowHead(Canvas canvas, Offset tip, Offset direction, Color color) {
+  void _drawArrowHead(
+    Canvas canvas,
+    Offset tip,
+    Offset direction,
+    Color color,
+  ) {
     final angle = math.atan2(direction.dy, direction.dx);
     const size = 7.0;
     final path = Path()

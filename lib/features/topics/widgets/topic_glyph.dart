@@ -77,8 +77,7 @@ class _GlyphPainter extends CustomPainter {
       }
     }
 
-    Offset at(double x, double y) =>
-        Offset(inset + x * area, inset + y * area);
+    Offset at(double x, double y) => Offset(inset + x * area, inset + y * area);
     void line(Offset a, Offset b, Color color) =>
         canvas.drawLine(a, b, stroke..color = color);
     void arrow(Offset from, Offset to, Color color) {

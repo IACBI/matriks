@@ -34,14 +34,8 @@ class MatrixEducatorApp extends StatelessWidget {
                 AppLocalizations.of(context)?.appTitle ??
                 'Matriks · Linear Algebra',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.studio(
-              false,
-              compact: settings.compact,
-            ),
-            darkTheme: AppTheme.studio(
-              true,
-              compact: settings.compact,
-            ),
+            theme: AppTheme.studio(false, compact: settings.compact),
+            darkTheme: AppTheme.studio(true, compact: settings.compact),
             themeMode: settings.themeMode,
             locale: settings.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
