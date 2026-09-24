@@ -933,18 +933,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get compact => '紧凑';
 
   @override
-  String get accentLabel => '强调色';
-
-  @override
-  String get blue => '蓝色';
-
-  @override
-  String get teal => '青绿色';
-
-  @override
-  String get purple => '紫色';
-
-  @override
   String get shortcutsLabel => '键盘快捷键';
 
   @override
@@ -960,10 +948,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resetSettings => '重置设置';
 
   @override
+  String get moreOptions => '更多选项';
+
+  @override
+  String get resetProgress => '重置学习进度';
+
+  @override
   String get settingsStorageError => '无法读取或保存偏好设置。更改在本次会话中仍然有效。';
 
   @override
-  String get localPreferences => '偏好设置保存在此设备上，不保存矩阵历史记录。';
+  String get localPreferences => '偏好设置和已完成的课程保存在此设备上，不保存矩阵和测验答案。';
 
   @override
   String get resultExact => '精确';

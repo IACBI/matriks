@@ -46,7 +46,27 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> get flushed => _pending;
-  void reset() => update(const SettingsState());
+  /// Restores display and playback defaults. The learner's progress is not
+  /// a display preference and survives; [resetProgress] clears it.
+  void reset() => update(
+    SettingsState(
+      lastTopic: state.lastTopic,
+      completedTopics: state.completedTopics,
+    ),
+  );
+
+  void openTopic(String name) {
+    if (state.lastTopic != name) update(state.copyWith(lastTopic: () => name));
+  }
+
+  void completeTopic(String name) {
+    if (state.completedTopics.contains(name)) return;
+    update(state.copyWith(completedTopics: {...state.completedTopics, name}));
+  }
+
+  void resetProgress() => update(
+    state.copyWith(lastTopic: () => null, completedTopics: const {}),
+  );
   void toggleTheme({Brightness? currentBrightness}) {
     final dark =
         state.themeMode == ThemeMode.dark ||

@@ -36,12 +36,10 @@ class MatrixEducatorApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.studio(
               false,
-              palette: settings.accentPalette.index,
               compact: settings.compact,
             ),
             darkTheme: AppTheme.studio(
               true,
-              palette: settings.accentPalette.index,
               compact: settings.compact,
             ),
             themeMode: settings.themeMode,

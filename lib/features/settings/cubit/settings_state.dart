@@ -6,8 +6,6 @@ enum SolutionMode { guided, steps, result }
 
 enum ExplanationLevel { short, detailed, hidden }
 
-enum AccentPalette { blue, teal, purple }
-
 enum PlayerAction { play, previous, next, replay, result }
 
 class SettingsState {
@@ -25,12 +23,18 @@ class SettingsState {
   final double defaultPlaybackSpeed;
   final SolutionMode solutionMode;
   final ExplanationLevel explanationLevel;
-  final AccentPalette accentPalette;
   final bool reduceMotion;
   final bool predictions;
   final bool compact;
   final Map<PlayerAction, int> shortcutOverrides;
   final bool storageError;
+
+  /// The catalog topic opened last, by [Enum.name], for "continue where you
+  /// left off". Only topic names are kept, never matrices or answers.
+  final String? lastTopic;
+
+  /// Topics whose lesson the learner has played to the end.
+  final Set<String> completedTopics;
   Map<PlayerAction, int> get shortcuts =>
       Map.unmodifiable({...defaultShortcuts, ...shortcutOverrides});
 
@@ -41,12 +45,13 @@ class SettingsState {
     this.defaultPlaybackSpeed = 1,
     this.solutionMode = SolutionMode.guided,
     this.explanationLevel = ExplanationLevel.short,
-    this.accentPalette = AccentPalette.blue,
     this.reduceMotion = false,
     this.predictions = true,
     this.compact = false,
     this.shortcutOverrides = const {},
     this.storageError = false,
+    this.lastTopic,
+    this.completedTopics = const {},
   });
 
   SettingsState copyWith({
@@ -56,12 +61,13 @@ class SettingsState {
     double? defaultPlaybackSpeed,
     SolutionMode? solutionMode,
     ExplanationLevel? explanationLevel,
-    AccentPalette? accentPalette,
     bool? reduceMotion,
     bool? predictions,
     bool? compact,
     Map<PlayerAction, int>? shortcuts,
     bool? storageError,
+    String? Function()? lastTopic,
+    Set<String>? completedTopics,
   }) => SettingsState(
     themeMode: themeMode ?? this.themeMode,
     locale: locale != null ? locale() : this.locale,
@@ -69,7 +75,6 @@ class SettingsState {
     defaultPlaybackSpeed: defaultPlaybackSpeed ?? this.defaultPlaybackSpeed,
     solutionMode: solutionMode ?? this.solutionMode,
     explanationLevel: explanationLevel ?? this.explanationLevel,
-    accentPalette: accentPalette ?? this.accentPalette,
     reduceMotion: reduceMotion ?? this.reduceMotion,
     predictions: predictions ?? this.predictions,
     compact: compact ?? this.compact,
@@ -77,6 +82,10 @@ class SettingsState {
         ? shortcutOverrides
         : Map.unmodifiable(shortcuts),
     storageError: storageError ?? this.storageError,
+    lastTopic: lastTopic != null ? lastTopic() : this.lastTopic,
+    completedTopics: completedTopics == null
+        ? this.completedTopics
+        : Set.unmodifiable(completedTopics),
   );
 
   // Value equality lets the cubit skip emitting an unchanged state, which
@@ -90,12 +99,13 @@ class SettingsState {
       other.defaultPlaybackSpeed == defaultPlaybackSpeed &&
       other.solutionMode == solutionMode &&
       other.explanationLevel == explanationLevel &&
-      other.accentPalette == accentPalette &&
       other.reduceMotion == reduceMotion &&
       other.predictions == predictions &&
       other.compact == compact &&
       mapEquals(other.shortcuts, shortcuts) &&
-      other.storageError == storageError;
+      other.storageError == storageError &&
+      other.lastTopic == lastTopic &&
+      setEquals(other.completedTopics, completedTopics);
 
   @override
   int get hashCode => Object.hash(
@@ -105,7 +115,6 @@ class SettingsState {
     defaultPlaybackSpeed,
     solutionMode,
     explanationLevel,
-    accentPalette,
     reduceMotion,
     predictions,
     compact,
@@ -113,6 +122,8 @@ class SettingsState {
       shortcuts.entries.map((e) => Object.hash(e.key, e.value)),
     ),
     storageError,
+    lastTopic,
+    Object.hashAllUnordered(completedTopics),
   );
 
   Map<String, Object?> toJson() => {
@@ -123,11 +134,12 @@ class SettingsState {
     'speed': defaultPlaybackSpeed,
     'mode': solutionMode.name,
     'explanation': explanationLevel.name,
-    'accent': accentPalette.name,
     'reduceMotion': reduceMotion,
     'predictions': predictions,
     'compact': compact,
     'shortcuts': shortcuts.map((key, value) => MapEntry(key.name, value)),
+    'lastTopic': lastTopic,
+    'completed': (completedTopics.toList()..sort()),
   };
 
   factory SettingsState.fromJson(Map<String, dynamic> json) {
@@ -166,11 +178,16 @@ class SettingsState {
         'explanation',
         ExplanationLevel.short,
       ),
-      accentPalette: choice(AccentPalette.values, 'accent', AccentPalette.blue),
       reduceMotion: json['reduceMotion'] == true,
       predictions: json['predictions'] != false,
       compact: json['compact'] == true,
       shortcutOverrides: Map.unmodifiable(bindings),
+      lastTopic: json['lastTopic'] is String ? json['lastTopic'] as String : null,
+      completedTopics: Set.unmodifiable({
+        if (json['completed'] case final List<Object?> names)
+          for (final name in names)
+            if (name is String) name,
+      }),
     );
   }
 

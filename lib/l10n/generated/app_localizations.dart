@@ -1669,30 +1669,6 @@ abstract class AppLocalizations {
   /// **'Compact'**
   String get compact;
 
-  /// No description provided for @accentLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Accent palette'**
-  String get accentLabel;
-
-  /// No description provided for @blue.
-  ///
-  /// In en, this message translates to:
-  /// **'Blue'**
-  String get blue;
-
-  /// No description provided for @teal.
-  ///
-  /// In en, this message translates to:
-  /// **'Teal'**
-  String get teal;
-
-  /// No description provided for @purple.
-  ///
-  /// In en, this message translates to:
-  /// **'Purple'**
-  String get purple;
-
   /// No description provided for @shortcutsLabel.
   ///
   /// In en, this message translates to:
@@ -1723,6 +1699,18 @@ abstract class AppLocalizations {
   /// **'Reset settings'**
   String get resetSettings;
 
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get moreOptions;
+
+  /// No description provided for @resetProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset progress'**
+  String get resetProgress;
+
   /// No description provided for @settingsStorageError.
   ///
   /// In en, this message translates to:
@@ -1732,7 +1720,7 @@ abstract class AppLocalizations {
   /// No description provided for @localPreferences.
   ///
   /// In en, this message translates to:
-  /// **'Preferences stay on this device. Matrix history is not saved.'**
+  /// **'Preferences and the lessons you finished stay on this device. Matrices and quiz answers are not saved.'**
   String get localPreferences;
 
   /// No description provided for @resultExact.

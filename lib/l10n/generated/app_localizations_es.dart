@@ -971,18 +971,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get compact => 'Compacta';
 
   @override
-  String get accentLabel => 'Paleta de acento';
-
-  @override
-  String get blue => 'Azul';
-
-  @override
-  String get teal => 'Verde azulado';
-
-  @override
-  String get purple => 'Morado';
-
-  @override
   String get shortcutsLabel => 'Atajos de teclado';
 
   @override
@@ -1000,12 +988,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resetSettings => 'Restablecer ajustes';
 
   @override
+  String get moreOptions => 'Más opciones';
+
+  @override
+  String get resetProgress => 'Restablecer progreso';
+
+  @override
   String get settingsStorageError =>
       'No se pudieron leer o guardar los ajustes. Los cambios siguen disponibles en esta sesión.';
 
   @override
   String get localPreferences =>
-      'Los ajustes se guardan en este dispositivo. No se guarda el historial de matrices.';
+      'Los ajustes y las lecciones que terminaste se guardan en este dispositivo. No se guardan matrices ni respuestas del cuestionario.';
 
   @override
   String get resultExact => 'Exacto';

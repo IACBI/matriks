@@ -21,6 +21,8 @@ import '../widgets/prediction_card.dart';
 import '../../settings/cubit/settings_state.dart';
 import '../step_text.dart';
 
+enum _PlayerMenu { result, guided, steps, decimal }
+
 class StepPlayerScreen extends StatelessWidget {
   final StepSolution solution;
   final String topicTitle;
@@ -352,61 +354,47 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               actions: [
-                IconButton(
-                  tooltip: l10n.showResult,
-                  onPressed: playerCubit.showResult,
-                  icon: const Icon(Icons.last_page_rounded),
-                ),
-                PopupMenuButton<SolutionMode>(
-                  tooltip: l10n.solutionModeLabel,
-                  icon: const Icon(Icons.slideshow_rounded),
-                  initialValue: state.mode,
-                  onSelected: playerCubit.setMode,
+                // Result, mode and number view share one menu; the lesson
+                // itself needs no choices before it starts.
+                PopupMenuButton<_PlayerMenu>(
+                  key: const ValueKey('player-menu'),
+                  tooltip: l10n.moreOptions,
+                  icon: const Icon(Icons.more_vert_rounded),
+                  onSelected: (choice) {
+                    switch (choice) {
+                      case _PlayerMenu.result:
+                        playerCubit.showResult();
+                      case _PlayerMenu.guided:
+                        playerCubit.setMode(SolutionMode.guided);
+                      case _PlayerMenu.steps:
+                        playerCubit.setMode(SolutionMode.steps);
+                      case _PlayerMenu.decimal:
+                        context.read<SettingsCubit>().toggleDecimalView();
+                    }
+                  },
                   itemBuilder: (_) => [
                     PopupMenuItem(
-                      value: SolutionMode.guided,
+                      value: _PlayerMenu.result,
+                      child: Text(l10n.showResult),
+                    ),
+                    const PopupMenuDivider(),
+                    CheckedPopupMenuItem(
+                      value: _PlayerMenu.guided,
+                      checked: state.mode == SolutionMode.guided,
                       child: Text(l10n.guidedMode),
                     ),
-                    PopupMenuItem(
-                      value: SolutionMode.steps,
+                    CheckedPopupMenuItem(
+                      value: _PlayerMenu.steps,
+                      checked: state.mode == SolutionMode.steps,
                       child: Text(l10n.stepsMode),
                     ),
-                    PopupMenuItem(
-                      value: SolutionMode.result,
-                      child: Text(l10n.resultMode),
+                    const PopupMenuDivider(),
+                    CheckedPopupMenuItem(
+                      value: _PlayerMenu.decimal,
+                      checked: settingsState.isDecimalView,
+                      child: Text(l10n.decimalView),
                     ),
                   ],
-                ),
-
-                // Fraction / Decimal toggle
-                IconButton(
-                  tooltip: l10n.fractionToggle,
-                  icon: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(
-                        color: settingsState.isDecimalView
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.outline,
-                      ),
-                    ),
-                    child: Text(
-                      settingsState.isDecimalView ? '0.0' : 'a/b',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: settingsState.isDecimalView
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
-                      ),
-                    ),
-                  ),
-                  onPressed: () =>
-                      context.read<SettingsCubit>().toggleDecimalView(),
                 ),
               ],
             ),

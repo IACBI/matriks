@@ -964,18 +964,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get compact => 'Компактная';
 
   @override
-  String get accentLabel => 'Цвет акцента';
-
-  @override
-  String get blue => 'Синий';
-
-  @override
-  String get teal => 'Бирюзовый';
-
-  @override
-  String get purple => 'Фиолетовый';
-
-  @override
   String get shortcutsLabel => 'Сочетания клавиш';
 
   @override
@@ -993,12 +981,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resetSettings => 'Сбросить настройки';
 
   @override
+  String get moreOptions => 'Другие параметры';
+
+  @override
+  String get resetProgress => 'Сбросить прогресс';
+
+  @override
   String get settingsStorageError =>
       'Не удалось прочитать или сохранить настройки. Изменения доступны в этом сеансе.';
 
   @override
   String get localPreferences =>
-      'Настройки хранятся на этом устройстве. История матриц не сохраняется.';
+      'Настройки и пройденные уроки хранятся на этом устройстве. Матрицы и ответы в тестах не сохраняются.';
 
   @override
   String get resultExact => 'Точно';

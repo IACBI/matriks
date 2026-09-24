@@ -6,7 +6,6 @@ class AppTheme {
   static const primaryBlueDark = Color(0xFFAAC7FF);
   static const accentAmber = Color(0xFFB77913);
   static const accentCyan = Color(0xFF1683A5);
-  static const accentPurple = Color(0xFF8664C4);
   static const accentGreen = Color(0xFF208466);
   static const accentRed = Color(0xFFD14848);
   static const accentIndigo = Color(0xFF6575C5);
@@ -42,21 +41,19 @@ class AppTheme {
   static final ThemeData lightTheme = _build(false);
   static final ThemeData darkTheme = _build(true);
 
-  static ThemeData studio(bool dark, {int palette = 0, bool compact = false}) =>
-      _build(dark, palette: palette, compact: compact);
+  static ThemeData studio(bool dark, {bool compact = false}) =>
+      _build(dark, compact: compact);
 
-  static ThemeData _build(bool dark, {int palette = 0, bool compact = false}) {
+  static ThemeData _build(bool dark, {bool compact = false}) {
     final surface = dark ? surfaceDark : surfaceLight;
     final background = dark ? scaffoldDark : scaffoldLight;
     final variant = dark ? surfaceVariantDark : surfaceVariantLight;
     final ink = dark ? textPrimaryDark : textPrimaryLight;
     final secondaryInk = dark ? textSecondaryDark : textSecondaryLight;
     final border = dark ? borderDark : borderLight;
-    final primary = switch (palette) {
-      1 => dark ? const Color(0xFF7CE0D3) : const Color(0xFF006B60),
-      2 => dark ? const Color(0xFFD2BBFF) : const Color(0xFF7043AF),
-      _ => dark ? primaryBlueDark : primaryBlue,
-    };
+    // One brand colour for actions; amber and cyan stay free for the
+    // mathematical roles they mark.
+    final primary = dark ? primaryBlueDark : primaryBlue;
     final scheme =
         ColorScheme.fromSeed(
           seedColor: primary,
@@ -126,6 +123,18 @@ class AppTheme {
             bodySmall: TextStyle(
               fontSize: 12,
               height: 1.4,
+              color: secondaryInk,
+            ),
+            labelLarge: TextStyle(
+              fontSize: 14,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              color: ink,
+            ),
+            labelMedium: TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
               color: secondaryInk,
             ),
           ),

@@ -49,7 +49,8 @@ void main() {
           reduceMotion: true,
           predictions: false,
           compact: true,
-          accentPalette: AccentPalette.teal,
+          lastTopic: () => 'eigen',
+          completedTopics: {'rref', 'gauss'},
         ),
       );
       expect(
@@ -61,7 +62,18 @@ void main() {
       await restored.restore();
       expect(restored.state.toJson(), cubit.state.toJson());
       expect(repository.saved!.toJson().keys, isNot(contains('matrix')));
+      expect(restored.state.completedTopics, {'rref', 'gauss'});
       restored.reset();
+      await restored.flushed;
+      // Resetting preferences keeps what the learner has done.
+      expect(
+        repository.saved!.toJson(),
+        const SettingsState(
+          lastTopic: 'eigen',
+          completedTopics: {'gauss', 'rref'},
+        ).toJson(),
+      );
+      restored.resetProgress();
       await restored.flushed;
       expect(repository.saved!.toJson(), const SettingsState().toJson());
       await cubit.close();

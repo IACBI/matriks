@@ -973,18 +973,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get compact => 'Kompakt';
 
   @override
-  String get accentLabel => 'Vurgu paleti';
-
-  @override
-  String get blue => 'Mavi';
-
-  @override
-  String get teal => 'Turkuaz';
-
-  @override
-  String get purple => 'Mor';
-
-  @override
   String get shortcutsLabel => 'Klavye kısayolları';
 
   @override
@@ -1002,12 +990,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get resetSettings => 'Ayarları sıfırla';
 
   @override
+  String get moreOptions => 'Diğer seçenekler';
+
+  @override
+  String get resetProgress => 'İlerlemeyi sıfırla';
+
+  @override
   String get settingsStorageError =>
       'Ayarlar okunamadı veya kaydedilemedi. Değişiklikler bu oturumda kullanılabilir.';
 
   @override
   String get localPreferences =>
-      'Ayarlar bu cihazda tutulur. Matris geçmişi kaydedilmez.';
+      'Ayarlar ve bitirdiğin dersler bu cihazda tutulur. Matrisler ve test cevapları kaydedilmez.';
 
   @override
   String get resultExact => 'Kesin';

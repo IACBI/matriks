@@ -973,18 +973,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get compact => 'Compact';
 
   @override
-  String get accentLabel => 'Accent palette';
-
-  @override
-  String get blue => 'Blue';
-
-  @override
-  String get teal => 'Teal';
-
-  @override
-  String get purple => 'Purple';
-
-  @override
   String get shortcutsLabel => 'Keyboard shortcuts';
 
   @override
@@ -1001,12 +989,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetSettings => 'Reset settings';
 
   @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get resetProgress => 'Reset progress';
+
+  @override
   String get settingsStorageError =>
       'Preferences could not be read or saved. Changes remain available for this session.';
 
   @override
   String get localPreferences =>
-      'Preferences stay on this device. Matrix history is not saved.';
+      'Preferences and the lessons you finished stay on this device. Matrices and quiz answers are not saved.';
 
   @override
   String get resultExact => 'Exact';

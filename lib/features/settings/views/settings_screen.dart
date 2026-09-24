@@ -98,26 +98,17 @@ class SettingsScreen extends StatelessWidget {
                     ThemeMode.light: l.lightTheme,
                     ThemeMode.dark: l.darkTheme,
                   }, cubit.setThemeMode),
-                  choice(l.accentLabel, s.accentPalette, {
-                    AccentPalette.blue: l.blue,
-                    AccentPalette.teal: l.teal,
-                    AccentPalette.purple: l.purple,
-                  }, (v) => cubit.update(s.copyWith(accentPalette: v))),
-                  choice(l.densityLabel, s.compact, {
-                    false: l.comfortable,
-                    true: l.compact,
-                  }, (v) => cubit.update(s.copyWith(compact: v))),
                 ]),
                 const SizedBox(height: 16),
+                // The two choices most learners need stay in view; the rest
+                // keep sensible defaults and wait under "More options".
                 section(l.learning, [
-                  choice(l.solutionModeLabel, s.solutionMode, {
-                    SolutionMode.guided: l.guidedMode,
-                    SolutionMode.steps: l.stepsMode,
-                    SolutionMode.result: l.resultMode,
-                  }, (v) => cubit.update(s.copyWith(solutionMode: v))),
-                  _SpeedSetting(
-                    value: s.defaultPlaybackSpeed,
-                    onCommit: cubit.setDefaultSpeed,
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l.predictionLabel),
+                    subtitle: Text(l.predictionHelp),
+                    value: s.predictions,
+                    onChanged: (v) => cubit.update(s.copyWith(predictions: v)),
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
@@ -126,22 +117,37 @@ class SettingsScreen extends StatelessWidget {
                     value: s.reduceMotion,
                     onChanged: (v) => cubit.update(s.copyWith(reduceMotion: v)),
                   ),
-                  choice(l.explanation, s.explanationLevel, {
-                    ExplanationLevel.short: l.shortExplanation,
-                    ExplanationLevel.detailed: l.detailedExplanation,
-                    ExplanationLevel.hidden: l.hiddenExplanation,
-                  }, (v) => cubit.update(s.copyWith(explanationLevel: v))),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l.predictionLabel),
-                    subtitle: Text(l.predictionHelp),
-                    value: s.predictions,
-                    onChanged: (v) => cubit.update(s.copyWith(predictions: v)),
+                  ExpansionTile(
+                    key: const ValueKey('more-settings'),
+                    tilePadding: EdgeInsets.zero,
+                    childrenPadding: EdgeInsets.zero,
+                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                    title: Text(l.moreOptions),
+                    children: [
+                      choice(l.solutionModeLabel, s.solutionMode, {
+                        SolutionMode.guided: l.guidedMode,
+                        SolutionMode.steps: l.stepsMode,
+                        SolutionMode.result: l.resultMode,
+                      }, (v) => cubit.update(s.copyWith(solutionMode: v))),
+                      _SpeedSetting(
+                        value: s.defaultPlaybackSpeed,
+                        onCommit: cubit.setDefaultSpeed,
+                      ),
+                      choice(l.explanation, s.explanationLevel, {
+                        ExplanationLevel.short: l.shortExplanation,
+                        ExplanationLevel.detailed: l.detailedExplanation,
+                        ExplanationLevel.hidden: l.hiddenExplanation,
+                      }, (v) => cubit.update(s.copyWith(explanationLevel: v))),
+                      choice(l.numberView, s.isDecimalView, {
+                        false: l.fractionView,
+                        true: l.decimalView,
+                      }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
+                      choice(l.densityLabel, s.compact, {
+                        false: l.comfortable,
+                        true: l.compact,
+                      }, (v) => cubit.update(s.copyWith(compact: v))),
+                    ],
                   ),
-                  choice(l.numberView, s.isDecimalView, {
-                    false: l.fractionView,
-                    true: l.decimalView,
-                  }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
                 ]),
                 const SizedBox(height: 16),
                 section(l.shortcutsLabel, [
@@ -159,13 +165,22 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(l.localPreferences),
                 const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    onPressed: cubit.reset,
-                    icon: const Icon(Icons.restore),
-                    label: Text(l.resetSettings),
-                  ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: cubit.reset,
+                      icon: const Icon(Icons.restore),
+                      label: Text(l.resetSettings),
+                    ),
+                    if (s.completedTopics.isNotEmpty || s.lastTopic != null)
+                      TextButton.icon(
+                        onPressed: cubit.resetProgress,
+                        icon: const Icon(Icons.flag_outlined),
+                        label: Text(l.resetProgress),
+                      ),
+                  ],
                 ),
               ],
             ),
