@@ -1,6 +1,6 @@
 # Matriks product and engineering roadmap
 
-Reviewed: 2026-09-07; evidence table refreshed 2026-09-24 (see PROJECT_REVIEW.md). Status: proposed implementation backlog, not implemented functionality.
+Reviewed: 2026-09-07; evidence table refreshed 2026-09-24, including the later same-day "UI and learning-path pass" (see PROJECT_REVIEW.md). Status: proposed implementation backlog, not implemented functionality.
 
 ## Direction
 
@@ -11,15 +11,15 @@ Build a trustworthy teaching workspace for learners who need to understand matri
 | Area | Current evidence | Gap and consequence |
 | --- | --- | --- |
 | Mathematics | Separate exact Rational engine; ResultAccuracy/ResultCompleteness on every solution; 3×3 rational roots exact, irrational roots bracketed (2026-09-24) | Complex eigenvectors and eigenspace bases for repeated roots are not computed; 3×3 coefficients beyond 1e12 fall back to an integer search |
-| Learning | Three starter lessons, phase explanations, progressive contributions and option-specific feedback | No connected prerequisite/progression route; understanding and timing have not been evaluated with learners |
-| Catalog | Search and categories combine correctly; aligned topic rows | The introductory region and filters consume significant space in the saved desktop capture; novice versus returning-user priorities need validation |
-| Player | One playback authority, revision guards, adaptive timing, reduced motion and scrubbing tests | Saved desktop capture has large unused lower space; explanation is split across stage and side panel. Mobile multiplication expands into several formula rows and requires scrolling |
+| Learning | Three starter lessons, phase explanations, progressive contributions, option-specific feedback, and (2026-09-24) a numbered `TopicItem.pathOrder` learning route with a "Continue where you left off" card | The route orders existing topics; it adds no prerequisite text, objective or next-action framing (see C01), and has not been evaluated with learners |
+| Catalog | Search and categories combine correctly; topics are numbered along the learning path and show a `TopicGlyph` drawing and completion state (2026-09-24) | The introductory region and filters consume significant space in the saved desktop capture; novice versus returning-user priorities need validation |
+| Player | One playback authority, revision guards, adaptive timing, reduced motion and scrubbing tests; (2026-09-24) rebuilt as a single centred stage column with a merged `Details` drawer, replacing the split desktop panel | Mobile multiplication still expands into several formula rows and requires scrolling; the new layout has not been checked live in a browser or on a device (see B02) |
 | Input | Bounded dimensions and 32-character numeric entry, cell errors and duplicate-submit protection | No saved work or bulk paste flow; retain existing safety boundaries if either is added |
-| Practice | Five authored questions in five languages, hints, misconception feedback and balanced answer positions | System locale fallback forces Turkish; changing quiz language resets score/question. Fixed question set has limited repeat value |
+| Practice | Five authored questions in five languages, hints, misconception feedback and balanced answer positions; (2026-09-24) an additional generated round (`QuizGenerator`, four question kinds, named-misconception wrong options) for repeat value | System locale fallback forces Turkish; changing quiz language resets score/question. Generated coverage is four question kinds, not the full topic catalog |
 | Transform | Correct projection/rotation presets, finite coefficient bounds, visible-frame retargeting | Real-device usability and reading of vector/determinant labels still need verification |
 | Accessibility | Selected widths, themes, 200% text, keyboard/semantics and reduced-motion tests | No physical screen-reader audit or complete WCAG 2.2 AA verification |
 | Performance | Local computation; static/dynamic rendering separation; historical debug and browser scheduling measurements | No release-mode low-end-device raster/memory baseline or sustained worst-input workload measurement |
-| Architecture | Feature boundaries and pure engine are useful | Input screen 830 lines, practice 745, matrix display 738 and player screen 673; large files are maintenance hotspots, not proof of defects |
+| Architecture | Feature boundaries and pure engine are useful | Input screen 782 lines, practice 734, player screen 629 (down from 673 after 2026-09-24 moved caption/legend/drawer widgets into `matrix_display_grid.dart`, now 1339) and `step_card.dart`; large files are maintenance hotspots, not proof of defects |
 | Security | Fresh scoped review: 75 Pub package/version queries with no returned advisories; bounded numeric inputs | Android debug signing and unsigned Windows artifact; production hosting and native toolchain remain unverified |
 | Delivery | Git history and GitHub Actions CI (analysis, both suites, generated-localization check); main deploys to GitHub Pages, other branches publish a web preview artifact | Release signing, Windows packaging and rollback procedure are still unestablished |
 | Documentation | English architecture/design/history documents | Engine README was a scaffold; this review replaces it and establishes a current documentation entry point |
@@ -66,6 +66,8 @@ Test reducing desktop eye travel between operation, matrix and explanation; use 
 
 Acceptance: live checks at 320/390/600/960/1440 widths, short landscape, both themes/languages, 200% text, 5×5 signed long fractions and reduced motion. No clipped actions, inaccessible horizontal content, duplicate playback controls or lost progress on resize. Retest B01 tasks. Dependencies: B01 findings.
 
+Partially addressed 2026-09-24: the player is now one centred stage column (matrix, legend, caption, "why" note, a single `Details` drawer) at every width instead of a split desktop panel, removing the former side-by-side eye travel and collapsing two inspectors into one. Not yet verified against this acceptance criterion: no live check at the listed widths was run (see PROJECT_REVIEW.md "UI and learning-path pass"), and mobile multiplication still expands into several formula rows.
+
 **B03. Resolve practice locale and reset semantics (S–M; owner: frontend/content).**
 
 Choose and document a locale rule consistent with the resolved application locale, while retaining explicit quiz language choice. Changing language should preserve the equivalent question/score or clearly announce an intentional restart; current tests preserve older behavior and must be deliberately updated with the product decision.
@@ -90,13 +92,19 @@ Acceptance: reproducible baseline and same-scenario comparison for each optimiza
 
 Add prerequisite context, learning objective and next action around existing topics. Include an optional prediction checkpoint before selected operations and explain the final mathematical meaning. Acceptance: novice can finish one coherent route without knowing operation names in advance; free catalog access remains available; both languages receive equivalent content. Dependencies: B01, A01.
 
+Partially addressed 2026-09-24: `TopicItem.pathOrder` gives the catalog a suggested order and numbering, and a "Continue where you left off" card resumes the last topic, but the route still has no prerequisite text, learning objective or next-action framing per topic — the acceptance criteria above are not yet met.
+
 **C02. Expand practice with authored, validated content (L; owner: mathematical content + engineering).**
 
 Build a question catalog with stable IDs, topic, difficulty and misconception tags. Start with curated coverage of core operations before generated questions. Add missing-value or next-operation interactions only after accessible interaction design. Acceptance: every answer/rationale reviewed mathematically, invariant checks where applicable, reproducible selection, empty/unavailable content handling, scoring/navigation regression tests and translation parity. Dependencies: B03, C01 content model.
 
+Partially addressed 2026-09-24, in the opposite order this item recommends: `QuizGenerator` (see PROJECT_REVIEW.md) adds seed-reproducible generated questions across four kinds, each wrong option tagged to a named misconception, before the curated catalog was expanded. It has no difficulty tagging and does not cover the full topic list; the curated five-question round is unchanged and still shown first.
+
 **C03. Restore work locally (M; owner: frontend).**
 
 Persist chosen preferences and an opt-in or clearly explained last-work session, with versioned local data and a reset/delete action. Avoid accounts/cloud synchronization initially. Acceptance: restart restores a valid selection/matrix; corrupt, old, unavailable or quota-limited storage recovers safely; restored data passes existing dimensions/length/number validation; users can remove saved data. Dependencies: stable input/state schema, privacy wording decision.
+
+Partially addressed 2026-09-24: `SettingsState` now persists the last opened topic and finished topic names, with a "Reset progress" action to clear them. Matrices and quiz answers are deliberately never persisted (see AGENTS.md), so "restart restores a valid selection/matrix" remains undone by design, not oversight.
 
 **C04. Add interoperable input/export only when validated by usage (M–L; owner: product + engineering).**
 

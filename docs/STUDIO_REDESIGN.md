@@ -1,5 +1,7 @@
 # Matriks studio redesign — implementation notes
 
+Superseded in part: the 2026-09-24 UI pass (see [PROJECT_REVIEW.md](PROJECT_REVIEW.md)) removed the accent-palette setting described below — one brand blue is used throughout, because the teal and purple choices collided with the row-operation role colors. The rest of this record (shell, phases, predictions, preferences, localization, shortcuts, eigen metadata, assets) still applies.
+
 ## Implemented behavior
 
 - Shared studio surfaces and three accessible action palettes. Mathematical role colors remain separate from the chosen action palette. Comfortable/compact preference affects catalog spacing and shared list tiles.

@@ -1,6 +1,6 @@
 # Documentation index
 
-Last reviewed: 2026-09-11.
+Last reviewed: 2026-09-24.
 
 ## Current guidance
 
@@ -16,8 +16,8 @@ Last reviewed: 2026-09-11.
 - [YAYINLAMA.md](YAYINLAMA.md): short Turkish web and store publishing guide.
 
 - [ROADMAP.md](ROADMAP.md): prioritized product/engineering backlog, evidence, dependencies, acceptance criteria and release gates. Proposed work is not implemented functionality.
-- [PROJECT_REVIEW.md](PROJECT_REVIEW.md): latest review scope, current checks, mathematical reproductions and cleanup record.
-- [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md): implemented interface and motion rules.
+- [PROJECT_REVIEW.md](PROJECT_REVIEW.md): latest review scope, current checks, mathematical reproductions and cleanup record, including the 2026-09-24 "UI and learning-path pass" (solver property tests, the single-stage player redesign, simplified settings, the catalog learning path, generated practice rounds and independent result checks).
+- [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md): implemented interface and motion rules, including the single-stage step player, role legend, settings layout, catalog path/glyphs and result checks.
 - [SECURITY_REVIEW.md](SECURITY_REVIEW.md): scoped source/configuration review, dependency advisory evidence and release limits.
 - [../AGENTS.md](../AGENTS.md): agent/contributor architecture boundaries and commands.
 - [../packages/matrix_engine/README.md](../packages/matrix_engine/README.md): engine API example and numerical limitations.

@@ -288,3 +288,35 @@ Every solver's steps were replayed in code against what the player shows. Logic 
 - Rounded eigenvalues printed as fractions (λ ≈ 809/500 for 1.618); they now print as decimals, and exact values keep fractions. The eigenvector description substituted λ after a minus sign ("A − -4I"); all five languages now state λ separately.
 
 Verified in CI run 36045673392 on `fe3835b` (earlier: 36044859287 on `187a64d`): generated localizations current, analysis clean, all application and engine tests passed, web preview built. Two intermediate runs failed and were fixed: an eigen caption stored as TeX among the prose parameters (it printed `A - 1I`), and a value test that read the addition step before its animation had started. The new behaviour is covered by `packages/matrix_engine/test/step_semantics_test.dart` and `test/animation_logic_test.dart`. Not inspected on a device.
+
+# UI and learning-path pass — 2026-09-24
+
+## Outcome
+
+Continuing on branch `claude/keen-darwin-oettj2` after the solution animation pass above: an independent property-based check of every solver, a redesigned step player (one centred stage instead of a split panel layout, two-hue role colours, a single `Details` drawer, one app bar menu), a simplified Settings screen with one brand colour, a learning-path catalog with topic glyphs and progress tracking, generated practice rounds, and an independent result check shown after solving. CI now also fails on unformatted Dart.
+
+## Changes
+
+- **Solver verification.** `packages/matrix_engine/test/solver_properties_test.dart` checks every solver on seeded random matrices (a third rank deficient) against independent reference implementations: cofactor determinant against every `DeterminantMethod`, A·A⁻¹ = A⁻¹·A = I, a schoolbook sum/product, a unique RREF and row-echelon/row-equivalence for REF, P·A = L·U with unit lower L and upper U, rank/nullity/pivot columns against an independent RREF, linear-system type by ranks and Ax = b for unique solutions, and eigenpairs Av = λv exactly or a sign change of the characteristic polynomial within ±0.0005 of a rounded eigenvalue. It also replays every row-operation step's before snapshot into its after snapshot, chained across a solution.
+- **Player redesign.** The step player is a single centred stage column (max width 880) at every screen width instead of splitting side-by-side at ≥960 px. `MatrixDisplayGrid` now also hosts the scene formula, the role legend under the matrix, the phase caption (one sentence fading between phases, three phase dots instead of a "1 / 3 · phase" count), the solver's "why" note (only when the caption does not already say it), and one `Details` drawer (rationale, per-cell calculations, scrub slider, replay) that pauses the lesson when opened. Row-operation highlights use two hues: amber for the row used (heavier for the pivot, thinner for the source), cyan for the row that changes (target; a finished zero keeps a cyan "0 ✓" badge). Purple and green no longer mark roles, and `AppTheme.accentPurple` was removed. The app bar's result/mode/decimal controls are one overflow menu (`player-menu`).
+- **Settings simplified.** The accent-palette setting and `AccentPalette` enum are gone — one brand blue, because the removed teal/purple collided with the role colours above. Language, theme, predictions and reduced motion stay in view; solution mode, speed, explanation level, number view and density move under a collapsed "More options". `SettingsState` persists the last opened topic and finished topic names (JSON stays version 1); `reset()` keeps that progress, `resetProgress()` clears it.
+- **Learning path.** `TopicItem.pathOrder` orders and numbers the twelve topics (entry-wise operations, elimination, what elimination enables, eigenvalues, geometry, review); each shows a `TopicGlyph` drawing instead of a generic icon (`TopicItem.icon` was removed); finished topics get a check mark, a progress line, and a "Continue where you left off" card. A topic is recorded finished when its lesson reaches the last step (guided or static-steps mode, not when jumping to the result), a practice round ends, or a transformation is played.
+- **Generated practice.** `QuizGenerator` builds five-question rounds from four kinds (2×2 determinant, the multiplier that zeroes an entry, entry (1,2) of A·A, 2×2 inverse), every kind once plus one random, with options and feedback shuffled together; each wrong option names a misconception. "New questions" in the completion dialog starts a round; a round rebuilds from its seed on language change.
+- **Result checks.** `result_check.dart` recomputes each result independently in exact arithmetic (A·A⁻¹ = I; the determinant by the other kind of method; L·U = P·A; Ax = b; rank + nullity = n; Av = λv per exact eigenpair), and `ResultChecks` shows it on the result screen and after a finished lesson. A 2×2 eigen result also offers a link into the transform visualizer with the same matrix, when every entry is within [-1000, 1000].
+- **CI.** `.github/workflows/ci.yml` runs `dart format` over every tracked Dart file except `lib/l10n/generated` as the last `verify` step, after tests and the web preview build, and fails on any diff.
+
+## Verification
+
+| Check | Result |
+| --- | --- |
+| Property tests (`bd21e951`) | CI run 36053895756 |
+| Player redesign (`b28585f9`) | CI run 36054540964 |
+| Settings simplification (`8f9ad552`) | CI run 36054969977 |
+| Result checks and transform link (`32ce54b1`) | CI run 36055456517 |
+| Final branch head `7e31202` (run 36057342430) | Generated localizations current; analysis: no issues; 320 application and 70 engine tests passed; web preview built; formatting check: 0 of 107 files changed |
+
+## Not done, and why
+
+- No browser or device inspection: this session's container could not reach `storage.googleapis.com`, `pub.dev`, `*.blob.core.windows.net` or GitHub Pages, so the interface was verified only by widget tests, not a running build.
+- Completion is recorded per topic, not per matrix: replaying the same topic with different numbers does not change its "finished" state.
+- Generated practice covers four question kinds, not the full topic catalog.
