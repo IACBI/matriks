@@ -63,6 +63,14 @@ jobs:
           path: build/web
           retention-days: 14
 
+      # Last, so a formatting slip still leaves test results and the preview
+      # to look at; the diff it prints is the fix. Generated localizations
+      # are left as gen-l10n writes them.
+      - name: Check formatting
+        run: |
+          dart format $(git ls-files '*.dart' | grep -v '^lib/l10n/generated/')
+          git diff --exit-code
+
   deploy:
     name: Deploy web to GitHub Pages
     needs: verify
