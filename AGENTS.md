@@ -15,11 +15,12 @@ Before editing, read the relevant implementation and nearby tests. Use `README.m
 - `lib/features/practice`: five-language quiz; a curated five-question round plus generated rounds (`models/quiz_generator.dart`) built from named misconceptions.
 - `lib/features/transform_visualizer`: coefficient controls, presets, and canvas.
 - `lib/features/settings`: versioned local presentation preferences, configurable player shortcuts, and the last opened topic and finished topic names.
-- `lib/core`: shared theme tokens, mathematical text, and input controls.
+- `lib/core`: shared theme tokens (including `AppTheme.symbolFallback`, the bundled `MatriksSymbols` font used for math glyphs the system font lacks), mathematical text (`MathText`, which also exposes a readable semantics label for screen readers), and input controls.
 - `lib/l10n`: ARB sources and generated localization classes.
 - `packages/matrix_engine`: independent Dart package; immutable matrices, BigInt rational arithmetic, solvers, and engine tests.
 - `test/`: application, flow, animation, and responsive/accessibility regression tests.
 - `tool/motion_benchmark_test.dart`: optional debug animation benchmark, excluded from the default test suite.
+- `tool/build_symbol_font.py`: rebuilds `assets/fonts/MatriksSymbols-Regular.ttf` (a subset of DejaVu Sans, renamed as its Bitstream Vera license requires; see `assets/fonts/LICENSE-MatriksSymbols.txt`); needs `fontTools`.
 
 The app calculates locally. There is no application backend, account system, or persistent sensitive-data store. Do not introduce these or change preference persistence incidentally.
 
@@ -54,7 +55,8 @@ Use `AppTheme` tokens and shared controls. Prefer neutral surfaces, clear divide
 
 - Adapt to available width: single column below 600 px, flexible at 600–959. The step player is one centred stage column at every width (wide screens only get more padding); `matrix_input` and `transform_visualizer` still switch to side-by-side layouts from 960 px when text size permits. Short screens and large text must scroll.
 - Respect system text scaling and reduced motion. Keep touch targets at least 44×44 logical pixels, visible focus, keyboard traversal, and localized semantic labels.
-- Animated cell calculations may fit down to 14 logical pixels before system text scaling; results return to normal 18–22 px text. Longer exact expressions remain horizontally scrollable. Full calculation panels wrap at TeX operator boundaries. Keep full formulas in `MathText`; use `readableMathProse` only for the supported inline notation in prose.
+- Animated cell calculations reserve up to 120 px per operation cell, capped at the width actually available per column so a reserve never crowds a value off a narrow screen; a formula that still doesn't fit shrinks to a 14 logical-pixel floor (before system text scaling) and then scrolls. Results return to normal 18–22 px text. Longer exact expressions remain horizontally scrollable. Full calculation panels wrap at TeX operator boundaries. Keep full formulas in `MathText`; use `readableMathProse` only for the supported inline notation in prose.
+- Math glyphs outside the system font's coverage (arrows, sub/superscripts, ⟹, ∅, ✓, etc.) must render from the bundled `MatriksSymbols` font: pass `AppTheme.symbolFallback` as `fontFamilyFallback` on any new explicit `TextStyle` that can carry this notation, rather than letting Flutter fetch a fallback glyph at runtime. Chinese text (and the language menu's 中文 label) still makes Flutter web download CJK glyphs from `fonts.gstatic.com`; a CJK font is not bundled because it would add megabytes.
 - Keep primary playback controls unique. Show only relevant legends and explanations. Feedback must include text or an icon, not color alone.
 - Rebuild changing animation layers instead of whole screens. Measure optimizations with the same scenario before and after; debug pump timing is not GPU frame time or a 60 FPS guarantee.
 

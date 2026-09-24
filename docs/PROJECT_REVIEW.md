@@ -320,3 +320,49 @@ Continuing on branch `claude/keen-darwin-oettj2` after the solution animation pa
 - No browser or device inspection: this session's container could not reach `storage.googleapis.com`, `pub.dev`, `*.blob.core.windows.net` or GitHub Pages, so the interface was verified only by widget tests, not a running build.
 - Completion is recorded per topic, not per matrix: replaying the same topic with different numbers does not change its "finished" state.
 - Generated practice covers four question kinds, not the full topic catalog.
+
+# Browser review — 2026-09-24
+
+## Outcome
+
+Continuing on branch `claude/keen-darwin-oettj2`, this pass did what the previous one could not: it drove a real, locally built release web app in a browser (Chromium via Playwright) rather than widget tests alone, in light and dark themes, at 1280 px and 390 px, in Turkish and English. It found and fixed thirteen defects, the most consequential being missing glyphs — boxes in place of arrows, sub/superscripts and math symbols (A⁻¹, R₂, ←, ⟹, ∅, ✓) used throughout step prose, because the web build's bundled Roboto does not include them and Flutter fetched a Google-hosted Noto face to cover the gap.
+
+## Scope and evidence
+
+`flutter build web --release` was built locally and driven with Playwright's Chromium. Every fix below was confirmed against the running build, not inferred from source reading alone. Limits: no physical device and no screen-reader session were used — the accessibility tree was read through Playwright, not through a native reader — and 200% text scaling was covered only by the existing widget tests in this pass, not re-driven in the browser.
+
+## Fixes
+
+1. **Missing glyphs.** The bundled `assets/fonts/MatriksSymbols-Regular.ttf` (57 KB, a DejaVu Sans subset renamed as its Bitstream Vera license requires — `assets/fonts/LICENSE-MatriksSymbols.txt`, registered in `lib/main.dart` via `LicenseRegistry`) is declared in `pubspec.yaml` and used as `AppTheme.symbolFallback` (`fontFamilyFallback`) across the text theme and explicit theme styles. `tool/build_symbol_font.py` rebuilds it and needs `fontTools`. In the en/tr build, no request to `fonts.gstatic.com` was observed. Chinese text (and the language menu's 中文 label) still makes Flutter download CJK glyphs from Google Fonts — recorded in a `.github/workflows/ci.yml` comment rather than presented as fixed, since a bundled CJK font would add megabytes. The zero badge's check mark is now an `Icon` instead of a glyph that needed the same fallback.
+2. The phase caption (`InstructionExplanation`) is start-aligned like its phase dots and calculations, via an `AnimatedSwitcher` layout builder; it previously centred while its neighbours were start-aligned.
+3. Calculations bracket only a negative operand (`5 - 2 · 2 = 1`, `5 - (-2)`); the elimination operation label reads `R₂ ← R₂ − 2R₁` with no brackets around the factor; a diagonal/Sarrus product omits a leading factor of 1 and starts at the first real product, and its timeline now counts the same number of lines it draws.
+4. Wrapped formulas (`MathText(wrapLines: true)`) now split at top-level ` + `, ` - `, ` = `, ` \approx ` via a new `splitTexTerms` helper (respecting brace groups and `\left…\right`) and prefix each later piece with `{}` so TeX keeps its operator spacing, replacing an earlier `texBreak` that could split inside a group.
+5. `MathText` exposes a readable semantics label, `mathSemanticsLabel` (built on `readableMathProse`), so a screen reader hears "1/2" instead of a run of glyphs.
+6. At 390 px, a 3×3 elimination hid its third column: the 120 px operation reserve per cell is now capped at the width actually available per column, never below the value's natural width; a formula that still does not fit shrinks to 14 px and then scrolls inside its cell instead of pushing a column off-screen.
+7. **Result screen** (`widgets/solution_summary.dart`): the matrix grid is now shown only when the result actually is a `Matrix` (inverse, RREF/REF, sum, product); the TeX result line is shown only for other results, split at `\quad` into parts that wrap. Previously the inverse repeated the matrix with overlapping fractions, and LU/eigen results showed an unlabelled final matrix underneath the answer.
+8. The eigen check now reads "= v₁" / "= -v₁" / "= 2 v₁" — coefficients of 1 and −1 are omitted rather than printed literally.
+9. The transform view opened from a 2×2 eigen result now plays into the transformed matrix immediately, instead of opening on the untransformed frame.
+10. The player menu's "Show result" item now has a leading icon, so it aligns with the checked mode items beside it.
+11. **Every input topic now opens on a small worked example instead of the identity matrix** (`lib/features/matrix_input/matrix_input_cubit.dart`, `_example`), whose steps and eigenvalues taught little: eigen `[[4,1],[2,3]]` (eigenvalues 2, 5), inverse `[[1,2,3],[0,1,4],[5,6,0]]` (determinant 1), a linear system with solution (5, 3, −2), and small 2×2 pairs for multiplication/addition.
+12. Settings' "More options" `ExpansionTile` is now wrapped in `Semantics(container: true)`; in the web build its tap target had merged into the whole "Learning & playback" card, making the row unreachable as its own control.
+13. Two Turkish quiz explanation typos were fixed: "1 dir" → "1'dir", "2 dir" → "2'dir" (Turkish suffix agreement, the same family of defect recorded in the 2026-09-11 quality pass above).
+
+## Verification
+
+New coverage: `test/ui_review_regression_test.dart` (9 tests) pins the fixes above at the widget level.
+
+| Check | Result |
+| --- | --- |
+| Local run, Flutter 3.47.1 | Generated localizations current; analysis: no issues; 329 application and 70 engine tests passed; `dart format` reported 0 files changed |
+| CI run 36061622424 on `04921ed` | Green |
+| CI, final branch head `cd0c343` | run 36062536242: every step passed (localizations current, analysis, app and engine tests, web preview build, formatting check) |
+
+## Remaining limits
+
+- No physical device or native screen-reader session was used; the accessibility tree was read through Playwright's automation API.
+- Chinese text still triggers a Google Fonts (`fonts.gstatic.com`) request for CJK glyphs — recorded, not fixed, since bundling a CJK font would add megabytes to the web build.
+- 200% text scaling was exercised only by the existing widget test suite in this pass, not re-driven against the live browser build at 1280/390 px.
+
+## Completion boundary
+
+The thirteen fixes above and their regression coverage are delivered and verified against a rebuilt release web app and the full test suites. Native screen-reader, physical-device and further text-scaling verification in the browser remain open, as stated above.

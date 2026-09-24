@@ -6,7 +6,7 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 ![Flutter 3.47.1](https://img.shields.io/badge/Flutter-3.47.1-02569B?logo=flutter&logoColor=white)
 ![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
-![Tests](https://img.shields.io/badge/tests-320%20app%20%2B%2070%20engine-success)
+![Tests](https://img.shields.io/badge/tests-329%20app%20%2B%2070%20engine-success)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 **Read this in:** [English](#english) · [Türkçe](#turkce)
