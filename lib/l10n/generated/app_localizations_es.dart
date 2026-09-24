@@ -509,7 +509,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'Para (A − ${lambda}I)v = 0, un vector propio es $vector.';
+    return 'Para (A − λI)v = 0 con λ = $lambda, un vector propio es $vector.';
   }
 
   @override

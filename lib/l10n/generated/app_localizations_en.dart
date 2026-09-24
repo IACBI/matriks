@@ -509,7 +509,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'For (A − ${lambda}I)v = 0, one representative eigenvector is $vector.';
+    return 'For (A − λI)v = 0 with λ = $lambda, one representative eigenvector is $vector.';
   }
 
   @override

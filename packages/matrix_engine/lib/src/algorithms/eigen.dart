@@ -17,8 +17,12 @@ class Eigenpair {
     this.algebraicMultiplicity = 1,
   });
 
-  String get vectorLatex {
-    final elements = eigenvector.map((e) => e.toLatex()).join(r' \\ ');
+  String get vectorLatex => vectorLatexWith((e) => e.toLatex());
+
+  /// [vectorLatex] with each entry written by [entry], e.g. as a decimal
+  /// when the vector was rounded.
+  String vectorLatexWith(String Function(Rational) entry) {
+    final elements = eigenvector.map(entry).join(r' \\ ');
     return '\\mathbf{v} = \\begin{pmatrix}$elements\\end{pmatrix}';
   }
 }
@@ -185,7 +189,10 @@ class EigenSolver {
     }
 
     // Step 2: Show Characteristic Polynomial and Roots
-    final rootsLatex = eigenvalues.map((e) => e.toLatex()).join(', ');
+    // Rounded roots are written as the decimals they were rounded to;
+    // 809/500 would hide that λ ≈ 1.618.
+    final value = sqrtDisc == null ? _roundedLatex : _exactLatex;
+    final rootsLatex = eigenvalues.map(value).join(', ');
     steps.add(
       MatrixStep(
         stepIndex: ++stepCounter,
@@ -250,19 +257,19 @@ class EigenSolver {
           titleKey: sqrtDisc == null
               ? 'eigen_vector_approx_title'
               : 'eigen_vector_title',
-          titleParams: {'index': i + 1, 'lambda': lambda.toLatex()},
+          titleParams: {'index': i + 1, 'lambda': value(lambda)},
           explanationKey: sqrtDisc == null
               ? 'eigen_vector_approx_desc'
               : 'eigen_vector_desc',
           explanationParams: {
-            'lambda': lambda.toLatex(),
-            'vector': pair.vectorLatex,
+            'lambda': value(lambda),
+            'vector': pair.vectorLatexWith(value),
           },
           matrixBefore: shiftedSnap,
           matrixAfter: shiftedSnap,
           transformation: InformationalStepTransformation(
             'Solved null space of (A - λI)',
-            sceneLatex: _shiftScene(lambda, pair.vectorLatex),
+            sceneLatex: _shiftScene(lambda, pair.vectorLatexWith(value), value),
           ),
           highlights: [
             CellHighlight(row: 0, col: 0, type: HighlightType.selected),
@@ -275,7 +282,7 @@ class EigenSolver {
     final summaryResultLatex = eigenpairs
         .map(
           (p) =>
-              '\\lambda ${sqrtDisc == null ? r'\approx' : '='} ${p.eigenvalue.toLatex()} \\implies ${p.vectorLatex}',
+              '\\lambda ${sqrtDisc == null ? r'\approx' : '='} ${value(p.eigenvalue)} \\implies ${p.vectorLatexWith(value)}',
         )
         .join(r' \quad ');
 
@@ -384,7 +391,9 @@ class EigenSolver {
       for (final root in spectrum.approximate) (value: root, exact: false),
     ]..sort((a, b) => a.value.compareTo(b.value));
     final approximate = spectrum.approximate.isNotEmpty;
-    final rootsLatex = eigenvalues.map((e) => e.value.toLatex()).join(', ');
+    final rootsLatex = eigenvalues
+        .map((e) => e.exact ? _exactLatex(e.value) : _roundedLatex(e.value))
+        .join(', ');
     steps.add(
       MatrixStep(
         stepIndex: ++stepCounter,
@@ -426,6 +435,7 @@ class EigenSolver {
         ),
       );
       final multiplicity = exact ? _multiplicity(lambda, c2, c1) : 1;
+      final value = exact ? _exactLatex : _roundedLatex;
       if (multiplicity > 1) repeated = true;
 
       final pair = Eigenpair(
@@ -441,19 +451,19 @@ class EigenSolver {
         MatrixStep(
           stepIndex: ++stepCounter,
           titleKey: exact ? 'eigen_vector_title' : 'eigen_vector_approx_title',
-          titleParams: {'index': i + 1, 'lambda': lambda.toLatex()},
+          titleParams: {'index': i + 1, 'lambda': value(lambda)},
           explanationKey: exact
               ? 'eigen_vector_desc'
               : 'eigen_vector_approx_desc',
           explanationParams: {
-            'lambda': lambda.toLatex(),
-            'vector': pair.vectorLatex,
+            'lambda': value(lambda),
+            'vector': pair.vectorLatexWith(value),
           },
           matrixBefore: MatrixSnapshot.fromMatrix(shifted),
           matrixAfter: MatrixSnapshot.fromMatrix(shifted),
           transformation: InformationalStepTransformation(
             'Eigenvector found for 3x3 matrix',
-            sceneLatex: _shiftScene(lambda, pair.vectorLatex),
+            sceneLatex: _shiftScene(lambda, pair.vectorLatexWith(value), value),
           ),
           highlights: [
             for (int r = 0; r < 3; r++)
@@ -465,9 +475,12 @@ class EigenSolver {
 
     final resultLatex = [
       for (var i = 0; i < eigenpairs.length; i++)
-        '\\lambda ${eigenvalues[i].exact ? '=' : r'\approx'} '
-            '${eigenpairs[i].eigenvalue.toLatex()} \\implies '
-            '${eigenpairs[i].vectorLatex}',
+        if (eigenvalues[i].exact)
+          '\\lambda = ${_exactLatex(eigenpairs[i].eigenvalue)} \\implies '
+              '${eigenpairs[i].vectorLatex}'
+        else
+          '\\lambda \\approx ${_roundedLatex(eigenpairs[i].eigenvalue)} '
+              '\\implies ${eigenpairs[i].vectorLatexWith(_roundedLatex)}',
       if (complexLatex != null)
         '\\lambda \\approx $complexLatex',
     ].join(r' \quad ');
@@ -797,13 +810,28 @@ class EigenSolver {
 
   /// Caption above the matrix of an eigenvector step: the grid shows
   /// A - λI, not A, and its null space gives the vector.
-  static String _shiftScene(Rational lambda, String vectorLatex) {
+  static String _shiftScene(
+    Rational lambda,
+    String vectorLatex,
+    String Function(Rational) value,
+  ) {
     final size = lambda.abs();
-    final coefficient = size == Rational.one ? '' : size.toLatex();
+    final coefficient = size == Rational.one ? '' : value(size);
     final shift = lambda.isZero
         ? 'A'
         : '${lambda.isNegative ? 'A +' : 'A -'} ${coefficient}I';
     return '$shift \\;\\Rightarrow\\; $vectorLatex';
+  }
+
+  static String _exactLatex(Rational value) => value.toLatex();
+
+  /// A value already rounded to three decimals, written as that decimal
+  /// without trailing zeros: 1.618, 0.5, -2.
+  static String _roundedLatex(Rational value) {
+    final text = value.toDecimalString(3);
+    return text.contains('.')
+        ? text.replaceFirst(RegExp(r'\.?0+$'), '')
+        : text;
   }
 
   static int _multiplicity(Rational root, Rational c2, Rational c1) {

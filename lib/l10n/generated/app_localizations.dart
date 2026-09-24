@@ -898,7 +898,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigen_vector_desc.
   ///
   /// In en, this message translates to:
-  /// **'For (A − {lambda}I)v = 0, one representative eigenvector is {vector}.'**
+  /// **'For (A − λI)v = 0 with λ = {lambda}, one representative eigenvector is {vector}.'**
   String eigen_vector_desc(Object lambda, Object vector);
 
   /// No description provided for @eigen_3x3_poly_desc.

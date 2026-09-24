@@ -490,7 +490,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return '对于 (A − ${lambda}I)v = 0，一个特征向量为 $vector。';
+    return '当 λ = $lambda 时，对于 (A − λI)v = 0，一个特征向量为 $vector。';
   }
 
   @override

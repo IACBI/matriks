@@ -131,7 +131,7 @@
   "eigen_roots_approx_desc": "{poly} için üç ondalık basamağa yuvarlanan yaklaşık gerçek özdeğerler: {roots}.",
   "eigen_roots_desc": "{poly} çözüldüğünde gerçek özdeğerler elde edilir: {roots}.",
   "eigen_vector_title": "λ_{index} = {lambda} için Özvektör",
-  "eigen_vector_desc": "(A − {lambda}I)v = 0 için bir örnek özvektör {vector}.",
+  "eigen_vector_desc": "λ = {lambda} için (A − λI)v = 0 çözülür; örnek bir özvektör {vector}.",
   "eigen_3x3_poly_desc": "3x3 matris için karakteristik denklem: {poly}, iz = {trace} ve det = {det}.",
   "eigen_irrational_desc": "Katsayılar bu kadar büyük olduğunda {poly} kökleri güvenilir biçimde ayrılamadı. Gerçek veya karmaşık kökler vardır ama bu çözücü onları hesaplamaz.",
   "topicLu": "LU Ayrışımı (A = LU)",

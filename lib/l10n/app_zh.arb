@@ -187,7 +187,7 @@
   "eigen_roots_approx_desc": "求解 {poly} 得到保留三位小数的近似实特征值：{roots}。",
   "eigen_roots_desc": "由 {poly} 得到特征值：{roots}。",
   "eigen_vector_title": "λ_{index} = {lambda} 对应的特征向量",
-  "eigen_vector_desc": "对于 (A − {lambda}I)v = 0，一个特征向量为 {vector}。",
+  "eigen_vector_desc": "当 λ = {lambda} 时，对于 (A − λI)v = 0，一个特征向量为 {vector}。",
   "eigen_3x3_poly_desc": "对于 3×3：{poly}，迹为 {trace}，行列式为 {det}。",
   "eigen_irrational_desc": "系数过大，无法可靠地分离 {poly} 的根。实根或复根存在，但本求解器不计算它们。",
   "topicLu": "LU 分解（A = LU）",

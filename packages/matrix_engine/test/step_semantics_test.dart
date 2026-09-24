@@ -114,6 +114,42 @@ void main() {
     );
   });
 
+  test('Rounded eigenvalues are written as the decimals they are', () {
+    for (final matrix in [
+      Matrix.fromInts([
+        [0, 2],
+        [1, 0],
+      ]),
+      Matrix.fromInts([
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 3, 0],
+      ]),
+    ]) {
+      final solution = EigenSolver.solve(matrix);
+      expect(solution.accuracy, ResultAccuracy.approximate);
+      expect(solution.resultLatex, isNot(contains(r'\frac')));
+      for (final step in solution.steps) {
+        for (final value in [
+          ...step.titleParams.values,
+          ...step.explanationParams.values,
+        ]) {
+          expect(value.toString(), isNot(contains(r'\frac')));
+        }
+      }
+    }
+    final root2 = EigenSolver.solve(
+      Matrix.fromInts([
+        [0, 2],
+        [1, 0],
+      ]),
+    );
+    expect(
+      root2.steps.map((s) => s.titleParams['lambda']).whereType<String>(),
+      containsAll(['1.414', '-1.414']),
+    );
+  });
+
   test('LU steps carry L as it is filled and the result names L and U', () {
     final solution = LUDecompositionSolver.solve(
       Matrix.fromInts([

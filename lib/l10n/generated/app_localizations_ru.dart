@@ -506,7 +506,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'Для (A − ${lambda}I)v = 0 один из собственных векторов: $vector.';
+    return 'Для (A − λI)v = 0 при λ = $lambda один из собственных векторов: $vector.';
   }
 
   @override

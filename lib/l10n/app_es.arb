@@ -187,7 +187,7 @@
   "eigen_roots_approx_desc": "Al resolver {poly}, los valores propios reales aproximados, redondeados a tres decimales, son: {roots}.",
   "eigen_roots_desc": "De {poly} obtenemos los valores propios: {roots}.",
   "eigen_vector_title": "Vector propio para λ_{index} = {lambda}",
-  "eigen_vector_desc": "Para (A − {lambda}I)v = 0, un vector propio es {vector}.",
+  "eigen_vector_desc": "Para (A − λI)v = 0 con λ = {lambda}, un vector propio es {vector}.",
   "eigen_3x3_poly_desc": "Para 3×3: {poly}, con traza {trace} y determinante {det}.",
   "eigen_irrational_desc": "Las raíces de {poly} no se pudieron aislar con fiabilidad con coeficientes de este tamaño. Existen raíces reales o complejas, pero este solucionador no las calcula.",
   "topicLu": "Descomposición LU (A = LU)",

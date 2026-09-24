@@ -508,7 +508,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return '(A − ${lambda}I)v = 0 için bir örnek özvektör $vector.';
+    return 'λ = $lambda için (A − λI)v = 0 çözülür; örnek bir özvektör $vector.';
   }
 
   @override

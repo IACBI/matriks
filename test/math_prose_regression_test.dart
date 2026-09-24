@@ -341,6 +341,19 @@ void main() {
     });
   });
 
+  group('Eigenvector description never subtracts a negative eigenvalue', () {
+    for (final locale in AppLocalizations.supportedLocales) {
+      test(locale.languageCode, () {
+        final text = lookupAppLocalizations(
+          locale,
+        ).eigen_vector_desc('-4', '(1, 0)');
+        expect(text, contains('λ = -4'));
+        expect(text, isNot(contains('- -4')));
+        expect(text, isNot(contains('− -4')));
+      });
+    }
+  });
+
   group('2x2 determinant subtraction brackets a negative operand', () {
     for (final locale in AppLocalizations.supportedLocales) {
       test(locale.languageCode, () {

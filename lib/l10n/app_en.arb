@@ -131,7 +131,7 @@
   "eigen_roots_approx_desc": "Solving {poly} gives approximate real eigenvalues, rounded to three decimal places: {roots}.",
   "eigen_roots_desc": "Solving {poly} yields the real eigenvalues: {roots}.",
   "eigen_vector_title": "Eigenvector for λ_{index} = {lambda}",
-  "eigen_vector_desc": "For (A − {lambda}I)v = 0, one representative eigenvector is {vector}.",
+  "eigen_vector_desc": "For (A − λI)v = 0 with λ = {lambda}, one representative eigenvector is {vector}.",
   "eigen_3x3_poly_desc": "For a 3x3 matrix, the characteristic equation is {poly} with trace = {trace} and det = {det}.",
   "eigen_irrational_desc": "The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.",
   "topicLu": "LU Decomposition (A = LU)",
