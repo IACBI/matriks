@@ -1390,7 +1390,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDetResult.
   ///
   /// In en, this message translates to:
-  /// **'Their sum is this group's contribution to the determinant.'**
+  /// **'Their sum is this group\'s contribution to the determinant.'**
   String get guideDetResult;
 
   /// No description provided for @coefficientError.
