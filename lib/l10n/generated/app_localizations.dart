@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @topicEigenDesc.
   ///
   /// In en, this message translates to:
-  /// **'Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.'**
+  /// **'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.'**
   String get topicEigenDesc;
 
   /// No description provided for @topicTransform2d.
@@ -371,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @playbackSpeed.
   ///
   /// In en, this message translates to:
-  /// **'Speed: {speed}x'**
+  /// **'Speed: {speed}×'**
   String playbackSpeed(Object speed);
 
   /// No description provided for @play.
@@ -916,7 +916,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigen_irrational_desc.
   ///
   /// In en, this message translates to:
-  /// **'No integer root from −20 to 20 was found for {poly}. Other real or complex roots may exist; this solver does not compute them.'**
+  /// **'The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.'**
   String eigen_irrational_desc(Object poly);
 
   /// No description provided for @topicLu.
@@ -1792,7 +1792,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigenScope.
   ///
   /// In en, this message translates to:
-  /// **'3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.'**
+  /// **'3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.'**
   String get eigenScope;
 
   /// No description provided for @eigenBasisScope.
@@ -2082,6 +2082,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Space'**
   String get spaceKey;
+
+  /// No description provided for @matrixCellPendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {row}, column {column}, not calculated yet'**
+  String matrixCellPendingLabel(int row, int column);
+
+  /// No description provided for @eigen_cubic_complex_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Solving {poly} gives the real eigenvalue {roots} and the complex conjugate pair λ ≈ {complex}. Only the real eigenvalue has a real eigenvector.'**
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots);
+
+  /// No description provided for @keyNextRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next row'**
+  String get keyNextRow;
+
+  /// No description provided for @multiplyRowsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'B has as many rows as A has columns, so A × B is defined.'**
+  String get multiplyRowsLocked;
+
+  /// No description provided for @lessonComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson complete'**
+  String get lessonComplete;
+
+  /// No description provided for @lessonCompleteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the result, watch the lesson again, or continue with a matrix of your own.'**
+  String get lessonCompleteHint;
+
+  /// No description provided for @replayLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch again'**
+  String get replayLesson;
+
+  /// No description provided for @tryOwnMatrix.
+  ///
+  /// In en, this message translates to:
+  /// **'Try your own matrix'**
+  String get tryOwnMatrix;
+
+  /// No description provided for @editMatrix.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the matrix'**
+  String get editMatrix;
+
+  /// No description provided for @presetApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Matrix {matrix} replaced.'**
+  String presetApplied(String matrix);
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @transformShortcutsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard: Space plays or reverses, S shear, P projection, R identity.'**
+  String get transformShortcutsHint;
+
+  /// No description provided for @transformLegendOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Faint grid: the plane before the transformation.'**
+  String get transformLegendOriginal;
+
+  /// No description provided for @transformLegendEigen.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashed lines: real eigenvector directions, which stay on their own line.'**
+  String get transformLegendEigen;
 }
 
 class _AppLocalizationsDelegate

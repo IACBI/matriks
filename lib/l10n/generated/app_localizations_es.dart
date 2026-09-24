@@ -83,7 +83,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Pares propios 2×2 y raíces enteras 3×3 entre −20 y 20.';
+      'Valores y vectores propios de matrices 2×2 y 3×3, exactos cuando las raíces son racionales.';
 
   @override
   String get topicTransform2d => 'Transformación geométrica 2D';
@@ -524,7 +524,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'No se hallaron raíces enteras de −20 a 20 para $poly. Puede haber otras raíces reales o complejas.';
+    return 'Las raíces de $poly no se pudieron aislar con fiabilidad con coeficientes de este tamaño. Existen raíces reales o complejas, pero este solucionador no las calcula.';
   }
 
   @override
@@ -1041,7 +1041,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      'El análisis 3×3 busca raíces enteras entre −20 y 20. Las raíces no encontradas pueden ser reales o complejas.';
+      'Las raíces 3×3 son exactas si son racionales; las demás raíces reales se redondean a tres decimales. Con coeficientes muy grandes pueden quedar raíces sin resolver.';
 
   @override
   String get eigenBasisScope =>
@@ -1212,4 +1212,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get spaceKey => 'Espacio';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Fila $row, columna $column, aún sin calcular';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Al resolver $poly se obtiene el valor propio real $roots y el par conjugado complejo λ ≈ $complex. Solo el valor propio real tiene un vector propio real.';
+  }
+
+  @override
+  String get keyNextRow => 'Fila siguiente';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B tiene tantas filas como columnas tiene A, así A × B está definido.';
+
+  @override
+  String get lessonComplete => 'Lección completada';
+
+  @override
+  String get lessonCompleteHint =>
+      'Revisa el resultado, vuelve a ver la lección o continúa con tu propia matriz.';
+
+  @override
+  String get replayLesson => 'Ver de nuevo';
+
+  @override
+  String get tryOwnMatrix => 'Prueba tu propia matriz';
+
+  @override
+  String get editMatrix => 'Cambiar la matriz';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Matriz $matrix reemplazada.';
+  }
+
+  @override
+  String get undo => 'Deshacer';
+
+  @override
+  String get transformShortcutsHint =>
+      'Teclado: Espacio reproduce o invierte, S cizalla, P proyección, R identidad.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Cuadrícula tenue: el plano antes de la transformación.';
+
+  @override
+  String get transformLegendEigen =>
+      'Líneas discontinuas: direcciones de vectores propios reales, que permanecen en su propia recta.';
 }

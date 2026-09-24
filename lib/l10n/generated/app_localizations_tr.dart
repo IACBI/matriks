@@ -76,14 +76,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topicRankNullityDesc =>
-      'Matris rankını, sıfırlığını (nullity) ve Rank-Sıfırlık Teoremini adım adım keşfedin.';
+      'Matris rankını, sıfırlığını (nullity) ve Rank-Sıfırlık Teoremini adım adım keşfet.';
 
   @override
   String get topicEigen => 'Özdeğerler ve Özvektörler';
 
   @override
   String get topicEigenDesc =>
-      '2×2 özçiftleri ve −20 ile 20 arasındaki 3×3 tam sayı köklerini inceleyin.';
+      '2×2 ve 3×3 matrislerin özdeğer ve özvektörlerini incele; rasyonel kökler kesin hesaplanır.';
 
   @override
   String get topicTransform2d => '2B Geometrik Lineer Dönüşüm';
@@ -155,7 +155,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Hız: ${speed}x';
+    return 'Hız: $speed×';
   }
 
   @override
@@ -523,7 +523,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return '$poly için −20 ile 20 arasında tam sayı kökü bulunamadı. Başka gerçek veya karmaşık kökler olabilir; bu çözücü bunları hesaplamaz.';
+    return 'Katsayılar bu kadar büyük olduğunda $poly kökleri güvenilir biçimde ayrılamadı. Gerçek veya karmaşık kökler vardır ama bu çözücü onları hesaplamaz.';
   }
 
   @override
@@ -531,14 +531,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topicLuDesc =>
-      'Kare matrisi alt (L) ve üst (U) üçgensel matris çarpanlarına ayırın.';
+      'Kare matrisi alt (L) ve üst (U) üçgensel matris çarpanlarına ayır.';
 
   @override
   String get topicPractice => 'Kendini Sına (Alıştırma & Test)';
 
   @override
   String get topicPracticeDesc =>
-      'Adım adım doğru işlemi tahmin ederek kendinizi test edin ve puan toplayın.';
+      'Adım adım doğru işlemi tahmin ederek kendini test et ve puan topla.';
 
   @override
   String get lu_init_title => 'LU Ayrışımını Başlat';
@@ -605,16 +605,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String practiceTotalScore(Object score, Object total) {
-    return 'Toplam Puanınız: $score / $total';
+    return 'Toplam puanın: $score / $total';
   }
 
   @override
   String get practicePerfectScore =>
-      'Harika! Tüm soruları doğru cevaplayarak tam puan aldınız!';
+      'Harika! Tüm soruları doğru cevaplayarak tam puan aldın!';
 
   @override
   String get practiceGoodEffort =>
-      'İyi çalışma! Matris işlemlerinde daha da ustalaşmak için tekrar deneyebilirsiniz.';
+      'İyi çalışma! Matris işlemlerinde daha da ustalaşmak için tekrar deneyebilirsin.';
 
   @override
   String get practiceReturnTopics => 'Konulara Dön';
@@ -630,7 +630,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noTopicsFoundDesc =>
-      'Farklı bir arama terimi deneyin veya başka bir kategori seçin.';
+      'Farklı bir arama terimi dene veya başka bir kategori seç.';
 
   @override
   String get clearSearch => 'Aramayı Temizle';
@@ -658,11 +658,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get inputHelp =>
-      'Bir hücre seçip tam sayı, ondalık sayı veya kesir girin.';
+      'Bir hücre seçip tam sayı, ondalık sayı veya kesir gir.';
 
   @override
   String inputInvalid(String matrix, int row, int column) {
-    return '$matrix matrisinde $row. satır, $column. sütunu kontrol edin. Tam bir sayı girin; kesrin paydası sıfır olamaz.';
+    return '$matrix matrisinde $row. satır, $column. sütunu kontrol et. Tam bir sayı gir; kesrin paydası sıfır olamaz.';
   }
 
   @override
@@ -915,7 +915,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get guidedMode => 'Rehberli animasyon';
 
   @override
-  String get stepsMode => 'Hareketsiz adımlar';
+  String get stepsMode => 'Adım adım (animasyonsuz)';
 
   @override
   String get resultMode => 'Doğrudan sonuç';
@@ -1044,7 +1044,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      '3×3 analizi −20 ile 20 arasındaki tam sayı kökleri arar. Bulunamayan kökler gerçek veya karmaşık olabilir.';
+      '3×3 kökler rasyonelse kesindir; diğer gerçek kökler üç ondalığa yuvarlanır. Çok büyük katsayılarda kökler bulunamayabilir.';
 
   @override
   String get eigenBasisScope =>
@@ -1076,7 +1076,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ1Hint =>
-      'Hedef satırdaki elemanı (2), pivot satırının (1) katı ile çıkararak sıfırlayın.';
+      'Hedef satırdaki elemanı (2), pivot satırının (1) katı ile çıkararak sıfırla.';
 
   @override
   String get quizQ1Feedback0 =>
@@ -1107,7 +1107,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ2Hint =>
-      'Sıfır olan bir pivotla bölme yapılamaz, sıfır olmayan bir satırla yer değiştirin.';
+      'Sıfır olan bir pivotla bölme yapılamaz; sıfır olmayan bir satırla yer değiştir.';
 
   @override
   String get quizQ2Feedback0 =>
@@ -1138,7 +1138,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ3Hint =>
-      'Bir sayıyı 1 yapmak için o sayının çarpma işlemine göre tersi ile çarpın.';
+      'Bir sayıyı 1 yapmak için onu çarpma işlemine göre tersiyle çarp.';
 
   @override
   String get quizQ3Feedback0 =>
@@ -1168,8 +1168,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2 dir.';
 
   @override
-  String get quizQ4Hint =>
-      'Echelon formdaki sıfırdan farklı satır sayısını sayın.';
+  String get quizQ4Hint => 'Eşelon formdaki sıfırdan farklı satırları say.';
 
   @override
   String get quizQ4Feedback0 =>
@@ -1200,7 +1199,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ5Hint =>
-      'Köşegen altı tamamen sıfır olduğunda sadece köşegen elemanlarını çarpın.';
+      'Köşegenin altı tamamen sıfırsa yalnızca köşegen elemanlarını çarp.';
 
   @override
   String get quizQ5Feedback0 =>
@@ -1229,4 +1228,57 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spaceKey => 'Boşluk';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Satır $row, sütun $column, henüz hesaplanmadı';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return '$poly çözüldüğünde gerçek özdeğer $roots ve karmaşık eşlenik çift λ ≈ $complex bulunur. Yalnızca gerçek özdeğerin gerçek bir özvektörü vardır.';
+  }
+
+  @override
+  String get keyNextRow => 'Sonraki satır';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B’nin satır sayısı A’nın sütun sayısına eşit tutulur; böylece A × B tanımlı olur.';
+
+  @override
+  String get lessonComplete => 'Ders tamamlandı';
+
+  @override
+  String get lessonCompleteHint =>
+      'Sonucu kontrol et, dersi yeniden izle ya da kendi matrisinle devam et.';
+
+  @override
+  String get replayLesson => 'Yeniden izle';
+
+  @override
+  String get tryOwnMatrix => 'Kendi matrisini dene';
+
+  @override
+  String get editMatrix => 'Matrisi değiştir';
+
+  @override
+  String presetApplied(String matrix) {
+    return '$matrix matrisi değiştirildi.';
+  }
+
+  @override
+  String get undo => 'Geri al';
+
+  @override
+  String get transformShortcutsHint =>
+      'Klavye: Boşluk oynatır veya geri sarar, S kayma, P izdüşüm, R birim matris.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Soluk ızgara: dönüşümden önceki düzlem.';
+
+  @override
+  String get transformLegendEigen =>
+      'Kesikli çizgiler: kendi doğrusu üzerinde kalan gerçek özvektör yönleri.';
 }

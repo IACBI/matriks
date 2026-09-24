@@ -180,13 +180,32 @@ class Rational implements Comparable<Rational> {
     return '$num/$den';
   }
 
-  /// Human friendly display, with optional decimal approximation
+  /// Human friendly display, with optional decimal rounding.
   String toDisplayString({bool asDecimal = false, int decimalPlaces = 2}) {
-    if (asDecimal) {
-      return toDouble().toStringAsFixed(decimalPlaces);
-    }
+    if (asDecimal) return toDecimalString(decimalPlaces);
     return toString();
   }
+
+  /// Rounds half away from zero to [places] decimals with exact integer
+  /// arithmetic. Unlike [toDouble], values beyond the double range never turn
+  /// into `NaN` or `Infinity`.
+  String toDecimalString([int places = 4]) {
+    if (places < 0) throw RangeError.value(places, 'places');
+    final factor = BigInt.from(10).pow(places);
+    final scaled = num.abs() * factor;
+    var rounded = scaled ~/ den;
+    if ((scaled % den) * BigInt.two >= den) rounded += BigInt.one;
+    final sign = isNegative && rounded != BigInt.zero ? '-' : '';
+    if (places == 0) return '$sign$rounded';
+    final digits = rounded.toString().padLeft(places + 1, '0');
+    final split = digits.length - places;
+    return '$sign${digits.substring(0, split)}.${digits.substring(split)}';
+  }
+
+  /// Whether the decimal expansion ends within [places] digits, so that
+  /// [toDecimalString] with that many places is exact rather than rounded.
+  bool terminatesWithin(int places) =>
+      BigInt.from(10).pow(places) % den == BigInt.zero;
 
   @override
   bool operator ==(Object other) =>

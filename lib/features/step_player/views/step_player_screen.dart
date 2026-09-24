@@ -804,6 +804,12 @@ class _StepPlayerViewState extends State<_StepPlayerView>
             params['poly']?.toString() ?? '',
             params['trace']?.toString() ?? '',
           );
+        case 'eigen_cubic_complex_desc':
+          return l10n.eigen_cubic_complex_desc(
+            params['complex']?.toString() ?? '',
+            params['poly']?.toString() ?? '',
+            params['roots']?.toString() ?? '',
+          );
         case 'eigen_irrational_desc':
           return l10n.eigen_irrational_desc(params['poly']?.toString() ?? '');
 

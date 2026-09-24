@@ -84,7 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.';
+      'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.';
 
   @override
   String get topicTransform2d => '2D Geometric Transformation';
@@ -156,7 +156,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Speed: ${speed}x';
+    return 'Speed: $speed×';
   }
 
   @override
@@ -524,7 +524,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'No integer root from −20 to 20 was found for $poly. Other real or complex roots may exist; this solver does not compute them.';
+    return 'The roots of $poly could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.';
   }
 
   @override
@@ -1043,7 +1043,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      '3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.';
+      '3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.';
 
   @override
   String get eigenBasisScope =>
@@ -1226,4 +1226,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spaceKey => 'Space';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Row $row, column $column, not calculated yet';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Solving $poly gives the real eigenvalue $roots and the complex conjugate pair λ ≈ $complex. Only the real eigenvalue has a real eigenvector.';
+  }
+
+  @override
+  String get keyNextRow => 'Next row';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B has as many rows as A has columns, so A × B is defined.';
+
+  @override
+  String get lessonComplete => 'Lesson complete';
+
+  @override
+  String get lessonCompleteHint =>
+      'Check the result, watch the lesson again, or continue with a matrix of your own.';
+
+  @override
+  String get replayLesson => 'Watch again';
+
+  @override
+  String get tryOwnMatrix => 'Try your own matrix';
+
+  @override
+  String get editMatrix => 'Change the matrix';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Matrix $matrix replaced.';
+  }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get transformShortcutsHint =>
+      'Keyboard: Space plays or reverses, S shear, P projection, R identity.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Faint grid: the plane before the transformation.';
+
+  @override
+  String get transformLegendEigen =>
+      'Dashed lines: real eigenvector directions, which stay on their own line.';
 }

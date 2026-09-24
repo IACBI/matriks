@@ -82,7 +82,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Собственные пары 2×2 и целые корни 3×3 от −20 до 20.';
+      'Собственные значения и векторы матриц 2×2 и 3×3; рациональные корни находятся точно.';
 
   @override
   String get topicTransform2d => 'Геометрические преобразования 2D';
@@ -521,7 +521,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'Для $poly не найдено целых корней от −20 до 20. Могут существовать другие вещественные или комплексные корни.';
+    return 'Корни $poly не удалось надёжно выделить при коэффициентах такого размера. Вещественные или комплексные корни существуют, но этот решатель их не вычисляет.';
   }
 
   @override
@@ -1035,7 +1035,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      'Для матриц 3×3 ищутся целые корни от −20 до 20. Остальные корни могут быть вещественными или комплексными.';
+      'Рациональные корни 3×3 находятся точно; остальные вещественные корни округляются до трёх знаков. При очень больших коэффициентах корни могут остаться ненайденными.';
 
   @override
   String get eigenBasisScope =>
@@ -1205,4 +1205,57 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get spaceKey => 'Пробел';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Строка $row, столбец $column, ещё не вычислено';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Решение $poly даёт вещественное собственное значение $roots и пару комплексно сопряжённых λ ≈ $complex. Вещественный собственный вектор есть только у вещественного значения.';
+  }
+
+  @override
+  String get keyNextRow => 'Следующая строка';
+
+  @override
+  String get multiplyRowsLocked =>
+      'Число строк B равно числу столбцов A, поэтому A × B определено.';
+
+  @override
+  String get lessonComplete => 'Урок завершён';
+
+  @override
+  String get lessonCompleteHint =>
+      'Проверьте результат, посмотрите урок ещё раз или продолжите со своей матрицей.';
+
+  @override
+  String get replayLesson => 'Смотреть снова';
+
+  @override
+  String get tryOwnMatrix => 'Попробовать свою матрицу';
+
+  @override
+  String get editMatrix => 'Изменить матрицу';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Матрица $matrix заменена.';
+  }
+
+  @override
+  String get undo => 'Отменить';
+
+  @override
+  String get transformShortcutsHint =>
+      'Клавиатура: Пробел — воспроизвести или обратно, S — сдвиг, P — проекция, R — единичная.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Бледная сетка: плоскость до преобразования.';
+
+  @override
+  String get transformLegendEigen =>
+      'Пунктир: направления вещественных собственных векторов, остающиеся на своей прямой.';
 }

@@ -76,7 +76,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topicEigen => '特征值与特征向量';
 
   @override
-  String get topicEigenDesc => '探索 2×2 特征对及 −20 到 20 的 3×3 整数根。';
+  String get topicEigenDesc => '探索 2×2 与 3×3 矩阵的特征值和特征向量；有理根精确求得。';
 
   @override
   String get topicTransform2d => '二维几何变换';
@@ -505,7 +505,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return '未在 −20 到 20 中找到 $poly 的整数根，可能存在其他实根或复根。';
+    return '系数过大，无法可靠地分离 $poly 的根。实根或复根存在，但本求解器不计算它们。';
   }
 
   @override
@@ -995,7 +995,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get eigenPrecision => '特征值保留三位小数；向量表示近似方向，并非零空间的精确解。';
 
   @override
-  String get eigenScope => '3×3 分析仅搜索 −20 到 20 的整数根。未找到的根可能是实数或复数。';
+  String get eigenScope => '3×3 的有理根为精确值；其他实根四舍五入到三位小数。系数过大时，部分根可能无法求出。';
 
   @override
   String get eigenBasisScope => '每个特征值仅显示一个代表向量，不计算完整的特征空间基。';
@@ -1144,4 +1144,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get spaceKey => '空格';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return '第 $row 行，第 $column 列，尚未计算';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return '求解 $poly 得到实特征值 $roots 和一对共轭复特征值 λ ≈ $complex。只有实特征值有实特征向量。';
+  }
+
+  @override
+  String get keyNextRow => '下一行';
+
+  @override
+  String get multiplyRowsLocked => 'B 的行数与 A 的列数相同，因此 A × B 有定义。';
+
+  @override
+  String get lessonComplete => '课程完成';
+
+  @override
+  String get lessonCompleteHint => '查看结果、重看本课，或用你自己的矩阵继续。';
+
+  @override
+  String get replayLesson => '再看一遍';
+
+  @override
+  String get tryOwnMatrix => '试试你自己的矩阵';
+
+  @override
+  String get editMatrix => '修改矩阵';
+
+  @override
+  String presetApplied(String matrix) {
+    return '矩阵 $matrix 已替换。';
+  }
+
+  @override
+  String get undo => '撤销';
+
+  @override
+  String get transformShortcutsHint => '键盘：空格播放或倒放，S 剪切，P 投影，R 单位矩阵。';
+
+  @override
+  String get transformLegendOriginal => '浅色网格：变换前的平面。';
+
+  @override
+  String get transformLegendEigen => '虚线：实特征向量方向，变换后仍在自身所在直线上。';
 }

@@ -22,7 +22,7 @@
   "topicRankNullity": "Rank & Nullity",
   "topicRankNullityDesc": "Compute matrix rank, nullity, and verify the Rank-Nullity Theorem.",
   "topicEigen": "Eigenvalues & Eigenvectors",
-  "topicEigenDesc": "Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.",
+  "topicEigenDesc": "Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.",
   "topicTransform2d": "2D Geometric Transformation",
   "topicTransform2dDesc": "Visualize unit square warping, basis vectors (î, ĵ), and determinant area in real-time.",
   "topicAdd": "Matrix Addition",
@@ -44,7 +44,7 @@
   "stepOf": "Step {current} of {total}",
   "decreasePlaybackSpeed": "Decrease playback speed",
   "increasePlaybackSpeed": "Increase playback speed",
-  "playbackSpeed": "Speed: {speed}x",
+  "playbackSpeed": "Speed: {speed}×",
   "play": "Play",
   "pause": "Pause",
   "nextStep": "Next",
@@ -134,7 +134,7 @@
   "eigen_vector_title": "Eigenvector for λ_{index} = {lambda}",
   "eigen_vector_desc": "For (A − {lambda}I)v = 0, one representative eigenvector is {vector}.",
   "eigen_3x3_poly_desc": "For a 3x3 matrix, the characteristic equation is {poly} with trace = {trace} and det = {det}.",
-  "eigen_irrational_desc": "No integer root from −20 to 20 was found for {poly}. Other real or complex roots may exist; this solver does not compute them.",
+  "eigen_irrational_desc": "The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.",
   "topicLu": "LU Decomposition (A = LU)",
   "topicLuDesc": "Factorize a square matrix into lower (L) and upper (U) triangular matrices.",
   "topicPractice": "Self-Test & Practice Quiz",
@@ -449,7 +449,7 @@
   "resultPartial": "Partial",
   "resultUnsupported": "Unsupported",
   "eigenPrecision": "Eigenvalues are rounded to three decimals; vectors are approximate directions, not exact null-space solutions.",
-  "eigenScope": "3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.",
+  "eigenScope": "3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.",
   "eigenBasisScope": "One representative vector per eigenvalue is shown; a full eigenspace basis is not computed.",
   "complexScope": "Complex eigenvectors are not supported. The imaginary part is rounded to two decimals.",
   "guideAddSource": "Match the same position in A and B.",
@@ -497,5 +497,36 @@
   "quizQ5Feedback3": "All diagonal entries are positive; no extra negative sign is introduced.",
   "eigen_vector_approx_title": "Approximate vector for λ_{index} ≈ {lambda}",
   "eigen_vector_approx_desc": "Using λ ≈ {lambda}, an approximate direction is {vector}. The rounded value does not give an exact null-space solution.",
-  "spaceKey": "Space"
+  "spaceKey": "Space",
+  "matrixCellPendingLabel": "Row {row}, column {column}, not calculated yet",
+  "@matrixCellPendingLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "eigen_cubic_complex_desc": "Solving {poly} gives the real eigenvalue {roots} and the complex conjugate pair λ ≈ {complex}. Only the real eigenvalue has a real eigenvector.",
+  "keyNextRow": "Next row",
+  "multiplyRowsLocked": "B has as many rows as A has columns, so A × B is defined.",
+  "lessonComplete": "Lesson complete",
+  "lessonCompleteHint": "Check the result, watch the lesson again, or continue with a matrix of your own.",
+  "replayLesson": "Watch again",
+  "tryOwnMatrix": "Try your own matrix",
+  "editMatrix": "Change the matrix",
+  "presetApplied": "Matrix {matrix} replaced.",
+  "@presetApplied": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Undo",
+  "transformShortcutsHint": "Keyboard: Space plays or reverses, S shear, P projection, R identity.",
+  "transformLegendOriginal": "Faint grid: the plane before the transformation.",
+  "transformLegendEigen": "Dashed lines: real eigenvector directions, which stay on their own line."
 }
