@@ -238,9 +238,7 @@ void main() {
     expect(
       find.ancestor(
         of: find.byKey(const ValueKey('more-settings')),
-        matching: find.byWidgetPredicate(
-          (w) => w is Semantics && w.properties.container == true,
-        ),
+        matching: find.byWidgetPredicate((w) => w is Semantics && w.container),
       ),
       findsWidgets,
     );
