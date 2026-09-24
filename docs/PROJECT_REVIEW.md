@@ -272,3 +272,18 @@ Topic titles, step texts and solver errors resolve through exhaustive switches i
 - Step texts are still string keys with untyped parameters. A sealed narrative type in the engine would make them compile-time checked; the new coverage test is the interim guard.
 - No stricter analyzer rules were added: `strict-casts` would flag the untyped step parameters throughout.
 - Guided multiplication of 5×5 matrices still takes several minutes at 1×; shortening later entries should follow the learner study in ROADMAP B01.
+
+## Solution animation pass — 2026-09-24
+
+Every solver's steps were replayed in code against what the player shows. Logic errors found and fixed:
+
+- Row operations animated columns they cannot change (`0 − 2·0`) and spent 1.2 s on each. Only changing columns are animated and timed now.
+- Determinant formula steps coloured cells as pivot/source/target and listed the same products three times (cell list, phase explanation, description). The closing step re-animated all diagonals although it only adds two totals; it is now a one-contribution recap.
+- The 2×2 inverse jumped from A to adj(A) and to A⁻¹ with no visible operation. It now animates the adjugate (a and d swap, b and c change sign) and the 1/det scaling one entry at a time.
+- LU eliminations showed only U; the multiplier written into L was never visible, and the result named only U. L is now shown beside U, and the result names P, L and U.
+- Block inverse extraction showed A⁻¹ alone, so the step appeared to change the matrix. It now shows [I | A⁻¹] with the right block marked.
+- Eigen, rank and linear-system summaries marked non-pivots as pivot or target. Only real pivots are marked; eigenvector steps state that the matrix shown is A − λI.
+- Steps without a specific lesson showed empty source/operation/result phases; they now show only the description. The step description is hidden where the phase explanation already says the same thing.
+- Three Turkish step titles did not say what the step does (swap, scale, eliminate); they now do.
+
+Verification is in the table of the pass above only up to `08547d0`; see the CI runs on the branch head for this pass. The new behaviour is covered by `packages/matrix_engine/test/step_semantics_test.dart` and `test/animation_logic_test.dart`. Not inspected on a device.
