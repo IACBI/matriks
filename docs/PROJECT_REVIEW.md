@@ -232,3 +232,43 @@ A code of conduct was deliberately not added. For a single-maintainer project it
 - No release is tagged. `pubspec.yaml` reads `1.0.0+1`; whether that constitutes a release is the owner's call.
 - Publication is not a correctness claim. The numerical limits recorded in the sections above are unchanged, and the app states them in its own interface.
 
+
+# Review and improvement pass — 2026-09-24
+
+Branch `claude/keen-darwin-oettj2`. A full read of the application, engine, tests, CI and documentation, followed by fixes. The session container could not reach `storage.googleapis.com` or `pub.dev`, so no Flutter SDK ran locally; every check below ran in GitHub Actions on the branch through manual workflow runs. Localization output was regenerated with a script that first reproduced all six committed generated files byte for byte; CI's `flutter gen-l10n` diff then confirmed each change.
+
+## Defects fixed
+
+- Addition and multiplication cells carried their result as a LaTeX badge that was drawn as plain text (`\frac{7}{2}`). A completed zero drew two badges in the same corner.
+- Uncomputed entries of a product or sum displayed `0`, which reads as a result. They now show a placeholder and are announced as not calculated.
+- The decimal view rounded to two places through `double`: nonzero pivots such as 1/1000 read `0.00`, and values beyond the double range became NaN. It now rounds with integer arithmetic, is exact when the expansion terminates within four places, marks everything else with ≈ and switches to scientific notation instead of showing zero.
+- 3×3 eigen analysis only tried the integers −20…20, so `diag(1, 30, 40)` was partial and fractional or irrational roots were missing. See MATHEMATICAL_CORRECTNESS.md.
+- Pressing the sign key twice emptied the cell. Solve failures showed exception text. A preset's snackbar covered the player's controls after solving (found by the flow tests).
+- The prediction card always placed the correct multiplier in the middle; quiz answers were B in four of five questions.
+- The player's progress bar used the light-theme blue in dark mode (2.2:1 against the surface) and ignored the accent palette.
+
+## Animation and interface changes
+
+Stable per-solution geometry, column-scaled row-operation time (unchanged up to three columns), fade-through cell text, reflow-free multiplication operands, Sarrus with copied columns and faded finished diagonals, a static swap connector that no longer repaints every frame, phase announcements only while paused, a lesson-complete card, no play button in static steps, locale-formatted speeds, catalog entries that switch tabs instead of opening duplicate screens, expanded starter lessons, a bottom-navigation indicator that does not rely on colour, topic-aware random presets with undo, an explained B row lock, one key per keypad action, a transform canvas with the untransformed grid, fit-to-view zoom, eigenvector directions and matching colours, a speed setting saved on release, and a consistent informal register in Turkish. Details are in DESIGN_SYSTEM.md.
+
+## Code changes
+
+Topic titles, step texts and solver errors resolve through exhaustive switches in one place each; `SettingsState` has value equality; preferences load before the first frame; the bundled logo is 23 KB instead of 901 KB. Removed `TopicItem.color`, `MatrixInputState.errorMessage`, `QuizBank.questions`, `DeterminantCofactorTransformation`, four unused theme colours, two shadow helpers and the `solveError` string.
+
+## Verification
+
+| Check | Result |
+| --- | --- |
+| Baseline before changes (run 36034661200) | Passed |
+| Final branch head `08547d0` (run 36037856873) | Generated localizations current; analysis: no issues; 301 application and 55 engine tests passed; web release built and uploaded as the `web-preview` artifact |
+| Intermediate run 36037443385 | 3 failures, fixed in `08547d0`: two flow tests blocked by the preset snackbar, one test with a wrong starting value |
+| New tests | `step_text_test.dart` resolves every step text of every solver branch in five languages; `improvement_regression_test.dart` covers the defects and behaviour above; engine tests cover exact, deflated, irreducible, complex and oversized 3×3 spectra and exact decimal text |
+
+## Not done, and why
+
+- The interface was not inspected on a device or in a browser in this pass; the web preview artifact exists for that review.
+- The collapsed operation inspector still rebuilds its slider every frame: existing tests read playback progress from it. The saving was not measured.
+- The prediction pause is still scheduled from `build`; moving it changes timing that tests pin, for an unmeasured benefit.
+- Step texts are still string keys with untyped parameters. A sealed narrative type in the engine would make them compile-time checked; the new coverage test is the interim guard.
+- No stricter analyzer rules were added: `strict-casts` would flag the untyped step parameters throughout.
+- Guided multiplication of 5×5 matrices still takes several minutes at 1×; shortening later entries should follow the learner study in ROADMAP B01.
