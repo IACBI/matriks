@@ -723,15 +723,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pathSolve => '3 · 求解方程组';
 
   @override
-  String get guideGenericSource => '观察矩阵，理解本步骤的目标。';
-
-  @override
-  String get guideGenericApply => '跟随高亮元素与讲解。';
-
-  @override
-  String get guideGenericResult => '比较结果，准备好后继续。';
-
-  @override
   String guideEliminateSource(String source, String target, String column) {
     return '用第 $source 行改变第 $target 行，关注第 $column 列。';
   }
@@ -788,7 +779,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get guideDetApply => '逐个观察乘积并检查因子。';
 
   @override
-  String get guideDetResult => '乘积保留在屏幕上，可按自己的节奏检查。';
+  String get guideDetResult => '这些乘积之和就是该组对行列式的贡献。';
 
   @override
   String get coefficientError => '请输入 −1000 到 1000 的数字。';
@@ -1187,4 +1178,57 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get transformLegendEigen => '虚线：实特征向量方向，变换后仍在自身所在直线上。';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return '目标 $entry ÷ 主元 $pivot = $ratio。减去主元行的 $ratio 倍可消去目标元素，同一个 $ratio 写入 L 的 ($row, $column) 位置，因此 L · U 可还原 A。';
+  }
+
+  @override
+  String get guideAdjSource => '对于 [[a, b], [c, d]]，观察对角线上的 a、d 以及另外两个元素 b、c。';
+
+  @override
+  String get guideAdjApply => 'a 与 d 交换位置；b 和 c 位置不变但改变符号。';
+
+  @override
+  String get guideAdjResult => '这就是 adj(A)。除以 det(A) 即得逆矩阵。';
+
+  @override
+  String get guideAdjReason =>
+      '对 2×2 矩阵，A · adj(A) = det(A) · I。因此当 det(A) ≠ 0 时，A⁻¹ = adj(A) ÷ det(A)。';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'adj(A) 的每个元素都乘以同一个数 1/det(A) = $factor。';
+  }
+
+  @override
+  String get guideScaleAllApply => '逐个元素相乘。';
+
+  @override
+  String get guideScaleAllResult => '结果是 A⁻¹。检验：A · A⁻¹ = I。';
+
+  @override
+  String get guideDiagSource => '矩阵现在是上三角矩阵，因此其行列式等于对角线元素之积。';
+
+  @override
+  String get guideDiagApply => '逐个乘以对角线元素。每次行交换都在第一个因子中带来一个 −1。';
+
+  @override
+  String get guideDiagResult => '行消元不改变行列式，因此这个乘积就是原矩阵的行列式。';
+
+  @override
+  String get guideDetRecapSource => '两组的和都已在前面的步骤中得到。';
+
+  @override
+  String get guideDetRecapApply => '用 + 组的和减去 − 组的和。';
+
+  @override
+  String get guideDetRecapResult => '差值就是行列式。';
 }

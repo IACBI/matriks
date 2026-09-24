@@ -1303,24 +1303,6 @@ abstract class AppLocalizations {
   /// **'3 · Solve a system'**
   String get pathSolve;
 
-  /// No description provided for @guideGenericSource.
-  ///
-  /// In en, this message translates to:
-  /// **'Read the current matrix and the goal of this step.'**
-  String get guideGenericSource;
-
-  /// No description provided for @guideGenericApply.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow the highlighted entries. The explanation gives the reasoning.'**
-  String get guideGenericApply;
-
-  /// No description provided for @guideGenericResult.
-  ///
-  /// In en, this message translates to:
-  /// **'Compare the result with the explanation. Continue when you are ready.'**
-  String get guideGenericResult;
-
   /// No description provided for @guideEliminateSource.
   ///
   /// In en, this message translates to:
@@ -1408,7 +1390,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDetResult.
   ///
   /// In en, this message translates to:
-  /// **'The products remain visible below, so you can check the result at your own pace.'**
+  /// **'Their sum is this group's contribution to the determinant.'**
   String get guideDetResult;
 
   /// No description provided for @coefficientError.
@@ -2160,6 +2142,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dashed lines: real eigenvector directions, which stay on their own line.'**
   String get transformLegendEigen;
+
+  /// No description provided for @guideLuReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Target {entry} ÷ pivot {pivot} = {ratio}. Subtracting {ratio} times the pivot row cancels the target, and the same {ratio} is written into L at ({row}, {column}), so L · U rebuilds A.'**
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  );
+
+  /// No description provided for @guideAdjSource.
+  ///
+  /// In en, this message translates to:
+  /// **'For [[a, b], [c, d]], look at the diagonal a, d and the other two entries b, c.'**
+  String get guideAdjSource;
+
+  /// No description provided for @guideAdjApply.
+  ///
+  /// In en, this message translates to:
+  /// **'a and d trade places; b and c keep their places but change sign.'**
+  String get guideAdjApply;
+
+  /// No description provided for @guideAdjResult.
+  ///
+  /// In en, this message translates to:
+  /// **'This is adj(A). Dividing it by det(A) gives the inverse.'**
+  String get guideAdjResult;
+
+  /// No description provided for @guideAdjReason.
+  ///
+  /// In en, this message translates to:
+  /// **'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.'**
+  String get guideAdjReason;
+
+  /// No description provided for @guideScaleAllSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry of adj(A) is multiplied by the same number, 1/det(A) = {factor}.'**
+  String guideScaleAllSource(String factor);
+
+  /// No description provided for @guideScaleAllApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply the entries one at a time.'**
+  String get guideScaleAllApply;
+
+  /// No description provided for @guideScaleAllResult.
+  ///
+  /// In en, this message translates to:
+  /// **'The result is A⁻¹. Check: A · A⁻¹ = I.'**
+  String get guideScaleAllResult;
+
+  /// No description provided for @guideDiagSource.
+  ///
+  /// In en, this message translates to:
+  /// **'The matrix is now upper triangular, so its determinant is the product of the diagonal.'**
+  String get guideDiagSource;
+
+  /// No description provided for @guideDiagApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply the diagonal entries one by one. The first factor carries a −1 for each row swap.'**
+  String get guideDiagApply;
+
+  /// No description provided for @guideDiagResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Row eliminations did not change the determinant, so this product is det of the original matrix.'**
+  String get guideDiagResult;
+
+  /// No description provided for @guideDetRecapSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Both totals are known from the previous steps.'**
+  String get guideDetRecapSource;
+
+  /// No description provided for @guideDetRecapApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtract the − total from the + total.'**
+  String get guideDetRecapApply;
+
+  /// No description provided for @guideDetRecapResult.
+  ///
+  /// In en, this message translates to:
+  /// **'The difference is the determinant.'**
+  String get guideDetRecapResult;
 }
 
 class _AppLocalizationsDelegate

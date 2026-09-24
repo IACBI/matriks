@@ -24,6 +24,10 @@ class DeterminantLinesPainter extends CustomPainter {
   /// Without copies the wrapped diagonals bend back inside the matrix.
   final double? copiedColumnsGap;
 
+  /// Draw every product of the step at once, without motion: reduced motion
+  /// and static steps still need to see which entries are multiplied.
+  final bool showAll;
+
   const DeterminantLinesPainter({
     required this.rows,
     required this.cols,
@@ -32,6 +36,7 @@ class DeterminantLinesPainter extends CustomPainter {
     required this.transformation,
     required this.progress,
     this.copiedColumnsGap,
+    this.showAll = false,
   });
 
   List<(List<(int, int)>, Color)> _paths() {
@@ -74,18 +79,26 @@ class DeterminantLinesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (progress <= 0 || progress >= 1) return;
     final paths = _paths();
     if (paths.isEmpty) return;
+    final radius = math.min(cellWidth, cellHeight) * .34;
+    Offset centre((int, int) cell) =>
+        Offset(_x(cell.$2), (cell.$1 + .5) * cellHeight);
+    if (showAll) {
+      for (final (cells, color) in paths) {
+        _drawPath(canvas, [for (final cell in cells) centre(cell)], color, 1, radius);
+      }
+      return;
+    }
+    if (progress <= 0 || progress >= 1) return;
     final scaled = progress * paths.length;
     final index = scaled.floor().clamp(0, paths.length - 1);
     final local = (scaled - index).clamp(0.0, 1.0);
-    final radius = math.min(cellWidth, cellHeight) * .34;
     for (var p = 0; p <= index; p++) {
       final (cells, color) = paths[p];
       _drawPath(
         canvas,
-        [for (final cell in cells) Offset(_x(cell.$2), (cell.$1 + .5) * cellHeight)],
+        [for (final cell in cells) centre(cell)],
         p == index ? color : color.withValues(alpha: .3),
         p == index ? local : 1,
         radius,
@@ -130,5 +143,6 @@ class DeterminantLinesPainter extends CustomPainter {
       old.cellHeight != cellHeight ||
       old.transformation != transformation ||
       old.progress != progress ||
-      old.copiedColumnsGap != copiedColumnsGap;
+      old.copiedColumnsGap != copiedColumnsGap ||
+      old.showAll != showAll;
 }

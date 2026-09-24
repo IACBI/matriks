@@ -252,11 +252,40 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           return KeyEventResult.handled;
         }
 
+        final lesson = InstructionLesson.forStep(
+          transformation: currentStep.transformation,
+          before: currentStep.matrixBefore,
+          after: currentStep.matrixAfter,
+          l10n: l10n,
+        );
+        final transformation = currentStep.transformation;
+        // Only these steps attach a formula to the cell it produces; other
+        // solvers list whole-step formulas that no single cell owns.
+        final cellFormulas =
+            transformation is RowEliminationTransformation ||
+            transformation is RowScaleTransformation ||
+            transformation is MatrixElementAdditionTransformation ||
+            transformation is MatrixElementMultiplicationTransformation ||
+            transformation is MatrixScaleTransformation;
+        final stepCard = StepCard(
+          showTitle: false,
+          explanationLevel: settingsState.explanationLevel,
+          step: currentStep,
+          localizedTitle: title,
+          localizedDescription: description,
+          rationale: lesson.rationale,
+          showDescription: lesson.generic || !lesson.coversDescription,
+          showCellCalculations: lesson.calculations.isEmpty,
+          onExpandCalculations: playerCubit.pause,
+          onSubCalculationTap: (sub) =>
+              playerCubit.inspectCell(sub.targetRow, sub.targetCol),
+        );
         final matrixGridWidget = MatrixDisplayGrid(
           key: _matrixKey,
           sceneFormula:
               currentStep.transformation is InformationalStepTransformation
-              ? (currentStep.explanationParams['vector'] ??
+              ? (currentStep.explanationParams['scene'] ??
+                        currentStep.explanationParams['vector'] ??
                         currentStep.explanationParams['poly'] ??
                         currentStep.explanationParams['formula'])
                     ?.toString()
@@ -267,7 +296,9 @@ class _StepPlayerViewState extends State<_StepPlayerView>
           snapshot: currentStep.matrixAfter,
           snapshotBefore: currentStep.matrixBefore,
           highlights: currentStep.highlights,
-          subCalculations: currentStep.subCalculations,
+          subCalculations: cellFormulas
+              ? currentStep.subCalculations
+              : const [],
           transformation: currentStep.transformation,
           isDecimalView: settingsState.isDecimalView,
           playbackSpeed: state.playbackSpeed,
@@ -454,27 +485,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      StepCard(
-                                        showTitle: false,
-                                        explanationLevel:
-                                            settingsState.explanationLevel,
-                                        step: currentStep,
-                                        localizedTitle: title,
-                                        localizedDescription: description,
-                                        rationale: InstructionLesson.forStep(
-                                          transformation:
-                                              currentStep.transformation,
-                                          before: currentStep.matrixBefore,
-                                          after: currentStep.matrixAfter,
-                                          l10n: l10n,
-                                        ).rationale,
-                                        onExpandCalculations: playerCubit.pause,
-                                        onSubCalculationTap: (sub) =>
-                                            playerCubit.inspectCell(
-                                              sub.targetRow,
-                                              sub.targetCol,
-                                            ),
-                                      ),
+                                      stepCard,
                                       if (lessonEnd != null) ...[
                                         const SizedBox(height: 16),
                                         lessonEnd,
@@ -526,26 +537,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                 if (state.solution.result is EigenResult)
                                   SolutionStatus(solution: state.solution),
                                 const SizedBox(height: 8),
-                                StepCard(
-                                  showTitle: false,
-                                  explanationLevel:
-                                      settingsState.explanationLevel,
-                                  step: currentStep,
-                                  localizedTitle: title,
-                                  localizedDescription: description,
-                                  rationale: InstructionLesson.forStep(
-                                    transformation: currentStep.transformation,
-                                    before: currentStep.matrixBefore,
-                                    after: currentStep.matrixAfter,
-                                    l10n: l10n,
-                                  ).rationale,
-                                  onExpandCalculations: playerCubit.pause,
-                                  onSubCalculationTap: (sub) =>
-                                      playerCubit.inspectCell(
-                                        sub.targetRow,
-                                        sub.targetCol,
-                                      ),
-                                ),
+                                stepCard,
                                 if (lessonEnd != null) ...[
                                   const SizedBox(height: 16),
                                   lessonEnd,

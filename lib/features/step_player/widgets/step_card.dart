@@ -16,6 +16,14 @@ class StepCard extends StatelessWidget {
   final String localizedDescription;
   final void Function(SubCalculation)? onSubCalculationTap;
 
+  /// The solver's description, when the phase explanation does not already
+  /// say the same thing.
+  final bool showDescription;
+
+  /// The step's cell formulas, when the explanation has no calculations of
+  /// its own; otherwise the same formulas would be listed twice.
+  final bool showCellCalculations;
+
   const StepCard({
     this.explanationLevel = ExplanationLevel.detailed,
     super.key,
@@ -26,12 +34,34 @@ class StepCard extends StatelessWidget {
     required this.localizedTitle,
     required this.localizedDescription,
     this.onSubCalculationTap,
+    this.showDescription = true,
+    this.showCellCalculations = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final visible = explanationLevel != ExplanationLevel.hidden;
+    final description = visible && showDescription;
+    final hasRationale = visible && rationale != null;
+    final calculations =
+        showCellCalculations && step.subCalculations.isNotEmpty;
+    final roles = {
+      for (final h in step.highlights)
+        if (h.type == HighlightType.pivot ||
+            h.type == HighlightType.source ||
+            h.type == HighlightType.target ||
+            h.type == HighlightType.zeroed)
+          h.type,
+    };
+    if (!description &&
+        !hasRationale &&
+        !calculations &&
+        roles.isEmpty &&
+        !showTitle) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -45,14 +75,7 @@ class StepCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // The rationale below is titled "Why this works"; this card holds the
-          // step's explanation, so it is headed as such.
-          Text(
-            l10n?.explanation ?? 'Explanation',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
           if (showTitle) ...[
-            const SizedBox(height: 12),
             Semantics(
               header: true,
               child: Text(
@@ -61,9 +84,13 @@ class StepCard extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 10),
-          // Description / Formula
-          if (explanationLevel != ExplanationLevel.hidden)
+          if (description) ...[
+            if (showTitle) const SizedBox(height: 10),
+            Text(
+              l10n?.explanation ?? 'Explanation',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
             Text(
               readableMathProse(localizedDescription),
               style: TextStyle(
@@ -72,7 +99,8 @@ class StepCard extends StatelessWidget {
                 height: 1.4,
               ),
             ),
-          if (rationale != null && explanationLevel != ExplanationLevel.hidden)
+          ],
+          if (hasRationale)
             ExpansionTile(
               key: ValueKey('${step.stepIndex}-${explanationLevel.name}'),
               tilePadding: EdgeInsets.zero,
@@ -88,7 +116,7 @@ class StepCard extends StatelessWidget {
                 ),
               ],
             ),
-          if (step.subCalculations.isNotEmpty) ...[
+          if (calculations) ...[
             const SizedBox(height: 12),
             ExpansionTile(
               tilePadding: EdgeInsets.zero,
@@ -120,8 +148,9 @@ class StepCard extends StatelessWidget {
             ),
           ],
 
-          const SizedBox(height: 12),
+          if (roles.isNotEmpty) const SizedBox(height: 12),
           // Semantic color legend for the step
+          if (roles.isNotEmpty)
           Wrap(
             spacing: 12,
             runSpacing: 6,

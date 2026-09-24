@@ -55,13 +55,11 @@ class RankNullitySolver {
     final rrefSnap = MatrixSnapshot.fromMatrix(rref);
 
     // Final step: Rank-Nullity Theorem summary
+    // Only the leading entries are pivots; marking whole columns called
+    // their zeros pivots too.
     final highlights = <CellHighlight>[
-      for (final pc in pivotCols)
-        for (int r = 0; r < rowCount; r++)
-          CellHighlight(row: r, col: pc, type: HighlightType.pivot),
-      for (final fc in freeCols)
-        for (int r = 0; r < rowCount; r++)
-          CellHighlight(row: r, col: fc, type: HighlightType.source),
+      for (var r = 0; r < pivotCols.length; r++)
+        CellHighlight(row: r, col: pivotCols[r], type: HighlightType.pivot),
     ];
 
     final summaryLatex =

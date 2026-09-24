@@ -147,7 +147,7 @@ class LinearSystemsSolver {
         final val = rref.get(r, varCount);
         solutionValues.add(val);
         highlights.add(CellHighlight(row: r, col: c, type: HighlightType.pivot));
-        highlights.add(CellHighlight(row: r, col: varCount, type: HighlightType.target));
+        highlights.add(CellHighlight(row: r, col: varCount, type: HighlightType.selected));
         solStrings.add('x_{${c + 1}} = ${val.toLatex()}');
       }
 
@@ -233,9 +233,6 @@ class LinearSystemsSolver {
     final highlights = <CellHighlight>[
       for (final b in pivotCols)
         CellHighlight(row: pivotRowForCol[b]!, col: b, type: HighlightType.pivot),
-      for (final f in freeCols)
-        for (int r = 0; r < rowCount; r++)
-          CellHighlight(row: r, col: f, type: HighlightType.target),
     ];
 
     steps.add(MatrixStep(

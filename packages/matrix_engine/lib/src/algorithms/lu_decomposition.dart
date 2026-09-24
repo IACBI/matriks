@@ -50,10 +50,7 @@ class LUDecompositionSolver {
           lSnapshot: MatrixSnapshot.fromMatrix(l),
           uSnapshot: MatrixSnapshot.fromMatrix(u),
         ),
-        highlights: [
-          for (int i = 0; i < n; i++)
-            CellHighlight(row: i, col: i, type: HighlightType.pivot),
-        ],
+        highlights: const [],
       ),
     );
 
@@ -95,12 +92,14 @@ class LUDecompositionSolver {
               matrixAfter: MatrixSnapshot.fromMatrix(u),
               transformation: RowSwapTransformation(col, swapRow),
               highlights: [
-                CellHighlight(row: col, col: col, type: HighlightType.pivot),
-                CellHighlight(
-                  row: swapRow,
-                  col: col,
-                  type: HighlightType.target,
-                ),
+                for (int c = 0; c < n; c++) ...[
+                  CellHighlight(row: col, col: c, type: HighlightType.target),
+                  CellHighlight(
+                    row: swapRow,
+                    col: c,
+                    type: HighlightType.source,
+                  ),
+                ],
               ],
             ),
           );
@@ -153,11 +152,15 @@ class LUDecompositionSolver {
             },
             matrixBefore: beforeSnap,
             matrixAfter: afterSnap,
-            transformation: RowEliminationTransformation(
+            transformation: LUEliminationTransformation(
               targetRow: row,
               sourceRow: col,
               factor: -multiplier,
+              lower: MatrixSnapshot.fromMatrix(l),
+              lowerRow: row,
+              lowerCol: col,
             ),
+            // Same roles as Gauss elimination, so the legend reads alike.
             highlights: [
               CellHighlight(row: col, col: col, type: HighlightType.pivot),
               CellHighlight(
@@ -166,6 +169,10 @@ class LUDecompositionSolver {
                 type: HighlightType.zeroed,
                 badgeText: '0',
               ),
+              for (int c = col + 1; c < n; c++) ...[
+                CellHighlight(row: row, col: c, type: HighlightType.target),
+                CellHighlight(row: col, col: c, type: HighlightType.source),
+              ],
             ],
             subCalculations: subCalcs,
           ),
@@ -175,7 +182,13 @@ class LUDecompositionSolver {
 
     final lLatex = l.toLatex();
     final uLatex = u.toLatex();
-    final summaryLatex = neededPermutation ? 'P A = L U' : 'A = L U';
+    // The result names the factors themselves, not just the identity they
+    // satisfy; with a row exchange P is part of the answer.
+    final summaryLatex = [
+      if (neededPermutation) 'P = ${p.toLatex()}',
+      'L = $lLatex',
+      'U = $uLatex',
+    ].join(r' \quad ');
 
     steps.add(
       MatrixStep(
@@ -189,12 +202,7 @@ class LUDecompositionSolver {
           lSnapshot: MatrixSnapshot.fromMatrix(l),
           uSnapshot: MatrixSnapshot.fromMatrix(u),
         ),
-        highlights: [
-          for (int r = 0; r < n; r++)
-            for (int c = 0; c < n; c++)
-              if (r >= c)
-                CellHighlight(row: r, col: c, type: HighlightType.source),
-        ],
+        highlights: const [],
       ),
     );
 

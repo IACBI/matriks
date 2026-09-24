@@ -97,10 +97,8 @@ class EigenSolver {
           'Trace and determinant computed for 2x2 matrix',
         ),
         highlights: [
-          CellHighlight(row: 0, col: 0, type: HighlightType.pivot),
-          CellHighlight(row: 1, col: 1, type: HighlightType.pivot),
-          CellHighlight(row: 0, col: 1, type: HighlightType.target),
-          CellHighlight(row: 1, col: 0, type: HighlightType.target),
+          CellHighlight(row: 0, col: 0, type: HighlightType.selected),
+          CellHighlight(row: 1, col: 1, type: HighlightType.selected),
         ],
         subCalculations: [
           SubCalculation(
@@ -203,8 +201,8 @@ class EigenSolver {
           realEigenvalues: eigenvalues,
         ),
         highlights: [
-          CellHighlight(row: 0, col: 0, type: HighlightType.pivot),
-          CellHighlight(row: 1, col: 1, type: HighlightType.pivot),
+          CellHighlight(row: 0, col: 0, type: HighlightType.selected),
+          CellHighlight(row: 1, col: 1, type: HighlightType.selected),
         ],
       ),
     );
@@ -259,6 +257,7 @@ class EigenSolver {
           explanationParams: {
             'lambda': lambda.toLatex(),
             'vector': pair.vectorLatex,
+            'scene': _shiftScene(lambda, pair.vectorLatex),
           },
           matrixBefore: shiftedSnap,
           matrixAfter: shiftedSnap,
@@ -266,8 +265,8 @@ class EigenSolver {
             'Solved null space of (A - λI)',
           ),
           highlights: [
-            CellHighlight(row: 0, col: 0, type: HighlightType.pivot),
-            CellHighlight(row: 1, col: 1, type: HighlightType.pivot),
+            CellHighlight(row: 0, col: 0, type: HighlightType.selected),
+            CellHighlight(row: 1, col: 1, type: HighlightType.selected),
           ],
         ),
       );
@@ -341,7 +340,7 @@ class EigenSolver {
         ),
         highlights: [
           for (int i = 0; i < 3; i++)
-            CellHighlight(row: i, col: i, type: HighlightType.pivot),
+            CellHighlight(row: i, col: i, type: HighlightType.selected),
         ],
       ),
     );
@@ -408,7 +407,7 @@ class EigenSolver {
         ),
         highlights: [
           for (int i = 0; i < 3; i++)
-            CellHighlight(row: i, col: i, type: HighlightType.pivot),
+            CellHighlight(row: i, col: i, type: HighlightType.selected),
         ],
       ),
     );
@@ -449,6 +448,7 @@ class EigenSolver {
           explanationParams: {
             'lambda': lambda.toLatex(),
             'vector': pair.vectorLatex,
+            'scene': _shiftScene(lambda, pair.vectorLatex),
           },
           matrixBefore: MatrixSnapshot.fromMatrix(shifted),
           matrixAfter: MatrixSnapshot.fromMatrix(shifted),
@@ -457,7 +457,7 @@ class EigenSolver {
           ),
           highlights: [
             for (int r = 0; r < 3; r++)
-              CellHighlight(row: r, col: r, type: HighlightType.pivot),
+              CellHighlight(row: r, col: r, type: HighlightType.selected),
           ],
         ),
       );
@@ -793,6 +793,17 @@ class EigenSolver {
     return _simplifyVector([
       for (final e in best) _roundThreePlaces(e / largest),
     ]);
+  }
+
+  /// Caption above the matrix of an eigenvector step: the grid shows
+  /// A - λI, not A, and its null space gives the vector.
+  static String _shiftScene(Rational lambda, String vectorLatex) {
+    final shift = lambda.isZero
+        ? 'A'
+        : lambda.isNegative
+        ? 'A + ${(-lambda).toLatex()}I'
+        : 'A - ${lambda.toLatex()}I';
+    return '$shift \\;\\Rightarrow\\; $vectorLatex';
   }
 
   static int _multiplicity(Rational root, Rational c2, Rational c1) {

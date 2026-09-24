@@ -749,17 +749,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pathSolve => '3 · Resolver un sistema';
 
   @override
-  String get guideGenericSource => 'Lee la matriz y el objetivo de este paso.';
-
-  @override
-  String get guideGenericApply =>
-      'Sigue los elementos resaltados y su explicación.';
-
-  @override
-  String get guideGenericResult =>
-      'Compara el resultado y continúa cuando quieras.';
-
-  @override
   String guideEliminateSource(String source, String target, String column) {
     return 'Usa la fila $source para cambiar la fila $target. Mira la columna $column.';
   }
@@ -823,7 +812,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideDetResult =>
-      'Los productos quedan visibles para revisarlos a tu ritmo.';
+      'Su suma es la aportación de este grupo al determinante.';
 
   @override
   String get coefficientError => 'Introduce un número entre −1000 y 1000.';
@@ -1260,4 +1249,65 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get transformLegendEigen =>
       'Líneas discontinuas: direcciones de vectores propios reales, que permanecen en su propia recta.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Objetivo $entry ÷ pivote $pivot = $ratio. Restar $ratio veces la fila pivote anula el objetivo, y el mismo $ratio se escribe en L en ($row, $column), de modo que L · U reconstruye A.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      'En [[a, b], [c, d]], observa la diagonal a, d y las otras dos entradas b, c.';
+
+  @override
+  String get guideAdjApply =>
+      'a y d intercambian lugares; b y c se quedan en su sitio pero cambian de signo.';
+
+  @override
+  String get guideAdjResult =>
+      'Esta es adj(A). Al dividirla entre det(A) se obtiene la inversa.';
+
+  @override
+  String get guideAdjReason =>
+      'Para una matriz 2×2, A · adj(A) = det(A) · I. Por eso A⁻¹ = adj(A) ÷ det(A) siempre que det(A) ≠ 0.';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'Cada entrada de adj(A) se multiplica por el mismo número, 1/det(A) = $factor.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Multiplica las entradas una por una.';
+
+  @override
+  String get guideScaleAllResult =>
+      'El resultado es A⁻¹. Comprobación: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'La matriz ya es triangular superior, así que su determinante es el producto de la diagonal.';
+
+  @override
+  String get guideDiagApply =>
+      'Multiplica las entradas diagonales una a una. El primer factor lleva un −1 por cada intercambio de filas.';
+
+  @override
+  String get guideDiagResult =>
+      'Las eliminaciones de filas no cambian el determinante, así que este producto es el det de la matriz original.';
+
+  @override
+  String get guideDetRecapSource =>
+      'Ambos totales se conocen de los pasos anteriores.';
+
+  @override
+  String get guideDetRecapApply => 'Resta el total − del total +.';
+
+  @override
+  String get guideDetRecapResult => 'La diferencia es el determinante.';
 }

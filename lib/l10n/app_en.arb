@@ -238,9 +238,6 @@
   "pathEliminate": "1 · Create zeros",
   "pathReduce": "2 · Find the pivots",
   "pathSolve": "3 · Solve a system",
-  "guideGenericSource": "Read the current matrix and the goal of this step.",
-  "guideGenericApply": "Follow the highlighted entries. The explanation gives the reasoning.",
-  "guideGenericResult": "Compare the result with the explanation. Continue when you are ready.",
   "guideEliminateSource": "Use row {source} to change row {target}. Focus on column {column}.",
   "@guideEliminateSource": {
     "placeholders": {
@@ -331,7 +328,7 @@
   },
   "guideDetSource": "Follow the factors in each product. The signs determine which products are subtracted.",
   "guideDetApply": "One product is highlighted at a time. Read its factors below the matrix.",
-  "guideDetResult": "The products remain visible below, so you can check the result at your own pace.",
+  "guideDetResult": "Their sum is this group's contribution to the determinant.",
   "coefficientError": "Enter a number from −1000 to 1000.",
   "transformTransitionHint": "Edit a coefficient and press Enter or leave the field to apply. Values: −1000 to 1000. The slider compares the previous and new states; intermediate frames are transitions between transformations.",
   "multiplicationSourceRow": "A · row {row}",
@@ -527,5 +524,45 @@
   "undo": "Undo",
   "transformShortcutsHint": "Keyboard: Space plays or reverses, S shear, P projection, R identity.",
   "transformLegendOriginal": "Faint grid: the plane before the transformation.",
-  "transformLegendEigen": "Dashed lines: real eigenvector directions, which stay on their own line."
+  "transformLegendEigen": "Dashed lines: real eigenvector directions, which stay on their own line.",
+  "guideLuReason": "Target {entry} ÷ pivot {pivot} = {ratio}. Subtracting {ratio} times the pivot row cancels the target, and the same {ratio} is written into L at ({row}, {column}), so L · U rebuilds A.",
+  "@guideLuReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      },
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "guideAdjSource": "For [[a, b], [c, d]], look at the diagonal a, d and the other two entries b, c.",
+  "guideAdjApply": "a and d trade places; b and c keep their places but change sign.",
+  "guideAdjResult": "This is adj(A). Dividing it by det(A) gives the inverse.",
+  "guideAdjReason": "For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.",
+  "guideScaleAllSource": "Every entry of adj(A) is multiplied by the same number, 1/det(A) = {factor}.",
+  "@guideScaleAllSource": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "guideScaleAllApply": "Multiply the entries one at a time.",
+  "guideScaleAllResult": "The result is A⁻¹. Check: A · A⁻¹ = I.",
+  "guideDiagSource": "The matrix is now upper triangular, so its determinant is the product of the diagonal.",
+  "guideDiagApply": "Multiply the diagonal entries one by one. The first factor carries a −1 for each row swap.",
+  "guideDiagResult": "Row eliminations did not change the determinant, so this product is det of the original matrix.",
+  "guideDetRecapSource": "Both totals are known from the previous steps.",
+  "guideDetRecapApply": "Subtract the − total from the + total.",
+  "guideDetRecapResult": "The difference is the determinant."
 }

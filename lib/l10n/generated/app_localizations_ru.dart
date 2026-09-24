@@ -745,17 +745,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pathSolve => '3 · Решить систему';
 
   @override
-  String get guideGenericSource => 'Изучите матрицу и цель этого шага.';
-
-  @override
-  String get guideGenericApply =>
-      'Следите за выделенными элементами и пояснением.';
-
-  @override
-  String get guideGenericResult =>
-      'Сравните результат и продолжайте, когда будете готовы.';
-
-  @override
   String guideEliminateSource(String source, String target, String column) {
     return 'Используйте строку $source, чтобы изменить строку $target. Следите за столбцом $column.';
   }
@@ -816,8 +805,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Следите за одним произведением за раз и проверяйте множители.';
 
   @override
-  String get guideDetResult =>
-      'Произведения остаются видимыми: проверяйте в своём темпе.';
+  String get guideDetResult => 'Их сумма — вклад этой группы в определитель.';
 
   @override
   String get coefficientError => 'Введите число от −1000 до 1000.';
@@ -1253,4 +1241,63 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get transformLegendEigen =>
       'Пунктир: направления вещественных собственных векторов, остающиеся на своей прямой.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Цель $entry ÷ опорный $pivot = $ratio. Вычитание $ratio опорных строк обнуляет цель, а то же $ratio записывается в L на место ($row, $column), поэтому L · U снова даёт A.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      'В [[a, b], [c, d]] посмотрите на диагональ a, d и два других элемента b, c.';
+
+  @override
+  String get guideAdjApply =>
+      'a и d меняются местами; b и c остаются на месте, но меняют знак.';
+
+  @override
+  String get guideAdjResult =>
+      'Это adj(A). Разделив её на det(A), получаем обратную матрицу.';
+
+  @override
+  String get guideAdjReason =>
+      'Для матрицы 2×2 A · adj(A) = det(A) · I. Поэтому A⁻¹ = adj(A) ÷ det(A), если det(A) ≠ 0.';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'Каждый элемент adj(A) умножается на одно и то же число 1/det(A) = $factor.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Умножайте элементы по одному.';
+
+  @override
+  String get guideScaleAllResult => 'Результат — A⁻¹. Проверка: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'Матрица теперь верхнетреугольная, поэтому её определитель — произведение диагонали.';
+
+  @override
+  String get guideDiagApply =>
+      'Перемножайте диагональные элементы по одному. Первый множитель несёт −1 за каждую перестановку строк.';
+
+  @override
+  String get guideDiagResult =>
+      'Исключение строк не меняет определитель, поэтому это произведение — det исходной матрицы.';
+
+  @override
+  String get guideDetRecapSource => 'Обе суммы известны из предыдущих шагов.';
+
+  @override
+  String get guideDetRecapApply => 'Вычтите сумму «−» из суммы «+».';
+
+  @override
+  String get guideDetRecapResult => 'Разность и есть определитель.';
 }

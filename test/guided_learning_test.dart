@@ -71,8 +71,21 @@ void main() {
     expect(lesson.calculations[1], r'(2) \cdot (4) \cdot (5) = 40');
     expect(lesson.calculations[4], r'(1) \cdot (4) \cdot (6) = 24');
     expect(lesson.calculations.last, '(40) - (39) = 1');
-    final timeline = InstructionTimeline.forTransformation(step.transformation);
-    expect(timeline.operationMs ~/ 6, greaterThanOrEqualTo(1200));
+    // The last step recaps the six products and only animates the
+    // subtraction; the products themselves were traced in steps 1 and 2.
+    expect(lesson.revealedAtStart, 6);
+    expect(lesson.progressiveCount, 1);
+    final solution = DeterminantSolver.solve(
+      Matrix.fromInts([
+        [1, 2, 3],
+        [0, 1, 4],
+        [5, 6, 0],
+      ]),
+    );
+    final positive = InstructionTimeline.forTransformation(
+      solution.steps.first.transformation,
+    );
+    expect(positive.operationMs ~/ 3, greaterThanOrEqualTo(1200));
   });
 
   test('Every quiz option has bilingual misconception feedback', () {

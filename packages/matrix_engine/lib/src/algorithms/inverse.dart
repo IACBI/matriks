@@ -78,12 +78,7 @@ class InverseSolver {
         mainDiagonalProduct: a * d,
         antiDiagonalProduct: b * c,
       ),
-      highlights: [
-        CellHighlight(row: 0, col: 0, type: HighlightType.pivot),
-        CellHighlight(row: 1, col: 1, type: HighlightType.pivot),
-        CellHighlight(row: 0, col: 1, type: HighlightType.target),
-        CellHighlight(row: 1, col: 0, type: HighlightType.target),
-      ],
+      highlights: const [],
     ));
 
     // Step 2: Swap diagonal elements and negate off-diagonal elements (Adjoint)
@@ -107,13 +102,8 @@ class InverseSolver {
       },
       matrixBefore: snap1,
       matrixAfter: snap2,
-      transformation: InformationalStepTransformation('Form adjoint matrix by swapping diagonal and negating off-diagonal'),
-      highlights: [
-        CellHighlight(row: 0, col: 0, type: HighlightType.pivot, badgeText: 'd'),
-        CellHighlight(row: 1, col: 1, type: HighlightType.pivot, badgeText: 'a'),
-        CellHighlight(row: 0, col: 1, type: HighlightType.target, badgeText: '-b'),
-        CellHighlight(row: 1, col: 0, type: HighlightType.target, badgeText: '-c'),
-      ],
+      transformation: const AdjugateTransformation(),
+      highlights: const [],
     ));
 
     // Step 3: Multiply adjoint by 1/det
@@ -134,12 +124,8 @@ class InverseSolver {
       },
       matrixBefore: snap2,
       matrixAfter: snap3,
-      transformation: InformationalStepTransformation('Multiply adjoint by 1/det'),
-      highlights: [
-        for (int r = 0; r < 2; r++)
-          for (int c = 0; c < 2; c++)
-            CellHighlight(row: r, col: c, type: HighlightType.pivot),
-      ],
+      transformation: MatrixScaleTransformation(invDet),
+      highlights: const [],
       subCalculations: [
         SubCalculation(
           targetRow: 0,
@@ -202,7 +188,7 @@ class InverseSolver {
       highlights: [
         for (int r = 0; r < n; r++)
           for (int c = n; c < 2 * n; c++)
-            CellHighlight(row: r, col: c, type: HighlightType.source),
+            CellHighlight(row: r, col: c, type: HighlightType.selected),
       ],
     );
 
@@ -235,30 +221,28 @@ class InverseSolver {
     }
 
     // Split final augmented matrix [I | A^-1]
-    final (leftBlock, rightBlock) = gjSolution.finalMatrix.split(n);
+    final (_, rightBlock) = gjSolution.finalMatrix.split(n);
 
-    // Final extraction step
-    final finalSnap = MatrixSnapshot.fromMatrix(
-      rightBlock,
-      structure: MatrixStructureType.standard,
+    // The extraction step keeps [I | A⁻¹] on screen and marks the right
+    // block. Showing only A⁻¹ with the left block as its "before" values made
+    // the identity appear in the inverse's place until the step ended.
+    final blockSnap = MatrixSnapshot.fromMatrix(
+      gjSolution.finalMatrix,
+      structure: MatrixStructureType.block,
+      augmentedColIndex: n,
     );
-
     renumberedSteps.add(MatrixStep(
       stepIndex: ++counter,
       titleKey: 'inverse_block_extract_title',
       explanationKey: 'inverse_block_extract_desc',
       explanationParams: const {},
-      matrixBefore: MatrixSnapshot.fromMatrix(
-        gjSolution.finalMatrix,
-        structure: MatrixStructureType.block,
-        augmentedColIndex: n,
-      ),
-      matrixAfter: finalSnap,
+      matrixBefore: blockSnap,
+      matrixAfter: blockSnap,
       transformation: IdentitySeparationTransformation(n),
       highlights: [
         for (int r = 0; r < n; r++)
-          for (int c = 0; c < n; c++)
-            CellHighlight(row: r, col: c, type: HighlightType.pivot),
+          for (int c = n; c < 2 * n; c++)
+            CellHighlight(row: r, col: c, type: HighlightType.selected),
       ],
     ));
 

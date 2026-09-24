@@ -205,11 +205,10 @@ void main() {
           .widgetList<CustomPaint>(find.byType(CustomPaint))
           .map((p) => p.painter)
           .whereType<DeterminantLinesPainter>();
-      if (reduced) {
-        expect(painters, isEmpty);
-      } else {
-        expect(painters.single.copiedColumnsGap, isNotNull);
-      }
+      // Reduced motion still shows which entries are multiplied, drawn at
+      // once instead of traced.
+      expect(painters.single.copiedColumnsGap, isNotNull);
+      expect(painters.single.showAll, reduced);
       expect(find.byType(MatrixCellWidget), findsNWidgets(9));
     }
   });

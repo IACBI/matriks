@@ -234,7 +234,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_swap_title(Object rowA, Object rowB) {
-    return 'Satır $rowA ile Satır $rowB Yer Değiştirir';
+    return '$rowA. ve $rowB. satırların yerini değiştir';
   }
 
   @override
@@ -249,7 +249,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_scale_title(Object row) {
-    return 'Satır $row Elemanlarını Sadeleştir (Ölçekle)';
+    return '$row. satırı ölçekle';
   }
 
   @override
@@ -259,7 +259,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_elimination_title(Object target) {
-    return 'Satır $target Elemanını Sıfırla';
+    return '$target. satırdaki elemanı sıfırla';
   }
 
   @override
@@ -750,18 +750,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pathSolve => '3 · Sistemi çöz';
 
   @override
-  String get guideGenericSource =>
-      'Mevcut matrisi ve bu adımın hedefini incele.';
-
-  @override
-  String get guideGenericApply =>
-      'Vurgulanan elemanları takip et. Açıklamada işlemin gerekçesini bulabilirsin.';
-
-  @override
-  String get guideGenericResult =>
-      'Sonucu açıklamayla karşılaştır. Hazır olduğunda sonraki adıma geç.';
-
-  @override
   String guideEliminateSource(String source, String target, String column) {
     return '$target. satırı değiştirmek için $source. satırı kullanıyoruz. $column. sütuna odaklan.';
   }
@@ -826,7 +814,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get guideDetResult =>
-      'Çarpımlar aşağıda görünür kalır; sonucu kendi hızında kontrol edebilirsin.';
+      'Bu çarpımların toplamı, grubun determinanta katkısıdır.';
 
   @override
   String get coefficientError => '−1000 ile 1000 arasında bir sayı gir.';
@@ -1276,4 +1264,64 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get transformLegendEigen =>
       'Kesikli çizgiler: kendi doğrusu üzerinde kalan gerçek özvektör yönleri.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Hedefteki $entry ÷ pivot $pivot = $ratio. Pivot satırının $ratio katını çıkarmak hedefi sıfırlar; aynı $ratio değeri L matrisinin ($row, $column) konumuna yazılır, böylece L · U yeniden A olur.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      '[[a, b], [c, d]] için köşegendeki a, d ile diğer iki eleman b, c’ye bak.';
+
+  @override
+  String get guideAdjApply =>
+      'a ile d yer değiştirir; b ve c yerinde kalır ama işaret değiştirir.';
+
+  @override
+  String get guideAdjResult =>
+      'Bu, adj(A) matrisidir. det(A)’ya bölününce ters matris elde edilir.';
+
+  @override
+  String get guideAdjReason =>
+      '2×2 bir matris için A · adj(A) = det(A) · I olur. Bu yüzden det(A) ≠ 0 ise A⁻¹ = adj(A) ÷ det(A).';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'adj(A)’nın her elemanı aynı sayıyla, 1/det(A) = $factor ile çarpılır.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Elemanları tek tek çarp.';
+
+  @override
+  String get guideScaleAllResult => 'Sonuç A⁻¹’dir. Kontrol: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'Matris artık üst üçgensel; determinantı köşegen elemanlarının çarpımıdır.';
+
+  @override
+  String get guideDiagApply =>
+      'Köşegen elemanlarını tek tek çarp. İlk çarpan, her satır değişimi için bir −1 taşır.';
+
+  @override
+  String get guideDiagResult =>
+      'Satır eleme işlemleri determinantı değiştirmez; bu çarpım başlangıçtaki matrisin determinantıdır.';
+
+  @override
+  String get guideDetRecapSource =>
+      'İki toplam da önceki adımlardan biliniyor.';
+
+  @override
+  String get guideDetRecapApply => '+ toplamından − toplamını çıkar.';
+
+  @override
+  String get guideDetRecapResult => 'Aradaki fark determinanttır.';
 }
