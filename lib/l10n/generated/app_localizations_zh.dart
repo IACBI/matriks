@@ -127,10 +127,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fractionToggle => '分数／小数';
 
   @override
-  String get decreaseDimension => '减小维度';
+  String get removeRow => '删除一行';
 
   @override
-  String get increaseDimension => '增大维度';
+  String get addRow => '添加一行';
+
+  @override
+  String get removeColumn => '删除一列';
+
+  @override
+  String get addColumn => '添加一列';
 
   @override
   String stepOf(Object current, Object total) {
@@ -145,7 +151,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return '速度：$speed×';
+    return '速度：$speed';
   }
 
   @override
@@ -248,8 +254,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return '消去第 $target 行的元素';
+  String step_row_elimination_title(Object source, Object target) {
+    return '用第 $source 行消去第 $target 行的元素';
   }
 
   @override
@@ -435,7 +441,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
+  String system_infinite_title(num count) {
     return '无穷多解（$count 个自由变量）';
   }
 
@@ -450,7 +456,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return '有 $rank 个主元列和 $nullity 个自由列。秩 + 零度 = $cols。';
   }
 

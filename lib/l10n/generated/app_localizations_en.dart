@@ -138,10 +138,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fractionToggle => 'Fraction / Decimal';
 
   @override
-  String get decreaseDimension => 'Decrease dimension';
+  String get removeRow => 'Remove a row';
 
   @override
-  String get increaseDimension => 'Increase dimension';
+  String get addRow => 'Add a row';
+
+  @override
+  String get removeColumn => 'Remove a column';
+
+  @override
+  String get addColumn => 'Add a column';
 
   @override
   String stepOf(Object current, Object total) {
@@ -156,7 +162,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Speed: $speed×';
+    return 'Speed: $speed';
   }
 
   @override
@@ -259,8 +265,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Eliminate Entry in Row $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Eliminate Entry in Row $target using Row $source';
   }
 
   @override
@@ -453,8 +459,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Infinite Solutions ($count Free Variables)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Free Variables',
+      one: '1 Free Variable',
+    );
+    return 'Infinite Solutions ($_temp0)';
   }
 
   @override
@@ -468,8 +480,20 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
-    return 'The matrix has $rank pivot columns and $nullity free columns. By the Rank-Nullity Theorem, rank(A) + nullity(A) = $cols.';
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rank,
+      locale: localeName,
+      other: '$rank pivot columns',
+      one: '1 pivot column',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      nullity,
+      locale: localeName,
+      other: '$nullity free columns',
+      one: '1 free column',
+    );
+    return 'The matrix has $_temp0 and $_temp1. By the Rank-Nullity Theorem, rank(A) + nullity(A) = $cols.';
   }
 
   @override

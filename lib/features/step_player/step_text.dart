@@ -37,7 +37,10 @@ String localizedStepText(
           params['row'] ?? 0,
         );
       case 'step_row_elimination_title':
-        return l10n.step_row_elimination_title(params['target'] ?? 0);
+        return l10n.step_row_elimination_title(
+          params['source'] ?? 0,
+          params['target'] ?? 0,
+        );
       case 'step_row_elimination_desc':
         return l10n.step_row_elimination_desc(
           params['col'] ?? 0,

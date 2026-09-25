@@ -135,10 +135,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get fractionToggle => 'Дробь / Десятичная';
 
   @override
-  String get decreaseDimension => 'Уменьшить размер';
+  String get removeRow => 'Удалить строку';
 
   @override
-  String get increaseDimension => 'Увеличить размер';
+  String get addRow => 'Добавить строку';
+
+  @override
+  String get removeColumn => 'Удалить столбец';
+
+  @override
+  String get addColumn => 'Добавить столбец';
 
   @override
   String stepOf(Object current, Object total) {
@@ -153,7 +159,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Скорость: $speed×';
+    return 'Скорость: $speed';
   }
 
   @override
@@ -256,8 +262,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Обнулить элемент строки $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Обнулить элемент строки $target с помощью строки $source';
   }
 
   @override
@@ -451,8 +457,15 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Бесконечно много решений ($count свободных переменных)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count свободных переменных',
+      few: '$count свободные переменные',
+      one: '$count свободная переменная',
+    );
+    return 'Бесконечно много решений ($_temp0)';
   }
 
   @override
@@ -466,7 +479,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return 'Ведущих столбцов: $rank, свободных: $nullity. Ранг + дефект = $cols.';
   }
 

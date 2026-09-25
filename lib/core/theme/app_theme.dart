@@ -243,6 +243,11 @@ class AppTheme {
           fontSize: 13,
           color: ink,
           fontFamilyFallback: symbolFallback,
+          // Chips fade a label that overflows its one line. On the web, a
+          // label laid out before a runtime fallback font (Chinese) arrived
+          // keeps reporting that overflow, so its glyphs stayed faded along
+          // the bottom. Chip labels are short and never need the fade.
+          overflow: TextOverflow.visible,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),

@@ -137,10 +137,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fractionToggle => 'Kesir / Ondalık';
 
   @override
-  String get decreaseDimension => 'Boyutu azalt';
+  String get removeRow => 'Satır çıkar';
 
   @override
-  String get increaseDimension => 'Boyutu artır';
+  String get addRow => 'Satır ekle';
+
+  @override
+  String get removeColumn => 'Sütun çıkar';
+
+  @override
+  String get addColumn => 'Sütun ekle';
 
   @override
   String stepOf(Object current, Object total) {
@@ -155,7 +161,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Hız: $speed×';
+    return 'Hız: $speed';
   }
 
   @override
@@ -258,8 +264,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return '$target. satırdaki elemanı sıfırla';
+  String step_row_elimination_title(Object source, Object target) {
+    return '$target. satırdaki elemanı $source. satırla sıfırla';
   }
 
   @override
@@ -452,7 +458,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
+  String system_infinite_title(num count) {
     return 'Sonsuz Çözüm ($count Serbest Değişken)';
   }
 
@@ -467,7 +473,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return 'Matrisin $rank pivot sütunu ve $nullity serbest sütunu vardır. Rank-Sıfırlık Teoremi gereği: rank(A) + nullity(A) = $cols.';
   }
 

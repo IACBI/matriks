@@ -941,10 +941,13 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     }
 
     // The full calculation lives in the stable explanation area below the matrix.
+    // Only a zero this operation produced is marked; an entry that was
+    // already 0 and did not change is not a result of it.
     final isZeroResult =
         trans is RowEliminationTransformation &&
         trans.targetRow == r &&
         valAfter == Rational.zero &&
+        !(valBefore?.isZero ?? false) &&
         (reduceMotion || columnDone(c));
 
     final calculation = !reduceMotion && progress > 0 && progress < 1

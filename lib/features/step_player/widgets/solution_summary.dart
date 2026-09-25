@@ -19,6 +19,14 @@ class SolutionStatus extends StatelessWidget {
     final eigen = solution.result is EigenResult
         ? solution.result as EigenResult
         : null;
+    // A chip reports itself as selectable (a checkbox on the web); these
+    // only state a fact about the result, so they are read as plain text.
+    Widget status(String text, {Widget? avatar}) => Semantics(
+      container: true,
+      label: text,
+      excludeSemantics: true,
+      child: Chip(avatar: avatar, label: Text(text)),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -27,28 +35,24 @@ class SolutionStatus extends StatelessWidget {
           runSpacing: 4,
           children: [
             if (solution.isSuccess)
-              Chip(
+              status(
+                solution.accuracy == ResultAccuracy.exact
+                    ? l.resultExact
+                    : l.resultApproximate,
                 avatar: Icon(
                   solution.accuracy == ResultAccuracy.exact
                       ? Icons.verified_outlined
                       : Icons.data_usage_rounded,
                   size: 18,
                 ),
-                label: Text(
-                  solution.accuracy == ResultAccuracy.exact
-                      ? l.resultExact
-                      : l.resultApproximate,
-                ),
               ),
             if (solution.isSuccess ||
                 solution.completeness == ResultCompleteness.unsupported)
-              Chip(
-                label: Text(switch (solution.completeness) {
-                  ResultCompleteness.complete => l.resultComplete,
-                  ResultCompleteness.partial => l.resultPartial,
-                  ResultCompleteness.unsupported => l.resultUnsupported,
-                }),
-              ),
+              status(switch (solution.completeness) {
+                ResultCompleteness.complete => l.resultComplete,
+                ResultCompleteness.partial => l.resultPartial,
+                ResultCompleteness.unsupported => l.resultUnsupported,
+              }),
           ],
         ),
         if (eigen != null) ...[
@@ -57,7 +61,10 @@ class SolutionStatus extends StatelessWidget {
           else if (solution.accuracy == ResultAccuracy.approximate)
             Text(l.eigenPrecision),
           if (solution.initialMatrix.rows == 3) Text(l.eigenScope),
-          Text(l.eigenBasisScope),
+          // Distinct eigenvalues have one-dimensional eigenspaces, so the
+          // vector shown is already a basis; only a repeated one may not be.
+          if (eigen.realEigenpairs.any((p) => p.algebraicMultiplicity > 1))
+            Text(l.eigenBasisScope),
         ],
       ],
     );
@@ -164,10 +171,14 @@ class ResultChecks extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(l.checkTitle, style: theme.textTheme.titleMedium),
-            for (final check in checks) ...[
+            for (final (index, check) in checks.indexed) ...[
               const SizedBox(height: 12),
-              Text(check.description, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 6),
+              // Eigenpairs share one description; say it once.
+              if (index == 0 ||
+                  checks[index - 1].description != check.description) ...[
+                Text(check.description, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 6),
+              ],
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: MathText(check.latex, fontSize: 18),

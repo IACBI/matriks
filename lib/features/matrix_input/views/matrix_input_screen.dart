@@ -142,8 +142,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 label: '$currentRows',
                 canDecrement: canDecrementRows,
                 canIncrement: canIncrementRows,
-                decrementTooltip: l10n.decreaseDimension,
-                incrementTooltip: l10n.increaseDimension,
+                decrementTooltip: l10n.removeRow,
+                incrementTooltip: l10n.addRow,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows - 1, currentCols);
@@ -172,8 +172,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 enabled: !topic.requiresSquare,
                 canDecrement: canDecrementCols,
                 canIncrement: canIncrementCols,
-                decrementTooltip: l10n.decreaseDimension,
-                incrementTooltip: l10n.increaseDimension,
+                decrementTooltip: l10n.removeColumn,
+                incrementTooltip: l10n.addColumn,
                 onDecrement: () {
                   if (isA || topic.type == TopicType.add) {
                     cubit.setDimensionsA(currentRows, currentCols - 1);

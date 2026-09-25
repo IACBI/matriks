@@ -338,17 +338,29 @@ abstract class AppLocalizations {
   /// **'Fraction / Decimal'**
   String get fractionToggle;
 
-  /// No description provided for @decreaseDimension.
+  /// No description provided for @removeRow.
   ///
   /// In en, this message translates to:
-  /// **'Decrease dimension'**
-  String get decreaseDimension;
+  /// **'Remove a row'**
+  String get removeRow;
 
-  /// No description provided for @increaseDimension.
+  /// No description provided for @addRow.
   ///
   /// In en, this message translates to:
-  /// **'Increase dimension'**
-  String get increaseDimension;
+  /// **'Add a row'**
+  String get addRow;
+
+  /// No description provided for @removeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove a column'**
+  String get removeColumn;
+
+  /// No description provided for @addColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a column'**
+  String get addColumn;
 
   /// No description provided for @stepOf.
   ///
@@ -371,7 +383,7 @@ abstract class AppLocalizations {
   /// No description provided for @playbackSpeed.
   ///
   /// In en, this message translates to:
-  /// **'Speed: {speed}×'**
+  /// **'Speed: {speed}'**
   String playbackSpeed(Object speed);
 
   /// No description provided for @play.
@@ -545,8 +557,8 @@ abstract class AppLocalizations {
   /// No description provided for @step_row_elimination_title.
   ///
   /// In en, this message translates to:
-  /// **'Eliminate Entry in Row {target}'**
-  String step_row_elimination_title(Object target);
+  /// **'Eliminate Entry in Row {target} using Row {source}'**
+  String step_row_elimination_title(Object source, Object target);
 
   /// No description provided for @step_row_elimination_desc.
   ///
@@ -826,8 +838,8 @@ abstract class AppLocalizations {
   /// No description provided for @system_infinite_title.
   ///
   /// In en, this message translates to:
-  /// **'Infinite Solutions ({count} Free Variables)'**
-  String system_infinite_title(Object count);
+  /// **'Infinite Solutions ({count, plural, one{1 Free Variable} other{{count} Free Variables}})'**
+  String system_infinite_title(num count);
 
   /// No description provided for @system_infinite_desc.
   ///
@@ -844,8 +856,8 @@ abstract class AppLocalizations {
   /// No description provided for @rank_nullity_desc.
   ///
   /// In en, this message translates to:
-  /// **'The matrix has {rank} pivot columns and {nullity} free columns. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.'**
-  String rank_nullity_desc(Object cols, Object nullity, Object rank);
+  /// **'The matrix has {rank, plural, one{1 pivot column} other{{rank} pivot columns}} and {nullity, plural, one{1 free column} other{{nullity} free columns}}. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.'**
+  String rank_nullity_desc(Object cols, num nullity, num rank);
 
   /// No description provided for @eigen_char_poly_title.
   ///

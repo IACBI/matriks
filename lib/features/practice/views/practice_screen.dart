@@ -666,6 +666,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
         button: true,
         enabled: !_hasAnswered,
         selected: isSelected,
+        // The formula sits in a horizontal scroll view, which would keep it
+        // out of the button's label: the option was read as just "A".
+        label: '${optionLetters[index]}: ${mathSemanticsLabel(optionLatex)}',
+        excludeSemantics: true,
         child: InkWell(
           onTap: _hasAnswered ? null : () => _selectOption(index),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),

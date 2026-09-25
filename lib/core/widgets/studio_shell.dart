@@ -52,57 +52,63 @@ class _StudioShellState extends State<StudioShell> {
           ),
       ],
     );
+    // Each region is its own traversal group, so Tab finishes the rail before
+    // entering the page instead of alternating between them by height.
     return Scaffold(
       body: Row(
         children: [
           if (wide)
-            SafeArea(
-              child: NavigationRail(
-                selectedIndex: _index,
-                onDestinationSelected: _select,
-                labelType: NavigationRailLabelType.all,
-                leading: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/branding/matriks_icon.png',
-                      width: 48,
-                      height: 48,
+            FocusTraversalGroup(
+              child: SafeArea(
+                child: NavigationRail(
+                  selectedIndex: _index,
+                  onDestinationSelected: _select,
+                  labelType: NavigationRailLabelType.all,
+                  leading: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/branding/matriks_icon.png',
+                        width: 48,
+                        height: 48,
+                      ),
                     ),
                   ),
+                  destinations: [
+                    for (final d in destinations)
+                      NavigationRailDestination(
+                        icon: Icon(d.$1),
+                        label: Text(d.$2),
+                      ),
+                  ],
                 ),
-                destinations: [
-                  for (final d in destinations)
-                    NavigationRailDestination(
-                      icon: Icon(d.$1),
-                      label: Text(d.$2),
-                    ),
-                ],
               ),
             ),
-          Expanded(child: body),
+          Expanded(child: FocusTraversalGroup(child: body)),
         ],
       ),
       bottomNavigationBar: wide
           ? null
-          : SafeArea(
-              top: false,
-              child: Material(
-                color: Theme.of(context).colorScheme.surface,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var i = 0; i < destinations.length; i++)
-                      Expanded(
-                        child: _BottomDestination(
-                          icon: destinations[i].$1,
-                          label: destinations[i].$2,
-                          selected: i == _index,
-                          onTap: () => _select(i),
+          : FocusTraversalGroup(
+              child: SafeArea(
+                top: false,
+                child: Material(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < destinations.length; i++)
+                        Expanded(
+                          child: _BottomDestination(
+                            icon: destinations[i].$1,
+                            label: destinations[i].$2,
+                            selected: i == _index,
+                            onTap: () => _select(i),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -157,12 +163,22 @@ class _BottomDestination extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
+              // A label wider than its quarter of a phone (Transformations,
+              // or any label at large text) shrinks to fit on one line
+              // rather than breaking inside the word.
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    color: selected
+                        ? scheme.onSurface
+                        : scheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

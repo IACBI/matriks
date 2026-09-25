@@ -440,71 +440,76 @@ class _TopicRow extends StatelessWidget {
     );
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Material(
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        clipBehavior: Clip.antiAlias,
-        color: theme.colorScheme.surface,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: compact ? 12 : 20,
-              horizontal: 20,
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+      // Without the button role, Windows UI Automation exposed the row as
+      // plain text that a screen reader cannot activate.
+      child: Semantics(
+        button: true,
+        child: Material(
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          clipBehavior: Clip.antiAlias,
+          color: theme.colorScheme.surface,
+          child: InkWell(
+            onTap: onTap,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: compact ? 12 : 20,
+                horizontal: 20,
               ),
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final wide =
-                    constraints.maxWidth >= 800 &&
-                    MediaQuery.textScalerOf(context).scale(1) <= 1.3;
-                return Row(
-                  crossAxisAlignment: wide
-                      ? CrossAxisAlignment.center
-                      : CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 22,
-                      child: Text(
-                        '${topic.pathIndex + 1}',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+                ),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final wide =
+                      constraints.maxWidth >= 800 &&
+                      MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+                  return Row(
+                    crossAxisAlignment: wide
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 22,
+                        child: Text(
+                          '${topic.pathIndex + 1}',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
-                    ),
-                    TopicGlyph(type: topic.type),
-                    const SizedBox(width: 16),
-                    if (wide) ...[
-                      Expanded(flex: 3, child: title),
-                      const SizedBox(width: 24),
-                      Expanded(flex: 5, child: description),
-                      const SizedBox(width: 24),
-                      SizedBox(width: 90, child: tag),
-                    ] else
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            title,
-                            const SizedBox(height: 4),
-                            description,
-                            const SizedBox(height: 8),
-                            tag,
-                          ],
+                      TopicGlyph(type: topic.type),
+                      const SizedBox(width: 16),
+                      if (wide) ...[
+                        Expanded(flex: 3, child: title),
+                        const SizedBox(width: 24),
+                        Expanded(flex: 5, child: description),
+                        const SizedBox(width: 24),
+                        SizedBox(width: 90, child: tag),
+                      ] else
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              title,
+                              const SizedBox(height: 4),
+                              description,
+                              const SizedBox(height: 8),
+                              tag,
+                            ],
+                          ),
                         ),
+                      const SizedBox(width: 12),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 18,
+                        color: theme.colorScheme.primary,
                       ),
-                    const SizedBox(width: 12),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 18,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

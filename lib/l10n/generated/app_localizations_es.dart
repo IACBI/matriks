@@ -137,10 +137,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fractionToggle => 'Fracción / Decimal';
 
   @override
-  String get decreaseDimension => 'Reducir dimensión';
+  String get removeRow => 'Quitar una fila';
 
   @override
-  String get increaseDimension => 'Aumentar dimensión';
+  String get addRow => 'Añadir una fila';
+
+  @override
+  String get removeColumn => 'Quitar una columna';
+
+  @override
+  String get addColumn => 'Añadir una columna';
 
   @override
   String stepOf(Object current, Object total) {
@@ -155,7 +161,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Velocidad: $speed×';
+    return 'Velocidad: $speed';
   }
 
   @override
@@ -258,8 +264,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Eliminar el elemento de la fila $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Eliminar el elemento de la fila $target con la fila $source';
   }
 
   @override
@@ -454,8 +460,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Infinitas soluciones ($count variables libres)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count variables libres',
+      one: '1 variable libre',
+    );
+    return 'Infinitas soluciones ($_temp0)';
   }
 
   @override
@@ -469,8 +481,20 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
-    return 'Hay $rank columnas pivote y $nullity libres. Rango + nulidad = $cols.';
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rank,
+      locale: localeName,
+      other: '$rank columnas pivote',
+      one: '1 columna pivote',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      nullity,
+      locale: localeName,
+      other: '$nullity libres',
+      one: '1 libre',
+    );
+    return 'Hay $_temp0 y $_temp1. Rango + nulidad = $cols.';
   }
 
   @override
