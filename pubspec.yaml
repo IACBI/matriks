@@ -63,6 +63,7 @@ flutter:
     - assets/branding/matriks_icon.png
     - assets/flags/
     - assets/fonts/LICENSE-MatriksSymbols.txt
+    - assets/fonts/LICENSE-MatriksCJK.txt
   generate: true
   uses-material-design: true
 
@@ -73,6 +74,11 @@ flutter:
     - family: MatriksSymbols
       fonts:
         - asset: assets/fonts/MatriksSymbols-Regular.ttf
+    - family: MatriksCJK
+      fonts:
+        - asset: assets/fonts/MatriksCJK-Regular.ttf
+        - asset: assets/fonts/MatriksCJK-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

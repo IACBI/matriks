@@ -417,7 +417,11 @@ The automated review of pull request 1 raised three points; each was reproduced 
 - No screen reader (NVDA, Narrator, TalkBack) was run; only the accessibility trees above were read.
 - Windows desktop: launch, home screen, dark theme following the system, and the UI Automation tree were observed; lessons could not be driven there without taking over the mouse. The navigation rail's destinations are still exposed to UI Automation as text: that comes from Flutter's `NavigationRail`, not the app.
 - No physical phone was used; Android was checked on an emulator only.
-- Offline, Chinese renders as empty boxes: its glyphs still come from `fonts.gstatic.com` at runtime (14 Noto Sans SC slices on the home screen). Bundling a subset of the characters the Chinese strings use would fix this; it was not done without a decision on the added asset.
+- Offline, Chinese rendered as empty boxes, because its glyphs came from `fonts.gstatic.com` at runtime (14 Noto Sans SC slices on the home screen). Fixed after review; see below.
 - An augmented 3×6 matrix ([A | I]) scrolls horizontally on phones (320–411 px) instead of fitting.
 - With the shrink-to-fit fix, "Transformations" at 320 px and every label at 200% text are smaller than the other text in the bar.
 - Blue "selected" outlines (the solution column, the A − λI diagonal, the extracted inverse) have no legend entry.
+
+## Chinese without Google Fonts
+
+With the owner's approval, the Chinese interface now ships its glyphs: `assets/fonts/MatriksCJK-Regular.ttf` and `-Bold.ttf` (451 characters, about 121 KB each) are instances of Noto Sans SC at weights 400 and 700 from `github.com/google/fonts`, subset to the characters in `app_zh.arb` and the Dart sources and renamed (SIL OFL 1.1, `assets/fonts/LICENSE-MatriksCJK.txt`, registered with `LicenseRegistry`). `MatriksCJK` is part of `AppTheme.symbolFallback`. `tool/build_cjk_font.py` rebuilds both files; a test reads the fonts' cmap and fails if a Chinese string uses a character they lack. In the rebuilt release web app, Chinese made no external request and rendered completely with `fonts.gstatic.com` blocked, including a lesson and the language menu's 简体中文. Characters a learner types outside the subset (for example in search) still use Flutter's runtime fallback.

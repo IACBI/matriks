@@ -34,10 +34,11 @@ class AppTheme {
   static const stateMs = 180;
   static const panelMs = 220;
 
-  /// Bundled glyphs for arrows, sub/superscripts and math symbols that the
-  /// default text font lacks (see pubspec.yaml). Without it the web build
-  /// fetches a fallback font from Google at runtime, and shows boxes offline.
-  static const symbolFallback = ['MatriksSymbols'];
+  /// Bundled glyphs the default text font lacks (see pubspec.yaml): arrows,
+  /// sub/superscripts and math symbols, and the CJK characters of the
+  /// Chinese interface. Without them the web build fetches fallback fonts
+  /// from Google at runtime, and shows boxes offline.
+  static const symbolFallback = ['MatriksSymbols', 'MatriksCJK'];
 
   static Duration motion(BuildContext context, [int milliseconds = stateMs]) =>
       MediaQuery.disableAnimationsOf(context)

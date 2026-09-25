@@ -8,12 +8,17 @@ import 'features/settings/data/preferences_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // The bundled symbol font is a renamed DejaVu Sans subset; its license
-  // travels with it.
+  // The bundled symbol and CJK fonts are renamed subsets; their licenses
+  // travel with them.
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks(const [
       'MatriksSymbols (DejaVu Sans subset)',
     ], await rootBundle.loadString('assets/fonts/LICENSE-MatriksSymbols.txt'));
+  });
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(const [
+      'MatriksCJK (Noto Sans SC subset)',
+    ], await rootBundle.loadString('assets/fonts/LICENSE-MatriksCJK.txt'));
   });
   final preferences = LocalPreferencesRepository();
   // Read saved preferences before the first frame so a dark-mode or

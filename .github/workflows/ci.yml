@@ -109,9 +109,9 @@ jobs:
         # rename or a move to a custom domain needs no edit here.
         # CanvasKit is served from the deployed site rather than a CDN: the app
         # makes no backend calls and a third-party fetch would contradict that.
-        # Symbols come from the bundled MatriksSymbols font; only Chinese text
-        # (and the language menu's 中文 label) still makes Flutter download
-        # CJK glyphs from fonts.gstatic.com, since a CJK font would add MBs.
+        # Symbols and the Chinese interface come from the bundled MatriksSymbols
+        # and MatriksCJK fonts, so no glyphs are fetched from fonts.gstatic.com;
+        # only Chinese a learner types outside that subset would be.
         run: |
           flutter pub get
           dart pub get --directory packages/matrix_engine

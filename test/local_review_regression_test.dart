@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -508,6 +510,32 @@ void main() {
     expect(settings.state.lastTopic, 'transform2d');
   });
 
+  test('Every CJK character the app shows is in the bundled font', () {
+    final used = <int>{
+      for (final path in [
+        'lib/l10n/app_zh.arb',
+        'lib/features/settings/widgets/language_menu.dart',
+      ])
+        for (final rune in File(path).readAsStringSync().runes)
+          if (rune >= 0x2E80) rune,
+    };
+    expect(used, isNotEmpty);
+    expect(AppTheme.symbolFallback, contains('MatriksCJK'));
+    for (final style in ['Regular', 'Bold']) {
+      final covered = _cmapFormat4(
+        File('assets/fonts/MatriksCJK-$style.ttf').readAsBytesSync(),
+      );
+      final missing = used.difference(covered);
+      expect(
+        missing,
+        isEmpty,
+        reason:
+            'rerun tool/build_cjk_font.py; $style lacks '
+            '${String.fromCharCodes(missing)}',
+      );
+    }
+  });
+
   testWidgets('Topic rows are buttons', (tester) async {
     tester.view.physicalSize = const Size(1280, 2000);
     tester.view.devicePixelRatio = 1;
@@ -522,4 +550,41 @@ void main() {
     );
     semantics.dispose();
   });
+}
+
+/// Code points mapped by a TrueType font's format 4 (BMP) cmap subtable.
+Set<int> _cmapFormat4(Uint8List bytes) {
+  final data = ByteData.sublistView(bytes);
+  final tables = data.getUint16(4);
+  var cmap = -1;
+  for (var i = 0; i < tables; i++) {
+    final record = 12 + i * 16;
+    if (String.fromCharCodes(bytes.sublist(record, record + 4)) == 'cmap') {
+      cmap = data.getUint32(record + 8);
+    }
+  }
+  final found = <int>{};
+  for (var i = 0; i < data.getUint16(cmap + 2); i++) {
+    final sub = cmap + data.getUint32(cmap + 4 + i * 8 + 4);
+    if (data.getUint16(sub) != 4) continue;
+    final segments = data.getUint16(sub + 6) ~/ 2;
+    final ends = sub + 14;
+    final starts = ends + segments * 2 + 2;
+    final deltas = starts + segments * 2;
+    final offsets = deltas + segments * 2;
+    for (var s = 0; s < segments; s++) {
+      final end = data.getUint16(ends + s * 2);
+      final start = data.getUint16(starts + s * 2);
+      final delta = data.getInt16(deltas + s * 2);
+      final offsetAt = offsets + s * 2;
+      final offset = data.getUint16(offsetAt);
+      for (var c = start; c <= end && c != 0xFFFF; c++) {
+        final glyph = offset == 0
+            ? (c + delta) & 0xFFFF
+            : data.getUint16(offsetAt + offset + (c - start) * 2);
+        if (glyph != 0) found.add(c);
+      }
+    }
+  }
+  return found;
 }
