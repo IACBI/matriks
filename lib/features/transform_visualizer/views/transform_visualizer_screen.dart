@@ -10,6 +10,7 @@ import '../../settings/cubit/settings_cubit.dart';
 import '../widgets/transform_grid_painter.dart';
 import '../widgets/coefficient_field.dart';
 import '../models/transform_matrix.dart';
+import '../../../core/widgets/slider_while_shown.dart';
 
 class TransformVisualizerScreen extends StatefulWidget {
   /// Opens with this matrix instead of the shear preset, for example from a
@@ -476,20 +477,22 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                         .colorScheme
                                         .primary,
                                   ),
-                                  child: Semantics(
-                                    label: l10n.transformProgress,
-                                    child: Slider(
-                                      semanticFormatterCallback: (value) =>
-                                          l10n.progressPercent(
-                                            (value * 100).round(),
-                                          ),
-                                      value: _animController.value,
-                                      min: 0.0,
-                                      max: 1.0,
-                                      onChanged: (val) {
-                                        _animController.stop();
-                                        _animController.value = val;
-                                      },
+                                  child: SliderWhileShown(
+                                    child: Semantics(
+                                      label: l10n.transformProgress,
+                                      child: Slider(
+                                        semanticFormatterCallback: (value) =>
+                                            l10n.progressPercent(
+                                              (value * 100).round(),
+                                            ),
+                                        value: _animController.value,
+                                        min: 0.0,
+                                        max: 1.0,
+                                        onChanged: (val) {
+                                          _animController.stop();
+                                          _animController.value = val;
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),

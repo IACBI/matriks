@@ -8,6 +8,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
 import '../widgets/language_menu.dart';
+import '../../../core/widgets/slider_while_shown.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -119,11 +120,18 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   // Its own semantics node: inside the card it was merged
                   // into the section, so screen readers heard the whole card
-                  // as one control.
+                  // as one control. Explicit child nodes keep the options'
+                  // headings out of the expanded header's name.
                   Semantics(
                     container: true,
+                    explicitChildNodes: true,
+                    // Holds the speed Slider; see the operation inspector in
+                    // matrix_display_grid.dart for why it must not animate.
                     child: ExpansionTile(
+                      // A button, so Windows UI Automation can invoke it.
+                      internalAddSemanticForOnTap: true,
                       key: const ValueKey('more-settings'),
+                      expansionAnimationStyle: AnimationStyle.noAnimation,
                       tilePadding: EdgeInsets.zero,
                       childrenPadding: EdgeInsets.zero,
                       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
@@ -290,15 +298,17 @@ class _SpeedSettingState extends State<_SpeedSetting> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(l.playbackSpeed(text)),
-        Slider(
-          value: _value,
-          min: .25,
-          max: 4,
-          divisions: 15,
-          label: text,
-          semanticFormatterCallback: (v) => formatSpeed(v, locale),
-          onChanged: (v) => setState(() => _value = v),
-          onChangeEnd: widget.onCommit,
+        SliderWhileShown(
+          child: Slider(
+            value: _value,
+            min: .25,
+            max: 4,
+            divisions: 15,
+            label: text,
+            semanticFormatterCallback: (v) => formatSpeed(v, locale),
+            onChanged: (v) => setState(() => _value = v),
+            onChangeEnd: widget.onCommit,
+          ),
         ),
       ],
     );

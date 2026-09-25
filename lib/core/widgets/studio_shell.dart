@@ -94,7 +94,11 @@ class _StudioShellState extends State<StudioShell> {
                     for (final d in destinations)
                       NavigationRailDestination(
                         icon: Icon(d.$1),
-                        label: Text(d.$2),
+                        // Merges into the destination's node, which
+                        // NavigationRail does not mark as a button; Windows
+                        // UI Automation then exposes it as text that cannot
+                        // be invoked.
+                        label: Semantics(button: true, child: Text(d.$2)),
                       ),
                   ],
                 ),

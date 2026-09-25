@@ -16,6 +16,7 @@ import 'row_swap_brackets_painter.dart';
 import 'step_card.dart';
 import 'instruction_timeline.dart';
 import 'instruction_lesson.dart';
+import '../../../core/widgets/slider_while_shown.dart';
 
 /// Geometry that must stay the same for every step of one solution.
 ///
@@ -698,9 +699,17 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
           ],
           const SizedBox(height: 8),
           if (!widget.staticStep || widget.details != null)
+            // A Slider keeps an OverlayPortal open whose semantics node hangs
+            // off the slider's own. Collapsed (offstage) or clipped to zero at
+            // the start of an expand animation, the slider has no node and the
+            // portal's is orphaned; the Windows accessibility bridge rejects
+            // that update and every one after it. So the body is built only
+            // while open, and opens and closes without an animation.
             ExpansionTile(
+              // A button, so Windows UI Automation can invoke it.
+              internalAddSemanticForOnTap: true,
               key: const ValueKey('operation-inspector'),
-              maintainState: true,
+              expansionAnimationStyle: AnimationStyle.noAnimation,
               initiallyExpanded: widget.detailsInitiallyExpanded,
               tilePadding: EdgeInsets.zero,
               expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
@@ -720,14 +729,16 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                   Row(
                     children: [
                       Expanded(
-                        child: AnimatedBuilder(
-                          animation: _animController,
-                          builder: (context, _) => Slider(
-                            key: const ValueKey('instruction-progress'),
-                            semanticFormatterCallback: (value) =>
-                                '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
-                            value: _animController.value,
-                            onChanged: _onScrub,
+                        child: SliderWhileShown(
+                          child: AnimatedBuilder(
+                            animation: _animController,
+                            builder: (context, _) => Slider(
+                              key: const ValueKey('instruction-progress'),
+                              semanticFormatterCallback: (value) =>
+                                  '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
+                              value: _animController.value,
+                              onChanged: _onScrub,
+                            ),
                           ),
                         ),
                       ),

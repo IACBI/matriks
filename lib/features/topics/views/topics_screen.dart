@@ -239,6 +239,8 @@ class _TopicsScreenState extends State<TopicsScreen> {
                   // Open by default: the starter lessons are the intended
                   // first step for a new learner and were easy to miss folded.
                   ExpansionTile(
+                    // A button, so Windows UI Automation can invoke it.
+                    internalAddSemanticForOnTap: true,
                     initiallyExpanded: true,
                     tilePadding: const EdgeInsets.symmetric(horizontal: 12),
                     childrenPadding: const EdgeInsets.all(12),

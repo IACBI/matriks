@@ -536,6 +536,73 @@ void main() {
     }
   });
 
+  // Desktop platforms build ExpansionTile semantics differently from the
+  // default test platform; Windows is where the merged name was heard.
+  testWidgets(
+    'Expandable headers are buttons named by their title',
+    variant: TargetPlatformVariant.only(TargetPlatform.windows),
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(_app(const SettingsScreen()));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.text('More options')),
+        isSemantics(isButton: true),
+      );
+      await tester.tap(find.text('More options'));
+      await tester.pumpAndSettle();
+      // Expanded, the header is still named only by its own title.
+      expect(
+        tester.getSemantics(find.text('More options')),
+        isSemantics(label: 'More options', isButton: true),
+      );
+      await tester.pumpWidget(
+        _app(StepPlayerScreen(solution: _lessons()['ref']!, topicTitle: 'ref')),
+      );
+      await tester.pump();
+      expect(
+        tester.getSemantics(
+          find.descendant(
+            of: find.byKey(const ValueKey('operation-inspector')),
+            matching: find.byType(Text),
+          ),
+        ),
+        isSemantics(isButton: true),
+      );
+      final details = find.byKey(const ValueKey('operation-inspector'));
+      await tester.ensureVisible(details);
+      await tester.tap(details);
+      await tester.pump();
+      expect(
+        tester.getSemantics(
+          find.descendant(of: details, matching: find.text('Details')),
+        ),
+        isSemantics(label: 'Details', isButton: true),
+      );
+      await tester.pumpWidget(const SizedBox());
+      semantics.dispose();
+    },
+  );
+
+  testWidgets('Navigation rail destinations are buttons', (tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(const MatrixEducatorApp());
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationRail), findsOneWidget);
+    for (final label in ['Topics', 'Practice', 'Transformations', 'Settings']) {
+      expect(
+        tester.getSemantics(find.text(label)),
+        isSemantics(isButton: true, hasTapAction: true),
+        reason: label,
+      );
+    }
+    semantics.dispose();
+  });
+
   testWidgets('Topic rows are buttons', (tester) async {
     tester.view.physicalSize = const Size(1280, 2000);
     tester.view.devicePixelRatio = 1;
