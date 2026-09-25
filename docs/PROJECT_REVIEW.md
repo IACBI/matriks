@@ -366,3 +366,50 @@ New coverage: `test/ui_review_regression_test.dart` (9 tests) pins the fixes abo
 ## Completion boundary
 
 The thirteen fixes above and their regression coverage are delivered and verified against a rebuilt release web app and the full test suites. Native screen-reader, physical-device and further text-scaling verification in the browser remain open, as stated above.
+
+# Local review on a developer machine — 2026-09-25
+
+## Outcome
+
+Branch `claude/keen-darwin-oettj2`, checked on Windows 11 with Flutter 3.47.1 where the cloud sessions could not run anything. The release web build (`flutter build web --release --no-web-resources-cdn`) was served locally and driven with Playwright in the installed Chrome; the Windows release build and an Android release APK on an emulator (Pixel-class, 1080×2400, 420 dpi) were also run. Fourteen defects were found and fixed, each with a regression test in `test/local_review_regression_test.dart` that fails on the previous code.
+
+## What was checked, and how
+
+- **Every tab and one full lesson per topic** (addition, multiplication, REF, RREF, linear system, determinant, inverse, rank, LU with and without a row swap, 2×2 eigen) in guided mode, static steps and the result view, in the browser at 1280 px, with screenshots of every step.
+- **Widths** 320, 600, 960 and 1440 px in light and dark themes; **200% text** (root font size 32 px, which Flutter web reads as its text scale) at 320 and 1280 px; **reduced motion** (Chrome's `prefers-reduced-motion`).
+- **All five languages** on the home screen and a lesson; requests to other origins were logged, and Chinese was reloaded with `fonts.gstatic.com` blocked.
+- **Keyboard only**: Tab order on the home screen, input by keyboard, player shortcuts (Space, arrows, Home/End, R, S), practice (A–D, Enter) and transformation (P) shortcuts.
+- **Accessibility trees**, not a screen reader: the web semantics DOM (roles, labels, `aria-description`), the Windows UI Automation tree read through `UIAutomationCore`, and the Android tree through `uiautomator dump`.
+- **Behaviour**: pause/resume, Next while paused (plays one step, does not resume), scrubbing and replay in Details (opening it pauses), speed change and a 1280→390→1280 px resize mid-lesson (position kept), the continue card and completion marks after a reload, New questions, and See it as a transformation from the 2×2 eigen result.
+- **Mathematics by hand**: the 3×3 inverse of [[1,2,3],[0,1,4],[5,6,0]] = [[−24,18,5],[20,−15,−4],[−5,4,1]]; det [[2,−1,3],[1,4,0],[5,2,1]] = −45 (Sarrus 14 − 59); LU of [[0,1,1],[1,2,1],[2,7,9]] with P swapping rows 1 and 2, L = [[1,0,0],[0,1,0],[2,3,1]], U = [[1,2,1],[0,1,1],[0,0,4]]; eigenpairs of [[4,1],[2,3]]: λ = 5, v = (1, 1) and λ = 2, v = (1, −2); the linear system's solution (5, 3, −2); a generated 2×2 inverse question. All matched the app.
+
+## Defects fixed
+
+1. The speed read "Speed: 1××" in Settings, the speed menu and its tooltip: the ARB strings and `formatSpeed` both appended ×.
+2. The result's Exact/Complete chips were announced as unchecked checkboxes on the web (`RawChip` sets `checked` on web); they are now plain labelled text.
+3. Consecutive elimination steps had identical titles ("Eliminate Entry in Row 3" twice in the step list); titles now name the pivot row ("… using Row 1").
+4. The four size buttons were all "Decrease/Increase dimension"; they now say "Remove a row", "Add a column", etc.
+5. Screen-reader labels of formulas kept TeX: `\det(A)`, `A_2,2`, `A^-1`, `(1 & 0 & 0, …)`. `mathSemanticsLabel` now reads operator names, comma subscripts, signed superscripts, matrix rows and general fractions; a test sweeps every formula rendered across all lessons and results.
+6. "1 free columns" and "(1 Free Variables)" in English and Spanish, "1 свободных переменных" in Russian, now use ICU plurals.
+7. The "0 ✓" zero-result badge also marked target-row entries that were already 0 and did not change; only a zero the operation produced is marked.
+8. An eigen result repeated "A only stretches v: Av equals λv." once per eigenpair.
+9. Every eigen result said a full eigenspace basis is not computed, beside a "Complete" label, even for distinct eigenvalues; the note now appears only when an eigenvalue is repeated.
+10. Quiz options were announced only as "A", "B", …: the formula sat in a horizontal scroll view outside the button's label.
+11. Bottom navigation labels broke inside words at 320 px ("Transformati/ons") and all of them at 200% text; a label now shrinks to fit on one line.
+12. Chinese category chips on the Topics screen were faded along the bottom. A diagnostic build showed the label had room but reported an overflow: it had been laid out before the CJK fallback font arrived, and the chip's `TextOverflow.fade` kept the stale result. Chip labels no longer fade.
+13. Tab alternated between the navigation rail and the page by vertical position; each is now its own focus traversal group.
+14. Topic rows were exposed to Windows UI Automation as text without an invoke action; they are now buttons.
+
+## Verification
+
+Local: generated localizations current, `flutter analyze` clean, 344 application tests and 70 engine tests pass, `dart format` reports no changes. Fixes 1–5 and 7–13 were re-checked in a rebuilt release web app, 14 in the Android accessibility tree.
+
+## Not checked, or left as is
+
+- No screen reader (NVDA, Narrator, TalkBack) was run; only the accessibility trees above were read.
+- Windows desktop: launch, home screen, dark theme following the system, and the UI Automation tree were observed; lessons could not be driven there without taking over the mouse. The navigation rail's destinations are still exposed to UI Automation as text: that comes from Flutter's `NavigationRail`, not the app.
+- No physical phone was used; Android was checked on an emulator only.
+- Offline, Chinese renders as empty boxes: its glyphs still come from `fonts.gstatic.com` at runtime (14 Noto Sans SC slices on the home screen). Bundling a subset of the characters the Chinese strings use would fix this; it was not done without a decision on the added asset.
+- An augmented 3×6 matrix ([A | I]) scrolls horizontally on phones (320–411 px) instead of fitting.
+- With the shrink-to-fit fix, "Transformations" at 320 px and every label at 200% text are smaller than the other text in the bar.
+- Blue "selected" outlines (the solution column, the A − λI diagonal, the extracted inverse) have no legend entry.
