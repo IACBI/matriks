@@ -1056,7 +1056,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get checkSystem => 'Подстановка x в уравнения даёт b.';
 
   @override
-  String get checkRank => 'Ранг плюс дефект равен числу столбцов n.';
+  String get checkRank =>
+      'Наибольшая квадратная подматрица с ненулевым определителем даёт ранг; оставшиеся столбцы дают дефект.';
 
   @override
   String get checkEigen => 'A лишь растягивает v: Av равно λv.';

@@ -1822,7 +1822,7 @@ abstract class AppLocalizations {
   /// No description provided for @checkRank.
   ///
   /// In en, this message translates to:
-  /// **'Rank plus nullity equals the number of columns n.'**
+  /// **'The largest square submatrix with a nonzero determinant gives the rank; the remaining columns give the nullity.'**
   String get checkRank;
 
   /// No description provided for @checkEigen.

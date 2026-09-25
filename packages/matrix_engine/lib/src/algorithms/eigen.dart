@@ -553,6 +553,12 @@ class EigenSolver {
             if (_evalCubic(candidate, c2, c1, c0).isZero) exact.add(candidate);
           }
         }
+        // A common denominator too large to factor leaves only 1 and itself
+        // above; a root's own denominator is then found as a convergent of
+        // its estimate, restricted to divisors of the common denominator.
+        for (final candidate in _convergents(estimate, lcm)) {
+          if (_evalCubic(candidate, c2, c1, c0).isZero) exact.add(candidate);
+        }
       }
     }
 
@@ -692,6 +698,29 @@ class EigenSolver {
       }
     }
     return (found.toList()..sort()).map(BigInt.from).toList();
+  }
+
+  /// Continued-fraction convergents p/q of [x] whose denominator divides
+  /// [lcm], the only denominators a rational root can have. The estimate is
+  /// accurate to about 1e-16 relative, so convergents stop once q passes
+  /// 1e8, where 1/(2q²) falls below that accuracy.
+  static List<Rational> _convergents(double x, BigInt lcm) {
+    final found = <Rational>[];
+    var (hPrev, h) = (BigInt.one, BigInt.from(x.floor()));
+    var (kPrev, k) = (BigInt.zero, BigInt.one);
+    var rest = x - x.floorToDouble();
+    final limit = BigInt.from(100000000);
+    for (var i = 0; i < 40 && k <= limit; i++) {
+      if (lcm % k == BigInt.zero) found.add(Rational(h, k));
+      if (rest.abs() < 1e-12) break;
+      final inverse = 1 / rest;
+      final a = inverse.floor();
+      rest = inverse - a;
+      final term = BigInt.from(a);
+      (hPrev, h) = (h, term * h + hPrev);
+      (kPrev, k) = (k, term * k + kPrev);
+    }
+    return found;
   }
 
   static Rational? _dyadic(double value) {

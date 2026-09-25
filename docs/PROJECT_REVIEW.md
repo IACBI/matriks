@@ -402,7 +402,15 @@ Branch `claude/keen-darwin-oettj2`, checked on Windows 11 with Flutter 3.47.1 wh
 
 ## Verification
 
-Local: generated localizations current, `flutter analyze` clean, 344 application tests and 70 engine tests pass, `dart format` reports no changes. Fixes 1–5 and 7–13 were re-checked in a rebuilt release web app, 14 in the Android accessibility tree.
+Local: generated localizations current, `flutter analyze` clean, 346 application tests and 71 engine tests pass, `dart format` reports no changes.
+
+## Pull request review comments
+
+The automated review of pull request 1 raised three points; each was reproduced before it was fixed.
+
+- 3×3 eigen analysis tried only 1 and the common denominator itself when that denominator exceeded 1e12. `diag(999983/1000003, 999983/1000003, −500018/1000003)` was reported as −0.5 and a complex pair "1.00 ± 0.00i". Candidates now also come from continued-fraction convergents of each estimate whose denominator divides the common denominator; the eigenvalues are exact again (`packages/matrix_engine/test/eigen_test.dart`).
+- The rank check "rank + nullity = n" held by construction, since the solver sets nullity = n − rank. The rank is now recomputed from the largest nonzero minor.
+- Opening Practice or Transformations from the navigation did not update the continue card, although opening them from the catalog did. Fixes 1–5 and 7–13 were re-checked in a rebuilt release web app, 14 in the Android accessibility tree.
 
 ## Not checked, or left as is
 

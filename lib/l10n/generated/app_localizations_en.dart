@@ -1075,7 +1075,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkSystem => 'Substituting x back into the equations gives b.';
 
   @override
-  String get checkRank => 'Rank plus nullity equals the number of columns n.';
+  String get checkRank =>
+      'The largest square submatrix with a nonzero determinant gives the rank; the remaining columns give the nullity.';
 
   @override
   String get checkEigen => 'A only stretches v: Av equals λv.';

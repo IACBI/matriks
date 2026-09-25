@@ -11,6 +11,7 @@ import 'package:matriks/features/practice/views/practice_screen.dart';
 import 'package:matriks/features/settings/cubit/settings_cubit.dart';
 import 'package:matriks/features/settings/views/settings_screen.dart';
 import 'package:matriks/features/step_player/cubit/player_cubit.dart';
+import 'package:matriks/features/step_player/result_check.dart';
 import 'package:matriks/features/step_player/step_text.dart';
 import 'package:matriks/features/step_player/views/step_player_screen.dart';
 import 'package:matriks/features/step_player/widgets/matrix_cell_widget.dart';
@@ -459,6 +460,52 @@ void main() {
     ];
     expect(inRail.where((v) => v).length, 4, reason: '$inRail');
     expect(runs.length, 1, reason: 'rail focus is interleaved: $inRail');
+  });
+
+  test('The rank check can fail', () {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+    final a = Matrix.fromInts([
+      [1, 2, 3],
+      [2, 4, 6],
+      [1, 0, 1],
+    ]);
+    expect(resultChecks(RankNullitySolver.solve(a), l10n).single.holds, isTrue);
+    // A wrong rank with a nullity to match: rank + nullity = n still holds,
+    // so only an independent rank can expose it.
+    final wrong = StepSolution(
+      operationKey: 'op_rank_nullity',
+      initialMatrix: a,
+      steps: const [],
+      finalMatrix: a,
+      result: const RankNullityResult(
+        rank: 3,
+        nullity: 0,
+        totalCols: 3,
+        pivotColumnIndices: [0, 1, 2],
+        freeColumnIndices: [],
+      ),
+    );
+    expect(resultChecks(wrong, l10n).single.holds, isFalse);
+  });
+
+  testWidgets('Opening Practice from the navigation is where you left off', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MatrixEducatorApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Practice'));
+    await tester.pumpAndSettle();
+    final settings = tester
+        .element(find.byType(PracticeScreen))
+        .read<SettingsCubit>();
+    expect(settings.state.lastTopic, 'practice');
+    await tester.tap(find.text('Transformations'));
+    await tester.pumpAndSettle();
+    expect(settings.state.lastTopic, 'transform2d');
   });
 
   testWidgets('Topic rows are buttons', (tester) async {

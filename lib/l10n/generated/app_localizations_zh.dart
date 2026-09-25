@@ -1010,7 +1010,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get checkSystem => '将 x 代回方程组得到 b。';
 
   @override
-  String get checkRank => '秩加零度等于列数 n。';
+  String get checkRank => '行列式非零的最大方子矩阵的阶数就是秩；其余列数就是零度。';
 
   @override
   String get checkEigen => 'A 只拉伸 v：Av 等于 λv。';

@@ -1,5 +1,6 @@
 import 'package:matrix_engine/src/algorithms/eigen.dart';
 import 'package:matrix_engine/src/model/matrix.dart';
+import 'package:matrix_engine/src/model/step.dart';
 import 'package:matrix_engine/src/rational/rational.dart';
 import 'package:test/test.dart';
 
@@ -79,5 +80,32 @@ void main() {
       expect(eValues, contains(Rational.fromInt(5)));
       expect(eValues, contains(Rational.fromInt(-2)));
     });
+  });
+
+  test('Rational roots are found when the common denominator is too large '
+      'to factor', () {
+    // det has denominator 1000003³ > 1e12, so only 1 and the denominator
+    // itself were tried, and the repeated root was misreported as a complex
+    // pair (1.00 ± 0.00i).
+    Rational r(int n) => Rational(BigInt.from(n), BigInt.from(1000003));
+    final a = r(999983);
+    final b = r(-500018);
+    final solution = EigenSolver.solve(
+      Matrix([
+        [a, Rational.zero, Rational.zero],
+        [Rational.zero, a, Rational.zero],
+        [Rational.zero, Rational.zero, b],
+      ]),
+    );
+    final result = solution.result as EigenResult;
+    expect(result.hasComplexEigenvalues, isFalse);
+    expect(solution.accuracy, ResultAccuracy.exact);
+    expect(
+      {
+        for (final p in result.realEigenpairs)
+          p.eigenvalue: p.algebraicMultiplicity,
+      },
+      {a: 2, b: 1},
+    );
   });
 }

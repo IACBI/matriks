@@ -454,7 +454,7 @@
   "checkDetCofactor": "İlk satır boyunca kofaktör açılımı aynı değeri verir.",
   "checkLu": "L ile U'yu çarpmak A'yı geri verir; satırlar P'nin gösterdiği sıradadır.",
   "checkSystem": "x'i denklemlerde yerine koyunca b elde edilir.",
-  "checkRank": "Rank ile sıfırlığın toplamı sütun sayısı n'ye eşittir.",
+  "checkRank": "Determinantı sıfır olmayan en büyük kare alt matris rankı verir; kalan sütunlar sıfırlığı verir.",
   "checkEigen": "A, v'yi yalnızca uzatır: Av, λv'ye eşittir.",
   "seeAsTransform": "Dönüşüm olarak gör",
   "resultComplete": "Tam",

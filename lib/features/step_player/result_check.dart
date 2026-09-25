@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../l10n/generated/app_localizations.dart';
@@ -36,6 +38,28 @@ Rational _cofactorDeterminant(Matrix m) {
     sum = c.isEven ? sum + term : sum - term;
   }
   return sum;
+}
+
+/// The size of the largest square submatrix with a nonzero determinant.
+int _minorRank(Matrix m) {
+  List<List<int>> subsets(int n, int k) => k == 0
+      ? [<int>[]]
+      : [
+          for (var first = 0; first <= n - k; first++)
+            for (final rest in subsets(n - first - 1, k - 1))
+              [first, for (final i in rest) i + first + 1],
+        ];
+  for (var k = math.min(m.rows, m.cols); k > 0; k--) {
+    for (final rows in subsets(m.rows, k)) {
+      for (final cols in subsets(m.cols, k)) {
+        final minor = Matrix([
+          for (final r in rows) [for (final c in cols) m.get(r, c)],
+        ]);
+        if (!_cofactorDeterminant(minor).isZero) return k;
+      }
+    }
+  }
+  return 0;
 }
 
 Matrix _column(List<Rational> values) => Matrix([
@@ -107,12 +131,16 @@ List<ResultCheck> resultChecks(StepSolution solution, AppLocalizations l) {
         ),
       ];
     case 'op_rank_nullity' when result is RankNullityResult:
+      // rank + nullity = n holds by construction; the rank itself is
+      // confirmed by minors instead of elimination.
+      final rank = _minorRank(a);
       return [
         ResultCheck(
           description: l.checkRank,
           latex:
-              '${result.rank} + ${result.nullity} = ${result.rank + result.nullity} = n',
-          holds: result.rank + result.nullity == a.cols,
+              '\\text{rank}(A) = $rank \\quad '
+              '\\text{nullity}(A) = ${a.cols} - $rank = ${a.cols - rank}',
+          holds: rank == result.rank && a.cols - rank == result.nullity,
         ),
       ];
     case 'op_eigen' when result is EigenResult:

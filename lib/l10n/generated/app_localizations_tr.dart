@@ -1058,7 +1058,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get checkRank =>
-      'Rank ile sıfırlığın toplamı sütun sayısı n\'ye eşittir.';
+      'Determinantı sıfır olmayan en büyük kare alt matris rankı verir; kalan sütunlar sıfırlığı verir.';
 
   @override
   String get checkEigen => 'A, v\'yi yalnızca uzatır: Av, λv\'ye eşittir.';

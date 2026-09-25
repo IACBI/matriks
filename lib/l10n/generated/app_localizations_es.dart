@@ -1075,7 +1075,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get checkRank =>
-      'El rango más la nulidad es igual al número de columnas n.';
+      'La mayor submatriz cuadrada con determinante no nulo da el rango; las columnas restantes dan la nulidad.';
 
   @override
   String get checkEigen => 'A solo estira v: Av es igual a λv.';

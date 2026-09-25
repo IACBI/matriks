@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../features/settings/cubit/settings_cubit.dart';
+import '../../features/topics/models/topic_item.dart';
 
 import '../../features/topics/views/topics_screen.dart';
 import '../../features/practice/views/practice_screen.dart';
@@ -16,10 +20,21 @@ class StudioShell extends StatefulWidget {
 class _StudioShellState extends State<StudioShell> {
   int _index = 0;
   final Set<int> _visited = {0};
-  void _select(int index) => setState(() {
-    _index = index;
-    _visited.add(index);
-  });
+  void _select(int index) {
+    // Practice and Transformations are topics on the learning path; opened
+    // here or from the catalog, they are where the learner left off.
+    final topic = switch (index) {
+      1 => TopicType.practice,
+      2 => TopicType.transform2d,
+      _ => null,
+    };
+    if (topic != null) context.read<SettingsCubit?>()?.openTopic(topic.name);
+    setState(() {
+      _index = index;
+      _visited.add(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;

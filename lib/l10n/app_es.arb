@@ -52,7 +52,7 @@
   "checkDetCofactor": "El desarrollo por cofactores de la primera fila da el mismo valor.",
   "checkLu": "Multiplicar L por U devuelve A, con las filas en el orden que indica P.",
   "checkSystem": "Sustituir x en las ecuaciones da b.",
-  "checkRank": "El rango más la nulidad es igual al número de columnas n.",
+  "checkRank": "La mayor submatriz cuadrada con determinante no nulo da el rango; las columnas restantes dan la nulidad.",
   "checkEigen": "A solo estira v: Av es igual a λv.",
   "seeAsTransform": "Verlo como transformación",
   "resultComplete": "Completo",
