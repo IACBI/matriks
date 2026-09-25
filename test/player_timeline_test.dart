@@ -163,6 +163,8 @@ void main() {
           playbackSpeed: speed,
           onAnimationCompleted: complete,
           onScrubStart: scrub,
+          // The drawer holding the scrub slider is built only while open.
+          detailsInitiallyExpanded: true,
         ),
       ),
     ),
@@ -296,6 +298,12 @@ void main() {
         .element(find.byType(MatrixDisplayGrid))
         .read<PlayerCubit>();
     cubit.pause();
+    await tester.pump();
+    // The scrub slider is built only while Details is open; opening it only
+    // pauses, which the lesson already is.
+    final details = find.byKey(const ValueKey('operation-inspector'));
+    await tester.ensureVisible(details);
+    await tester.tap(details);
     await tester.pump();
     final before = progress(tester);
     tester.view.physicalSize = const Size(1280, 800);
@@ -435,9 +443,8 @@ void main() {
       final text = tester.widget<Text>(find.text('badge'));
       final background = switch (type) {
         HighlightType.pivot => AppTheme.accentAmber,
-        HighlightType.source => AppTheme.accentPurple,
-        HighlightType.target => AppTheme.accentCyan,
-        _ => AppTheme.accentGreen,
+        HighlightType.source => AppTheme.accentAmber,
+        _ => AppTheme.accentCyan,
       };
       final a = text.style!.color!.computeLuminance();
       final b = background.computeLuminance();

@@ -4,15 +4,100 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
+import '../../../core/number_format.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/matrix_bracket.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'determinant_lines_painter.dart';
 import 'matrix_cell_widget.dart';
 import 'multiplication_sources.dart';
 import 'row_swap_brackets_painter.dart';
+import 'step_card.dart';
 import 'instruction_timeline.dart';
 import 'instruction_lesson.dart';
+import '../../../core/widgets/slider_while_shown.dart';
+
+/// Geometry that must stay the same for every step of one solution.
+///
+/// Without it each step sizes itself: a swap is narrower than an elimination
+/// that reserves room for its cell expression, so the matrix jumps between
+/// steps. The player measures the whole solution once and passes this.
+class MatrixLayoutHint {
+  /// Widest numerator, denominator or decimal text in any step.
+  final int minimumDigits;
+
+  /// Some step shows an arithmetic expression inside a cell.
+  final bool reserveOperationWidth;
+
+  /// Some step swaps rows and draws its connector beside the matrix.
+  final bool reserveSwapLane;
+
+  const MatrixLayoutHint({
+    this.minimumDigits = 1,
+    this.reserveOperationWidth = false,
+    this.reserveSwapLane = false,
+  });
+
+  factory MatrixLayoutHint.forSolution(
+    StepSolution solution, {
+    required bool decimal,
+  }) {
+    var digits = 1;
+    var operation = false;
+    var swap = false;
+    for (final step in solution.steps) {
+      for (final snapshot in [step.matrixBefore, step.matrixAfter]) {
+        digits = math.max(digits, _widestEntry(snapshot, decimal));
+      }
+      final t = step.transformation;
+      operation =
+          operation ||
+          t is RowEliminationTransformation ||
+          t is RowScaleTransformation ||
+          t is MatrixElementAdditionTransformation ||
+          t is MatrixElementMultiplicationTransformation ||
+          t is AdjugateTransformation ||
+          t is MatrixScaleTransformation;
+      swap = swap || t is RowSwapTransformation;
+    }
+    return MatrixLayoutHint(
+      minimumDigits: digits,
+      reserveOperationWidth: operation,
+      reserveSwapLane: swap,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is MatrixLayoutHint &&
+      other.minimumDigits == minimumDigits &&
+      other.reserveOperationWidth == reserveOperationWidth &&
+      other.reserveSwapLane == reserveSwapLane;
+
+  @override
+  int get hashCode =>
+      Object.hash(minimumDigits, reserveOperationWidth, reserveSwapLane);
+}
+
+int _widestEntry(MatrixSnapshot snapshot, bool decimal) {
+  var digits = 1;
+  for (var r = 0; r < snapshot.rows; r++) {
+    for (var c = 0; c < snapshot.cols; c++) {
+      final value = snapshot.get(r, c);
+      digits = math.max(
+        digits,
+        decimal
+            ? decimalWidth(value)
+            : math.max(
+                value.num.toString().length,
+                value.den.toString().length,
+              ),
+      );
+    }
+  }
+  return digits;
+}
 
 class MatrixDisplayGrid extends StatefulWidget {
   final String? sceneFormula;
@@ -32,6 +117,20 @@ class MatrixDisplayGrid extends StatefulWidget {
   final VoidCallback? onScrubStart;
   final VoidCallback? onReplay;
   final void Function(int row, int col)? onCellTap;
+  final MatrixLayoutHint? layoutHint;
+
+  /// Why the operation works and the cell formulas, kept in the drawer under
+  /// the caption together with scrubbing and replay.
+  final Widget? details;
+  final bool detailsInitiallyExpanded;
+
+  /// Text that belongs directly under the caption, such as the solver's
+  /// reason for the step when the caption does not already give it.
+  final Widget? note;
+
+  /// Called when the learner opens the drawer; the lesson pauses so the
+  /// drawer does not scroll away under them.
+  final VoidCallback? onDetailsOpened;
 
   const MatrixDisplayGrid({
     this.sceneFormula,
@@ -52,6 +151,11 @@ class MatrixDisplayGrid extends StatefulWidget {
     this.onScrubStart,
     this.onReplay,
     this.onCellTap,
+    this.layoutHint,
+    this.details,
+    this.detailsInitiallyExpanded = false,
+    this.note,
+    this.onDetailsOpened,
   });
 
   @override
@@ -62,7 +166,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late InstructionTimeline _timeline;
-  final Map<(InstructionPhase, int), Widget> _explanationCache = {};
+  final Map<(InstructionPhase, int, bool), Widget> _explanationCache = {};
   final Map<int, Widget> _sourceCache = {};
   bool _scrubbing = false;
   bool _completionSent = false;
@@ -78,22 +182,37 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   double get cellWidth => _cellWidth;
   double get cellHeight => _cellHeight;
 
+  InstructionTimeline _timelineFor(MatrixDisplayGrid grid) =>
+      InstructionTimeline.forTransformation(
+        grid.transformation,
+        columns: changingColumns(
+          grid.transformation,
+          grid.snapshotBefore,
+          grid.snapshot.cols,
+        ).length,
+        cells: grid.snapshot.rows * grid.snapshot.cols,
+      );
+
+  bool get _reserveSwapLane =>
+      widget.transformation is RowSwapTransformation ||
+      (widget.layoutHint?.reserveSwapLane ?? false);
+
+  /// Shown in every mode, including the recap step, so the Sarrus diagonals
+  /// stay straight and the matrix keeps its width across the three steps.
+  bool get _showSarrusCopies =>
+      widget.transformation is DeterminantSarrusTransformation &&
+      widget.snapshot.rows == 3 &&
+      widget.snapshot.cols == 3;
+
+  /// Horizontal space between the last real column and the first copied
+  /// column of a Sarrus scene: bracket margin, bracket and a gap.
+  static const _sarrusGap = 4.0 + 10 + 8;
+
   double _measureCellWidth() {
-    var digits = 1;
+    var digits = widget.layoutHint?.minimumDigits ?? 1;
     for (final snapshot in [widget.snapshot, widget.snapshotBefore]) {
       if (snapshot == null) continue;
-      for (var r = 0; r < snapshot.rows; r++) {
-        for (var c = 0; c < snapshot.cols; c++) {
-          final value = snapshot.get(r, c);
-          final length = widget.isDecimalView
-              ? value.toDisplayString(asDecimal: true).length
-              : math.max(
-                  value.num.toString().length,
-                  value.den.toString().length,
-                );
-          digits = math.max(digits, length);
-        }
-      }
+      digits = math.max(digits, _widestEntry(snapshot, widget.isDecimalView));
     }
     return (32.0 + digits * _fontSize * .65).clamp(52.0, 400.0) *
         MediaQuery.textScalerOf(context).scale(1);
@@ -104,7 +223,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   @override
   void initState() {
     super.initState();
-    _timeline = InstructionTimeline.forTransformation(widget.transformation);
+    _timeline = _timelineFor(widget);
     _animController = AnimationController(
       vsync: this,
       animationBehavior: AnimationBehavior.preserve,
@@ -139,7 +258,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   @override
   void didUpdateWidget(covariant MatrixDisplayGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _timeline = InstructionTimeline.forTransformation(widget.transformation);
+    _timeline = _timelineFor(widget);
     _cellCache.clear();
     _rowCache.clear();
     _explanationCache.clear();
@@ -213,7 +332,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     final available = constraints.maxWidth;
     final extras =
         64 * scale +
-        (widget.transformation is RowSwapTransformation ? 20 : 0) +
+        (_reserveSwapLane ? 20 : 0) +
         (widget.snapshot.augmentedColIndex != null ? 10 : 0);
     final previousGeometry = (_cellWidth, _cellHeight, _fontSize);
     _fontSize = 22;
@@ -234,12 +353,22 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         transformation is RowEliminationTransformation ||
         transformation is RowScaleTransformation ||
         transformation is MatrixElementAdditionTransformation ||
-        transformation is MatrixElementMultiplicationTransformation;
-    if (hasCellCalculation &&
+        transformation is MatrixElementMultiplicationTransformation ||
+        transformation is AdjugateTransformation ||
+        transformation is MatrixScaleTransformation;
+    final reserveOperation =
+        widget.layoutHint?.reserveOperationWidth ?? hasCellCalculation;
+    if (reserveOperation &&
         !widget.staticStep &&
         !MediaQuery.disableAnimationsOf(context)) {
-      // Reserve space for a readable operation and keep geometry stable through its result.
-      _cellWidth = math.max(_cellWidth, 120 * scale);
+      // Reserve space for a readable operation and keep geometry stable
+      // through its result, but only as much as the width allows: a formula
+      // that does not fit shrinks to 14 px and then scrolls inside its cell,
+      // which is better than pushing a whole column off a phone screen.
+      final fitting = available.isFinite
+          ? (available - extras) / widget.snapshot.cols
+          : double.infinity;
+      _cellWidth = math.max(_cellWidth, math.min(120 * scale, fitting));
     }
     _cellHeight = 64 * scale;
     if (previousGeometry != (_cellWidth, _cellHeight, _fontSize)) {
@@ -250,15 +379,13 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
-    final bracketColor = isDark
-        ? const Color(0xFF64748B)
-        : const Color(0xFF475569);
     final dividerCol = widget.snapshot.augmentedColIndex;
     final gridHeight = widget.snapshot.rows * cellHeight;
     final bracketHeight = (widget.snapshot.rows * cellHeight) - 8.0;
     final gridWidth = widget.snapshot.cols * cellWidth;
     final reduceMotion =
-        widget.staticStep || MediaQuery.of(context).disableAnimations;
+        widget.staticStep || MediaQuery.disableAnimationsOf(context);
+    final sarrusCopies = _showSarrusCopies;
     final trans = widget.transformation;
     final rowLabels = List.generate(
       widget.snapshot.rows,
@@ -272,11 +399,23 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     );
     final termCount = trans is MatrixElementMultiplicationTransformation
         ? trans.rowElements.length
-        : (trans is DeterminantCrossProductTransformation &&
-                  trans.phase == 3) ||
-              (trans is DeterminantSarrusTransformation && trans.phase == 3)
-        ? lesson.calculations.length - 1
-        : lesson.calculations.length;
+        : lesson.progressiveCount;
+    final changing = changingColumns(
+      trans,
+      widget.snapshotBefore,
+      widget.snapshot.cols,
+    );
+    final cellCount = widget.snapshot.rows * widget.snapshot.cols;
+    // How many discrete moments the operation has; cells only change there.
+    final stageCount =
+        trans is RowEliminationTransformation || trans is RowScaleTransformation
+        ? changing.length
+        : trans is MatrixScaleTransformation
+        ? cellCount
+        : widget.snapshot.cols;
+    final drawsDiagonals =
+        (trans is DeterminantCrossProductTransformation && !trans.recap) ||
+        (trans is DeterminantSarrusTransformation && !trans.recap);
     return RepaintBoundary(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -353,8 +492,8 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                     ? 1.0
                     : _timeline.operationProgress(_animController.value);
                 // Numeric cells change at column boundaries, not on every frame.
-                final stage = (progress * widget.snapshot.cols).floor();
-                _followActiveColumn(trans, progress, reduceMotion);
+                final stage = (progress * stageCount).floor();
+                _followActiveColumn(trans, progress, reduceMotion, changing);
                 final term = trans is MatrixElementMultiplicationTransformation
                     ? (progress * trans.rowElements.length).floor()
                     : 0;
@@ -372,6 +511,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                           isDark,
                           dividerCol,
                           reduceMotion,
+                          changing,
                         ),
                       );
                       final previous = _rowCache[r];
@@ -406,25 +546,20 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                     const SizedBox(width: 6),
 
                     // Left Swap Brackets Painter (for Row Swap)
-                    if (trans is RowSwapTransformation) ...[
+                    if (trans is RowSwapTransformation)
                       CustomPaint(
                         size: Size(20, gridHeight),
                         painter: RowSwapBracketsPainter(
                           rowA: trans.rowA,
                           rowB: trans.rowB,
                           cellHeight: cellHeight,
-                          progress: progress,
-                          isDark: isDark,
                         ),
-                      ),
-                    ],
+                      )
+                    else if (_reserveSwapLane)
+                      const SizedBox(width: 20),
 
                     // Left Matrix Bracket [
-                    _buildBracket(
-                      bracketColor,
-                      height: bracketHeight,
-                      isLeft: true,
-                    ),
+                    MatrixBracket(height: bracketHeight, isLeft: true),
                     const SizedBox(width: 4),
 
                     // Matrix Grid Cells with CustomPainter Overlay
@@ -432,26 +567,50 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                       clipBehavior: Clip.none,
                       children: [
                         // Base Cells Column
-                        Column(
+                        Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: List.generate(widget.snapshot.rows, (r) {
-                            final rowOffset = _computeRowOffset(
-                              r,
-                              trans,
-                              progress,
-                              reduceMotion,
-                            );
-                            final rowWidget = rows[r];
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(widget.snapshot.rows, (
+                                r,
+                              ) {
+                                final rowOffset = _computeRowOffset(
+                                  r,
+                                  trans,
+                                  progress,
+                                  reduceMotion,
+                                );
+                                final rowWidget = rows[r];
+                                if (trans is AdjugateTransformation &&
+                                    !reduceMotion &&
+                                    progress < 1) {
+                                  return _adjugateRow(r, rowWidget, progress);
+                                }
 
-                            if (trans is! RowSwapTransformation ||
-                                reduceMotion) {
-                              return rowWidget;
-                            }
-                            return Transform.translate(
-                              offset: rowOffset,
-                              child: rowWidget,
-                            );
-                          }),
+                                if (trans is! RowSwapTransformation ||
+                                    reduceMotion) {
+                                  return rowWidget;
+                                }
+                                return Transform.translate(
+                                  offset: rowOffset,
+                                  child: rowWidget,
+                                );
+                              }),
+                            ),
+                            // Sarrus: the first two columns written again to
+                            // the right of the matrix, so every product runs
+                            // along a straight diagonal.
+                            if (sarrusCopies) ...[
+                              const SizedBox(width: 4),
+                              MatrixBracket(
+                                height: bracketHeight,
+                                isLeft: false,
+                              ),
+                              const SizedBox(width: 8),
+                              _buildSarrusCopies(isDark),
+                            ],
+                          ],
                         ),
 
                         // Ghost Row Projection (Phase 1 of Row Elimination: R_t <- R_t - c*R_s)
@@ -462,9 +621,9 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                         ],
 
                         // Determinant Lines Overlay (2x2 and 3x3 Sarrus)
-                        if ((trans is DeterminantCrossProductTransformation ||
-                                trans is DeterminantSarrusTransformation) &&
-                            !reduceMotion) ...[
+                        // Reduced motion and static steps draw every product
+                        // of the step at once instead of tracing them.
+                        if (drawsDiagonals) ...[
                           Positioned.fill(
                             child: IgnorePointer(
                               child: CustomPaint(
@@ -476,7 +635,10 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                                   cellHeight: cellHeight,
                                   transformation: trans!,
                                   progress: progress,
-                                  isDark: isDark,
+                                  showAll: reduceMotion,
+                                  copiedColumnsGap: sarrusCopies
+                                      ? _sarrusGap
+                                      : null,
                                 ),
                               ),
                             ),
@@ -485,20 +647,25 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                       ],
                     ),
 
-                    const SizedBox(width: 4),
-                    // Right Matrix Bracket ]
-                    _buildBracket(
-                      bracketColor,
-                      height: bracketHeight,
-                      isLeft: false,
-                    ),
+                    if (!sarrusCopies) ...[
+                      const SizedBox(width: 4),
+                      // Right Matrix Bracket ]
+                      MatrixBracket(height: bracketHeight, isLeft: false),
+                    ],
                   ],
                 );
               },
             ),
           ),
-          if (widget.showExplanation) const SizedBox(height: 24),
-          if (widget.showExplanation)
+          if (RoleLegend.hasRoles(widget.highlights)) ...[
+            const SizedBox(height: 8),
+            RoleLegend(highlights: widget.highlights),
+          ],
+          // Steps without step-specific teaching text rely on the solver's
+          // description; three placeholder phases would add nothing.
+          if (widget.showExplanation && !lesson.generic)
+            const SizedBox(height: 20),
+          if (widget.showExplanation && !lesson.generic)
             AnimatedBuilder(
               animation: _animController,
               builder: (context, _) {
@@ -511,52 +678,77 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                 final active = termCount <= 0
                     ? -1
                     : (progress * termCount).floor().clamp(0, termCount - 1);
+                // Announcing every phase while the lesson plays would talk over
+                // itself; the step title announces progress instead.
+                final announce = !_running;
                 return _explanationCache.putIfAbsent(
-                  (phase, active),
+                  (phase, active, announce),
                   () => InstructionExplanation(
                     lesson: lesson,
                     phase: phase,
                     activeCalculation: active,
                     showAllPhases: reduceMotion,
+                    announce: announce,
                   ),
                 );
               },
             ),
+          if (widget.note != null) ...[
+            const SizedBox(height: 16),
+            widget.note!,
+          ],
           const SizedBox(height: 8),
-          if (!widget.staticStep)
+          if (!widget.staticStep || widget.details != null)
+            // A Slider keeps an OverlayPortal open whose semantics node hangs
+            // off the slider's own. Collapsed (offstage) or clipped to zero at
+            // the start of an expand animation, the slider has no node and the
+            // portal's is orphaned; the Windows accessibility bridge rejects
+            // that update and every one after it. So the body is built only
+            // while open, and opens and closes without an animation.
             ExpansionTile(
+              // A button, so Windows UI Automation can invoke it.
+              internalAddSemanticForOnTap: true,
               key: const ValueKey('operation-inspector'),
-              maintainState: true,
+              expansionAnimationStyle: AnimationStyle.noAnimation,
+              initiallyExpanded: widget.detailsInitiallyExpanded,
               tilePadding: EdgeInsets.zero,
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               title: Text(
-                l10n?.inspectOperation ?? 'Inspect this operation',
+                widget.details != null
+                    ? l10n?.stepDetails ?? 'Details'
+                    : l10n?.inspectOperation ?? 'Inspect this operation',
                 style: theme.textTheme.labelLarge,
               ),
               onExpansionChanged: (open) {
-                if (open) widget.onScrubStart?.call();
+                if (!open || widget.staticStep) return;
+                (widget.onDetailsOpened ?? widget.onScrubStart)?.call();
               },
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: AnimatedBuilder(
-                        animation: _animController,
-                        builder: (context, _) => Slider(
-                          key: const ValueKey('instruction-progress'),
-                          semanticFormatterCallback: (value) =>
-                              '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
-                          value: _animController.value,
-                          onChanged: _onScrub,
+                ?widget.details,
+                if (!widget.staticStep)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SliderWhileShown(
+                          child: AnimatedBuilder(
+                            animation: _animController,
+                            builder: (context, _) => Slider(
+                              key: const ValueKey('instruction-progress'),
+                              semanticFormatterCallback: (value) =>
+                                  '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
+                              value: _animController.value,
+                              onChanged: _onScrub,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      tooltip: l10n?.replayAnimation ?? 'Replay animation',
-                      onPressed: _replay,
-                      icon: const Icon(Icons.replay_rounded),
-                    ),
-                  ],
-                ),
+                      IconButton(
+                        tooltip: l10n?.replayAnimation ?? 'Replay animation',
+                        onPressed: _replay,
+                        icon: const Icon(Icons.replay_rounded),
+                      ),
+                    ],
+                  ),
               ],
             ),
         ],
@@ -587,16 +779,21 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     StepTransformation? transformation,
     double progress,
     bool reduced,
+    List<int> changing,
   ) {
     if (!_running || _scrubbing) return;
     final column = switch (transformation) {
       MatrixElementMultiplicationTransformation t => t.targetCol,
       MatrixElementAdditionTransformation t => t.col,
       RowEliminationTransformation() || RowScaleTransformation() =>
-        (progress * widget.snapshot.cols).floor().clamp(
+        changing[(progress * changing.length).floor().clamp(
           0,
-          widget.snapshot.cols - 1,
-        ),
+          changing.length - 1,
+        )],
+      MatrixScaleTransformation() =>
+        ((progress * widget.snapshot.rows * widget.snapshot.cols).floor() %
+                widget.snapshot.cols)
+            .clamp(0, widget.snapshot.cols - 1),
       _ => 0,
     };
     final token = (widget.animationRevision, column);
@@ -613,6 +810,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
       final divider = widget.snapshot.augmentedColIndex;
       final left =
           64 * MediaQuery.textScalerOf(context).scale(1) +
+          (_reserveSwapLane ? 20 : 0) +
           column * cellWidth +
           (divider != null && column >= divider ? 10 : 0);
       final right = left + cellWidth;
@@ -680,7 +878,15 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     bool isDark,
     int? dividerCol,
     bool reduceMotion,
+    List<int> changing,
   ) {
+    // A row operation reaches its changing columns one after another; a
+    // column it cannot change (source entry 0) is finished from the start.
+    bool columnDone(int column) {
+      final index = changing.indexOf(column);
+      return index < 0 || progress >= (index + 1) / changing.length;
+    }
+
     CellHighlight? matchHighlight;
     for (final h in widget.highlights) {
       if (h.row == r && h.col == c) {
@@ -710,13 +916,18 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     Rational displayVal = valAfter;
     if (!reduceMotion && valBefore != null && trans is! RowSwapTransformation) {
       if (trans is RowEliminationTransformation && trans.targetRow == r) {
-        if (progress < (c + 1) / widget.snapshot.cols) {
-          displayVal = valBefore;
-        }
+        if (!columnDone(c)) displayVal = valBefore;
       } else if (trans is RowScaleTransformation && trans.row == r) {
-        if (progress < (c + 1) / widget.snapshot.cols) {
-          displayVal = valBefore;
-        }
+        if (!columnDone(c)) displayVal = valBefore;
+      } else if (trans is RowEliminationTransformation ||
+          trans is RowScaleTransformation) {
+        // Other rows are untouched.
+      } else if (trans is MatrixScaleTransformation) {
+        final order = r * widget.snapshot.cols + c;
+        final count = widget.snapshot.rows * widget.snapshot.cols;
+        if (progress < (order + 1) / count) displayVal = valBefore;
+      } else if (trans is AdjugateTransformation && r == c) {
+        // The diagonal entries move into place instead of changing value.
       } else if (trans is MatrixElementMultiplicationTransformation) {
         if (progress < 1) displayVal = valBefore;
       } else {
@@ -728,7 +939,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
 
     if (!reduceMotion &&
         matchHighlight?.type == HighlightType.zeroed &&
-        progress < (c + 1) / widget.snapshot.cols) {
+        !columnDone(c)) {
       matchHighlight = CellHighlight(
         row: r,
         col: c,
@@ -741,15 +952,32 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     }
 
     // The full calculation lives in the stable explanation area below the matrix.
+    // Only a zero this operation produced is marked; an entry that was
+    // already 0 and did not change is not a result of it.
     final isZeroResult =
         trans is RowEliminationTransformation &&
         trans.targetRow == r &&
         valAfter == Rational.zero &&
-        (reduceMotion || progress >= (c + 1) / widget.snapshot.cols);
+        !(valBefore?.isZero ?? false) &&
+        (reduceMotion || columnDone(c));
 
     final calculation = !reduceMotion && progress > 0 && progress < 1
-        ? _calculationAt(r, c, trans, progress)
+        ? _calculationAt(r, c, trans, progress, changing)
         : null;
+    // Addition and multiplication fill the output one entry at a time in row
+    // order; entries after the current one hold a placeholder zero.
+    final order = r * widget.snapshot.cols + c;
+    final current = switch (trans) {
+      MatrixElementMultiplicationTransformation t =>
+        t.targetRow * widget.snapshot.cols + t.targetCol,
+      MatrixElementAdditionTransformation t =>
+        t.row * widget.snapshot.cols + t.col,
+      _ => null,
+    };
+    final pending =
+        current != null &&
+        (order > current ||
+            (order == current && !reduceMotion && progress < 1));
     final cacheKey = (
       r,
       c,
@@ -758,7 +986,9 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
       isZeroResult,
       matchHighlight?.type,
       matchHighlight?.badgeText,
+      pending,
     );
+    final l10n = AppLocalizations.of(context);
     return _cellCache.putIfAbsent(cacheKey, () {
       final cell = SizedBox(
         width: cellWidth,
@@ -772,10 +1002,13 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
           isDecimalView: widget.isDecimalView,
           hasSubCalculation: hasSub,
           isZeroResult: isZeroResult,
-          semanticLabel:
-              (AppLocalizations.of(context)
-                  ?.matrixCellLabel(r + 1, c + 1, displayVal.toString()) ??
-              'Row ${r + 1}, column ${c + 1}, $displayVal'),
+          pending: pending,
+          // Tests host bare grids without localizations; keep a fallback.
+          semanticLabel: pending
+              ? (l10n?.matrixCellPendingLabel(r + 1, c + 1) ??
+                    'Row ${r + 1}, column ${c + 1}, not calculated yet')
+              : (l10n?.matrixCellLabel(r + 1, c + 1, '$displayVal') ??
+                    'Row ${r + 1}, column ${c + 1}, $displayVal'),
           onTap: hasSub && widget.onCellTap != null
               ? () => widget.onCellTap!(r, c)
               : null,
@@ -793,7 +1026,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
               height: 42,
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: isDark ? AppTheme.accentIndigo : const Color(0xFF818CF8),
+                color: Theme.of(context).colorScheme.outline,
                 borderRadius: BorderRadius.circular(1),
               ),
             ),
@@ -810,11 +1043,16 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     int col,
     StepTransformation? trans,
     double progress,
+    List<int> changing,
   ) {
     String factor(Rational value) =>
         value.isNegative ? '(${value.toLatex()})' : value.toLatex();
     final before = widget.snapshotBefore;
-    final activeColumn = (progress * widget.snapshot.cols).floor();
+    final activeColumn =
+        changing[(progress * changing.length).floor().clamp(
+          0,
+          changing.length - 1,
+        )];
     if (before != null &&
         row < before.rows &&
         col < before.cols &&
@@ -833,6 +1071,18 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         col == trans.col) {
       return '${factor(trans.left)} + ${factor(trans.right)}';
     }
+    if (before != null && row < before.rows && col < before.cols) {
+      if (trans is AdjugateTransformation && row != col) {
+        return '-${factor(before.get(row, col))}';
+      }
+      if (trans is MatrixScaleTransformation) {
+        final count = widget.snapshot.rows * widget.snapshot.cols;
+        final active = (progress * count).floor().clamp(0, count - 1);
+        if (row * widget.snapshot.cols + col == active) {
+          return '${factor(before.get(row, col))} \\cdot ${factor(trans.scalar)}';
+        }
+      }
+    }
     if (trans is MatrixElementMultiplicationTransformation &&
         row == trans.targetRow &&
         col == trans.targetCol) {
@@ -847,6 +1097,99 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
       ).join(' + ');
     }
     return null;
+  }
+
+  /// Adjugate motion: the two diagonal entries travel along the diagonal to
+  /// each other's place, bending apart so they never cover each other.
+  Widget _adjugateRow(int r, Widget row, double progress) {
+    final cells = _rowCache[r]?.cells;
+    if (cells == null || r >= cells.length) return row;
+    final eased = Curves.easeInOutCubic.transform(progress);
+    final direction = r == 0 ? 1.0 : -1.0;
+    final travel = Offset(cellWidth, cellHeight) * direction * (1 - eased);
+    final bend = Offset(18, -18) * direction * math.sin(eased * math.pi);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var c = 0; c < cells.length; c++)
+          c == r
+              ? Transform.translate(offset: travel + bend, child: cells[c])
+              : cells[c],
+      ],
+    );
+  }
+
+  /// L as it stands after this LU step. The entry just written is framed;
+  /// entries below the diagonal that later steps will fill show a dot, not a
+  /// zero that would read as a result.
+  Widget _buildLowerMatrix(LUEliminationTransformation trans) {
+    final lower = trans.lower;
+    final theme = Theme.of(context);
+    final muted = theme.brightness == Brightness.dark
+        ? AppTheme.textMutedDark
+        : AppTheme.textMutedLight;
+    bool pending(int r, int c) =>
+        r > c &&
+        (c > trans.lowerCol || (c == trans.lowerCol && r > trans.lowerRow));
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const MathText('L =', fontSize: 18),
+        const SizedBox(width: 8),
+        MatrixBracket(
+          height: lower.rows * 40.0 * MediaQuery.textScalerOf(context).scale(1),
+          isLeft: true,
+          width: 6,
+          thickness: 2,
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var r = 0; r < lower.rows; r++)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var c = 0; c < lower.cols; c++)
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth:
+                            44 * MediaQuery.textScalerOf(context).scale(1),
+                        minHeight:
+                            40 * MediaQuery.textScalerOf(context).scale(1),
+                      ),
+                      margin: const EdgeInsets.all(1),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: r == trans.lowerRow && c == trans.lowerCol
+                              ? theme.colorScheme.primary
+                              : Colors.transparent,
+                        ),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      ),
+                      child: MathText(
+                        pending(r, c)
+                            ? r'\cdot'
+                            : widget.isDecimalView
+                            ? decimalLatex(lower.get(r, c))
+                            : lower.get(r, c).toLatex(),
+                        fontSize: 16,
+                        color: pending(r, c) ? muted : null,
+                      ),
+                    ),
+                ],
+              ),
+          ],
+        ),
+        MatrixBracket(
+          height: lower.rows * 40.0 * MediaQuery.textScalerOf(context).scale(1),
+          isLeft: false,
+          width: 6,
+          thickness: 2,
+        ),
+      ],
+    );
   }
 
   /// A lightweight outline links the source and target without covering numbers.
@@ -869,7 +1212,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
             width: widget.snapshot.cols * cellWidth,
             height: cellHeight,
             decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.accentPurple, width: 2),
+              border: Border.all(color: AppTheme.accentAmber, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -882,12 +1225,6 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     if (trans is LUDecompositionTransformation) {
       return MathText(
         'L = ${trans.lSnapshot.toMatrix().toLatex()}',
-        fontSize: 20,
-      );
-    }
-    if (trans is DeterminantCofactorTransformation) {
-      return MathText(
-        '${trans.sign.toLatex()} \\cdot (${trans.element.toLatex()}) \\cdot \\det ${trans.minorMatrix.toMatrix().toLatex()}',
         fontSize: 20,
       );
     }
@@ -911,11 +1248,33 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     }
     if (trans is RowEliminationTransformation) {
       final sign = trans.factor.isNegative ? '-' : '+';
+      // The factor is written without its sign, so it needs no brackets.
       final factor = trans.factor.abs() == Rational.one
           ? ''
-          : '(${trans.factor.abs().toLatex()})';
-      return MathText(
+          : trans.factor.abs().toLatex();
+      final operation = MathText(
         'R_{${trans.targetRow + 1}} \\leftarrow R_{${trans.targetRow + 1}} $sign $factor R_{${trans.sourceRow + 1}}',
+        fontSize: 20,
+      );
+      if (trans is! LUEliminationTransformation) return operation;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          operation,
+          const SizedBox(height: 12),
+          _buildLowerMatrix(trans),
+        ],
+      );
+    }
+    if (trans is AdjugateTransformation) {
+      return const MathText(
+        r'\begin{pmatrix} a & b \\ c & d \end{pmatrix} \rightarrow \begin{pmatrix} d & -b \\ -c & a \end{pmatrix}',
+        fontSize: 18,
+      );
+    }
+    if (trans is MatrixScaleTransformation) {
+      return MathText(
+        'A^{-1} = ${trans.scalar.toLatex()} \\cdot \\text{adj}(A)',
         fontSize: 20,
       );
     }
@@ -937,7 +1296,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         } else if (h.type == HighlightType.target && activeColor == null) {
           activeColor = AppTheme.accentCyan;
         } else if (h.type == HighlightType.source && activeColor == null) {
-          activeColor = AppTheme.accentPurple;
+          activeColor = AppTheme.accentAmber;
         }
       }
     }
@@ -968,24 +1327,33 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     );
   }
 
-  Widget _buildBracket(
-    Color color, {
-    required double height,
-    required bool isLeft,
-  }) {
-    return Container(
-      width: 10,
-      height: height,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: color, width: 2.5),
-          bottom: BorderSide(color: color, width: 2.5),
-          left: isLeft ? BorderSide(color: color, width: 2.5) : BorderSide.none,
-          right: !isLeft
-              ? BorderSide(color: color, width: 2.5)
-              : BorderSide.none,
-        ),
+  Widget _buildSarrusCopies(bool isDark) {
+    final color = isDark ? AppTheme.textMutedDark : AppTheme.textMutedLight;
+    return ExcludeSemantics(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var c = 0; c < 2; c++)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var r = 0; r < 3; r++)
+                  SizedBox(
+                    width: cellWidth,
+                    height: cellHeight,
+                    child: Center(
+                      child: MathText(
+                        widget.isDecimalView
+                            ? decimalLatex(widget.snapshot.get(r, c))
+                            : widget.snapshot.get(r, c).toLatex(),
+                        fontSize: _fontSize,
+                        color: color,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+        ],
       ),
     );
   }

@@ -9,17 +9,19 @@ Before editing, read the relevant implementation and nearby tests. Use `README.m
 ## Architecture
 
 - `lib/main.dart`, `lib/app.dart`: startup, Material app, localization, and providers.
-- `lib/features/topics`: catalog, combined search/category filters, and navigation.
+- `lib/features/topics`: catalog, combined search/category filters, navigation, the `TopicItem.pathOrder` learning path, per-topic `TopicGlyph` drawings, and completed/continue tracking.
 - `lib/features/matrix_input`: numeric editing, validation, and asynchronous solve flow.
-- `lib/features/step_player`: Cubit state, playback controls, timeline, matrix scene, and calculation inspection.
-- `lib/features/practice`: five-language five-question quiz and feedback.
+- `lib/features/step_player`: Cubit state, playback controls, timeline, matrix scene, calculation inspection, and independent result checks (`result_check.dart`, shown by `ResultChecks`).
+- `lib/features/practice`: five-language quiz; a curated five-question round plus generated rounds (`models/quiz_generator.dart`) built from named misconceptions.
 - `lib/features/transform_visualizer`: coefficient controls, presets, and canvas.
-- `lib/features/settings`: versioned local presentation preferences and configurable player shortcuts.
-- `lib/core`: shared theme tokens, mathematical text, and input controls.
+- `lib/features/settings`: versioned local presentation preferences, configurable player shortcuts, and the last opened topic and finished topic names.
+- `lib/core`: shared theme tokens (including `AppTheme.symbolFallback`, the bundled `MatriksSymbols` font used for math glyphs the system font lacks), mathematical text (`MathText`, which also exposes a readable semantics label for screen readers), and input controls.
 - `lib/l10n`: ARB sources and generated localization classes.
 - `packages/matrix_engine`: independent Dart package; immutable matrices, BigInt rational arithmetic, solvers, and engine tests.
 - `test/`: application, flow, animation, and responsive/accessibility regression tests.
 - `tool/motion_benchmark_test.dart`: optional debug animation benchmark, excluded from the default test suite.
+- `tool/build_symbol_font.py`: rebuilds `assets/fonts/MatriksSymbols-Regular.ttf` (a subset of DejaVu Sans, renamed as its Bitstream Vera license requires; see `assets/fonts/LICENSE-MatriksSymbols.txt`); needs `fontTools`.
+- `tool/build_cjk_font.py`: rebuilds `assets/fonts/MatriksCJK-Regular.ttf` and `-Bold.ttf` (a Noto Sans SC subset of the CJK characters in `app_zh.arb` and the Dart sources, renamed; see `assets/fonts/LICENSE-MatriksCJK.txt`); needs `fontTools`. Rerun it whenever Chinese strings change; a test fails if a character is missing.
 
 The app calculates locally. There is no application backend, account system, or persistent sensitive-data store. Do not introduce these or change preference persistence incidentally.
 
@@ -27,31 +29,36 @@ The app calculates locally. There is no application backend, account system, or 
 
 - Make focused changes using the existing feature structure and Cubit patterns. Avoid broad rewrites, new dependencies, and unrelated formatting.
 - Keep Flutter/UI concerns out of `matrix_engine`. Preserve exact rational values, solver result types, and before/after snapshots. Never replace invalid input with zero.
-- Most matrix operations accept sizes 1–5. Eigen analysis is limited to 2×2 and 3×3; the 3×3 solver searches integer roots from −20 to 20. Do not present it as a general numerical eigensolver. Irrational 2×2 roots are rounded to three decimals; a successful 3×3 result may contain only part of the spectrum. ResultAccuracy/ResultCompleteness label approximation and scope; repeated roots are partial because only representative eigenvectors are computed. Do not infer full numerical correctness from the existing green suites.
+- Most matrix operations accept sizes 1–5. Eigen analysis is limited to 2×2 and 3×3. Rational roots are exact: floating-point estimates only propose candidates, which are kept only when the characteristic polynomial vanishes in rational arithmetic; one rational 3×3 root deflates the cubic to a quadratic. Irrational roots are rounded to three decimals from exact rational brackets, complex pairs are reported to two decimals without eigenvectors, and coefficients too large for an estimate (beyond 1e12) fall back to an integer search with the spectrum labelled incomplete. Do not present it as a general numerical eigensolver. ResultAccuracy/ResultCompleteness label approximation and scope; repeated roots are partial because only representative eigenvectors are computed. Do not infer full numerical correctness from the existing green suites.
 - Preserve the 32-character cell input bound, cell-specific errors, valid selection after resizing, and duplicate-solve protection.
 - Change translations in all five `lib/l10n/app_*.arb` source files, then run `flutter gen-l10n`. Do not manually edit `lib/l10n/generated/`.
 - Keep `pubspec.lock`, platform scaffolding, and `.metadata`. Do not edit generated build/plugin files to fix source problems.
 
 ## Playback invariants
 
-- Guided solutions start automatically and advance on visible-operation completion; entering guided mode starts autoplay. Static-step and direct-result modes remain distinct. Instant results and static steps do not wait for animations; mode switches invalidate completion revisions. Predictions pause worked examples only. Local preference persistence does not include matrices or quiz history.
+- Guided solutions start automatically and advance on visible-operation completion; entering guided mode starts autoplay. Static-step and direct-result modes remain distinct. Instant results and static steps do not wait for animations; mode switches invalidate completion revisions. Predictions pause worked examples only. Local preference persistence includes the last opened topic (`SettingsState.lastTopic`) and which topics were finished (`completedTopics`); it never includes matrices or quiz answers. A topic is recorded as finished when its lesson reaches the finished last step in guided or static-steps mode, when a practice round ends, or when a transformation is played.
 
-- `InstructionTimeline.forTransformation` defines adaptive source/operation/result reading intervals. Swaps take 4000 ms, elimination/scaling 7500 ms, and dot products/determinants allow 1400 ms per contribution plus preparation and review. Speed scales the entire timeline; spatial easing is separate from instructional time.
+- `InstructionTimeline.forTransformation` defines adaptive source/operation/result reading intervals. Swaps take 4000 ms, elimination/scaling 7500 ms up to three changing columns plus 1200 ms per further one (the operation phase reveals one changing column at a time; columns where the source row is 0 are skipped), and dot products/determinants allow 1400 ms per contribution plus preparation and review. Speed scales the entire timeline; spatial easing is separate from instructional time.
 - The animation controller in `MatrixDisplayGrid` owns time. `PlayerCubit` advances only after completion for the active `animationRevision`. Do not add an independent periodic lesson timer.
 - Preserve the distinction between automatic lesson progression (`isPlaying`) and active operation animation (`isAnimating`).
 - Reject stale completion callbacks. Manual navigation, scrubbing, replay, and calculation inspection stop automatic progression. Pause/backgrounding freezes playback; speed and responsive layout changes preserve progress.
 - Reduced motion removes spatial animation but preserves results, phase explanations, and reading time.
 - Display exact mathematical contributions and discrete results, never arbitrary interpolated numbers. Reveal contributions progressively and leave them available after completion. Multiplication shows the actual row of A and column of B; never draw source beams on C. Keep cell/source/explanation caches bounded to the current step and invalidate them when dependencies change.
-- The step list selects lesson steps; the collapsed operation inspector contains scrubbing and replay. Preserve a single main play/pause control.
+- The player passes one `MatrixLayoutHint` per solution so cell width, the operation reserve and the swap lane do not change between steps. Entries of a sum or product not computed yet are pending placeholders, never zeros.
+- Each step explains its operation once: do not repeat the phase explanation in the step description, per-cell calculation list, or legend. Mark only highlight roles the step actually has.
+- The player is a single centred stage column (max width 880) at every screen width: matrix, a role legend under it, the phase caption (one sentence that fades between phases, with phase dots — not a "1 / 3" count), the solver's "why" note when the caption does not already say it, then one `Details` drawer (key `operation-inspector`) holding the rationale, per-cell calculations, and the scrub slider/replay. Opening the drawer pauses the lesson. Row-operation highlights use two hues only: amber for the row used (heavier border/fill for the pivot, thinner for the source) and cyan for the row that changes (target; a finished zero keeps its "0 ✓" badge, now cyan); the augmented-matrix divider uses the neutral outline color.
+- The step list selects lesson steps; the collapsed `Details`/operation inspector contains scrubbing and replay. Preserve a single main play/pause control.
 - Geometric presets must match their mathematical names: projection is idempotent and rotation preserves lengths. `TransformMatrix` handles interpolation from the visible frame; rotations interpolate by angle when both endpoints are rotations. The solver engine is unaffected. Coefficient fields accept finite decimals in [-1000, 1000], commit on submit/blur, retain invalid drafts, and do not silently apply zero.
 
 ## UI and accessibility
 
 Use `AppTheme` tokens and shared controls. Prefer neutral surfaces, clear dividers, and blue actions; mathematical role colors carry instructional meaning. Follow the detailed rules in `docs/DESIGN_SYSTEM.md`.
 
-- Adapt to available width: single column below 600 px, flexible at 600–959, side-by-side from 960 when text size permits. Short screens and large text must scroll.
+- Adapt to available width: single column below 600 px, flexible at 600–959. The step player is one centred stage column at every width (wide screens only get more padding); `matrix_input` and `transform_visualizer` still switch to side-by-side layouts from 960 px when text size permits. Short screens and large text must scroll.
 - Respect system text scaling and reduced motion. Keep touch targets at least 44×44 logical pixels, visible focus, keyboard traversal, and localized semantic labels.
-- Animated cell calculations may fit down to 14 logical pixels before system text scaling; results return to normal 18–22 px text. Longer exact expressions remain horizontally scrollable. Full calculation panels wrap at TeX operator boundaries. Keep full formulas in `MathText`; use `readableMathProse` only for the supported inline notation in prose.
+- Animated cell calculations reserve up to 120 px per operation cell, capped at the width actually available per column so a reserve never crowds a value off a narrow screen; a formula that still doesn't fit shrinks to a 14 logical-pixel floor (before system text scaling) and then scrolls. Results return to normal 18–22 px text. Longer exact expressions remain horizontally scrollable. Full calculation panels wrap at TeX operator boundaries. Keep full formulas in `MathText`; use `readableMathProse` only for the supported inline notation in prose.
+- Math glyphs outside the system font's coverage (arrows, sub/superscripts, ⟹, ∅, ✓, etc.) must render from the bundled `MatriksSymbols` font: pass `AppTheme.symbolFallback` as `fontFamilyFallback` on any new explicit `TextStyle` that can carry this notation, rather than letting Flutter fetch a fallback glyph at runtime. The Chinese interface renders from the bundled `MatriksCJK` subset, also part of `AppTheme.symbolFallback`, so no glyphs are fetched from `fonts.gstatic.com` and Chinese works offline; only characters a learner types outside the subset still fall back to Flutter's runtime download.
+- Desktop screen readers (Windows UI Automation) build their tree from traversal-order children and reject an update with an orphaned node, after which they never update again. Wrap every `Slider` in `SliderWhileShown` (its value-indicator `OverlayPortal` is orphaned while the slider is hidden), keep drawers that hold one unmaintained and unanimated (`AnimationStyle.noAnimation`), and keep `test/semantics_tree_consistency_test.dart` passing. Give tappable containers the button role (`Semantics(button: true)`, `internalAddSemanticForOnTap: true` on `ExpansionTile`), or UI Automation exposes them as text that cannot be invoked.
 - Keep primary playback controls unique. Show only relevant legends and explanations. Feedback must include text or an icon, not color alone.
 - Rebuild changing animation layers instead of whole screens. Measure optimizations with the same scenario before and after; debug pump timing is not GPU frame time or a 60 FPS guarantee.
 
@@ -88,7 +95,7 @@ flutter build web --release
 flutter build windows --release
 ```
 
-Format changed Dart files with `dart format <paths>`. Add behavior-focused regression coverage when changing logic; preserve existing tests. Run relevant tests first, then the full suite for cross-cutting changes. Playback work should cover phase boundaries, pause/resume, replay, scrubbing, speed, stale completions, and disposal. Layout work should cover both themes/languages, 320–1440 px, 200% text, reduced motion, long signed fractions, and 5×5 matrices as relevant.
+Format changed Dart files with `dart format <paths>`. CI (`.github/workflows/ci.yml`) runs `dart format` over every tracked Dart file except `lib/l10n/generated` as its last `verify` step and fails on any diff, so an unformatted file fails the pipeline even if analysis and tests pass. Add behavior-focused regression coverage when changing logic; preserve existing tests. Run relevant tests first, then the full suite for cross-cutting changes. Playback work should cover phase boundaries, pause/resume, replay, scrubbing, speed, stale completions, and disposal. Layout work should cover both themes/languages, 320–1440 px, 200% text, reduced motion, long signed fractions, and 5×5 matrices as relevant.
 
 Optional benchmark: `flutter test tool/motion_benchmark_test.dart --reporter expanded`. Keep machine load comparable and report measurement limitations.
 

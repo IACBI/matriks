@@ -15,7 +15,6 @@ class MatrixInputState {
   final int activeMatrix; // 0 for A, 1 for B
   final int focusedRow;
   final int focusedCol;
-  final String? errorMessage;
 
   const MatrixInputState({
     required this.topic,
@@ -28,7 +27,6 @@ class MatrixInputState {
     this.activeMatrix = 0,
     this.focusedRow = 0,
     this.focusedCol = 0,
-    this.errorMessage,
   });
 
   Matrix toMatrixA() {
@@ -58,7 +56,6 @@ class MatrixInputState {
     int? activeMatrix,
     int? focusedRow,
     int? focusedCol,
-    String? Function()? errorMessage,
   }) {
     return MatrixInputState(
       topic: topic ?? this.topic,
@@ -71,7 +68,6 @@ class MatrixInputState {
       activeMatrix: activeMatrix ?? this.activeMatrix,
       focusedRow: focusedRow ?? this.focusedRow,
       focusedCol: focusedCol ?? this.focusedCol,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );
   }
 }

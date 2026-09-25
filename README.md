@@ -6,7 +6,7 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 ![Flutter 3.47.1](https://img.shields.io/badge/Flutter-3.47.1-02569B?logo=flutter&logoColor=white)
 ![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
-![Tests](https://img.shields.io/badge/tests-255%20app%20%2B%2049%20engine-success)
+![Tests](https://img.shields.io/badge/tests-329%20app%20%2B%2070%20engine-success)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 **Read this in:** [English](#english) · [Türkçe](#turkce)
@@ -25,14 +25,15 @@ Results are labelled honestly. Every solution carries an accuracy (exact or appr
 
 Everything runs on the device. There is no backend, account system or remote data store; only presentation preferences are persisted, never matrices or quiz history.
 
-Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: irrational 2×2 roots are rounded to three decimals with approximate eigenvectors, complex spectra are unsupported, and the 3×3 solver searches integer roots from −20 to 20, so a rational non-integer eigenvalue of a fractional matrix will not be found. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
+Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: rational roots are exact, irrational roots are rounded to three decimals with approximate eigenvectors, complex eigenvalues are reported without eigenvectors, and 3×3 matrices with very large coefficients may be labelled incomplete. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
 
 ### Features
 
-- **Twelve topics** in four groups — elimination and systems (RREF, REF, `Ax = b`), matrix algebra (determinant, inverse, addition, multiplication), decomposition and spectra (rank-nullity, eigenvalues, LU), and visual practice (2D transformations, quiz).
-- **Exact arithmetic** throughout. Rationals are stored as `BigInt` numerator and denominator; results are shown as fractions or decimals on demand.
-- **Guided playback** driven by the visible animation rather than a background timer: pause, step forward and back, scrub inside an operation, replay, and scale speed from 0.25× to 4×.
+- **Twelve topics on a suggested learning path** — entry-wise operations, elimination (RREF, REF, `Ax = b`), matrix algebra (determinant, inverse), decomposition and spectra (rank-nullity, LU, eigenvalues), and visual practice (2D transformations, quiz) — numbered in that order, with a small drawing of each operation and a "Continue where you left off" card.
+- **Exact arithmetic** throughout. Rationals are stored as `BigInt` numerator and denominator; results are shown as fractions or decimals on demand. The result screen and a finished lesson each recompute the answer with an independent method (for example A·A⁻¹ = I, or Av = λv for an exact eigenpair) when the operation has one to offer.
+- **Guided playback** driven by the visible animation rather than a background timer: pause, step forward and back, scrub inside an operation, replay, and scale speed from 0.25× to 4×. Every lesson is a single stage — matrix, role legend, a one-sentence phase caption and a collapsible details drawer — at any screen width.
 - **Readable work.** Long exact expressions shrink to a 14 px floor and then scroll instead of truncating; the full calculation for any cell is one tap away.
+- **Practice** with a curated five-question round plus generated rounds from random small matrices, where every wrong option names the misconception it comes from.
 - **Five languages** (English, Turkish, Simplified Chinese, Spanish, Russian), light and dark themes, adaptive layout from 320 px upwards, system text scaling and reduced-motion support.
 
 ### Requirements
@@ -70,7 +71,7 @@ Web, Windows and the test suites are the validated paths. Android, iOS, Linux an
 
 ### Configuration
 
-Language, theme, accent palette, solution mode, default playback speed and player keyboard shortcuts live in the in-app Settings tab and persist locally through versioned preferences.
+Language, theme, solution mode, default playback speed, explanation level, number view and player keyboard shortcuts live in the in-app Settings tab and persist locally through versioned preferences, along with the last topic opened and which topics were finished — never matrices or quiz answers.
 
 Translations are edited in all five `lib/l10n/app_*.arb` source files and regenerated with `flutter gen-l10n`. Never edit `lib/l10n/generated/` by hand.
 
@@ -116,14 +117,15 @@ Sonuçlar dürüstçe etiketlenir. Her çözüm bir doğruluk (tam ya da yaklaş
 
 Her şey cihazda çalışır. Arka uç, hesap sistemi veya uzak veri deposu yoktur; yalnızca sunum tercihleri saklanır, matrisler ve sınav geçmişi saklanmaz.
 
-Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: irrasyonel 2×2 kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık spektrumlar desteklenmez, 3×3 çözücü −20 ile 20 arasında yalnızca tam sayı kök arar; dolayısıyla kesirli bir matrisin tam sayı olmayan rasyonel özdeğeri bulunmaz. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
+Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: rasyonel kökler kesindir, irrasyonel kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık özdeğerler özvektörsüz raporlanır, çok büyük katsayılı 3×3 matrisler eksik olarak işaretlenebilir. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
 
 ### Özellikler
 
-- **On iki konu**, dört grup hâlinde — eliminasyon ve sistemler (RREF, REF, `Ax = b`), matris cebiri (determinant, ters, toplama, çarpma), ayrışım ve spektral teori (rank-sıfırlık, özdeğerler, LU) ve görsel alıştırma (2B dönüşümler, sınav).
-- **Baştan sona tam aritmetik.** Rasyonel sayılar `BigInt` pay ve payda olarak tutulur; sonuçlar istendiğinde kesir ya da ondalık gösterilir.
-- **Rehberli oynatma**, arka planda çalışan bir sayaçla değil görünen animasyonla ilerler: duraklatma, ileri/geri adım, işlem içinde gezinme, tekrar oynatma ve 0,25×–4× arası hız.
+- **Önerilen bir öğrenme yolunda on iki konu** — terim bazlı işlemler, eliminasyon (RREF, REF, `Ax = b`), matris cebiri (determinant, ters), ayrışım ve spektral teori (rank-sıfırlık, LU, özdeğerler) ve görsel alıştırma (2B dönüşümler, sınav) — bu sırayla numaralandırılır, her biri işlemi anlatan küçük bir çizimle gösterilir ve "Kaldığın yerden devam et" kartı sunulur.
+- **Baştan sona tam aritmetik.** Rasyonel sayılar `BigInt` pay ve payda olarak tutulur; sonuçlar istendiğinde kesir ya da ondalık gösterilir. Sonuç ekranı ve tamamlanan her ders, işlemin bağımsız bir doğrulaması varsa sonucu farklı bir yöntemle yeniden hesaplar (örneğin A·A⁻¹ = I ya da kesin bir özdeğer çifti için Av = λv).
+- **Rehberli oynatma**, arka planda çalışan bir sayaçla değil görünen animasyonla ilerler: duraklatma, ileri/geri adım, işlem içinde gezinme, tekrar oynatma ve 0,25×–4× arası hız. Her ders, ekran genişliği ne olursa olsun tek bir aşama olarak gösterilir: matris, rol lejantı, tek cümlelik bir aşama açıklaması ve katlanabilir bir ayrıntı çekmecesi.
 - **Okunabilir işlem.** Uzun tam ifadeler 14 px tabanına kadar küçülür, sonra kırpılmak yerine kaydırılır; herhangi bir hücrenin tam hesabı tek dokunuş uzaklıktadır.
+- **Alıştırma**, küratörlü beş sorulu tur ile birlikte küçük rastgele matrislerden üretilen turlar sunar; her yanlış seçenek, kaynaklandığı kavram yanılgısını adlandırır.
 - **Beş dil** (İngilizce, Türkçe, Basitleştirilmiş Çince, İspanyolca, Rusça), açık ve koyu tema, 320 px'ten itibaren uyarlanan yerleşim, sistem yazı ölçeği ve azaltılmış hareket desteği.
 
 ### Gereksinimler
@@ -161,7 +163,7 @@ Doğrulanmış yollar web, Windows ve test paketleridir. Android, iOS, Linux ve 
 
 ### Yapılandırma
 
-Dil, tema, vurgu paleti, çözüm modu, varsayılan oynatma hızı ve oynatıcı klavye kısayolları uygulama içindeki Ayarlar sekmesinde yer alır ve sürümlenmiş tercihler aracılığıyla yerelde saklanır.
+Dil, tema, çözüm modu, varsayılan oynatma hızı, açıklama düzeyi, sayı görünümü ve oynatıcı klavye kısayolları uygulama içindeki Ayarlar sekmesinde yer alır; son açılan konu ve tamamlanan konularla birlikte sürümlenmiş tercihler aracılığıyla yerelde saklanır — matrisler ve sınav cevapları hiçbir zaman saklanmaz.
 
 Çeviriler beş `lib/l10n/app_*.arb` kaynak dosyasının tamamında düzenlenir ve `flutter gen-l10n` ile yeniden üretilir. `lib/l10n/generated/` dizinini elle düzenlemeyin.
 

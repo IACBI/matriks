@@ -84,7 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.';
+      'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.';
 
   @override
   String get topicTransform2d => '2D Geometric Transformation';
@@ -138,10 +138,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fractionToggle => 'Fraction / Decimal';
 
   @override
-  String get decreaseDimension => 'Decrease dimension';
+  String get removeRow => 'Remove a row';
 
   @override
-  String get increaseDimension => 'Increase dimension';
+  String get addRow => 'Add a row';
+
+  @override
+  String get removeColumn => 'Remove a column';
+
+  @override
+  String get addColumn => 'Add a column';
 
   @override
   String stepOf(Object current, Object total) {
@@ -156,7 +162,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Speed: ${speed}x';
+    return 'Speed: $speed';
   }
 
   @override
@@ -185,11 +191,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Language';
-
-  @override
-  String solveError(Object error) {
-    return 'Error: $error';
-  }
 
   @override
   String get solveFallbackError => 'Could not solve matrix.';
@@ -264,8 +265,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Eliminate Entry in Row $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Eliminate Entry in Row $target using Row $source';
   }
 
   @override
@@ -458,8 +459,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Infinite Solutions ($count Free Variables)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Free Variables',
+      one: '1 Free Variable',
+    );
+    return 'Infinite Solutions ($_temp0)';
   }
 
   @override
@@ -473,8 +480,20 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
-    return 'The matrix has $rank pivot columns and $nullity free columns. By the Rank-Nullity Theorem, rank(A) + nullity(A) = $cols.';
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rank,
+      locale: localeName,
+      other: '$rank pivot columns',
+      one: '1 pivot column',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      nullity,
+      locale: localeName,
+      other: '$nullity free columns',
+      one: '1 free column',
+    );
+    return 'The matrix has $_temp0 and $_temp1. By the Rank-Nullity Theorem, rank(A) + nullity(A) = $cols.';
   }
 
   @override
@@ -514,7 +533,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'For (A − ${lambda}I)v = 0, one representative eigenvector is $vector.';
+    return 'For (A − λI)v = 0 with λ = $lambda, one representative eigenvector is $vector.';
   }
 
   @override
@@ -524,7 +543,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'No integer root from −20 to 20 was found for $poly. Other real or complex roots may exist; this solver does not compute them.';
+    return 'The roots of $poly could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.';
   }
 
   @override
@@ -741,10 +760,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cellCalculations => 'Cell calculations';
 
   @override
+  String get stepDetails => 'Details';
+
+  @override
   String get chooseStep => 'Choose a step';
 
   @override
   String get learningPath => 'New to matrices?';
+
+  @override
+  String get continueLearning => 'Continue where you left off';
+
+  @override
+  String get continueAction => 'Continue';
+
+  @override
+  String get topicCompleted => 'Completed';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$done of $total topics completed';
+  }
 
   @override
   String get pathEliminate => '1 · Create zeros';
@@ -754,18 +790,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Solve a system';
-
-  @override
-  String get guideGenericSource =>
-      'Read the current matrix and the goal of this step.';
-
-  @override
-  String get guideGenericApply =>
-      'Follow the highlighted entries. The explanation gives the reasoning.';
-
-  @override
-  String get guideGenericResult =>
-      'Compare the result with the explanation. Continue when you are ready.';
 
   @override
   String guideEliminateSource(String source, String target, String column) {
@@ -832,7 +856,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDetResult =>
-      'The products remain visible below, so you can check the result at your own pace.';
+      'Their sum is this group\'s contribution to the determinant.';
 
   @override
   String get coefficientError => 'Enter a number from −1000 to 1000.';
@@ -987,18 +1011,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get compact => 'Compact';
 
   @override
-  String get accentLabel => 'Accent palette';
-
-  @override
-  String get blue => 'Blue';
-
-  @override
-  String get teal => 'Teal';
-
-  @override
-  String get purple => 'Purple';
-
-  @override
   String get shortcutsLabel => 'Keyboard shortcuts';
 
   @override
@@ -1015,18 +1027,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetSettings => 'Reset settings';
 
   @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get resetProgress => 'Reset progress';
+
+  @override
   String get settingsStorageError =>
       'Preferences could not be read or saved. Changes remain available for this session.';
 
   @override
   String get localPreferences =>
-      'Preferences stay on this device. Matrix history is not saved.';
+      'Preferences and the lessons you finished stay on this device. Matrices and quiz answers are not saved.';
 
   @override
   String get resultExact => 'Exact';
 
   @override
   String get resultApproximate => 'Approximate';
+
+  @override
+  String get checkTitle => 'Check the result';
+
+  @override
+  String get checkHolds => 'Holds';
+
+  @override
+  String get checkFails => 'Does not hold';
+
+  @override
+  String get checkInverse =>
+      'Multiplying A by its inverse gives the identity matrix.';
+
+  @override
+  String get checkDetRows =>
+      'Row reduction to a triangular matrix gives the same value.';
+
+  @override
+  String get checkDetCofactor =>
+      'Cofactor expansion along the first row gives the same value.';
+
+  @override
+  String get checkLu =>
+      'Multiplying L by U gives back A, with its rows in the order P records.';
+
+  @override
+  String get checkSystem => 'Substituting x back into the equations gives b.';
+
+  @override
+  String get checkRank =>
+      'The largest square submatrix with a nonzero determinant gives the rank; the remaining columns give the nullity.';
+
+  @override
+  String get checkEigen => 'A only stretches v: Av equals λv.';
+
+  @override
+  String get seeAsTransform => 'See it as a transformation';
 
   @override
   String get resultComplete => 'Complete';
@@ -1043,7 +1099,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      '3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.';
+      '3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.';
 
   @override
   String get eigenBasisScope =>
@@ -1071,7 +1127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quizQ1Explanation =>
-      'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.';
+      'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.';
 
   @override
   String get quizQ1Hint =>
@@ -1215,6 +1271,130 @@ class AppLocalizationsEn extends AppLocalizations {
       'All diagonal entries are positive; no extra negative sign is introduced.';
 
   @override
+  String get genDetTitle => '2×2 determinant';
+
+  @override
+  String get genDetPrompt => 'What is det(A) for the matrix below?';
+
+  @override
+  String get genDetHint =>
+      'For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'That adds the two diagonal products; the second one is subtracted.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'That multiplies along the rows. A determinant uses the diagonals.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'The order is reversed: the main diagonal comes first, so the sign flips.';
+
+  @override
+  String get genElimTitle => 'Choosing a multiplier';
+
+  @override
+  String get genElimPrompt =>
+      'Which row operation makes the first entry of row 2 zero?';
+
+  @override
+  String get genElimHint =>
+      'Divide the entry you want to remove by the pivot above it.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'The multiplier is the entry divided by the pivot: $entry ÷ $pivot = $factor. Subtracting $factor times row 1 turns the entry into 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'With the opposite sign the entry grows instead of becoming 0.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'That changes row 1, the pivot row. The row that must change is row 2.';
+
+  @override
+  String get genProductTitle => 'An entry of a product';
+
+  @override
+  String get genProductPrompt => 'What is the entry in row 1, column 2 of A·A?';
+
+  @override
+  String get genProductHint =>
+      'Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'Row 1 is ($r1, $r2) and column 2 is ($c1, $c2), so the entry is $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'That pairs row 1 with row 2. The second factor contributes a column.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'That pairs two columns. The first factor contributes a row.';
+
+  @override
+  String get genInverseTitle => 'Inverse of a 2×2 matrix';
+
+  @override
+  String get genInversePrompt => 'Which matrix is A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a and d trade places, b and c change sign, and everything is multiplied by 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'The diagonal is swapped, but b and c also change sign.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b and c change sign, but a and d must also trade places.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Every entry is negated here; only b and c change sign.';
+
+  @override
+  String get newQuestions => 'New questions';
+
+  @override
   String eigen_vector_approx_title(Object index, Object lambda) {
     return 'Approximate vector for λ_$index ≈ $lambda';
   }
@@ -1226,4 +1406,117 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spaceKey => 'Space';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Row $row, column $column, not calculated yet';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Solving $poly gives the real eigenvalue $roots and the complex conjugate pair λ ≈ $complex. Only the real eigenvalue has a real eigenvector.';
+  }
+
+  @override
+  String get keyNextRow => 'Next row';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B has as many rows as A has columns, so A × B is defined.';
+
+  @override
+  String get lessonComplete => 'Lesson complete';
+
+  @override
+  String get lessonCompleteHint =>
+      'Check the result, watch the lesson again, or continue with a matrix of your own.';
+
+  @override
+  String get replayLesson => 'Watch again';
+
+  @override
+  String get tryOwnMatrix => 'Try your own matrix';
+
+  @override
+  String get editMatrix => 'Change the matrix';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Matrix $matrix replaced.';
+  }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get transformShortcutsHint =>
+      'Keyboard: Space plays or reverses, S shear, P projection, R identity.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Faint grid: the plane before the transformation.';
+
+  @override
+  String get transformLegendEigen =>
+      'Dashed lines: real eigenvector directions, which stay on their own line.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Target $entry ÷ pivot $pivot = $ratio. Subtracting $ratio times the pivot row cancels the target, and the same $ratio is written into L at ($row, $column), so L · U rebuilds A.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      'For [[a, b], [c, d]], look at the diagonal a, d and the other two entries b, c.';
+
+  @override
+  String get guideAdjApply =>
+      'a and d trade places; b and c keep their places but change sign.';
+
+  @override
+  String get guideAdjResult =>
+      'This is adj(A). Dividing it by det(A) gives the inverse.';
+
+  @override
+  String get guideAdjReason =>
+      'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'Every entry of adj(A) is multiplied by the same number, 1/det(A) = $factor.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Multiply the entries one at a time.';
+
+  @override
+  String get guideScaleAllResult => 'The result is A⁻¹. Check: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'The matrix is now upper triangular, so its determinant is the product of the diagonal.';
+
+  @override
+  String get guideDiagApply =>
+      'Multiply the diagonal entries one by one. The first factor carries a −1 for each row swap.';
+
+  @override
+  String get guideDiagResult =>
+      'Row eliminations did not change the determinant, so this product is det of the original matrix.';
+
+  @override
+  String get guideDetRecapSource =>
+      'Both totals are known from the previous steps.';
+
+  @override
+  String get guideDetRecapApply => 'Subtract the − total from the + total.';
+
+  @override
+  String get guideDetRecapResult => 'The difference is the determinant.';
 }

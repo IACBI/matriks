@@ -31,7 +31,7 @@ void main() {
         before: step.matrixBefore,
         after: step.matrixAfter,
       );
-      expect(lesson.calculations.first, r'(2) - (2) \cdot (1) = 0');
+      expect(lesson.calculations.first, r'2 - 2 \cdot 1 = 0');
       expect(lesson.rationale, contains('Target 2 ÷ pivot 1 = 2'));
       expect(lesson.operation, startsWith('Subtract 2'));
       final determinant = DeterminantSolver.solve(
@@ -47,9 +47,9 @@ void main() {
       );
       expect(detLesson.markers, ['+', '−']);
       expect(detLesson.calculations, [
-        r'(2) \cdot (4) = 8',
-        r'(3) \cdot (1) = 3',
-        '(8) - (3) = 5',
+        r'2 \cdot 4 = 8',
+        r'3 \cdot 1 = 3',
+        '8 - 3 = 5',
       ]);
     },
   );
@@ -68,11 +68,24 @@ void main() {
       after: step.matrixAfter,
     );
     expect(lesson.calculations.length, 7);
-    expect(lesson.calculations[1], r'(2) \cdot (4) \cdot (5) = 40');
-    expect(lesson.calculations[4], r'(1) \cdot (4) \cdot (6) = 24');
-    expect(lesson.calculations.last, '(40) - (39) = 1');
-    final timeline = InstructionTimeline.forTransformation(step.transformation);
-    expect(timeline.operationMs ~/ 6, greaterThanOrEqualTo(1200));
+    expect(lesson.calculations[1], r'2 \cdot 4 \cdot 5 = 40');
+    expect(lesson.calculations[4], r'1 \cdot 4 \cdot 6 = 24');
+    expect(lesson.calculations.last, '40 - 39 = 1');
+    // The last step recaps the six products and only animates the
+    // subtraction; the products themselves were traced in steps 1 and 2.
+    expect(lesson.revealedAtStart, 6);
+    expect(lesson.progressiveCount, 1);
+    final solution = DeterminantSolver.solve(
+      Matrix.fromInts([
+        [1, 2, 3],
+        [0, 1, 4],
+        [5, 6, 0],
+      ]),
+    );
+    final positive = InstructionTimeline.forTransformation(
+      solution.steps.first.transformation,
+    );
+    expect(positive.operationMs ~/ 3, greaterThanOrEqualTo(1200));
   });
 
   test('Every quiz option has bilingual misconception feedback', () {
@@ -97,8 +110,8 @@ void main() {
   ) async {
     await tester.pumpWidget(host(const TopicsScreen()));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('New to matrices?'));
-    await tester.pumpAndSettle();
+    // The starter lessons are listed without expanding anything first.
+    expect(find.text('New to matrices?'), findsOneWidget);
     final start = find.text('1 · Create zeros');
     await tester.ensureVisible(start);
     await tester.tap(start);

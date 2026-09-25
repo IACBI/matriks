@@ -1,12 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/matrix_bracket.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../settings/cubit/settings_cubit.dart';
 import '../../settings/widgets/language_menu.dart';
 import '../../step_player/widgets/matrix_cell_widget.dart';
+import '../models/quiz_generator.dart';
 import '../models/quiz_question.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -20,6 +26,10 @@ class PracticeScreen extends StatefulWidget {
 class _PracticeScreenState extends State<PracticeScreen> {
   late String _language;
   late List<QuizQuestion> _questions;
+
+  /// Null for the curated first round; otherwise the seed of a generated
+  /// round, kept so a language change rebuilds the same questions.
+  int? _seed;
   int _currentIndex = 0;
   int _score = 0;
   int? _selectedOptionIndex;
@@ -31,7 +41,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _language = Localizations.localeOf(context).languageCode;
-    _questions = QuizBank.getQuestions(language: _language);
+    _questions = _buildQuestions();
+  }
+
+  List<QuizQuestion> _buildQuestions() {
+    final seed = _seed;
+    return seed == null
+        ? QuizBank.getQuestions(language: _language)
+        : QuizGenerator.generate(
+            seed,
+            lookupAppLocalizations(Locale(_language)),
+          );
   }
 
   @override
@@ -66,8 +86,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
     }
   }
 
-  void _restartQuiz() {
+  void _restartQuiz({bool fresh = false}) {
     setState(() {
+      if (fresh) {
+        _seed = Random().nextInt(1 << 31);
+        _questions = _buildQuestions();
+      }
       _currentIndex = 0;
       _score = 0;
       _selectedOptionIndex = null;
@@ -115,6 +139,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   void _showCompletionDialog() {
+    // Finishing a round completes the practice topic on the learning path.
+    context.read<SettingsCubit?>()?.completeTopic('practice');
     final l10n = lookupAppLocalizations(Locale(_language));
     final title = l10n.practiceCompleted;
     final scoreText = l10n.practiceTotalScore(_score, _questions.length * 10);
@@ -163,12 +189,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
             },
             child: Text(returnText),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               _restartQuiz();
             },
             child: Text(restartText),
+          ),
+          FilledButton(
+            key: const ValueKey('quiz-new-round'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _restartQuiz(fresh: true);
+            },
+            child: Text(l10n.newQuestions),
           ),
         ],
       ),
@@ -242,47 +276,50 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Score Badge
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.accentAmber.withValues(
-                                alpha: isDark ? 0.25 : 0.15,
+                          // Score Badge, sized to its content rather than the
+                          // full column width.
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
                               ),
-                              borderRadius: BorderRadius.circular(
-                                AppTheme.radiusMd,
-                              ),
-                              border: Border.all(
+                              decoration: BoxDecoration(
                                 color: AppTheme.accentAmber.withValues(
-                                  alpha: 0.6,
+                                  alpha: isDark ? 0.25 : 0.15,
                                 ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.star_rounded,
-                                  color: AppTheme.accentAmber,
-                                  size: 18,
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusMd,
                                 ),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    scoreLabel,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark
-                                          ? AppTheme.accentAmber
-                                          : const Color(0xFFB45309),
-                                    ),
+                                border: Border.all(
+                                  color: AppTheme.accentAmber.withValues(
+                                    alpha: 0.6,
                                   ),
                                 ),
-                              ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: AppTheme.accentAmber,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      scoreLabel,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark
+                                            ? AppTheme.accentAmber
+                                            : const Color(0xFFB45309),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -414,7 +451,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                       ? AppTheme.borderDark
                                       : AppTheme.borderLight,
                                 ),
-                                boxShadow: AppTheme.cardShadow(isDark),
                               ),
                               child: _buildMatrixPreview(q.matrix, isDark),
                             ),
@@ -546,16 +582,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Widget _buildMatrixPreview(Matrix m, bool isDark) {
-    final bracketColor = isDark
-        ? const Color(0xFF64748B)
-        : const Color(0xFF475569);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildBracket(
-            bracketColor,
+          MatrixBracket(
+            width: 8,
+            thickness: 2.2,
             height:
                 (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
@@ -583,8 +617,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
             }),
           ),
           const SizedBox(width: 4),
-          _buildBracket(
-            bracketColor,
+          MatrixBracket(
+            width: 8,
+            thickness: 2.2,
             height:
                 (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
@@ -631,6 +666,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
         button: true,
         enabled: !_hasAnswered,
         selected: isSelected,
+        // The formula sits in a horizontal scroll view, which would keep it
+        // out of the button's label: the option was read as just "A".
+        label: '${optionLetters[index]}: ${mathSemanticsLabel(optionLatex)}',
+        excludeSemantics: true,
         child: InkWell(
           onTap: _hasAnswered ? null : () => _selectOption(index),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -692,28 +731,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBracket(
-    Color color, {
-    required double height,
-    required bool isLeft,
-  }) {
-    return Container(
-      width: 8,
-      height: height,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: color, width: 2.2),
-          bottom: BorderSide(color: color, width: 2.2),
-          left: isLeft ? BorderSide(color: color, width: 2.2) : BorderSide.none,
-          right: !isLeft
-              ? BorderSide(color: color, width: 2.2)
-              : BorderSide.none,
         ),
       ),
     );

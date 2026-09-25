@@ -6,14 +6,9 @@ class AppTheme {
   static const primaryBlueDark = Color(0xFFAAC7FF);
   static const accentAmber = Color(0xFFB77913);
   static const accentCyan = Color(0xFF1683A5);
-  static const accentPurple = Color(0xFF8664C4);
   static const accentGreen = Color(0xFF208466);
   static const accentRed = Color(0xFFD14848);
-  static const accentTeal = Color(0xFF25877E);
-  static const accentPink = Color(0xFFBC5387);
   static const accentIndigo = Color(0xFF6575C5);
-  static const accentOrange = Color(0xFFBE702B);
-  static const accentRose = Color(0xFFB84B69);
   static const scaffoldLight = Color(0xFFF5F7FA);
   static const surfaceLight = Color(0xFFFFFFFF);
   static const surfaceVariantLight = Color(0xFFEDF0F4);
@@ -39,32 +34,32 @@ class AppTheme {
   static const stateMs = 180;
   static const panelMs = 220;
 
+  /// Bundled glyphs the default text font lacks (see pubspec.yaml): arrows,
+  /// sub/superscripts and math symbols, and the CJK characters of the
+  /// Chinese interface. Without them the web build fetches fallback fonts
+  /// from Google at runtime, and shows boxes offline.
+  static const symbolFallback = ['MatriksSymbols', 'MatriksCJK'];
+
   static Duration motion(BuildContext context, [int milliseconds = stateMs]) =>
       MediaQuery.disableAnimationsOf(context)
       ? Duration.zero
       : Duration(milliseconds: milliseconds);
-  static List<BoxShadow> cardShadow(bool isDark) => const [];
-  static List<BoxShadow> elevatedShadow(bool isDark) => const [
-    BoxShadow(color: Color(0x14000000), blurRadius: 24, offset: Offset(0, 8)),
-  ];
   static final ThemeData lightTheme = _build(false);
   static final ThemeData darkTheme = _build(true);
 
-  static ThemeData studio(bool dark, {int palette = 0, bool compact = false}) =>
-      _build(dark, palette: palette, compact: compact);
+  static ThemeData studio(bool dark, {bool compact = false}) =>
+      _build(dark, compact: compact);
 
-  static ThemeData _build(bool dark, {int palette = 0, bool compact = false}) {
+  static ThemeData _build(bool dark, {bool compact = false}) {
     final surface = dark ? surfaceDark : surfaceLight;
     final background = dark ? scaffoldDark : scaffoldLight;
     final variant = dark ? surfaceVariantDark : surfaceVariantLight;
     final ink = dark ? textPrimaryDark : textPrimaryLight;
     final secondaryInk = dark ? textSecondaryDark : textSecondaryLight;
     final border = dark ? borderDark : borderLight;
-    final primary = switch (palette) {
-      1 => dark ? const Color(0xFF7CE0D3) : const Color(0xFF006B60),
-      2 => dark ? const Color(0xFFD2BBFF) : const Color(0xFF7043AF),
-      _ => dark ? primaryBlueDark : primaryBlue,
-    };
+    // One brand colour for actions; amber and cyan stay free for the
+    // mathematical roles they mark.
+    final primary = dark ? primaryBlueDark : primaryBlue;
     final scheme =
         ColorScheme.fromSeed(
           seedColor: primary,
@@ -84,7 +79,11 @@ class AppTheme {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(radiusMd),
     );
-    const buttonText = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
+    const buttonText = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      fontFamilyFallback: symbolFallback,
+    );
     return base.copyWith(
       listTileTheme: ListTileThemeData(
         minTileHeight: compact ? 48 : 64,
@@ -136,7 +135,20 @@ class AppTheme {
               height: 1.4,
               color: secondaryInk,
             ),
-          ),
+            labelLarge: TextStyle(
+              fontSize: 14,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              color: ink,
+            ),
+            labelMedium: TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              color: secondaryInk,
+            ),
+          )
+          .apply(fontFamilyFallback: symbolFallback),
       appBarTheme: AppBarTheme(
         backgroundColor: background,
         foregroundColor: ink,
@@ -145,6 +157,7 @@ class AppTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
+          fontFamilyFallback: symbolFallback,
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: ink,
@@ -206,7 +219,10 @@ class AppTheme {
           horizontal: 16,
           vertical: 16,
         ),
-        hintStyle: TextStyle(color: secondaryInk),
+        hintStyle: TextStyle(
+          color: secondaryInk,
+          fontFamilyFallback: symbolFallback,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
         ),
@@ -224,7 +240,16 @@ class AppTheme {
         selectedColor: primary.withValues(alpha: 0.12),
         side: BorderSide(color: border),
         shape: shape,
-        labelStyle: TextStyle(fontSize: 13, color: ink),
+        labelStyle: TextStyle(
+          fontSize: 13,
+          color: ink,
+          fontFamilyFallback: symbolFallback,
+          // Chips fade a label that overflows its one line. On the web, a
+          // label laid out before a runtime fallback font (Chinese) arrived
+          // keeps reporting that overflow, so its glyphs stayed faded along
+          // the bottom. Chip labels are short and never need the fade.
+          overflow: TextOverflow.visible,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),
       dialogTheme: DialogThemeData(
@@ -242,7 +267,11 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: dark ? textPrimaryDark : textPrimaryLight,
-        contentTextStyle: TextStyle(color: background, fontSize: 14),
+        contentTextStyle: TextStyle(
+          color: background,
+          fontSize: 14,
+          fontFamilyFallback: symbolFallback,
+        ),
         shape: shape,
       ),
       dividerTheme: DividerThemeData(color: border, thickness: 1, space: 1),
@@ -251,7 +280,11 @@ class AppTheme {
           color: ink,
           borderRadius: BorderRadius.circular(radiusSm),
         ),
-        textStyle: TextStyle(color: background, fontSize: 12),
+        textStyle: TextStyle(
+          color: background,
+          fontSize: 12,
+          fontFamilyFallback: symbolFallback,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );

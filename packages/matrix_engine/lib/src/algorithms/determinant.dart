@@ -37,7 +37,9 @@ class DeterminantSolver {
         transformation: InformationalStepTransformation(
           '1x1 determinant is the element itself',
         ),
-        highlights: [CellHighlight(row: 0, col: 0, type: HighlightType.pivot)],
+        highlights: [
+          CellHighlight(row: 0, col: 0, type: HighlightType.selected),
+        ],
       );
       return StepSolution(
         operationKey: 'op_determinant',
@@ -93,29 +95,7 @@ class DeterminantSolver {
         antiDiagonalProduct: antiDiag,
         phase: 1,
       ),
-      highlights: [
-        CellHighlight(
-          row: 0,
-          col: 0,
-          type: HighlightType.pivot,
-          badgeText: '+',
-        ),
-        CellHighlight(
-          row: 1,
-          col: 1,
-          type: HighlightType.pivot,
-          badgeText: '+',
-        ),
-      ],
-      subCalculations: [
-        SubCalculation(
-          targetRow: 0,
-          targetCol: 0,
-          formulaLatex:
-              '${a.toLatex()} \\cdot ${d.toLatex()} = ${mainDiag.toLatex()}',
-          result: mainDiag,
-        ),
-      ],
+      highlights: const [],
     );
 
     final step2 = MatrixStep(
@@ -134,29 +114,7 @@ class DeterminantSolver {
         antiDiagonalProduct: antiDiag,
         phase: 2,
       ),
-      highlights: [
-        CellHighlight(
-          row: 0,
-          col: 1,
-          type: HighlightType.target,
-          badgeText: '-',
-        ),
-        CellHighlight(
-          row: 1,
-          col: 0,
-          type: HighlightType.target,
-          badgeText: '-',
-        ),
-      ],
-      subCalculations: [
-        SubCalculation(
-          targetRow: 0,
-          targetCol: 1,
-          formulaLatex:
-              '${b.toLatex()} \\cdot ${c.toLatex()} = ${antiDiag.toLatex()}',
-          result: antiDiag,
-        ),
-      ],
+      highlights: const [],
     );
 
     final step3 = MatrixStep(
@@ -174,22 +132,9 @@ class DeterminantSolver {
         mainDiagonalProduct: mainDiag,
         antiDiagonalProduct: antiDiag,
         phase: 3,
+        recap: true,
       ),
-      highlights: [
-        CellHighlight(row: 0, col: 0, type: HighlightType.pivot),
-        CellHighlight(row: 1, col: 1, type: HighlightType.pivot),
-        CellHighlight(row: 0, col: 1, type: HighlightType.target),
-        CellHighlight(row: 1, col: 0, type: HighlightType.target),
-      ],
-      subCalculations: [
-        SubCalculation(
-          targetRow: 0,
-          targetCol: 0,
-          formulaLatex:
-              '(${mainDiag.toLatex()}) - (${antiDiag.toLatex()}) = ${det.toLatex()}',
-          result: det,
-        ),
-      ],
+      highlights: const [],
     );
 
     return StepSolution(
@@ -237,35 +182,7 @@ class DeterminantSolver {
           negativeProducts: [n1, n2, n3],
           phase: 1,
         ),
-        highlights: [
-          CellHighlight(
-            row: 0,
-            col: 0,
-            type: HighlightType.pivot,
-            badgeText: '+',
-          ),
-          CellHighlight(
-            row: 1,
-            col: 1,
-            type: HighlightType.pivot,
-            badgeText: '+',
-          ),
-          CellHighlight(
-            row: 2,
-            col: 2,
-            type: HighlightType.pivot,
-            badgeText: '+',
-          ),
-        ],
-        subCalculations: [
-          SubCalculation(
-            targetRow: 0,
-            targetCol: 0,
-            formulaLatex:
-                '${_operand(p1)} + ${_operand(p2)} + ${_operand(p3)} = ${posTotal.toLatex()}',
-            result: posTotal,
-          ),
-        ],
+        highlights: const [],
       ),
     );
 
@@ -287,35 +204,7 @@ class DeterminantSolver {
           negativeProducts: [n1, n2, n3],
           phase: 2,
         ),
-        highlights: [
-          CellHighlight(
-            row: 0,
-            col: 2,
-            type: HighlightType.target,
-            badgeText: '-',
-          ),
-          CellHighlight(
-            row: 1,
-            col: 1,
-            type: HighlightType.target,
-            badgeText: '-',
-          ),
-          CellHighlight(
-            row: 2,
-            col: 0,
-            type: HighlightType.target,
-            badgeText: '-',
-          ),
-        ],
-        subCalculations: [
-          SubCalculation(
-            targetRow: 0,
-            targetCol: 2,
-            formulaLatex:
-                '${_operand(n1)} + ${_operand(n2)} + ${_operand(n3)} = ${negTotal.toLatex()}',
-            result: negTotal,
-          ),
-        ],
+        highlights: const [],
       ),
     );
 
@@ -335,21 +224,9 @@ class DeterminantSolver {
           positiveProducts: [p1, p2, p3],
           negativeProducts: [n1, n2, n3],
           phase: 3,
+          recap: true,
         ),
-        highlights: [
-          for (int r = 0; r < 3; r++)
-            for (int c = 0; c < 3; c++)
-              CellHighlight(row: r, col: c, type: HighlightType.selected),
-        ],
-        subCalculations: [
-          SubCalculation(
-            targetRow: 0,
-            targetCol: 0,
-            formulaLatex:
-                '(${posTotal.toLatex()}) - (${negTotal.toLatex()}) = ${det.toLatex()}',
-            result: det,
-          ),
-        ],
+        highlights: const [],
       ),
     );
 
@@ -533,7 +410,7 @@ class DeterminantSolver {
       diagElements.add(d);
       diagProduct = diagProduct * d;
       diagHighlights.add(
-        CellHighlight(row: i, col: i, type: HighlightType.pivot),
+        CellHighlight(row: i, col: i, type: HighlightType.selected),
       );
     }
 

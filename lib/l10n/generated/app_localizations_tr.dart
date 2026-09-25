@@ -76,14 +76,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topicRankNullityDesc =>
-      'Matris rankını, sıfırlığını (nullity) ve Rank-Sıfırlık Teoremini adım adım keşfedin.';
+      'Matris rankını, sıfırlığını (nullity) ve Rank-Sıfırlık Teoremini adım adım keşfet.';
 
   @override
   String get topicEigen => 'Özdeğerler ve Özvektörler';
 
   @override
   String get topicEigenDesc =>
-      '2×2 özçiftleri ve −20 ile 20 arasındaki 3×3 tam sayı köklerini inceleyin.';
+      '2×2 ve 3×3 matrislerin özdeğer ve özvektörlerini incele; rasyonel kökler kesin hesaplanır.';
 
   @override
   String get topicTransform2d => '2B Geometrik Lineer Dönüşüm';
@@ -137,10 +137,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fractionToggle => 'Kesir / Ondalık';
 
   @override
-  String get decreaseDimension => 'Boyutu azalt';
+  String get removeRow => 'Satır çıkar';
 
   @override
-  String get increaseDimension => 'Boyutu artır';
+  String get addRow => 'Satır ekle';
+
+  @override
+  String get removeColumn => 'Sütun çıkar';
+
+  @override
+  String get addColumn => 'Sütun ekle';
 
   @override
   String stepOf(Object current, Object total) {
@@ -155,7 +161,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Hız: ${speed}x';
+    return 'Hız: $speed';
   }
 
   @override
@@ -184,11 +190,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Dil';
-
-  @override
-  String solveError(Object error) {
-    return 'Hata: $error';
-  }
 
   @override
   String get solveFallbackError => 'Matris çözülemedi.';
@@ -239,7 +240,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_swap_title(Object rowA, Object rowB) {
-    return 'Satır $rowA ile Satır $rowB Yer Değiştirir';
+    return '$rowA. ve $rowB. satırların yerini değiştir';
   }
 
   @override
@@ -254,7 +255,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String step_row_scale_title(Object row) {
-    return 'Satır $row Elemanlarını Sadeleştir (Ölçekle)';
+    return '$row. satırı ölçekle';
   }
 
   @override
@@ -263,8 +264,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Satır $target Elemanını Sıfırla';
+  String step_row_elimination_title(Object source, Object target) {
+    return '$target. satırdaki elemanı $source. satırla sıfırla';
   }
 
   @override
@@ -457,7 +458,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
+  String system_infinite_title(num count) {
     return 'Sonsuz Çözüm ($count Serbest Değişken)';
   }
 
@@ -472,7 +473,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return 'Matrisin $rank pivot sütunu ve $nullity serbest sütunu vardır. Rank-Sıfırlık Teoremi gereği: rank(A) + nullity(A) = $cols.';
   }
 
@@ -513,7 +514,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return '(A − ${lambda}I)v = 0 için bir örnek özvektör $vector.';
+    return 'λ = $lambda için (A − λI)v = 0 çözülür; örnek bir özvektör $vector.';
   }
 
   @override
@@ -523,7 +524,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return '$poly için −20 ile 20 arasında tam sayı kökü bulunamadı. Başka gerçek veya karmaşık kökler olabilir; bu çözücü bunları hesaplamaz.';
+    return 'Katsayılar bu kadar büyük olduğunda $poly kökleri güvenilir biçimde ayrılamadı. Gerçek veya karmaşık kökler vardır ama bu çözücü onları hesaplamaz.';
   }
 
   @override
@@ -531,14 +532,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topicLuDesc =>
-      'Kare matrisi alt (L) ve üst (U) üçgensel matris çarpanlarına ayırın.';
+      'Kare matrisi alt (L) ve üst (U) üçgensel matris çarpanlarına ayır.';
 
   @override
   String get topicPractice => 'Kendini Sına (Alıştırma & Test)';
 
   @override
   String get topicPracticeDesc =>
-      'Adım adım doğru işlemi tahmin ederek kendinizi test edin ve puan toplayın.';
+      'Adım adım doğru işlemi tahmin ederek kendini test et ve puan topla.';
 
   @override
   String get lu_init_title => 'LU Ayrışımını Başlat';
@@ -605,16 +606,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String practiceTotalScore(Object score, Object total) {
-    return 'Toplam Puanınız: $score / $total';
+    return 'Toplam puanın: $score / $total';
   }
 
   @override
   String get practicePerfectScore =>
-      'Harika! Tüm soruları doğru cevaplayarak tam puan aldınız!';
+      'Harika! Tüm soruları doğru cevaplayarak tam puan aldın!';
 
   @override
   String get practiceGoodEffort =>
-      'İyi çalışma! Matris işlemlerinde daha da ustalaşmak için tekrar deneyebilirsiniz.';
+      'İyi çalışma! Matris işlemlerinde daha da ustalaşmak için tekrar deneyebilirsin.';
 
   @override
   String get practiceReturnTopics => 'Konulara Dön';
@@ -630,7 +631,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noTopicsFoundDesc =>
-      'Farklı bir arama terimi deneyin veya başka bir kategori seçin.';
+      'Farklı bir arama terimi dene veya başka bir kategori seç.';
 
   @override
   String get clearSearch => 'Aramayı Temizle';
@@ -658,11 +659,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get inputHelp =>
-      'Bir hücre seçip tam sayı, ondalık sayı veya kesir girin.';
+      'Bir hücre seçip tam sayı, ondalık sayı veya kesir gir.';
 
   @override
   String inputInvalid(String matrix, int row, int column) {
-    return '$matrix matrisinde $row. satır, $column. sütunu kontrol edin. Tam bir sayı girin; kesrin paydası sıfır olamaz.';
+    return '$matrix matrisinde $row. satır, $column. sütunu kontrol et. Tam bir sayı gir; kesrin paydası sıfır olamaz.';
   }
 
   @override
@@ -740,10 +741,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cellCalculations => 'Hücre hesapları';
 
   @override
+  String get stepDetails => 'Ayrıntılar';
+
+  @override
   String get chooseStep => 'Adım seç';
 
   @override
   String get learningPath => 'Matrislere yeni mi başlıyorsun?';
+
+  @override
+  String get continueLearning => 'Kaldığın yerden devam et';
+
+  @override
+  String get continueAction => 'Devam et';
+
+  @override
+  String get topicCompleted => 'Tamamlandı';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$total konudan $done tanesi tamamlandı';
+  }
 
   @override
   String get pathEliminate => '1 · Sıfırları oluştur';
@@ -753,18 +771,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Sistemi çöz';
-
-  @override
-  String get guideGenericSource =>
-      'Mevcut matrisi ve bu adımın hedefini incele.';
-
-  @override
-  String get guideGenericApply =>
-      'Vurgulanan elemanları takip et. Açıklamada işlemin gerekçesini bulabilirsin.';
-
-  @override
-  String get guideGenericResult =>
-      'Sonucu açıklamayla karşılaştır. Hazır olduğunda sonraki adıma geç.';
 
   @override
   String guideEliminateSource(String source, String target, String column) {
@@ -831,7 +837,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get guideDetResult =>
-      'Çarpımlar aşağıda görünür kalır; sonucu kendi hızında kontrol edebilirsin.';
+      'Bu çarpımların toplamı, grubun determinanta katkısıdır.';
 
   @override
   String get coefficientError => '−1000 ile 1000 arasında bir sayı gir.';
@@ -915,7 +921,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get guidedMode => 'Rehberli animasyon';
 
   @override
-  String get stepsMode => 'Hareketsiz adımlar';
+  String get stepsMode => 'Adım adım (animasyonsuz)';
 
   @override
   String get resultMode => 'Doğrudan sonuç';
@@ -987,18 +993,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get compact => 'Kompakt';
 
   @override
-  String get accentLabel => 'Vurgu paleti';
-
-  @override
-  String get blue => 'Mavi';
-
-  @override
-  String get teal => 'Turkuaz';
-
-  @override
-  String get purple => 'Mor';
-
-  @override
   String get shortcutsLabel => 'Klavye kısayolları';
 
   @override
@@ -1016,18 +1010,61 @@ class AppLocalizationsTr extends AppLocalizations {
   String get resetSettings => 'Ayarları sıfırla';
 
   @override
+  String get moreOptions => 'Diğer seçenekler';
+
+  @override
+  String get resetProgress => 'İlerlemeyi sıfırla';
+
+  @override
   String get settingsStorageError =>
       'Ayarlar okunamadı veya kaydedilemedi. Değişiklikler bu oturumda kullanılabilir.';
 
   @override
   String get localPreferences =>
-      'Ayarlar bu cihazda tutulur. Matris geçmişi kaydedilmez.';
+      'Ayarlar ve bitirdiğin dersler bu cihazda tutulur. Matrisler ve test cevapları kaydedilmez.';
 
   @override
   String get resultExact => 'Kesin';
 
   @override
   String get resultApproximate => 'Yaklaşık';
+
+  @override
+  String get checkTitle => 'Sonucu doğrula';
+
+  @override
+  String get checkHolds => 'Doğru';
+
+  @override
+  String get checkFails => 'Sağlanmıyor';
+
+  @override
+  String get checkInverse => 'A\'yı tersiyle çarpınca birim matris çıkar.';
+
+  @override
+  String get checkDetRows =>
+      'Satır işlemleriyle üçgen matrise indirgemek aynı değeri verir.';
+
+  @override
+  String get checkDetCofactor =>
+      'İlk satır boyunca kofaktör açılımı aynı değeri verir.';
+
+  @override
+  String get checkLu =>
+      'L ile U\'yu çarpmak A\'yı geri verir; satırlar P\'nin gösterdiği sıradadır.';
+
+  @override
+  String get checkSystem => 'x\'i denklemlerde yerine koyunca b elde edilir.';
+
+  @override
+  String get checkRank =>
+      'Determinantı sıfır olmayan en büyük kare alt matris rankı verir; kalan sütunlar sıfırlığı verir.';
+
+  @override
+  String get checkEigen => 'A, v\'yi yalnızca uzatır: Av, λv\'ye eşittir.';
+
+  @override
+  String get seeAsTransform => 'Dönüşüm olarak gör';
 
   @override
   String get resultComplete => 'Tam';
@@ -1044,7 +1081,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      '3×3 analizi −20 ile 20 arasındaki tam sayı kökleri arar. Bulunamayan kökler gerçek veya karmaşık olabilir.';
+      '3×3 kökler rasyonelse kesindir; diğer gerçek kökler üç ondalığa yuvarlanır. Çok büyük katsayılarda kökler bulunamayabilir.';
 
   @override
   String get eigenBasisScope =>
@@ -1072,11 +1109,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ1Explanation =>
-      '2. satırın ilk elemanı 2, pivot ise 1 dir. 2 - 2(1) = 0 elde etmek için R_2 \\leftarrow R_2 - 2R_1 işlemi uygulanmalıdır.';
+      '2. satırın ilk elemanı 2, pivot ise 1\'dir. 2 - 2 \\cdot 1 = 0 elde etmek için R_2 \\leftarrow R_2 - 2R_1 işlemi uygulanmalıdır.';
 
   @override
   String get quizQ1Hint =>
-      'Hedef satırdaki elemanı (2), pivot satırının (1) katı ile çıkararak sıfırlayın.';
+      'Hedef satırdaki elemanı (2), pivot satırının (1) katı ile çıkararak sıfırla.';
 
   @override
   String get quizQ1Feedback0 =>
@@ -1107,7 +1144,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ2Hint =>
-      'Sıfır olan bir pivotla bölme yapılamaz, sıfır olmayan bir satırla yer değiştirin.';
+      'Sıfır olan bir pivotla bölme yapılamaz; sıfır olmayan bir satırla yer değiştir.';
 
   @override
   String get quizQ2Feedback0 =>
@@ -1138,7 +1175,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ3Hint =>
-      'Bir sayıyı 1 yapmak için o sayının çarpma işlemine göre tersi ile çarpın.';
+      'Bir sayıyı 1 yapmak için onu çarpma işlemine göre tersiyle çarp.';
 
   @override
   String get quizQ3Feedback0 =>
@@ -1165,11 +1202,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ4Explanation =>
-      'Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2 dir.';
+      'Matris echelon formdadır. 2 adet sıfırdan farklı satır (pivot satırı) ve 1 adet tamamen sıfır satırı vardır. Dolayısıyla rank(A) = 2\'dir.';
 
   @override
-  String get quizQ4Hint =>
-      'Echelon formdaki sıfırdan farklı satır sayısını sayın.';
+  String get quizQ4Hint => 'Eşelon formdaki sıfırdan farklı satırları say.';
 
   @override
   String get quizQ4Feedback0 =>
@@ -1200,7 +1236,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get quizQ5Hint =>
-      'Köşegen altı tamamen sıfır olduğunda sadece köşegen elemanlarını çarpın.';
+      'Köşegenin altı tamamen sıfırsa yalnızca köşegen elemanlarını çarp.';
 
   @override
   String get quizQ5Feedback0 =>
@@ -1218,6 +1254,131 @@ class AppLocalizationsTr extends AppLocalizations {
       'Köşegen elemanlarının hepsi pozitif; ek bir eksi işareti gelmez.';
 
   @override
+  String get genDetTitle => '2×2 determinant';
+
+  @override
+  String get genDetPrompt => 'Aşağıdaki matris için det(A) kaçtır?';
+
+  @override
+  String get genDetHint =>
+      '2×2 matriste ana köşegenin çarpımından diğer köşegenin çarpımını çıkar: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Bu, iki köşegen çarpımını topluyor; ikincisi çıkarılmalı.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Bu, satırlar boyunca çarpıyor. Determinant köşegenleri kullanır.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'Sıra ters: önce ana köşegen gelir, bu yüzden işaret değişir.';
+
+  @override
+  String get genElimTitle => 'Çarpanı seçmek';
+
+  @override
+  String get genElimPrompt =>
+      'Hangi satır işlemi 2. satırın ilk elemanını sıfır yapar?';
+
+  @override
+  String get genElimHint =>
+      'Sıfırlamak istediğin elemanı üstündeki pivota böl.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'Çarpan, eleman bölü pivottur: $entry ÷ $pivot = $factor. 1. satırın $factor katını çıkarınca eleman 0 olur.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'Ters işaretle eleman sıfırlanmak yerine büyür.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'Oran ters çevrilmiş: pivotu elemana değil, elemanı pivota böl.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Bu, pivot satırı olan 1. satırı değiştirir. Değişmesi gereken satır 2. satır.';
+
+  @override
+  String get genProductTitle => 'Çarpımın bir elemanı';
+
+  @override
+  String get genProductPrompt =>
+      'A·A çarpımının 1. satır, 2. sütundaki elemanı kaçtır?';
+
+  @override
+  String get genProductHint =>
+      'İlk çarpanın 1. satırı ile ikinci çarpanın 2. sütununu eşleştir: ikişer ikişer çarp ve topla.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return '1. satır ($r1, $r2), 2. sütun ($c1, $c2); eleman $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Elemanın karesini almak matris çarpımı değildir; bütün bir satır ve sütun kullanılır.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Bu, 1. satırı 2. satırla eşleştiriyor. İkinci çarpan bir sütun verir.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Bu, iki sütunu eşleştiriyor. İlk çarpan bir satır verir.';
+
+  @override
+  String get genInverseTitle => '2×2 matrisin tersi';
+
+  @override
+  String get genInversePrompt => 'Hangi matris A⁻¹\'dir?';
+
+  @override
+  String get genInverseHint =>
+      'Ana köşegendeki elemanların yerini değiştir, diğer ikisinin işaretini değiştir ve det(A)\'ya böl.';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a ile d yer değiştirir, b ile c\'nin işareti değişir ve hepsi 1/$det ile çarpılır.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'Köşegen yer değiştirmiş, ama b ile c\'nin işareti de değişmeli.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b ile c\'nin işareti değişmiş, ama a ile d de yer değiştirmeli.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Burada bütün elemanların işareti değişmiş; yalnızca b ile c\'nin işareti değişir.';
+
+  @override
+  String get newQuestions => 'Yeni sorular';
+
+  @override
   String eigen_vector_approx_title(Object index, Object lambda) {
     return 'λ_$index ≈ $lambda için yaklaşık vektör';
   }
@@ -1229,4 +1390,117 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spaceKey => 'Boşluk';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Satır $row, sütun $column, henüz hesaplanmadı';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return '$poly çözüldüğünde gerçek özdeğer $roots ve karmaşık eşlenik çift λ ≈ $complex bulunur. Yalnızca gerçek özdeğerin gerçek bir özvektörü vardır.';
+  }
+
+  @override
+  String get keyNextRow => 'Sonraki satır';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B’nin satır sayısı A’nın sütun sayısına eşit tutulur; böylece A × B tanımlı olur.';
+
+  @override
+  String get lessonComplete => 'Ders tamamlandı';
+
+  @override
+  String get lessonCompleteHint =>
+      'Sonucu kontrol et, dersi yeniden izle ya da kendi matrisinle devam et.';
+
+  @override
+  String get replayLesson => 'Yeniden izle';
+
+  @override
+  String get tryOwnMatrix => 'Kendi matrisini dene';
+
+  @override
+  String get editMatrix => 'Matrisi değiştir';
+
+  @override
+  String presetApplied(String matrix) {
+    return '$matrix matrisi değiştirildi.';
+  }
+
+  @override
+  String get undo => 'Geri al';
+
+  @override
+  String get transformShortcutsHint =>
+      'Klavye: Boşluk oynatır veya geri sarar, S kayma, P izdüşüm, R birim matris.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Soluk ızgara: dönüşümden önceki düzlem.';
+
+  @override
+  String get transformLegendEigen =>
+      'Kesikli çizgiler: kendi doğrusu üzerinde kalan gerçek özvektör yönleri.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Hedefteki $entry ÷ pivot $pivot = $ratio. Pivot satırının $ratio katını çıkarmak hedefi sıfırlar; aynı $ratio değeri L matrisinin ($row, $column) konumuna yazılır, böylece L · U yeniden A olur.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      '[[a, b], [c, d]] için köşegendeki a, d ile diğer iki eleman b, c’ye bak.';
+
+  @override
+  String get guideAdjApply =>
+      'a ile d yer değiştirir; b ve c yerinde kalır ama işaret değiştirir.';
+
+  @override
+  String get guideAdjResult =>
+      'Bu, adj(A) matrisidir. det(A)’ya bölününce ters matris elde edilir.';
+
+  @override
+  String get guideAdjReason =>
+      '2×2 bir matris için A · adj(A) = det(A) · I olur. Bu yüzden det(A) ≠ 0 ise A⁻¹ = adj(A) ÷ det(A).';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'adj(A)’nın her elemanı aynı sayıyla, 1/det(A) = $factor ile çarpılır.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Elemanları tek tek çarp.';
+
+  @override
+  String get guideScaleAllResult => 'Sonuç A⁻¹’dir. Kontrol: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'Matris artık üst üçgensel; determinantı köşegen elemanlarının çarpımıdır.';
+
+  @override
+  String get guideDiagApply =>
+      'Köşegen elemanlarını tek tek çarp. İlk çarpan, her satır değişimi için bir −1 taşır.';
+
+  @override
+  String get guideDiagResult =>
+      'Satır eleme işlemleri determinantı değiştirmez; bu çarpım başlangıçtaki matrisin determinantıdır.';
+
+  @override
+  String get guideDetRecapSource =>
+      'İki toplam da önceki adımlardan biliniyor.';
+
+  @override
+  String get guideDetRecapApply => '+ toplamından − toplamını çıkar.';
+
+  @override
+  String get guideDetRecapResult => 'Aradaki fark determinanttır.';
 }

@@ -22,7 +22,10 @@ void main() {
     final step = solution.steps.firstWhere(
       (s) => s.transformation is RowEliminationTransformation,
     );
-    final timeline = InstructionTimeline.forTransformation(step.transformation);
+    final timeline = InstructionTimeline.forTransformation(
+      step.transformation,
+      columns: step.matrixAfter.cols,
+    );
     final frames = (timeline.totalMs / 16).ceil();
     final samples = <int>[];
     for (var run = 0; run < 4; run++) {

@@ -33,24 +33,27 @@ void main() {
       expect(result.uniqueSolution![2], equals(Rational.fromInt(-2)));
     });
 
-    test('Problem 2: Inconsistent system (No solution due to parallel planes)', () {
-      // Equations:
-      //  x +  y = 2
-      // 2x + 2y = 5
-      // Augmented matrix:
-      // [ 1  1 | 2 ]
-      // [ 2  2 | 5 ]
-      final augmented = Matrix.fromInts([
-        [1, 1, 2],
-        [2, 2, 5],
-      ]);
+    test(
+      'Problem 2: Inconsistent system (No solution due to parallel planes)',
+      () {
+        // Equations:
+        //  x +  y = 2
+        // 2x + 2y = 5
+        // Augmented matrix:
+        // [ 1  1 | 2 ]
+        // [ 2  2 | 5 ]
+        final augmented = Matrix.fromInts([
+          [1, 1, 2],
+          [2, 2, 5],
+        ]);
 
-      final sol = LinearSystemsSolver.solve(augmented);
-      expect(sol.isSuccess, isTrue);
+        final sol = LinearSystemsSolver.solve(augmented);
+        expect(sol.isSuccess, isTrue);
 
-      final result = sol.result as LinearSystemResult;
-      expect(result.type, equals(LinearSystemType.inconsistent));
-    });
+        final result = sol.result as LinearSystemResult;
+        expect(result.type, equals(LinearSystemType.inconsistent));
+      },
+    );
 
     test('Problem 3: Underdetermined system with infinite solutions', () {
       // Equations:

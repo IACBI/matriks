@@ -232,3 +232,206 @@ A code of conduct was deliberately not added. For a single-maintainer project it
 - No release is tagged. `pubspec.yaml` reads `1.0.0+1`; whether that constitutes a release is the owner's call.
 - Publication is not a correctness claim. The numerical limits recorded in the sections above are unchanged, and the app states them in its own interface.
 
+
+# Review and improvement pass — 2026-09-24
+
+Branch `claude/keen-darwin-oettj2`. A full read of the application, engine, tests, CI and documentation, followed by fixes. The session container could not reach `storage.googleapis.com` or `pub.dev`, so no Flutter SDK ran locally; every check below ran in GitHub Actions on the branch through manual workflow runs. Localization output was regenerated with a script that first reproduced all six committed generated files byte for byte; CI's `flutter gen-l10n` diff then confirmed each change.
+
+## Defects fixed
+
+- Addition and multiplication cells carried their result as a LaTeX badge that was drawn as plain text (`\frac{7}{2}`). A completed zero drew two badges in the same corner.
+- Uncomputed entries of a product or sum displayed `0`, which reads as a result. They now show a placeholder and are announced as not calculated.
+- The decimal view rounded to two places through `double`: nonzero pivots such as 1/1000 read `0.00`, and values beyond the double range became NaN. It now rounds with integer arithmetic, is exact when the expansion terminates within four places, marks everything else with ≈ and switches to scientific notation instead of showing zero.
+- 3×3 eigen analysis only tried the integers −20…20, so `diag(1, 30, 40)` was partial and fractional or irrational roots were missing. See MATHEMATICAL_CORRECTNESS.md.
+- Pressing the sign key twice emptied the cell. Solve failures showed exception text. A preset's snackbar covered the player's controls after solving (found by the flow tests).
+- The prediction card always placed the correct multiplier in the middle; quiz answers were B in four of five questions.
+- The player's progress bar used the light-theme blue in dark mode (2.2:1 against the surface) and ignored the accent palette.
+
+## Animation and interface changes
+
+Stable per-solution geometry, column-scaled row-operation time (unchanged up to three columns), fade-through cell text, reflow-free multiplication operands, Sarrus with copied columns and faded finished diagonals, a static swap connector that no longer repaints every frame, phase announcements only while paused, a lesson-complete card, no play button in static steps, locale-formatted speeds, catalog entries that switch tabs instead of opening duplicate screens, expanded starter lessons, a bottom-navigation indicator that does not rely on colour, topic-aware random presets with undo, an explained B row lock, one key per keypad action, a transform canvas with the untransformed grid, fit-to-view zoom, eigenvector directions and matching colours, a speed setting saved on release, and a consistent informal register in Turkish. Details are in DESIGN_SYSTEM.md.
+
+## Code changes
+
+Topic titles, step texts and solver errors resolve through exhaustive switches in one place each; `SettingsState` has value equality; preferences load before the first frame; the bundled logo is 23 KB instead of 901 KB. Removed `TopicItem.color`, `MatrixInputState.errorMessage`, `QuizBank.questions`, `DeterminantCofactorTransformation`, four unused theme colours, two shadow helpers and the `solveError` string.
+
+## Verification
+
+| Check | Result |
+| --- | --- |
+| Baseline before changes (run 36034661200) | Passed |
+| Final branch head `08547d0` (run 36037856873) | Generated localizations current; analysis: no issues; 301 application and 55 engine tests passed; web release built and uploaded as the `web-preview` artifact |
+| Intermediate run 36037443385 | 3 failures, fixed in `08547d0`: two flow tests blocked by the preset snackbar, one test with a wrong starting value |
+| New tests | `step_text_test.dart` resolves every step text of every solver branch in five languages; `improvement_regression_test.dart` covers the defects and behaviour above; engine tests cover exact, deflated, irreducible, complex and oversized 3×3 spectra and exact decimal text |
+
+## Not done, and why
+
+- The interface was not inspected on a device or in a browser in this pass; the web preview artifact exists for that review.
+- The collapsed operation inspector still rebuilds its slider every frame: existing tests read playback progress from it. The saving was not measured.
+- The prediction pause is still scheduled from `build`; moving it changes timing that tests pin, for an unmeasured benefit.
+- Step texts are still string keys with untyped parameters. A sealed narrative type in the engine would make them compile-time checked; the new coverage test is the interim guard.
+- No stricter analyzer rules were added: `strict-casts` would flag the untyped step parameters throughout.
+- Guided multiplication of 5×5 matrices still takes several minutes at 1×; shortening later entries should follow the learner study in ROADMAP B01.
+
+## Solution animation pass — 2026-09-24
+
+Every solver's steps were replayed in code against what the player shows. Logic errors found and fixed:
+
+- Row operations animated columns they cannot change (`0 − 2·0`) and spent 1.2 s on each. Only changing columns are animated and timed now.
+- Determinant formula steps coloured cells as pivot/source/target and listed the same products three times (cell list, phase explanation, description). The closing step re-animated all diagonals although it only adds two totals; it is now a one-contribution recap.
+- The 2×2 inverse jumped from A to adj(A) and to A⁻¹ with no visible operation. It now animates the adjugate (a and d swap, b and c change sign) and the 1/det scaling one entry at a time.
+- LU eliminations showed only U; the multiplier written into L was never visible, and the result named only U. L is now shown beside U, and the result names P, L and U.
+- Block inverse extraction showed A⁻¹ alone, so the step appeared to change the matrix. It now shows [I | A⁻¹] with the right block marked.
+- Eigen, rank and linear-system summaries marked non-pivots as pivot or target. Only real pivots are marked; eigenvector steps state that the matrix shown is A − λI.
+- Steps without a specific lesson showed empty source/operation/result phases; they now show only the description. The step description is hidden where the phase explanation already says the same thing.
+- Three Turkish step titles did not say what the step does (swap, scale, eliminate); they now do.
+- Rounded eigenvalues printed as fractions (λ ≈ 809/500 for 1.618); they now print as decimals, and exact values keep fractions. The eigenvector description substituted λ after a minus sign ("A − -4I"); all five languages now state λ separately.
+
+Verified in CI run 36045673392 on `fe3835b` (earlier: 36044859287 on `187a64d`): generated localizations current, analysis clean, all application and engine tests passed, web preview built. Two intermediate runs failed and were fixed: an eigen caption stored as TeX among the prose parameters (it printed `A - 1I`), and a value test that read the addition step before its animation had started. The new behaviour is covered by `packages/matrix_engine/test/step_semantics_test.dart` and `test/animation_logic_test.dart`. Not inspected on a device.
+
+# UI and learning-path pass — 2026-09-24
+
+## Outcome
+
+Continuing on branch `claude/keen-darwin-oettj2` after the solution animation pass above: an independent property-based check of every solver, a redesigned step player (one centred stage instead of a split panel layout, two-hue role colours, a single `Details` drawer, one app bar menu), a simplified Settings screen with one brand colour, a learning-path catalog with topic glyphs and progress tracking, generated practice rounds, and an independent result check shown after solving. CI now also fails on unformatted Dart.
+
+## Changes
+
+- **Solver verification.** `packages/matrix_engine/test/solver_properties_test.dart` checks every solver on seeded random matrices (a third rank deficient) against independent reference implementations: cofactor determinant against every `DeterminantMethod`, A·A⁻¹ = A⁻¹·A = I, a schoolbook sum/product, a unique RREF and row-echelon/row-equivalence for REF, P·A = L·U with unit lower L and upper U, rank/nullity/pivot columns against an independent RREF, linear-system type by ranks and Ax = b for unique solutions, and eigenpairs Av = λv exactly or a sign change of the characteristic polynomial within ±0.0005 of a rounded eigenvalue. It also replays every row-operation step's before snapshot into its after snapshot, chained across a solution.
+- **Player redesign.** The step player is a single centred stage column (max width 880) at every screen width instead of splitting side-by-side at ≥960 px. `MatrixDisplayGrid` now also hosts the scene formula, the role legend under the matrix, the phase caption (one sentence fading between phases, three phase dots instead of a "1 / 3 · phase" count), the solver's "why" note (only when the caption does not already say it), and one `Details` drawer (rationale, per-cell calculations, scrub slider, replay) that pauses the lesson when opened. Row-operation highlights use two hues: amber for the row used (heavier for the pivot, thinner for the source), cyan for the row that changes (target; a finished zero keeps a cyan "0 ✓" badge). Purple and green no longer mark roles, and `AppTheme.accentPurple` was removed. The app bar's result/mode/decimal controls are one overflow menu (`player-menu`).
+- **Settings simplified.** The accent-palette setting and `AccentPalette` enum are gone — one brand blue, because the removed teal/purple collided with the role colours above. Language, theme, predictions and reduced motion stay in view; solution mode, speed, explanation level, number view and density move under a collapsed "More options". `SettingsState` persists the last opened topic and finished topic names (JSON stays version 1); `reset()` keeps that progress, `resetProgress()` clears it.
+- **Learning path.** `TopicItem.pathOrder` orders and numbers the twelve topics (entry-wise operations, elimination, what elimination enables, eigenvalues, geometry, review); each shows a `TopicGlyph` drawing instead of a generic icon (`TopicItem.icon` was removed); finished topics get a check mark, a progress line, and a "Continue where you left off" card. A topic is recorded finished when its lesson reaches the last step (guided or static-steps mode, not when jumping to the result), a practice round ends, or a transformation is played.
+- **Generated practice.** `QuizGenerator` builds five-question rounds from four kinds (2×2 determinant, the multiplier that zeroes an entry, entry (1,2) of A·A, 2×2 inverse), every kind once plus one random, with options and feedback shuffled together; each wrong option names a misconception. "New questions" in the completion dialog starts a round; a round rebuilds from its seed on language change.
+- **Result checks.** `result_check.dart` recomputes each result independently in exact arithmetic (A·A⁻¹ = I; the determinant by the other kind of method; L·U = P·A; Ax = b; rank + nullity = n; Av = λv per exact eigenpair), and `ResultChecks` shows it on the result screen and after a finished lesson. A 2×2 eigen result also offers a link into the transform visualizer with the same matrix, when every entry is within [-1000, 1000].
+- **CI.** `.github/workflows/ci.yml` runs `dart format` over every tracked Dart file except `lib/l10n/generated` as the last `verify` step, after tests and the web preview build, and fails on any diff.
+
+## Verification
+
+| Check | Result |
+| --- | --- |
+| Property tests (`bd21e951`) | CI run 36053895756 |
+| Player redesign (`b28585f9`) | CI run 36054540964 |
+| Settings simplification (`8f9ad552`) | CI run 36054969977 |
+| Result checks and transform link (`32ce54b1`) | CI run 36055456517 |
+| Final branch head `7e31202` (run 36057342430) | Generated localizations current; analysis: no issues; 320 application and 70 engine tests passed; web preview built; formatting check: 0 of 107 files changed |
+
+## Not done, and why
+
+- No browser or device inspection: this session's container could not reach `storage.googleapis.com`, `pub.dev`, `*.blob.core.windows.net` or GitHub Pages, so the interface was verified only by widget tests, not a running build.
+- Completion is recorded per topic, not per matrix: replaying the same topic with different numbers does not change its "finished" state.
+- Generated practice covers four question kinds, not the full topic catalog.
+
+# Browser review — 2026-09-24
+
+## Outcome
+
+Continuing on branch `claude/keen-darwin-oettj2`, this pass did what the previous one could not: it drove a real, locally built release web app in a browser (Chromium via Playwright) rather than widget tests alone, in light and dark themes, at 1280 px and 390 px, in Turkish and English. It found and fixed thirteen defects, the most consequential being missing glyphs — boxes in place of arrows, sub/superscripts and math symbols (A⁻¹, R₂, ←, ⟹, ∅, ✓) used throughout step prose, because the web build's bundled Roboto does not include them and Flutter fetched a Google-hosted Noto face to cover the gap.
+
+## Scope and evidence
+
+`flutter build web --release` was built locally and driven with Playwright's Chromium. Every fix below was confirmed against the running build, not inferred from source reading alone. Limits: no physical device and no screen-reader session were used — the accessibility tree was read through Playwright, not through a native reader — and 200% text scaling was covered only by the existing widget tests in this pass, not re-driven in the browser.
+
+## Fixes
+
+1. **Missing glyphs.** The bundled `assets/fonts/MatriksSymbols-Regular.ttf` (57 KB, a DejaVu Sans subset renamed as its Bitstream Vera license requires — `assets/fonts/LICENSE-MatriksSymbols.txt`, registered in `lib/main.dart` via `LicenseRegistry`) is declared in `pubspec.yaml` and used as `AppTheme.symbolFallback` (`fontFamilyFallback`) across the text theme and explicit theme styles. `tool/build_symbol_font.py` rebuilds it and needs `fontTools`. In the en/tr build, no request to `fonts.gstatic.com` was observed. Chinese text (and the language menu's 中文 label) still makes Flutter download CJK glyphs from Google Fonts — recorded in a `.github/workflows/ci.yml` comment rather than presented as fixed, since a bundled CJK font would add megabytes. The zero badge's check mark is now an `Icon` instead of a glyph that needed the same fallback.
+2. The phase caption (`InstructionExplanation`) is start-aligned like its phase dots and calculations, via an `AnimatedSwitcher` layout builder; it previously centred while its neighbours were start-aligned.
+3. Calculations bracket only a negative operand (`5 - 2 · 2 = 1`, `5 - (-2)`); the elimination operation label reads `R₂ ← R₂ − 2R₁` with no brackets around the factor; a diagonal/Sarrus product omits a leading factor of 1 and starts at the first real product, and its timeline now counts the same number of lines it draws.
+4. Wrapped formulas (`MathText(wrapLines: true)`) now split at top-level ` + `, ` - `, ` = `, ` \approx ` via a new `splitTexTerms` helper (respecting brace groups and `\left…\right`) and prefix each later piece with `{}` so TeX keeps its operator spacing, replacing an earlier `texBreak` that could split inside a group.
+5. `MathText` exposes a readable semantics label, `mathSemanticsLabel` (built on `readableMathProse`), so a screen reader hears "1/2" instead of a run of glyphs.
+6. At 390 px, a 3×3 elimination hid its third column: the 120 px operation reserve per cell is now capped at the width actually available per column, never below the value's natural width; a formula that still does not fit shrinks to 14 px and then scrolls inside its cell instead of pushing a column off-screen.
+7. **Result screen** (`widgets/solution_summary.dart`): the matrix grid is now shown only when the result actually is a `Matrix` (inverse, RREF/REF, sum, product); the TeX result line is shown only for other results, split at `\quad` into parts that wrap. Previously the inverse repeated the matrix with overlapping fractions, and LU/eigen results showed an unlabelled final matrix underneath the answer.
+8. The eigen check now reads "= v₁" / "= -v₁" / "= 2 v₁" — coefficients of 1 and −1 are omitted rather than printed literally.
+9. The transform view opened from a 2×2 eigen result now plays into the transformed matrix immediately, instead of opening on the untransformed frame.
+10. The player menu's "Show result" item now has a leading icon, so it aligns with the checked mode items beside it.
+11. **Every input topic now opens on a small worked example instead of the identity matrix** (`lib/features/matrix_input/matrix_input_cubit.dart`, `_example`), whose steps and eigenvalues taught little: eigen `[[4,1],[2,3]]` (eigenvalues 2, 5), inverse `[[1,2,3],[0,1,4],[5,6,0]]` (determinant 1), a linear system with solution (5, 3, −2), and small 2×2 pairs for multiplication/addition.
+12. Settings' "More options" `ExpansionTile` is now wrapped in `Semantics(container: true)`; in the web build its tap target had merged into the whole "Learning & playback" card, making the row unreachable as its own control.
+13. Two Turkish quiz explanation typos were fixed: "1 dir" → "1'dir", "2 dir" → "2'dir" (Turkish suffix agreement, the same family of defect recorded in the 2026-09-11 quality pass above).
+
+## Verification
+
+New coverage: `test/ui_review_regression_test.dart` (9 tests) pins the fixes above at the widget level.
+
+| Check | Result |
+| --- | --- |
+| Local run, Flutter 3.47.1 | Generated localizations current; analysis: no issues; 329 application and 70 engine tests passed; `dart format` reported 0 files changed |
+| CI run 36061622424 on `04921ed` | Green |
+| CI, final branch head `cd0c343` | run 36062536242: every step passed (localizations current, analysis, app and engine tests, web preview build, formatting check) |
+
+## Remaining limits
+
+- No physical device or native screen-reader session was used; the accessibility tree was read through Playwright's automation API.
+- Chinese text still triggers a Google Fonts (`fonts.gstatic.com`) request for CJK glyphs — recorded, not fixed, since bundling a CJK font would add megabytes to the web build.
+- 200% text scaling was exercised only by the existing widget test suite in this pass, not re-driven against the live browser build at 1280/390 px.
+
+## Completion boundary
+
+The thirteen fixes above and their regression coverage are delivered and verified against a rebuilt release web app and the full test suites. Native screen-reader, physical-device and further text-scaling verification in the browser remain open, as stated above.
+
+# Local review on a developer machine — 2026-09-25
+
+## Outcome
+
+Branch `claude/keen-darwin-oettj2`, checked on Windows 11 with Flutter 3.47.1 where the cloud sessions could not run anything. The release web build (`flutter build web --release --no-web-resources-cdn`) was served locally and driven with Playwright in the installed Chrome; the Windows release build and an Android release APK on an emulator (Pixel-class, 1080×2400, 420 dpi) were also run. Fourteen defects were found and fixed, each with a regression test in `test/local_review_regression_test.dart` that fails on the previous code.
+
+## What was checked, and how
+
+- **Every tab and one full lesson per topic** (addition, multiplication, REF, RREF, linear system, determinant, inverse, rank, LU with and without a row swap, 2×2 eigen) in guided mode, static steps and the result view, in the browser at 1280 px, with screenshots of every step.
+- **Widths** 320, 600, 960 and 1440 px in light and dark themes; **200% text** (root font size 32 px, which Flutter web reads as its text scale) at 320 and 1280 px; **reduced motion** (Chrome's `prefers-reduced-motion`).
+- **All five languages** on the home screen and a lesson; requests to other origins were logged, and Chinese was reloaded with `fonts.gstatic.com` blocked.
+- **Keyboard only**: Tab order on the home screen, input by keyboard, player shortcuts (Space, arrows, Home/End, R, S), practice (A–D, Enter) and transformation (P) shortcuts.
+- **Accessibility trees**, not a screen reader: the web semantics DOM (roles, labels, `aria-description`), the Windows UI Automation tree read through `UIAutomationCore`, and the Android tree through `uiautomator dump`.
+- **Behaviour**: pause/resume, Next while paused (plays one step, does not resume), scrubbing and replay in Details (opening it pauses), speed change and a 1280→390→1280 px resize mid-lesson (position kept), the continue card and completion marks after a reload, New questions, and See it as a transformation from the 2×2 eigen result.
+- **Mathematics by hand**: the 3×3 inverse of [[1,2,3],[0,1,4],[5,6,0]] = [[−24,18,5],[20,−15,−4],[−5,4,1]]; det [[2,−1,3],[1,4,0],[5,2,1]] = −45 (Sarrus 14 − 59); LU of [[0,1,1],[1,2,1],[2,7,9]] with P swapping rows 1 and 2, L = [[1,0,0],[0,1,0],[2,3,1]], U = [[1,2,1],[0,1,1],[0,0,4]]; eigenpairs of [[4,1],[2,3]]: λ = 5, v = (1, 1) and λ = 2, v = (1, −2); the linear system's solution (5, 3, −2); a generated 2×2 inverse question. All matched the app.
+
+## Defects fixed
+
+1. The speed read "Speed: 1××" in Settings, the speed menu and its tooltip: the ARB strings and `formatSpeed` both appended ×.
+2. The result's Exact/Complete chips were announced as unchecked checkboxes on the web (`RawChip` sets `checked` on web); they are now plain labelled text.
+3. Consecutive elimination steps had identical titles ("Eliminate Entry in Row 3" twice in the step list); titles now name the pivot row ("… using Row 1").
+4. The four size buttons were all "Decrease/Increase dimension"; they now say "Remove a row", "Add a column", etc.
+5. Screen-reader labels of formulas kept TeX: `\det(A)`, `A_2,2`, `A^-1`, `(1 & 0 & 0, …)`. `mathSemanticsLabel` now reads operator names, comma subscripts, signed superscripts, matrix rows and general fractions; a test sweeps every formula rendered across all lessons and results.
+6. "1 free columns" and "(1 Free Variables)" in English and Spanish, "1 свободных переменных" in Russian, now use ICU plurals.
+7. The "0 ✓" zero-result badge also marked target-row entries that were already 0 and did not change; only a zero the operation produced is marked.
+8. An eigen result repeated "A only stretches v: Av equals λv." once per eigenpair.
+9. Every eigen result said a full eigenspace basis is not computed, beside a "Complete" label, even for distinct eigenvalues; the note now appears only when an eigenvalue is repeated.
+10. Quiz options were announced only as "A", "B", …: the formula sat in a horizontal scroll view outside the button's label.
+11. Bottom navigation labels broke inside words at 320 px ("Transformati/ons") and all of them at 200% text; a label now shrinks to fit on one line.
+12. Chinese category chips on the Topics screen were faded along the bottom. A diagnostic build showed the label had room but reported an overflow: it had been laid out before the CJK fallback font arrived, and the chip's `TextOverflow.fade` kept the stale result. Chip labels no longer fade.
+13. Tab alternated between the navigation rail and the page by vertical position; each is now its own focus traversal group.
+14. Topic rows were exposed to Windows UI Automation as text without an invoke action; they are now buttons.
+
+## Verification
+
+Local: generated localizations current, `flutter analyze` clean, 346 application tests and 71 engine tests pass, `dart format` reports no changes.
+
+## Pull request review comments
+
+The automated review of pull request 1 raised three points; each was reproduced before it was fixed.
+
+- 3×3 eigen analysis tried only 1 and the common denominator itself when that denominator exceeded 1e12. `diag(999983/1000003, 999983/1000003, −500018/1000003)` was reported as −0.5 and a complex pair "1.00 ± 0.00i". Candidates now also come from continued-fraction convergents of each estimate whose denominator divides the common denominator; the eigenvalues are exact again (`packages/matrix_engine/test/eigen_test.dart`).
+- The rank check "rank + nullity = n" held by construction, since the solver sets nullity = n − rank. The rank is now recomputed from the largest nonzero minor.
+- Opening Practice or Transformations from the navigation did not update the continue card, although opening them from the catalog did. Fixes 1–5 and 7–13 were re-checked in a rebuilt release web app, 14 in the Android accessibility tree.
+
+## Not checked, or left as is
+
+- No screen reader (NVDA, Narrator, TalkBack) was run; only the accessibility trees above were read.
+- Windows desktop: launch, home screen, dark theme following the system, and the UI Automation tree were observed; lessons could not be driven there without taking over the mouse. The navigation rail's destinations are still exposed to UI Automation as text: that comes from Flutter's `NavigationRail`, not the app.
+- No physical phone was used; Android was checked on an emulator only.
+- Offline, Chinese rendered as empty boxes, because its glyphs came from `fonts.gstatic.com` at runtime (14 Noto Sans SC slices on the home screen). Fixed after review; see below.
+- An augmented 3×6 matrix ([A | I]) scrolls horizontally on phones (320–411 px) instead of fitting.
+- With the shrink-to-fit fix, "Transformations" at 320 px and every label at 200% text are smaller than the other text in the bar.
+- Blue "selected" outlines (the solution column, the A − λI diagonal, the extracted inverse) have no legend entry.
+
+## Chinese without Google Fonts
+
+With the owner's approval, the Chinese interface now ships its glyphs: `assets/fonts/MatriksCJK-Regular.ttf` and `-Bold.ttf` (451 characters, about 121 KB each) are instances of Noto Sans SC at weights 400 and 700 from `github.com/google/fonts`, subset to the characters in `app_zh.arb` and the Dart sources and renamed (SIL OFL 1.1, `assets/fonts/LICENSE-MatriksCJK.txt`, registered with `LicenseRegistry`). `MatriksCJK` is part of `AppTheme.symbolFallback`. `tool/build_cjk_font.py` rebuilds both files; a test reads the fonts' cmap and fails if a Chinese string uses a character they lack. In the rebuilt release web app, Chinese made no external request and rendered completely with `fonts.gstatic.com` blocked, including a lesson and the language menu's 简体中文. Characters a learner types outside the subset (for example in search) still use Flutter's runtime fallback.
+
+## Windows screen-reader tree
+
+With the owner's approval the Windows build was driven further, through UI Automation's Invoke pattern (as a screen reader activates controls) and in a debug run whose engine log was read. No screen reader itself was run.
+
+- **Lessons never reached Windows accessibility.** Opening any lesson logged `Failed to update ui::AXTree, error: 44 will not be in the tree and is not the new root`, and from then on UI Automation kept showing the previous screen. The desktop bridge builds its tree from traversal-order children; a `Slider` keeps an `OverlayPortal` open for its value indicator whose node is listed only under the slider's own, so whenever the slider was hidden (the collapsed Details drawer, the first frame of an expanding drawer, the Transformations tab in the background, a route covering the lesson) that node was orphaned and the update rejected. Sliders are now built only while shown (`SliderWhileShown`), and the two drawers holding one open and close without animation and are not kept built while closed. `test/semantics_tree_consistency_test.dart` replays the app's semantics updates the way the bridge applies them across those flows; it reproduced node 44 before the fix. Afterwards the debug run logged no bridge error while lessons, Details, the step list, every tab and Settings were opened through UI Automation. The underlying behaviour is Flutter's (3.47.1), not the app's.
+- **Controls that could not be invoked.** The navigation rail's destinations and the Details, More options and New to matrices? headers were exposed as text without an invoke action; they are now buttons.
+- **More options, expanded, was named by all its contents** ("More options, Solution view, Speed: 1×, …") on desktop platforms; the header is now named only by its title.
+
+Verification: 350 application and 71 engine tests pass; analysis and formatting clean. `player_timeline_test.dart` now opens the Details drawer (or builds it open) before reading the scrub slider, since the slider no longer exists while the drawer is closed; its assertions are unchanged.

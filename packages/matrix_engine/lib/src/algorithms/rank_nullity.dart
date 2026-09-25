@@ -55,38 +55,38 @@ class RankNullitySolver {
     final rrefSnap = MatrixSnapshot.fromMatrix(rref);
 
     // Final step: Rank-Nullity Theorem summary
+    // Only the leading entries are pivots; marking whole columns called
+    // their zeros pivots too.
     final highlights = <CellHighlight>[
-      for (final pc in pivotCols)
-        for (int r = 0; r < rowCount; r++)
-          CellHighlight(row: r, col: pc, type: HighlightType.pivot),
-      for (final fc in freeCols)
-        for (int r = 0; r < rowCount; r++)
-          CellHighlight(row: r, col: fc, type: HighlightType.source),
+      for (var r = 0; r < pivotCols.length; r++)
+        CellHighlight(row: r, col: pivotCols[r], type: HighlightType.pivot),
     ];
 
     final summaryLatex =
         '\\text{rank}(A) + \\text{nullity}(A) = $rank + $nullity = $colCount';
 
-    steps.add(MatrixStep(
-      stepIndex: ++stepCounter,
-      titleKey: 'rank_nullity_title',
-      titleParams: {'rank': rank, 'nullity': nullity},
-      explanationKey: 'rank_nullity_desc',
-      explanationParams: {
-        'rank': rank,
-        'nullity': nullity,
-        'cols': colCount,
-        'formula': summaryLatex,
-      },
-      matrixBefore: rrefSnap,
-      matrixAfter: rrefSnap,
-      transformation: RankNullityTransformation(
-        rank: rank,
-        nullity: nullity,
-        totalCols: colCount,
+    steps.add(
+      MatrixStep(
+        stepIndex: ++stepCounter,
+        titleKey: 'rank_nullity_title',
+        titleParams: {'rank': rank, 'nullity': nullity},
+        explanationKey: 'rank_nullity_desc',
+        explanationParams: {
+          'rank': rank,
+          'nullity': nullity,
+          'cols': colCount,
+          'formula': summaryLatex,
+        },
+        matrixBefore: rrefSnap,
+        matrixAfter: rrefSnap,
+        transformation: RankNullityTransformation(
+          rank: rank,
+          nullity: nullity,
+          totalCols: colCount,
+        ),
+        highlights: highlights,
       ),
-      highlights: highlights,
-    ));
+    );
 
     return StepSolution(
       operationKey: 'op_rank_nullity',

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../transform_visualizer/models/transform_matrix.dart';
+import '../../transform_visualizer/views/transform_visualizer_screen.dart';
+import '../result_check.dart';
+import '../step_text.dart';
 import 'matrix_display_grid.dart';
 
 class SolutionStatus extends StatelessWidget {
@@ -14,6 +19,14 @@ class SolutionStatus extends StatelessWidget {
     final eigen = solution.result is EigenResult
         ? solution.result as EigenResult
         : null;
+    // A chip reports itself as selectable (a checkbox on the web); these
+    // only state a fact about the result, so they are read as plain text.
+    Widget status(String text, {Widget? avatar}) => Semantics(
+      container: true,
+      label: text,
+      excludeSemantics: true,
+      child: Chip(avatar: avatar, label: Text(text)),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,23 +35,24 @@ class SolutionStatus extends StatelessWidget {
           runSpacing: 4,
           children: [
             if (solution.isSuccess)
-              Chip(
-                avatar: const Icon(Icons.verified_outlined, size: 18),
-                label: Text(
+              status(
+                solution.accuracy == ResultAccuracy.exact
+                    ? l.resultExact
+                    : l.resultApproximate,
+                avatar: Icon(
                   solution.accuracy == ResultAccuracy.exact
-                      ? l.resultExact
-                      : l.resultApproximate,
+                      ? Icons.verified_outlined
+                      : Icons.data_usage_rounded,
+                  size: 18,
                 ),
               ),
             if (solution.isSuccess ||
                 solution.completeness == ResultCompleteness.unsupported)
-              Chip(
-                label: Text(switch (solution.completeness) {
-                  ResultCompleteness.complete => l.resultComplete,
-                  ResultCompleteness.partial => l.resultPartial,
-                  ResultCompleteness.unsupported => l.resultUnsupported,
-                }),
-              ),
+              status(switch (solution.completeness) {
+                ResultCompleteness.complete => l.resultComplete,
+                ResultCompleteness.partial => l.resultPartial,
+                ResultCompleteness.unsupported => l.resultUnsupported,
+              }),
           ],
         ),
         if (eigen != null) ...[
@@ -47,7 +61,10 @@ class SolutionStatus extends StatelessWidget {
           else if (solution.accuracy == ResultAccuracy.approximate)
             Text(l.eigenPrecision),
           if (solution.initialMatrix.rows == 3) Text(l.eigenScope),
-          Text(l.eigenBasisScope),
+          // Distinct eigenvalues have one-dimensional eigenspaces, so the
+          // vector shown is already a basis; only a repeated one may not be.
+          if (eigen.realEigenpairs.any((p) => p.algebraicMultiplicity > 1))
+            Text(l.eigenBasisScope),
         ],
       ],
     );
@@ -67,14 +84,7 @@ class SolutionSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final error = switch (solution.errorMessageKey) {
-      'error_matrix_is_singular' => l.error_matrix_is_singular,
-      'error_inverse_not_square' => l.error_inverse_not_square,
-      'error_dimension_mismatch_add' => l.error_dimension_mismatch_add,
-      'error_dimension_mismatch_multiply' =>
-        l.error_dimension_mismatch_multiply,
-      _ => l.solveFallbackError,
-    };
+    final error = localizedSolverError(l, solution.errorMessageKey);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -92,13 +102,27 @@ class SolutionSummary extends StatelessWidget {
               error,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-          if (solution.resultLatex != null)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: MathText(solution.resultLatex!, fontSize: 24),
+          // A matrix result is drawn below as the matrix itself; its TeX line
+          // would only repeat it, with cramped fractions.
+          // Separate parts (each eigenpair; P, L and U) sit side by side
+          // when they fit and stack on a narrow screen.
+          if (solution.resultLatex != null && solution.result is! Matrix)
+            Wrap(
+              spacing: 32,
+              runSpacing: 12,
+              children: [
+                for (final part in solution.resultLatex!.split(r' \quad '))
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: MathText(part, fontSize: 24),
+                  ),
+              ],
             ),
           const SizedBox(height: 24),
-          if (solution.isSuccess)
+          // Only a matrix result is drawn as a matrix. For a determinant,
+          // LU or eigen result the final matrix would stand unlabelled under
+          // the answer (U again, or A itself).
+          if (solution.isSuccess && solution.result is Matrix)
             MatrixDisplayGrid(
               snapshot: MatrixSnapshot.fromMatrix(solution.finalMatrix),
               highlights: const [],
@@ -106,18 +130,120 @@ class SolutionSummary extends StatelessWidget {
               showExplanation: false,
               isDecimalView: decimal,
             ),
+          ResultChecks(solution: solution),
           const SizedBox(height: 24),
-          if (solution.steps.isNotEmpty)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: FilledButton.icon(
-                onPressed: onViewSteps,
-                icon: const Icon(Icons.layers_outlined),
-                label: Text(l.viewSteps),
-              ),
-            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (solution.steps.isNotEmpty)
+                FilledButton.icon(
+                  onPressed: onViewSteps,
+                  icon: const Icon(Icons.layers_outlined),
+                  label: Text(l.viewSteps),
+                ),
+              ?TransformLink.forSolution(solution),
+            ],
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// Independent confirmations of the result (A·A⁻¹ = I, Av = λv, ...),
+/// computed exactly; nothing is shown for operations without one.
+class ResultChecks extends StatelessWidget {
+  final StepSolution solution;
+  const ResultChecks({super.key, required this.solution});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final checks = resultChecks(solution, l);
+    if (checks.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Card(
+      key: const ValueKey('result-checks'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l.checkTitle, style: theme.textTheme.titleMedium),
+            for (final (index, check) in checks.indexed) ...[
+              const SizedBox(height: 12),
+              // Eigenpairs share one description; say it once.
+              if (index == 0 ||
+                  checks[index - 1].description != check.description) ...[
+                Text(check.description, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 6),
+              ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: MathText(check.latex, fontSize: 18),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Icon(
+                    check.holds
+                        ? Icons.check_circle_outline_rounded
+                        : Icons.error_outline_rounded,
+                    size: 18,
+                    color: check.holds
+                        ? AppTheme.accentGreen
+                        : theme.colorScheme.error,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    check.holds ? l.checkHolds : l.checkFails,
+                    style: theme.textTheme.labelLarge,
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Opens a 2×2 eigen problem in the transformation view, where the
+/// eigenvectors are the directions the grid only stretches.
+class TransformLink extends StatelessWidget {
+  final TransformMatrix matrix;
+  const TransformLink({super.key, required this.matrix});
+
+  /// Null unless [solution] is a 2×2 eigen analysis whose entries the
+  /// transformation view accepts ([-1000, 1000]).
+  static TransformLink? forSolution(StepSolution solution) {
+    final a = solution.initialMatrix;
+    if (solution.operationKey != 'op_eigen' || a.rows != 2 || a.cols != 2) {
+      return null;
+    }
+    final values = [
+      for (var r = 0; r < 2; r++)
+        for (var c = 0; c < 2; c++) a.get(r, c).toDouble(),
+    ];
+    if (values.any((v) => !v.isFinite || v.abs() > 1000)) return null;
+    return TransformLink(
+      key: const ValueKey('transform-link'),
+      matrix: TransformMatrix(values[0], values[1], values[2], values[3]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => TransformVisualizerScreen(initial: matrix),
+        ),
+      ),
+      icon: const Icon(Icons.open_in_new_rounded),
+      label: Text(AppLocalizations.of(context)!.seeAsTransform),
     );
   }
 }

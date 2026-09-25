@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_engine/matrix_engine.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'instruction_timeline.dart';
@@ -14,6 +15,18 @@ class InstructionLesson {
   final List<String> markers;
   final String? rationale;
 
+  /// No step-specific teaching text exists; the step's own description is
+  /// shown instead of three placeholder phases.
+  final bool generic;
+
+  /// The phases and calculations already say everything the solver's step
+  /// description says, so the description is not repeated beside them.
+  final bool coversDescription;
+
+  /// Leading calculations that recap earlier steps and are visible from the
+  /// start; only the rest are revealed during the operation.
+  final int revealedAtStart;
+
   const InstructionLesson(
     this.source,
     this.operation,
@@ -21,7 +34,32 @@ class InstructionLesson {
     this.calculations = const [],
     this.markers = const [],
     this.rationale,
-  ]);
+  ]) : generic = false,
+       coversDescription = false,
+       revealedAtStart = 0;
+
+  const InstructionLesson._({
+    required this.source,
+    required this.operation,
+    required this.result,
+    this.calculations = const [],
+    this.markers = const [],
+    this.rationale,
+    this.generic = false,
+    this.coversDescription = true,
+    this.revealedAtStart = 0,
+  });
+
+  static const _generic = InstructionLesson._(
+    source: '',
+    operation: '',
+    result: '',
+    generic: true,
+    coversDescription: false,
+  );
+
+  /// Calculations revealed one at a time during the operation phase.
+  int get progressiveCount => calculations.length - revealedAtStart;
 
   factory InstructionLesson.forStep({
     required StepTransformation? transformation,
@@ -31,13 +69,17 @@ class InstructionLesson {
   }) {
     final original = before ?? after;
     final trans = transformation;
-    String math(Rational value) => '(${value.toLatex()})';
+    // Only a negative operand needs brackets: 5 - 2 \cdot 2, but 5 - (-2).
+    String math(Rational value) =>
+        value.isNegative ? '(${value.toLatex()})' : value.toLatex();
     if (trans is MatrixElementAdditionTransformation) {
-      return InstructionLesson(
-        l10n?.guideAddSource ?? 'Match the same position in A and B.',
-        l10n?.guideAddApply ?? 'Add this pair of entries.',
-        l10n?.guideAddResult ?? 'Their sum belongs in the same position in C.',
-        [
+      return InstructionLesson._(
+        source: l10n?.guideAddSource ?? 'Match the same position in A and B.',
+        operation: l10n?.guideAddApply ?? 'Add this pair of entries.',
+        result:
+            l10n?.guideAddResult ??
+            'Their sum belongs in the same position in C.',
+        calculations: [
           '${math(trans.left)} + ${math(trans.right)} = ${(trans.left + trans.right).toLatex()}',
         ],
       );
@@ -58,19 +100,30 @@ class InstructionLesson {
       final pivot = original.get(trans.sourceRow, column);
       final entry = original.get(trans.targetRow, column);
       final ratio = pivot == Rational.zero ? null : entry / pivot;
-      final rationale = ratio == null
-          ? null
-          : l10n?.guideEliminateReason(
-                  entry.toString(),
-                  pivot.toString(),
-                  ratio.toString(),
-                ) ??
-                'Target $entry ÷ pivot $pivot = $ratio. Subtract this multiple of the source row to cancel the target entry.';
+      String? rationale;
+      if (ratio != null) {
+        rationale = trans is LUEliminationTransformation
+            ? l10n?.guideLuReason(
+                    entry.toString(),
+                    pivot.toString(),
+                    ratio.toString(),
+                    '${trans.lowerRow + 1}',
+                    '${trans.lowerCol + 1}',
+                  ) ??
+                  'Target $entry ÷ pivot $pivot = $ratio. The same number is written into L.'
+            : l10n?.guideEliminateReason(
+                    entry.toString(),
+                    pivot.toString(),
+                    ratio.toString(),
+                  ) ??
+                  'Target $entry ÷ pivot $pivot = $ratio. Subtract this multiple of the source row to cancel the target entry.';
+      }
       final sign = trans.factor.isNegative ? '-' : '+';
-      return InstructionLesson(
-        l10n?.guideEliminateSource(source, target, col) ??
+      return InstructionLesson._(
+        source:
+            l10n?.guideEliminateSource(source, target, col) ??
             'Use row $source to change row $target. Focus on column $col.',
-        trans.factor.isNegative
+        operation: trans.factor.isNegative
             ? l10n?.guideEliminateSubtract(
                     trans.factor.abs().toString(),
                     source,
@@ -83,35 +136,46 @@ class InstructionLesson {
                     target,
                   ) ??
                   'Add ${trans.factor} times row $source to row $target.',
-        l10n?.guideEliminateResult(col, value.toString()) ??
+        result:
+            l10n?.guideEliminateResult(col, value.toString()) ??
             'The entry in column $col is now $value.',
-        [
-          for (var c = 0; c < after.cols; c++)
+        calculations: [
+          for (final c in changingColumns(trans, original, after.cols))
             '${math(original.get(trans.targetRow, c))} $sign ${math(trans.factor.abs())} \\cdot ${math(original.get(trans.sourceRow, c))} = ${after.get(trans.targetRow, c).toLatex()}',
         ],
-        const [],
-        rationale,
+        rationale: rationale,
       );
     }
     if (trans is RowScaleTransformation) {
       final row = '${trans.row + 1}';
-      return InstructionLesson(
-        l10n?.guideScaleSource(row, trans.scalar.toString()) ??
+      return InstructionLesson._(
+        source:
+            l10n?.guideScaleSource(row, trans.scalar.toString()) ??
             'Scale row $row by ${trans.scalar}.',
-        l10n?.guideScaleApply ?? 'Apply the factor to the whole row.',
-        l10n?.guideScaleResult ?? 'Compare the scaled row with the original.',
-        [
-          for (var c = 0; c < after.cols; c++)
+        operation:
+            l10n?.guideScaleApply ?? 'Apply the factor to the whole row.',
+        result:
+            l10n?.guideScaleResult ??
+            'Compare the scaled row with the original.',
+        calculations: [
+          for (final c in changingColumns(trans, original, after.cols))
             '${math(trans.scalar)} \\cdot ${math(original.get(trans.row, c))} = ${after.get(trans.row, c).toLatex()}',
         ],
+        // The solver's description says why the row is scaled.
+        coversDescription: false,
       );
     }
     if (trans is RowSwapTransformation) {
-      return InstructionLesson(
-        l10n?.guideSwapSource('${trans.rowA + 1}', '${trans.rowB + 1}') ??
+      return InstructionLesson._(
+        source:
+            l10n?.guideSwapSource('${trans.rowA + 1}', '${trans.rowB + 1}') ??
             'Exchange rows ${trans.rowA + 1} and ${trans.rowB + 1}.',
-        l10n?.guideSwapApply ?? 'Move the whole rows; values do not change.',
-        l10n?.guideSwapResult ?? 'The rows are in their new positions.',
+        operation:
+            l10n?.guideSwapApply ??
+            'Move the whole rows; values do not change.',
+        result: l10n?.guideSwapResult ?? 'The rows are in their new positions.',
+        // The solver's description says why the rows are exchanged.
+        coversDescription: false,
       );
     }
     if (trans is MatrixElementMultiplicationTransformation) {
@@ -120,44 +184,93 @@ class InstructionLesson {
         (i) =>
             '${math(trans.rowElements[i])} \\cdot ${math(trans.colElements[i])}',
       );
-      return InstructionLesson(
-        l10n?.guideDotSource(
+      return InstructionLesson._(
+        source:
+            l10n?.guideDotSource(
               '${trans.targetRow + 1}',
               '${trans.targetCol + 1}',
             ) ??
             'Pair the source row and column.',
-        l10n?.guideDotApply ?? 'Multiply matching entries, then add.',
-        l10n?.guideDotResult(
+        operation:
+            l10n?.guideDotApply ?? 'Multiply matching entries, then add.',
+        result:
+            l10n?.guideDotResult(
               '${trans.targetRow + 1}',
               '${trans.targetCol + 1}',
             ) ??
             'The sum is the output entry.',
-        [...terms, '${terms.join(' + ')} = ${trans.result.toLatex()}'],
-        const [],
-        l10n?.guideDotReason ?? 'One output entry uses a whole row of A and a whole column of B. Multiply entries in matching positions, then add their contributions.',
+        calculations: [
+          ...terms,
+          '${terms.join(' + ')} = ${trans.result.toLatex()}',
+        ],
+        rationale: l10n?.guideDotReason ?? 'One output entry uses a whole row of A and a whole column of B. Multiply entries in matching positions, then add their contributions.',
+      );
+    }
+    if (trans is AdjugateTransformation && original.rows == 2) {
+      final a = original.get(0, 0);
+      final b = original.get(0, 1);
+      final c = original.get(1, 0);
+      final d = original.get(1, 1);
+      return InstructionLesson._(
+        source:
+            l10n?.guideAdjSource ??
+            'Look at the diagonal a, d and the other two entries b, c.',
+        operation:
+            l10n?.guideAdjApply ?? 'a and d trade places; b and c change sign.',
+        result:
+            l10n?.guideAdjResult ??
+            'This is adj(A). Dividing it by det(A) gives the inverse.',
+        calculations: [
+          '\\begin{pmatrix} ${a.toLatex()} & ${b.toLatex()} \\\\ ${c.toLatex()} & ${d.toLatex()} \\end{pmatrix} \\rightarrow \\begin{pmatrix} ${d.toLatex()} & ${(-b).toLatex()} \\\\ ${(-c).toLatex()} & ${a.toLatex()} \\end{pmatrix}',
+        ],
+        rationale: l10n?.guideAdjReason ?? 'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.',
+      );
+    }
+    if (trans is MatrixScaleTransformation) {
+      return InstructionLesson._(
+        source:
+            l10n?.guideScaleAllSource(trans.scalar.toString()) ??
+            'Every entry is multiplied by the same number, ${trans.scalar}.',
+        operation:
+            l10n?.guideScaleAllApply ??
+            'Multiply each entry by the factor, one at a time.',
+        result: l10n?.guideScaleAllResult ?? 'The scaled matrix is A⁻¹.',
+        calculations: [
+          for (var r = 0; r < after.rows; r++)
+            for (var c = 0; c < after.cols; c++)
+              '${math(original.get(r, c))} \\cdot ${math(trans.scalar)} = ${after.get(r, c).toLatex()}',
+        ],
       );
     }
     if (trans is DeterminantDiagonalProductTransformation) {
       var product = trans.sign;
-      final factors = <String>[math(trans.sign)];
+      // A factor of 1 says nothing; −1 records the row swaps.
+      final factors = <String>[if (trans.sign.isNegative) math(trans.sign)];
       final lines = <String>[];
       for (final value in trans.diagonalElements) {
         product *= value;
         factors.add(math(value));
-        lines.add('${factors.join(r' \cdot ')} = ${product.toLatex()}');
+        // A single factor equals itself; the first line is the first product.
+        if (factors.length > 1) {
+          lines.add('${factors.join(r' \cdot ')} = ${product.toLatex()}');
+        }
       }
-      return InstructionLesson(
-        l10n?.guideDetSource ?? 'Follow the factors and signs of each product.',
-        l10n?.guideDetApply ?? 'Follow one product at a time below the matrix.',
-        l10n?.guideDetResult ?? 'Check the products at your own pace.',
-        lines,
+      return InstructionLesson._(
+        source: l10n?.guideDiagSource ?? 'In a triangular matrix the determinant is the product of the diagonal.',
+        operation: l10n?.guideDiagApply ?? 'Multiply the diagonal entries one by one. Each row swap earlier contributed a factor of −1.',
+        result:
+            l10n?.guideDiagResult ??
+            'The last product is the determinant of the original matrix.',
+        calculations: lines,
       );
     }
     if (trans is DeterminantCrossProductTransformation ||
         trans is DeterminantSarrusTransformation) {
       final lines = <String>[];
       final markers = <String>[];
+      var recap = false;
       if (trans is DeterminantCrossProductTransformation) {
+        recap = trans.recap;
         if (trans.phase != 2) {
           final factors = original.rows == 2 && original.cols == 2
               ? '${math(original.get(0, 0))} \\cdot ${math(original.get(1, 1))} = '
@@ -178,6 +291,7 @@ class InstructionLesson {
           );
         }
       } else if (trans is DeterminantSarrusTransformation) {
+        recap = trans.recap;
         const positive = [
           [0, 1, 2],
           [1, 2, 0],
@@ -214,22 +328,40 @@ class InstructionLesson {
           lines.add('${math(pos)} - ${math(neg)} = ${(pos - neg).toLatex()}');
         }
       }
-      return InstructionLesson(
-        l10n?.guideDetSource ?? 'Follow the factors and signs of each product.',
-        l10n?.guideDetApply ?? 'Follow one product at a time below the matrix.',
-        l10n?.guideDetResult ?? 'Check the products at your own pace.',
-        lines,
-        markers,
-        l10n?.guideDetReason ?? 'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
+      if (recap) {
+        // Earlier steps drew each product; here they stay listed for
+        // reference and only the final subtraction is new.
+        return InstructionLesson._(
+          source:
+              l10n?.guideDetRecapSource ??
+              'All products are known from the previous steps.',
+          operation:
+              l10n?.guideDetRecapApply ??
+              'Subtract the − total from the + total.',
+          result:
+              l10n?.guideDetRecapResult ?? 'The difference is the determinant.',
+          calculations: lines,
+          markers: markers,
+          revealedAtStart: lines.length - 1,
+          rationale: l10n?.guideDetReason ?? 'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
+        );
+      }
+      return InstructionLesson._(
+        source:
+            l10n?.guideDetSource ??
+            'Follow the factors and signs of each product.',
+        operation:
+            l10n?.guideDetApply ??
+            'Follow one product at a time below the matrix.',
+        result:
+            l10n?.guideDetResult ??
+            'Their sum is this group\'s contribution to the determinant.',
+        calculations: lines,
+        markers: markers,
+        rationale: l10n?.guideDetReason ?? 'The determinant measures signed area or volume scaling. Add the products marked + and subtract those marked −; a zero determinant means the transformation loses a dimension.',
       );
     }
-    return InstructionLesson(
-      l10n?.guideGenericSource ?? 'Read the matrix and the goal of this step.',
-      l10n?.guideGenericApply ??
-          'Follow the highlighted entries and the explanation.',
-      l10n?.guideGenericResult ??
-          'Check the result. Continue when you are ready.',
-    );
+    return _generic;
   }
 }
 
@@ -239,12 +371,17 @@ class InstructionExplanation extends StatelessWidget {
   final int activeCalculation;
   final bool showAllPhases;
 
+  /// Whether a screen reader announces phase changes. Off while the lesson
+  /// plays, when phases change every few seconds.
+  final bool announce;
+
   const InstructionExplanation({
     super.key,
     required this.lesson,
     required this.phase,
     this.activeCalculation = -1,
     this.showAllPhases = false,
+    this.announce = true,
   });
 
   @override
@@ -262,32 +399,53 @@ class InstructionExplanation extends StatelessWidget {
       InstructionPhase.operation => lesson.operation,
       InstructionPhase.result => lesson.result,
     };
+    // Recap lines are listed from the start; the rest appear one by one.
+    final start = lesson.revealedAtStart;
     final visibleCalculations =
         showAllPhases || phase == InstructionPhase.result
         ? lesson.calculations.length
         : phase == InstructionPhase.source
-        ? 0
-        : (activeCalculation + 1).clamp(0, lesson.calculations.length);
+        ? start
+        : (start + activeCalculation + 1).clamp(
+            start,
+            lesson.calculations.length,
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          liveRegion: true,
+        // With every phase shown at once there is no phase to name. The
+        // dots show where the step is; screen readers hear the phase name.
+        if (!showAllPhases) ...[
+          Semantics(
+            liveRegion: announce,
+            label: '${phase.index + 1} / 3 · $title',
+            child: ExcludeSemantics(
+              child: _PhaseDots(
+                key: const ValueKey('phase-dots'),
+                phase: phase,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+        // One sentence at a time, like a subtitle under the matrix.
+        AnimatedSwitcher(
+          duration: AppTheme.motion(context, AppTheme.stateMs),
+          // Start-aligned like the phase dots and calculations around it;
+          // the default layout would centre each sentence.
+          layoutBuilder: (current, previous) => Stack(
+            alignment: AlignmentDirectional.topStart,
+            children: [...previous, ?current],
+          ),
           child: Text(
             showAllPhases
-                ? (l10n?.stepExplanation ?? 'Why this works')
-                : '${phase.index + 1} / 3 · $title',
-            style: theme.textTheme.labelLarge,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          showAllPhases
-              ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'
-              : description,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            height: 1.5,
-            color: theme.colorScheme.onSurfaceVariant,
+                ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'
+                : description,
+            key: ValueKey(showAllPhases ? -1 : phase.index),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         if (visibleCalculations > 0) ...[
@@ -295,7 +453,7 @@ class InstructionExplanation extends StatelessWidget {
           ...List.generate(visibleCalculations, (index) {
             final selected =
                 phase == InstructionPhase.operation &&
-                index == activeCalculation;
+                index == start + activeCalculation;
             return Container(
               margin: const EdgeInsets.only(bottom: 4),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -332,6 +490,35 @@ class InstructionExplanation extends StatelessWidget {
               ),
             );
           }),
+        ],
+      ],
+    );
+  }
+}
+
+class _PhaseDots extends StatelessWidget {
+  final InstructionPhase phase;
+
+  const _PhaseDots({super.key, required this.phase});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        for (final p in InstructionPhase.values) ...[
+          AnimatedContainer(
+            duration: AppTheme.motion(context, AppTheme.stateMs),
+            width: p == phase ? 22 : 10,
+            height: 4,
+            decoration: BoxDecoration(
+              color: p.index <= phase.index
+                  ? scheme.primary
+                  : scheme.outlineVariant,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 4),
         ],
       ],
     );

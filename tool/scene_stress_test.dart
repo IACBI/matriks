@@ -36,6 +36,7 @@ void main() {
         final step = solution.steps[run % solution.steps.length];
         final timeline = InstructionTimeline.forTransformation(
           step.transformation,
+          columns: step.matrixAfter.cols,
         );
         await tester.pumpWidget(
           MaterialApp(

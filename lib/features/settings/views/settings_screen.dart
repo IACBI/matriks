@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/number_format.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
 import '../widgets/language_menu.dart';
+import '../../../core/widgets/slider_while_shown.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -97,35 +99,17 @@ class SettingsScreen extends StatelessWidget {
                     ThemeMode.light: l.lightTheme,
                     ThemeMode.dark: l.darkTheme,
                   }, cubit.setThemeMode),
-                  choice(l.accentLabel, s.accentPalette, {
-                    AccentPalette.blue: l.blue,
-                    AccentPalette.teal: l.teal,
-                    AccentPalette.purple: l.purple,
-                  }, (v) => cubit.update(s.copyWith(accentPalette: v))),
-                  choice(l.densityLabel, s.compact, {
-                    false: l.comfortable,
-                    true: l.compact,
-                  }, (v) => cubit.update(s.copyWith(compact: v))),
                 ]),
                 const SizedBox(height: 16),
+                // The two choices most learners need stay in view; the rest
+                // keep sensible defaults and wait under "More options".
                 section(l.learning, [
-                  choice(l.solutionModeLabel, s.solutionMode, {
-                    SolutionMode.guided: l.guidedMode,
-                    SolutionMode.steps: l.stepsMode,
-                    SolutionMode.result: l.resultMode,
-                  }, (v) => cubit.update(s.copyWith(solutionMode: v))),
-                  Text(
-                    l.playbackSpeed(s.defaultPlaybackSpeed.toStringAsFixed(2)),
-                  ),
-                  Slider(
-                    value: s.defaultPlaybackSpeed,
-                    min: .25,
-                    max: 4,
-                    divisions: 15,
-                    label: '${s.defaultPlaybackSpeed}×',
-                    semanticFormatterCallback: (v) =>
-                        '${v.toStringAsFixed(2)}×',
-                    onChanged: cubit.setDefaultSpeed,
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l.predictionLabel),
+                    subtitle: Text(l.predictionHelp),
+                    value: s.predictions,
+                    onChanged: (v) => cubit.update(s.copyWith(predictions: v)),
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
@@ -134,22 +118,55 @@ class SettingsScreen extends StatelessWidget {
                     value: s.reduceMotion,
                     onChanged: (v) => cubit.update(s.copyWith(reduceMotion: v)),
                   ),
-                  choice(l.explanation, s.explanationLevel, {
-                    ExplanationLevel.short: l.shortExplanation,
-                    ExplanationLevel.detailed: l.detailedExplanation,
-                    ExplanationLevel.hidden: l.hiddenExplanation,
-                  }, (v) => cubit.update(s.copyWith(explanationLevel: v))),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l.predictionLabel),
-                    subtitle: Text(l.predictionHelp),
-                    value: s.predictions,
-                    onChanged: (v) => cubit.update(s.copyWith(predictions: v)),
+                  // Its own semantics node: inside the card it was merged
+                  // into the section, so screen readers heard the whole card
+                  // as one control. Explicit child nodes keep the options'
+                  // headings out of the expanded header's name.
+                  Semantics(
+                    container: true,
+                    explicitChildNodes: true,
+                    // Holds the speed Slider; see the operation inspector in
+                    // matrix_display_grid.dart for why it must not animate.
+                    child: ExpansionTile(
+                      // A button, so Windows UI Automation can invoke it.
+                      internalAddSemanticForOnTap: true,
+                      key: const ValueKey('more-settings'),
+                      expansionAnimationStyle: AnimationStyle.noAnimation,
+                      tilePadding: EdgeInsets.zero,
+                      childrenPadding: EdgeInsets.zero,
+                      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                      title: Text(l.moreOptions),
+                      children: [
+                        choice(l.solutionModeLabel, s.solutionMode, {
+                          SolutionMode.guided: l.guidedMode,
+                          SolutionMode.steps: l.stepsMode,
+                          SolutionMode.result: l.resultMode,
+                        }, (v) => cubit.update(s.copyWith(solutionMode: v))),
+                        _SpeedSetting(
+                          value: s.defaultPlaybackSpeed,
+                          onCommit: cubit.setDefaultSpeed,
+                        ),
+                        choice(
+                          l.explanation,
+                          s.explanationLevel,
+                          {
+                            ExplanationLevel.short: l.shortExplanation,
+                            ExplanationLevel.detailed: l.detailedExplanation,
+                            ExplanationLevel.hidden: l.hiddenExplanation,
+                          },
+                          (v) => cubit.update(s.copyWith(explanationLevel: v)),
+                        ),
+                        choice(l.numberView, s.isDecimalView, {
+                          false: l.fractionView,
+                          true: l.decimalView,
+                        }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
+                        choice(l.densityLabel, s.compact, {
+                          false: l.comfortable,
+                          true: l.compact,
+                        }, (v) => cubit.update(s.copyWith(compact: v))),
+                      ],
+                    ),
                   ),
-                  choice(l.numberView, s.isDecimalView, {
-                    false: l.fractionView,
-                    true: l.decimalView,
-                  }, (v) => cubit.update(s.copyWith(isDecimalView: v))),
                 ]),
                 const SizedBox(height: 16),
                 section(l.shortcutsLabel, [
@@ -160,25 +177,29 @@ class SettingsScreen extends StatelessWidget {
                       title: Text(e.value),
                       trailing: OutlinedButton(
                         onPressed: () => _capture(context, cubit, e.key),
-                        child: Text(
-                          s.shortcuts[e.key] == LogicalKeyboardKey.space.keyId
-                              ? l.spaceKey
-                              : LogicalKeyboardKey(s.shortcuts[e.key]!)
-                                    .keyLabel,
-                        ),
+                        child: Text(_keyName(l, s.shortcuts[e.key]!)),
                       ),
                     ),
                 ]),
                 const SizedBox(height: 20),
                 Text(l.localPreferences),
                 const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    onPressed: cubit.reset,
-                    icon: const Icon(Icons.restore),
-                    label: Text(l.resetSettings),
-                  ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: cubit.reset,
+                      icon: const Icon(Icons.restore),
+                      label: Text(l.resetSettings),
+                    ),
+                    if (s.completedTopics.isNotEmpty || s.lastTopic != null)
+                      TextButton.icon(
+                        onPressed: cubit.resetProgress,
+                        icon: const Icon(Icons.flag_outlined),
+                        label: Text(l.resetProgress),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -213,7 +234,13 @@ class SettingsScreen extends StatelessWidget {
             if (!modified && cubit.setShortcut(action, event.logicalKey)) {
               Navigator.pop(dialogContext);
             } else {
-              setState(() => error = l.shortcutConflict);
+              // A key outside the assignable set is not a conflict; repeat
+              // which keys are allowed instead.
+              final assignable =
+                  !modified && SettingsState.isAssignableKey(event.logicalKey);
+              setState(
+                () => error = assignable ? l.shortcutConflict : l.shortcutHelp,
+              );
             }
             return KeyEventResult.handled;
           },
@@ -229,6 +256,61 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// Readable name of an assignable key: letters as themselves, arrows as
+  /// arrows rather than the platform's English "Arrow Left".
+  static String _keyName(AppLocalizations l, int keyId) {
+    if (keyId == LogicalKeyboardKey.space.keyId) return l.spaceKey;
+    if (keyId == LogicalKeyboardKey.arrowLeft.keyId) return '←';
+    if (keyId == LogicalKeyboardKey.arrowRight.keyId) return '→';
+    return LogicalKeyboardKey(keyId).keyLabel;
+  }
+}
+
+/// Default playback speed. The slider moves freely and the preference is
+/// saved once, when the drag ends, instead of on every intermediate value.
+class _SpeedSetting extends StatefulWidget {
+  final double value;
+  final ValueChanged<double> onCommit;
+  const _SpeedSetting({required this.value, required this.onCommit});
+
+  @override
+  State<_SpeedSetting> createState() => _SpeedSettingState();
+}
+
+class _SpeedSettingState extends State<_SpeedSetting> {
+  late double _value = widget.value;
+
+  @override
+  void didUpdateWidget(_SpeedSetting oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) _value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final text = formatSpeed(_value, locale);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(l.playbackSpeed(text)),
+        SliderWhileShown(
+          child: Slider(
+            value: _value,
+            min: .25,
+            max: 4,
+            divisions: 15,
+            label: text,
+            semanticFormatterCallback: (v) => formatSpeed(v, locale),
+            onChanged: (v) => setState(() => _value = v),
+            onChangeEnd: widget.onCommit,
+          ),
+        ),
+      ],
     );
   }
 }

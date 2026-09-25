@@ -82,7 +82,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Собственные пары 2×2 и целые корни 3×3 от −20 до 20.';
+      'Собственные значения и векторы матриц 2×2 и 3×3; рациональные корни находятся точно.';
 
   @override
   String get topicTransform2d => 'Геометрические преобразования 2D';
@@ -135,10 +135,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get fractionToggle => 'Дробь / Десятичная';
 
   @override
-  String get decreaseDimension => 'Уменьшить размер';
+  String get removeRow => 'Удалить строку';
 
   @override
-  String get increaseDimension => 'Увеличить размер';
+  String get addRow => 'Добавить строку';
+
+  @override
+  String get removeColumn => 'Удалить столбец';
+
+  @override
+  String get addColumn => 'Добавить столбец';
 
   @override
   String stepOf(Object current, Object total) {
@@ -153,7 +159,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Скорость: $speed×';
+    return 'Скорость: $speed';
   }
 
   @override
@@ -182,11 +188,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Язык';
-
-  @override
-  String solveError(Object error) {
-    return 'Ошибка: $error';
-  }
 
   @override
   String get solveFallbackError => 'Не удалось выполнить вычисление.';
@@ -261,8 +262,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Обнулить элемент строки $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Обнулить элемент строки $target с помощью строки $source';
   }
 
   @override
@@ -456,8 +457,15 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Бесконечно много решений ($count свободных переменных)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count свободных переменных',
+      few: '$count свободные переменные',
+      one: '$count свободная переменная',
+    );
+    return 'Бесконечно много решений ($_temp0)';
   }
 
   @override
@@ -471,7 +479,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return 'Ведущих столбцов: $rank, свободных: $nullity. Ранг + дефект = $cols.';
   }
 
@@ -511,7 +519,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'Для (A − ${lambda}I)v = 0 один из собственных векторов: $vector.';
+    return 'Для (A − λI)v = 0 при λ = $lambda один из собственных векторов: $vector.';
   }
 
   @override
@@ -521,7 +529,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'Для $poly не найдено целых корней от −20 до 20. Могут существовать другие вещественные или комплексные корни.';
+    return 'Корни $poly не удалось надёжно выделить при коэффициентах такого размера. Вещественные или комплексные корни существуют, но этот решатель их не вычисляет.';
   }
 
   @override
@@ -735,10 +743,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cellCalculations => 'Вычисления элементов';
 
   @override
+  String get stepDetails => 'Подробности';
+
+  @override
   String get chooseStep => 'Выбрать шаг';
 
   @override
   String get learningPath => 'Впервые изучаете матрицы?';
+
+  @override
+  String get continueLearning => 'Продолжите с того же места';
+
+  @override
+  String get continueAction => 'Продолжить';
+
+  @override
+  String get topicCompleted => 'Пройдено';
+
+  @override
+  String pathProgress(int done, int total) {
+    return 'Пройдено тем: $done из $total';
+  }
 
   @override
   String get pathEliminate => '1 · Создать нули';
@@ -748,17 +773,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Решить систему';
-
-  @override
-  String get guideGenericSource => 'Изучите матрицу и цель этого шага.';
-
-  @override
-  String get guideGenericApply =>
-      'Следите за выделенными элементами и пояснением.';
-
-  @override
-  String get guideGenericResult =>
-      'Сравните результат и продолжайте, когда будете готовы.';
 
   @override
   String guideEliminateSource(String source, String target, String column) {
@@ -821,8 +835,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Следите за одним произведением за раз и проверяйте множители.';
 
   @override
-  String get guideDetResult =>
-      'Произведения остаются видимыми: проверяйте в своём темпе.';
+  String get guideDetResult => 'Их сумма — вклад этой группы в определитель.';
 
   @override
   String get coefficientError => 'Введите число от −1000 до 1000.';
@@ -978,18 +991,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get compact => 'Компактная';
 
   @override
-  String get accentLabel => 'Цвет акцента';
-
-  @override
-  String get blue => 'Синий';
-
-  @override
-  String get teal => 'Бирюзовый';
-
-  @override
-  String get purple => 'Фиолетовый';
-
-  @override
   String get shortcutsLabel => 'Сочетания клавиш';
 
   @override
@@ -1007,18 +1008,62 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resetSettings => 'Сбросить настройки';
 
   @override
+  String get moreOptions => 'Другие параметры';
+
+  @override
+  String get resetProgress => 'Сбросить прогресс';
+
+  @override
   String get settingsStorageError =>
       'Не удалось прочитать или сохранить настройки. Изменения доступны в этом сеансе.';
 
   @override
   String get localPreferences =>
-      'Настройки хранятся на этом устройстве. История матриц не сохраняется.';
+      'Настройки и пройденные уроки хранятся на этом устройстве. Матрицы и ответы в тестах не сохраняются.';
 
   @override
   String get resultExact => 'Точно';
 
   @override
   String get resultApproximate => 'Приближённо';
+
+  @override
+  String get checkTitle => 'Проверка результата';
+
+  @override
+  String get checkHolds => 'Верно';
+
+  @override
+  String get checkFails => 'Не выполняется';
+
+  @override
+  String get checkInverse =>
+      'Произведение A на обратную матрицу даёт единичную матрицу.';
+
+  @override
+  String get checkDetRows =>
+      'Приведение к треугольному виду даёт то же значение.';
+
+  @override
+  String get checkDetCofactor =>
+      'Разложение по первой строке даёт то же значение.';
+
+  @override
+  String get checkLu =>
+      'Произведение L на U возвращает A со строками в порядке, заданном P.';
+
+  @override
+  String get checkSystem => 'Подстановка x в уравнения даёт b.';
+
+  @override
+  String get checkRank =>
+      'Наибольшая квадратная подматрица с ненулевым определителем даёт ранг; оставшиеся столбцы дают дефект.';
+
+  @override
+  String get checkEigen => 'A лишь растягивает v: Av равно λv.';
+
+  @override
+  String get seeAsTransform => 'Показать как преобразование';
 
   @override
   String get resultComplete => 'Полностью';
@@ -1035,7 +1080,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      'Для матриц 3×3 ищутся целые корни от −20 до 20. Остальные корни могут быть вещественными или комплексными.';
+      'Рациональные корни 3×3 находятся точно; остальные вещественные корни округляются до трёх знаков. При очень больших коэффициентах корни могут остаться ненайденными.';
 
   @override
   String get eigenBasisScope =>
@@ -1194,6 +1239,131 @@ class AppLocalizationsRu extends AppLocalizations {
       'Все диагональные элементы положительны; дополнительного минуса нет.';
 
   @override
+  String get genDetTitle => 'Определитель 2×2';
+
+  @override
+  String get genDetPrompt => 'Чему равен det(A) для матрицы ниже?';
+
+  @override
+  String get genDetHint =>
+      'Для матрицы 2×2 из произведения главной диагонали вычтите произведение другой диагонали: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Здесь два диагональных произведения сложены; второе нужно вычесть.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Здесь перемножены элементы строк. Определитель использует диагонали.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'Порядок обратный: сначала главная диагональ, поэтому знак меняется.';
+
+  @override
+  String get genElimTitle => 'Выбор множителя';
+
+  @override
+  String get genElimPrompt =>
+      'Какое преобразование строк обнуляет первый элемент строки 2?';
+
+  @override
+  String get genElimHint =>
+      'Разделите обнуляемый элемент на ведущий элемент над ним.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'Множитель — это элемент, делённый на ведущий: $entry ÷ $pivot = $factor. Вычитание строки 1, умноженной на $factor, даёт 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'С противоположным знаком элемент растёт, а не обнуляется.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'Отношение перевёрнуто: делите элемент на ведущий, а не наоборот.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Это меняет строку 1 с ведущим элементом. Меняться должна строка 2.';
+
+  @override
+  String get genProductTitle => 'Элемент произведения';
+
+  @override
+  String get genProductPrompt =>
+      'Чему равен элемент в строке 1, столбце 2 произведения A·A?';
+
+  @override
+  String get genProductHint =>
+      'Строка 1 первого множителя встречается со столбцом 2 второго: перемножьте попарно и сложите.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'Строка 1 — ($r1, $r2), столбец 2 — ($c1, $c2), поэтому элемент равен $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Возведение элемента в квадрат — не умножение матриц; нужны целая строка и целый столбец.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Здесь строка 1 умножена на строку 2. Второй множитель даёт столбец.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Здесь перемножены два столбца. Первый множитель даёт строку.';
+
+  @override
+  String get genInverseTitle => 'Обратная матрица 2×2';
+
+  @override
+  String get genInversePrompt => 'Какая матрица является A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Поменяйте местами элементы главной диагонали, смените знак двух других и разделите на det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a и d меняются местами, b и c меняют знак, и всё умножается на 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'Диагональ переставлена, но b и c тоже должны сменить знак.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b и c сменили знак, но a и d тоже должны поменяться местами.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Здесь знак сменили все элементы; меняют знак только b и c.';
+
+  @override
+  String get newQuestions => 'Новые вопросы';
+
+  @override
   String eigen_vector_approx_title(Object index, Object lambda) {
     return 'Приближённый вектор для λ_$index ≈ $lambda';
   }
@@ -1205,4 +1375,116 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get spaceKey => 'Пробел';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Строка $row, столбец $column, ещё не вычислено';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Решение $poly даёт вещественное собственное значение $roots и пару комплексно сопряжённых λ ≈ $complex. Вещественный собственный вектор есть только у вещественного значения.';
+  }
+
+  @override
+  String get keyNextRow => 'Следующая строка';
+
+  @override
+  String get multiplyRowsLocked =>
+      'Число строк B равно числу столбцов A, поэтому A × B определено.';
+
+  @override
+  String get lessonComplete => 'Урок завершён';
+
+  @override
+  String get lessonCompleteHint =>
+      'Проверьте результат, посмотрите урок ещё раз или продолжите со своей матрицей.';
+
+  @override
+  String get replayLesson => 'Смотреть снова';
+
+  @override
+  String get tryOwnMatrix => 'Попробовать свою матрицу';
+
+  @override
+  String get editMatrix => 'Изменить матрицу';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Матрица $matrix заменена.';
+  }
+
+  @override
+  String get undo => 'Отменить';
+
+  @override
+  String get transformShortcutsHint =>
+      'Клавиатура: Пробел — воспроизвести или обратно, S — сдвиг, P — проекция, R — единичная.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Бледная сетка: плоскость до преобразования.';
+
+  @override
+  String get transformLegendEigen =>
+      'Пунктир: направления вещественных собственных векторов, остающиеся на своей прямой.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Цель $entry ÷ опорный $pivot = $ratio. Вычитание $ratio опорных строк обнуляет цель, а то же $ratio записывается в L на место ($row, $column), поэтому L · U снова даёт A.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      'В [[a, b], [c, d]] посмотрите на диагональ a, d и два других элемента b, c.';
+
+  @override
+  String get guideAdjApply =>
+      'a и d меняются местами; b и c остаются на месте, но меняют знак.';
+
+  @override
+  String get guideAdjResult =>
+      'Это adj(A). Разделив её на det(A), получаем обратную матрицу.';
+
+  @override
+  String get guideAdjReason =>
+      'Для матрицы 2×2 A · adj(A) = det(A) · I. Поэтому A⁻¹ = adj(A) ÷ det(A), если det(A) ≠ 0.';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'Каждый элемент adj(A) умножается на одно и то же число 1/det(A) = $factor.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Умножайте элементы по одному.';
+
+  @override
+  String get guideScaleAllResult => 'Результат — A⁻¹. Проверка: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'Матрица теперь верхнетреугольная, поэтому её определитель — произведение диагонали.';
+
+  @override
+  String get guideDiagApply =>
+      'Перемножайте диагональные элементы по одному. Первый множитель несёт −1 за каждую перестановку строк.';
+
+  @override
+  String get guideDiagResult =>
+      'Исключение строк не меняет определитель, поэтому это произведение — det исходной матрицы.';
+
+  @override
+  String get guideDetRecapSource => 'Обе суммы известны из предыдущих шагов.';
+
+  @override
+  String get guideDetRecapApply => 'Вычтите сумму «−» из суммы «+».';
+
+  @override
+  String get guideDetRecapResult => 'Разность и есть определитель.';
 }

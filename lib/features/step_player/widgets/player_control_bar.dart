@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/number_format.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 class PlayerControlBar extends StatelessWidget {
+  /// Whether the play/pause and speed controls exist at all. Static steps and
+  /// direct results have nothing to play.
+  final bool showPlayback;
   final bool animationEnabled;
   final int currentStepIndex;
   final int totalSteps;
@@ -18,6 +22,7 @@ class PlayerControlBar extends StatelessWidget {
   final void Function(double speed) onSpeedChanged;
 
   const PlayerControlBar({
+    this.showPlayback = true,
     this.animationEnabled = true,
     super.key,
     required this.currentStepIndex,
@@ -37,6 +42,8 @@ class PlayerControlBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    String speedText(double speed) => formatSpeed(speed, locale);
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
@@ -128,7 +135,7 @@ class PlayerControlBar extends StatelessWidget {
                           },
                   ),
                   // Speed Selector
-                  if (animationEnabled)
+                  if (showPlayback && animationEnabled)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -150,8 +157,8 @@ class PlayerControlBar extends StatelessWidget {
                         PopupMenuButton<double>(
                           initialValue: playbackSpeed,
                           tooltip:
-                              l10n?.playbackSpeed(playbackSpeed) ??
-                              'Speed: ${playbackSpeed}x',
+                              l10n?.playbackSpeed(speedText(playbackSpeed)) ??
+                              'Speed: ${speedText(playbackSpeed)}',
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -171,7 +178,7 @@ class PlayerControlBar extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  '${playbackSpeed}x',
+                                  speedText(playbackSpeed),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -197,7 +204,8 @@ class PlayerControlBar extends StatelessWidget {
                               PopupMenuItem(
                                 value: speed,
                                 child: Text(
-                                  l10n?.playbackSpeed(speed) ?? '${speed}x',
+                                  l10n?.playbackSpeed(speedText(speed)) ??
+                                      speedText(speed),
                                 ),
                               ),
                           ],
@@ -229,29 +237,33 @@ class PlayerControlBar extends StatelessWidget {
                         onPressed: currentStepIndex > 0 ? onPrevStep : null,
                         icon: const Icon(Icons.skip_previous_rounded, size: 28),
                       ),
-                      const SizedBox(width: 4),
-                      FloatingActionButton.small(
-                        heroTag: 'play_pause_btn',
-                        tooltip: isPlaying
-                            ? (l10n?.pause ?? 'Pause')
-                            : (l10n?.play ?? 'Play'),
-                        onPressed: animationEnabled ? onTogglePlayPause : null,
-                        backgroundColor: animationEnabled
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.surfaceContainerHighest,
-                        foregroundColor: animationEnabled
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface.withValues(
-                                alpha: .38,
-                              ),
-                        elevation: animationEnabled ? 1 : 0,
-                        child: Icon(
-                          isPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          size: 26,
+                      if (showPlayback) ...[
+                        const SizedBox(width: 4),
+                        FloatingActionButton.small(
+                          heroTag: 'play_pause_btn',
+                          tooltip: isPlaying
+                              ? (l10n?.pause ?? 'Pause')
+                              : (l10n?.play ?? 'Play'),
+                          onPressed: animationEnabled
+                              ? onTogglePlayPause
+                              : null,
+                          backgroundColor: animationEnabled
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surfaceContainerHighest,
+                          foregroundColor: animationEnabled
+                              ? theme.colorScheme.onPrimary
+                              : theme.colorScheme.onSurface.withValues(
+                                  alpha: .38,
+                                ),
+                          elevation: animationEnabled ? 1 : 0,
+                          child: Icon(
+                            isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            size: 26,
+                          ),
                         ),
-                      ),
+                      ],
                       const SizedBox(width: 4),
                       IconButton(
                         tooltip: l10n?.nextStep ?? 'Next',

@@ -77,7 +77,9 @@ void main() {
     testWidgets('finds a Turkish topic typed without diacritics', (
       tester,
     ) async {
-      tester.view.physicalSize = const Size(1280, 1400);
+      // Tall enough to build the whole catalog: eigenvalues come late on
+      // the learning path.
+      tester.view.physicalSize = const Size(1280, 2600);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);

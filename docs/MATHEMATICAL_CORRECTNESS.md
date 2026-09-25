@@ -62,8 +62,10 @@ remain reproducible. No dependency was added.
 
 ## Remaining scope limits
 
-3×3 eigen analysis still searches only integer roots −20…20 and explicitly
-labels missing/partial spectra. Repeated eigenvalues still provide representative
+3×3 eigen analysis (updated 2026-09-24): rational roots are found exactly for
+coefficients up to 1e12, irrational roots are three-decimal approximations from
+exact brackets and complex pairs have no eigenvectors; larger coefficients fall
+back to the integer search −20…20 and are labelled incomplete. Repeated eigenvalues still provide representative
 vectors rather than a complete eigenspace basis. Irrational 2×2 eigenpairs remain
 three-decimal approximations; complex eigenvectors are unsupported. The public
 cofactor determinant method selection currently falls back to triangularization;

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 enum TopicType {
   gauss,
@@ -15,147 +15,159 @@ enum TopicType {
   multiply,
 }
 
+enum TopicCategory { elimination, algebra, advanced, visual }
+
 class TopicItem {
   final TopicType type;
-  final String titleKey;
-  final String descKey;
-  final String categoryKey;
+  final TopicCategory category;
   final String tagText;
-  final IconData icon;
-  final Color color;
   final bool requiresSquare;
   final bool isDualMatrix;
   final bool isAugmentedSystem;
 
   const TopicItem({
     required this.type,
-    required this.titleKey,
-    required this.descKey,
-    required this.categoryKey,
+    required this.category,
     required this.tagText,
-    required this.icon,
-    required this.color,
     this.requiresSquare = false,
     this.isDualMatrix = false,
     this.isAugmentedSystem = false,
   });
 
+  /// Localized title. The switch is exhaustive, so adding a topic without a
+  /// title is a compile error rather than a raw key on screen.
+  String title(AppLocalizations l) => switch (type) {
+    TopicType.gauss => l.topicGauss,
+    TopicType.rref => l.topicRref,
+    TopicType.linearSystems => l.topicLinearSystems,
+    TopicType.determinant => l.topicDeterminant,
+    TopicType.inverse => l.topicInverse,
+    TopicType.rankNullity => l.topicRankNullity,
+    TopicType.eigen => l.topicEigen,
+    TopicType.lu => l.topicLu,
+    TopicType.transform2d => l.topicTransform2d,
+    TopicType.practice => l.topicPractice,
+    TopicType.add => l.topicAdd,
+    TopicType.multiply => l.topicMultiply,
+  };
+
+  String description(AppLocalizations l) => switch (type) {
+    TopicType.gauss => l.topicGaussDesc,
+    TopicType.rref => l.topicRrefDesc,
+    TopicType.linearSystems => l.topicLinearSystemsDesc,
+    TopicType.determinant => l.topicDeterminantDesc,
+    TopicType.inverse => l.topicInverseDesc,
+    TopicType.rankNullity => l.topicRankNullityDesc,
+    TopicType.eigen => l.topicEigenDesc,
+    TopicType.lu => l.topicLuDesc,
+    TopicType.transform2d => l.topicTransform2dDesc,
+    TopicType.practice => l.topicPracticeDesc,
+    TopicType.add => l.topicAddDesc,
+    TopicType.multiply => l.topicMultiplyDesc,
+  };
+
+  static TopicItem of(TopicType type) =>
+      allTopics.firstWhere((topic) => topic.type == type);
+
+  /// Suggested order: each topic uses only ideas from the ones before it.
+  /// Entry-wise operations first, then elimination, then what elimination
+  /// makes possible, and finally geometry and review.
+  static const pathOrder = [
+    TopicType.add,
+    TopicType.multiply,
+    TopicType.gauss,
+    TopicType.rref,
+    TopicType.linearSystems,
+    TopicType.determinant,
+    TopicType.inverse,
+    TopicType.rankNullity,
+    TopicType.lu,
+    TopicType.eigen,
+    TopicType.transform2d,
+    TopicType.practice,
+  ];
+
+  /// Position in [pathOrder], from 0.
+  int get pathIndex => pathOrder.indexOf(type);
+
   static const List<TopicItem> allTopics = [
     TopicItem(
       type: TopicType.rref,
-      titleKey: 'topicRref',
-      descKey: 'topicRrefDesc',
-      categoryKey: 'categoryElimination',
+      category: TopicCategory.elimination,
       tagText: 'RREF',
-      icon: Icons.table_rows_rounded,
-      color: Color(0xFF2563EB),
     ),
     TopicItem(
       type: TopicType.gauss,
-      titleKey: 'topicGauss',
-      descKey: 'topicGaussDesc',
-      categoryKey: 'categoryElimination',
+      category: TopicCategory.elimination,
       tagText: 'REF',
-      icon: Icons.trending_down_rounded,
-      color: Color(0xFF0EA5E9),
     ),
     TopicItem(
       type: TopicType.linearSystems,
-      titleKey: 'topicLinearSystems',
-      descKey: 'topicLinearSystemsDesc',
-      categoryKey: 'categoryElimination',
+      category: TopicCategory.elimination,
       tagText: 'Ax = b',
-      icon: Icons.account_tree_rounded,
-      color: Color(0xFF6366F1),
       isAugmentedSystem: true,
     ),
     TopicItem(
       type: TopicType.determinant,
-      titleKey: 'topicDeterminant',
-      descKey: 'topicDeterminantDesc',
-      categoryKey: 'categoryAlgebra',
+      category: TopicCategory.algebra,
       tagText: 'det(A)',
-      icon: Icons.grid_view_rounded,
-      color: Color(0xFFF59E0B),
       requiresSquare: true,
     ),
     TopicItem(
       type: TopicType.inverse,
-      titleKey: 'topicInverse',
-      descKey: 'topicInverseDesc',
-      categoryKey: 'categoryAlgebra',
+      category: TopicCategory.algebra,
       tagText: 'A⁻¹',
-      icon: Icons.swap_horiz_rounded,
-      color: Color(0xFF8B5CF6),
       requiresSquare: true,
     ),
     TopicItem(
       type: TopicType.rankNullity,
-      titleKey: 'topicRankNullity',
-      descKey: 'topicRankNullityDesc',
-      categoryKey: 'categoryAdvanced',
+      category: TopicCategory.advanced,
       tagText: 'Rank',
-      icon: Icons.bar_chart_rounded,
-      color: Color(0xFF14B8A6),
     ),
     TopicItem(
       type: TopicType.eigen,
-      titleKey: 'topicEigen',
-      descKey: 'topicEigenDesc',
-      categoryKey: 'categoryAdvanced',
+      category: TopicCategory.advanced,
       tagText: 'λ, v',
-      icon: Icons.all_inclusive_rounded,
-      color: Color(0xFFD946EF),
       requiresSquare: true,
     ),
     TopicItem(
       type: TopicType.lu,
-      titleKey: 'topicLu',
-      descKey: 'topicLuDesc',
-      categoryKey: 'categoryAdvanced',
+      category: TopicCategory.advanced,
       tagText: 'A = LU',
-      icon: Icons.splitscreen_rounded,
-      color: Color(0xFF0284C7),
       requiresSquare: true,
     ),
     TopicItem(
       type: TopicType.practice,
-      titleKey: 'topicPractice',
-      descKey: 'topicPracticeDesc',
-      categoryKey: 'categoryVisual',
+      category: TopicCategory.visual,
       tagText: 'Quiz',
-      icon: Icons.psychology_rounded,
-      color: Color(0xFFE11D48),
     ),
     TopicItem(
       type: TopicType.transform2d,
-      titleKey: 'topicTransform2d',
-      descKey: 'topicTransform2dDesc',
-      categoryKey: 'categoryVisual',
+      category: TopicCategory.visual,
       tagText: '2D Geom',
-      icon: Icons.aspect_ratio_rounded,
-      color: Color(0xFFF97316),
-      requiresSquare: true,
     ),
     TopicItem(
       type: TopicType.add,
-      titleKey: 'topicAdd',
-      descKey: 'topicAddDesc',
-      categoryKey: 'categoryAlgebra',
+      category: TopicCategory.algebra,
       tagText: 'A + B',
-      icon: Icons.add_circle_outline_rounded,
-      color: Color(0xFF10B981),
       isDualMatrix: true,
     ),
     TopicItem(
       type: TopicType.multiply,
-      titleKey: 'topicMultiply',
-      descKey: 'topicMultiplyDesc',
-      categoryKey: 'categoryAlgebra',
+      category: TopicCategory.algebra,
       tagText: 'A × B',
-      icon: Icons.close_rounded,
-      color: Color(0xFFEC4899),
       isDualMatrix: true,
     ),
   ];
+}
+
+extension TopicCategoryText on TopicCategory? {
+  /// `null` stands for "all categories" in the catalog filter.
+  String label(AppLocalizations l) => switch (this) {
+    null => l.categoryAll,
+    TopicCategory.elimination => l.categoryElimination,
+    TopicCategory.algebra => l.categoryAlgebra,
+    TopicCategory.advanced => l.categoryAdvanced,
+    TopicCategory.visual => l.categoryVisual,
+  };
 }

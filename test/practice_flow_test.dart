@@ -26,7 +26,10 @@ void main() {
       expect(find.text('Self-Test (Practice Mode)'), findsOneWidget);
       expect(find.text('0 Points'), findsOneWidget);
       expect(find.text('Question 1 / 5'), findsOneWidget);
-      expect(find.text('Gaussian Elimination: Pivot & Elimination'), findsOneWidget);
+      expect(
+        find.text('Gaussian Elimination: Pivot & Elimination'),
+        findsOneWidget,
+      );
 
       // 4. Tap the first option (Option A - correct answer)
       final optionAFinder = find.text('A');

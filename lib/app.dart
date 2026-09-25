@@ -10,12 +10,22 @@ import 'features/settings/data/preferences_repository.dart';
 
 class MatrixEducatorApp extends StatelessWidget {
   final PreferencesRepository? preferences;
-  const MatrixEducatorApp({super.key, this.preferences});
+
+  /// Preferences already read from [preferences]. When absent they are
+  /// restored asynchronously after the first frame.
+  final SettingsState? initialSettings;
+  const MatrixEducatorApp({super.key, this.preferences, this.initialSettings});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SettingsCubit(repository: preferences)..restore(),
+      create: (_) {
+        final initial = initialSettings;
+        if (initial != null) {
+          return SettingsCubit(repository: preferences, initial: initial);
+        }
+        return SettingsCubit(repository: preferences)..restore();
+      },
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settings) {
           return MaterialApp(
@@ -24,16 +34,8 @@ class MatrixEducatorApp extends StatelessWidget {
                 AppLocalizations.of(context)?.appTitle ??
                 'Matriks · Linear Algebra',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.studio(
-              false,
-              palette: settings.accentPalette.index,
-              compact: settings.compact,
-            ),
-            darkTheme: AppTheme.studio(
-              true,
-              palette: settings.accentPalette.index,
-              compact: settings.compact,
-            ),
+            theme: AppTheme.studio(false, compact: settings.compact),
+            darkTheme: AppTheme.studio(true, compact: settings.compact),
             themeMode: settings.themeMode,
             locale: settings.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -83,7 +83,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Pares propios 2×2 y raíces enteras 3×3 entre −20 y 20.';
+      'Valores y vectores propios de matrices 2×2 y 3×3, exactos cuando las raíces son racionales.';
 
   @override
   String get topicTransform2d => 'Transformación geométrica 2D';
@@ -137,10 +137,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fractionToggle => 'Fracción / Decimal';
 
   @override
-  String get decreaseDimension => 'Reducir dimensión';
+  String get removeRow => 'Quitar una fila';
 
   @override
-  String get increaseDimension => 'Aumentar dimensión';
+  String get addRow => 'Añadir una fila';
+
+  @override
+  String get removeColumn => 'Quitar una columna';
+
+  @override
+  String get addColumn => 'Añadir una columna';
 
   @override
   String stepOf(Object current, Object total) {
@@ -155,7 +161,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return 'Velocidad: $speed×';
+    return 'Velocidad: $speed';
   }
 
   @override
@@ -184,11 +190,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get changeLanguage => 'Idioma';
-
-  @override
-  String solveError(Object error) {
-    return 'Error: $error';
-  }
 
   @override
   String get solveFallbackError => 'No se pudo resolver la matriz.';
@@ -263,8 +264,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return 'Eliminar el elemento de la fila $target';
+  String step_row_elimination_title(Object source, Object target) {
+    return 'Eliminar el elemento de la fila $target con la fila $source';
   }
 
   @override
@@ -459,8 +460,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
-    return 'Infinitas soluciones ($count variables libres)';
+  String system_infinite_title(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count variables libres',
+      one: '1 variable libre',
+    );
+    return 'Infinitas soluciones ($_temp0)';
   }
 
   @override
@@ -474,8 +481,20 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
-    return 'Hay $rank columnas pivote y $nullity libres. Rango + nulidad = $cols.';
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rank,
+      locale: localeName,
+      other: '$rank columnas pivote',
+      one: '1 columna pivote',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      nullity,
+      locale: localeName,
+      other: '$nullity libres',
+      one: '1 libre',
+    );
+    return 'Hay $_temp0 y $_temp1. Rango + nulidad = $cols.';
   }
 
   @override
@@ -514,7 +533,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return 'Para (A − ${lambda}I)v = 0, un vector propio es $vector.';
+    return 'Para (A − λI)v = 0 con λ = $lambda, un vector propio es $vector.';
   }
 
   @override
@@ -524,7 +543,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return 'No se hallaron raíces enteras de −20 a 20 para $poly. Puede haber otras raíces reales o complejas.';
+    return 'Las raíces de $poly no se pudieron aislar con fiabilidad con coeficientes de este tamaño. Existen raíces reales o complejas, pero este solucionador no las calcula.';
   }
 
   @override
@@ -739,10 +758,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cellCalculations => 'Cálculos de elementos';
 
   @override
+  String get stepDetails => 'Detalles';
+
+  @override
   String get chooseStep => 'Elegir un paso';
 
   @override
   String get learningPath => '¿Empiezas con matrices?';
+
+  @override
+  String get continueLearning => 'Continúa donde lo dejaste';
+
+  @override
+  String get continueAction => 'Continuar';
+
+  @override
+  String get topicCompleted => 'Completado';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '$done de $total temas completados';
+  }
 
   @override
   String get pathEliminate => '1 · Crear ceros';
@@ -752,17 +788,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · Resolver un sistema';
-
-  @override
-  String get guideGenericSource => 'Lee la matriz y el objetivo de este paso.';
-
-  @override
-  String get guideGenericApply =>
-      'Sigue los elementos resaltados y su explicación.';
-
-  @override
-  String get guideGenericResult =>
-      'Compara el resultado y continúa cuando quieras.';
 
   @override
   String guideEliminateSource(String source, String target, String column) {
@@ -828,7 +853,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideDetResult =>
-      'Los productos quedan visibles para revisarlos a tu ritmo.';
+      'Su suma es la aportación de este grupo al determinante.';
 
   @override
   String get coefficientError => 'Introduce un número entre −1000 y 1000.';
@@ -984,18 +1009,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get compact => 'Compacta';
 
   @override
-  String get accentLabel => 'Paleta de acento';
-
-  @override
-  String get blue => 'Azul';
-
-  @override
-  String get teal => 'Verde azulado';
-
-  @override
-  String get purple => 'Morado';
-
-  @override
   String get shortcutsLabel => 'Atajos de teclado';
 
   @override
@@ -1013,18 +1026,62 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resetSettings => 'Restablecer ajustes';
 
   @override
+  String get moreOptions => 'Más opciones';
+
+  @override
+  String get resetProgress => 'Restablecer progreso';
+
+  @override
   String get settingsStorageError =>
       'No se pudieron leer o guardar los ajustes. Los cambios siguen disponibles en esta sesión.';
 
   @override
   String get localPreferences =>
-      'Los ajustes se guardan en este dispositivo. No se guarda el historial de matrices.';
+      'Los ajustes y las lecciones que terminaste se guardan en este dispositivo. No se guardan matrices ni respuestas del cuestionario.';
 
   @override
   String get resultExact => 'Exacto';
 
   @override
   String get resultApproximate => 'Aproximado';
+
+  @override
+  String get checkTitle => 'Comprueba el resultado';
+
+  @override
+  String get checkHolds => 'Se cumple';
+
+  @override
+  String get checkFails => 'No se cumple';
+
+  @override
+  String get checkInverse =>
+      'Al multiplicar A por su inversa se obtiene la matriz identidad.';
+
+  @override
+  String get checkDetRows =>
+      'Reducir por filas a una matriz triangular da el mismo valor.';
+
+  @override
+  String get checkDetCofactor =>
+      'El desarrollo por cofactores de la primera fila da el mismo valor.';
+
+  @override
+  String get checkLu =>
+      'Multiplicar L por U devuelve A, con las filas en el orden que indica P.';
+
+  @override
+  String get checkSystem => 'Sustituir x en las ecuaciones da b.';
+
+  @override
+  String get checkRank =>
+      'La mayor submatriz cuadrada con determinante no nulo da el rango; las columnas restantes dan la nulidad.';
+
+  @override
+  String get checkEigen => 'A solo estira v: Av es igual a λv.';
+
+  @override
+  String get seeAsTransform => 'Verlo como transformación';
 
   @override
   String get resultComplete => 'Completo';
@@ -1041,7 +1098,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get eigenScope =>
-      'El análisis 3×3 busca raíces enteras entre −20 y 20. Las raíces no encontradas pueden ser reales o complejas.';
+      'Las raíces 3×3 son exactas si son racionales; las demás raíces reales se redondean a tres decimales. Con coeficientes muy grandes pueden quedar raíces sin resolver.';
 
   @override
   String get eigenBasisScope =>
@@ -1201,6 +1258,131 @@ class AppLocalizationsEs extends AppLocalizations {
       'Todos los elementos diagonales son positivos; no hay signo negativo adicional.';
 
   @override
+  String get genDetTitle => 'Determinante 2×2';
+
+  @override
+  String get genDetPrompt => '¿Cuánto vale det(A) para la matriz de abajo?';
+
+  @override
+  String get genDetHint =>
+      'En una matriz 2×2, multiplica la diagonal principal y resta el producto de la otra diagonal: ad − bc.';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value.';
+  }
+
+  @override
+  String get genDetFeedbackSign =>
+      'Eso suma los dos productos diagonales; el segundo se resta.';
+
+  @override
+  String get genDetFeedbackRows =>
+      'Eso multiplica a lo largo de las filas. El determinante usa las diagonales.';
+
+  @override
+  String get genDetFeedbackOrder =>
+      'El orden está invertido: primero va la diagonal principal, así que el signo cambia.';
+
+  @override
+  String get genElimTitle => 'Elegir el multiplicador';
+
+  @override
+  String get genElimPrompt =>
+      '¿Qué operación de fila anula la primera entrada de la fila 2?';
+
+  @override
+  String get genElimHint =>
+      'Divide la entrada que quieres anular entre el pivote que tiene encima.';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return 'El multiplicador es la entrada dividida entre el pivote: $entry ÷ $pivot = $factor. Restar $factor veces la fila 1 deja la entrada en 0.';
+  }
+
+  @override
+  String get genElimFeedbackSign =>
+      'Con el signo contrario la entrada crece en lugar de anularse.';
+
+  @override
+  String get genElimFeedbackRatio =>
+      'La razón está invertida: divide la entrada entre el pivote, no el pivote entre la entrada.';
+
+  @override
+  String get genElimFeedbackRow =>
+      'Eso cambia la fila 1, la del pivote. La fila que debe cambiar es la 2.';
+
+  @override
+  String get genProductTitle => 'Una entrada de un producto';
+
+  @override
+  String get genProductPrompt =>
+      '¿Cuál es la entrada de la fila 1, columna 2 de A·A?';
+
+  @override
+  String get genProductHint =>
+      'La fila 1 del primer factor se encuentra con la columna 2 del segundo: multiplica par a par y suma.';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return 'La fila 1 es ($r1, $r2) y la columna 2 es ($c1, $c2), así que la entrada es $r1·$c1 + $r2·$c2 = $value.';
+  }
+
+  @override
+  String get genProductFeedbackSquare =>
+      'Elevar la entrada al cuadrado no es multiplicar matrices; se usa una fila y una columna completas.';
+
+  @override
+  String get genProductFeedbackRows =>
+      'Eso empareja la fila 1 con la fila 2. El segundo factor aporta una columna.';
+
+  @override
+  String get genProductFeedbackColumns =>
+      'Eso empareja dos columnas. El primer factor aporta una fila.';
+
+  @override
+  String get genInverseTitle => 'Inversa de una matriz 2×2';
+
+  @override
+  String get genInversePrompt => '¿Qué matriz es A⁻¹?';
+
+  @override
+  String get genInverseHint =>
+      'Intercambia las entradas de la diagonal principal, cambia el signo de las otras dos y divide entre det(A).';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det. a y d se intercambian, b y c cambian de signo y todo se multiplica por 1/$det.';
+  }
+
+  @override
+  String get genInverseFeedbackSigns =>
+      'La diagonal está intercambiada, pero b y c también cambian de signo.';
+
+  @override
+  String get genInverseFeedbackSwap =>
+      'b y c cambian de signo, pero a y d también deben intercambiarse.';
+
+  @override
+  String get genInverseFeedbackNegated =>
+      'Aquí cambian de signo todas las entradas; solo cambian b y c.';
+
+  @override
+  String get newQuestions => 'Nuevas preguntas';
+
+  @override
   String eigen_vector_approx_title(Object index, Object lambda) {
     return 'Vector aproximado para λ_$index ≈ $lambda';
   }
@@ -1212,4 +1394,118 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get spaceKey => 'Espacio';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return 'Fila $row, columna $column, aún sin calcular';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return 'Al resolver $poly se obtiene el valor propio real $roots y el par conjugado complejo λ ≈ $complex. Solo el valor propio real tiene un vector propio real.';
+  }
+
+  @override
+  String get keyNextRow => 'Fila siguiente';
+
+  @override
+  String get multiplyRowsLocked =>
+      'B tiene tantas filas como columnas tiene A, así A × B está definido.';
+
+  @override
+  String get lessonComplete => 'Lección completada';
+
+  @override
+  String get lessonCompleteHint =>
+      'Revisa el resultado, vuelve a ver la lección o continúa con tu propia matriz.';
+
+  @override
+  String get replayLesson => 'Ver de nuevo';
+
+  @override
+  String get tryOwnMatrix => 'Prueba tu propia matriz';
+
+  @override
+  String get editMatrix => 'Cambiar la matriz';
+
+  @override
+  String presetApplied(String matrix) {
+    return 'Matriz $matrix reemplazada.';
+  }
+
+  @override
+  String get undo => 'Deshacer';
+
+  @override
+  String get transformShortcutsHint =>
+      'Teclado: Espacio reproduce o invierte, S cizalla, P proyección, R identidad.';
+
+  @override
+  String get transformLegendOriginal =>
+      'Cuadrícula tenue: el plano antes de la transformación.';
+
+  @override
+  String get transformLegendEigen =>
+      'Líneas discontinuas: direcciones de vectores propios reales, que permanecen en su propia recta.';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return 'Objetivo $entry ÷ pivote $pivot = $ratio. Restar $ratio veces la fila pivote anula el objetivo, y el mismo $ratio se escribe en L en ($row, $column), de modo que L · U reconstruye A.';
+  }
+
+  @override
+  String get guideAdjSource =>
+      'En [[a, b], [c, d]], observa la diagonal a, d y las otras dos entradas b, c.';
+
+  @override
+  String get guideAdjApply =>
+      'a y d intercambian lugares; b y c se quedan en su sitio pero cambian de signo.';
+
+  @override
+  String get guideAdjResult =>
+      'Esta es adj(A). Al dividirla entre det(A) se obtiene la inversa.';
+
+  @override
+  String get guideAdjReason =>
+      'Para una matriz 2×2, A · adj(A) = det(A) · I. Por eso A⁻¹ = adj(A) ÷ det(A) siempre que det(A) ≠ 0.';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'Cada entrada de adj(A) se multiplica por el mismo número, 1/det(A) = $factor.';
+  }
+
+  @override
+  String get guideScaleAllApply => 'Multiplica las entradas una por una.';
+
+  @override
+  String get guideScaleAllResult =>
+      'El resultado es A⁻¹. Comprobación: A · A⁻¹ = I.';
+
+  @override
+  String get guideDiagSource =>
+      'La matriz ya es triangular superior, así que su determinante es el producto de la diagonal.';
+
+  @override
+  String get guideDiagApply =>
+      'Multiplica las entradas diagonales una a una. El primer factor lleva un −1 por cada intercambio de filas.';
+
+  @override
+  String get guideDiagResult =>
+      'Las eliminaciones de filas no cambian el determinante, así que este producto es el det de la matriz original.';
+
+  @override
+  String get guideDetRecapSource =>
+      'Ambos totales se conocen de los pasos anteriores.';
+
+  @override
+  String get guideDetRecapApply => 'Resta el total − del total +.';
+
+  @override
+  String get guideDetRecapResult => 'La diferencia es el determinante.';
 }

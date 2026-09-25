@@ -119,12 +119,43 @@ class RowScaleTransformation extends StepTransformation {
 class RowEliminationTransformation extends StepTransformation {
   final int targetRow;
   final int sourceRow;
-  final Rational factor; // targetRow = targetRow - (factor * sourceRow)
+
+  /// targetRow ← targetRow + factor · sourceRow (the negated multiplier).
+  final Rational factor;
   const RowEliminationTransformation({
     required this.targetRow,
     required this.sourceRow,
     required this.factor,
   });
+}
+
+/// A row elimination during LU factorization. The multiplier is also stored
+/// in L; [lower] is L after this step and [lowerRow]/[lowerCol] the entry
+/// that was written.
+class LUEliminationTransformation extends RowEliminationTransformation {
+  final MatrixSnapshot lower;
+  final int lowerRow;
+  final int lowerCol;
+  const LUEliminationTransformation({
+    required super.targetRow,
+    required super.sourceRow,
+    required super.factor,
+    required this.lower,
+    required this.lowerRow,
+    required this.lowerCol,
+  });
+}
+
+/// 2×2 adjugate: [[a, b], [c, d]] becomes [[d, -b], [-c, a]]. The diagonal
+/// entries trade places and the off-diagonal entries change sign.
+class AdjugateTransformation extends StepTransformation {
+  const AdjugateTransformation();
+}
+
+/// Every entry multiplied by the same [scalar].
+class MatrixScaleTransformation extends StepTransformation {
+  final Rational scalar;
+  const MatrixScaleTransformation(this.scalar);
 }
 
 /// Determinant of the original matrix after triangularization, including swaps.
@@ -141,10 +172,14 @@ class DeterminantCrossProductTransformation extends StepTransformation {
   final Rational mainDiagonalProduct;
   final Rational antiDiagonalProduct;
   final int phase; // 1 = main diagonal, 2 = anti diagonal, 3 = both
+
+  /// Both products were shown in earlier steps; this step only combines them.
+  final bool recap;
   const DeterminantCrossProductTransformation({
     required this.mainDiagonalProduct,
     required this.antiDiagonalProduct,
     this.phase = 3,
+    this.recap = false,
   });
 }
 
@@ -152,25 +187,14 @@ class DeterminantSarrusTransformation extends StepTransformation {
   final List<Rational> positiveProducts;
   final List<Rational> negativeProducts;
   final int phase; // 1 = positive diagonals, 2 = negative diagonals, 3 = both
+
+  /// Both groups were shown in earlier steps; this step only combines them.
+  final bool recap;
   const DeterminantSarrusTransformation({
     required this.positiveProducts,
     required this.negativeProducts,
     this.phase = 3,
-  });
-}
-
-class DeterminantCofactorTransformation extends StepTransformation {
-  final int pivotRow;
-  final int pivotCol;
-  final Rational element;
-  final Rational sign; // +1 or -1
-  final MatrixSnapshot minorMatrix;
-  const DeterminantCofactorTransformation({
-    required this.pivotRow,
-    required this.pivotCol,
-    required this.element,
-    required this.sign,
-    required this.minorMatrix,
+    this.recap = false,
   });
 }
 
@@ -209,7 +233,12 @@ class IdentitySeparationTransformation extends StepTransformation {
 
 class InformationalStepTransformation extends StepTransformation {
   final String note;
-  const InformationalStepTransformation(this.note);
+
+  /// Formula shown above the matrix (LaTeX), when the matrix is not simply
+  /// the input: an eigenvector step shows A - λI and the vector it yields.
+  final String? sceneLatex;
+
+  const InformationalStepTransformation(this.note, {this.sceneLatex});
 }
 
 enum LinearSystemType { unique, infinite, inconsistent }

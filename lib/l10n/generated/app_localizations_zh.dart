@@ -76,7 +76,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topicEigen => '特征值与特征向量';
 
   @override
-  String get topicEigenDesc => '探索 2×2 特征对及 −20 到 20 的 3×3 整数根。';
+  String get topicEigenDesc => '探索 2×2 与 3×3 矩阵的特征值和特征向量；有理根精确求得。';
 
   @override
   String get topicTransform2d => '二维几何变换';
@@ -127,10 +127,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fractionToggle => '分数／小数';
 
   @override
-  String get decreaseDimension => '减小维度';
+  String get removeRow => '删除一行';
 
   @override
-  String get increaseDimension => '增大维度';
+  String get addRow => '添加一行';
+
+  @override
+  String get removeColumn => '删除一列';
+
+  @override
+  String get addColumn => '添加一列';
 
   @override
   String stepOf(Object current, Object total) {
@@ -145,7 +151,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String playbackSpeed(Object speed) {
-    return '速度：$speed×';
+    return '速度：$speed';
   }
 
   @override
@@ -174,11 +180,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get changeLanguage => '语言';
-
-  @override
-  String solveError(Object error) {
-    return '错误：$error';
-  }
 
   @override
   String get solveFallbackError => '无法完成矩阵求解。';
@@ -253,8 +254,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String step_row_elimination_title(Object target) {
-    return '消去第 $target 行的元素';
+  String step_row_elimination_title(Object source, Object target) {
+    return '用第 $source 行消去第 $target 行的元素';
   }
 
   @override
@@ -440,7 +441,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String system_infinite_title(Object count) {
+  String system_infinite_title(num count) {
     return '无穷多解（$count 个自由变量）';
   }
 
@@ -455,7 +456,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String rank_nullity_desc(Object cols, Object nullity, Object rank) {
+  String rank_nullity_desc(Object cols, num nullity, num rank) {
     return '有 $rank 个主元列和 $nullity 个自由列。秩 + 零度 = $cols。';
   }
 
@@ -495,7 +496,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String eigen_vector_desc(Object lambda, Object vector) {
-    return '对于 (A − ${lambda}I)v = 0，一个特征向量为 $vector。';
+    return '当 λ = $lambda 时，对于 (A − λI)v = 0，一个特征向量为 $vector。';
   }
 
   @override
@@ -505,7 +506,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String eigen_irrational_desc(Object poly) {
-    return '未在 −20 到 20 中找到 $poly 的整数根，可能存在其他实根或复根。';
+    return '系数过大，无法可靠地分离 $poly 的根。实根或复根存在，但本求解器不计算它们。';
   }
 
   @override
@@ -713,10 +714,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cellCalculations => '元素计算';
 
   @override
+  String get stepDetails => '详细信息';
+
+  @override
   String get chooseStep => '选择步骤';
 
   @override
   String get learningPath => '刚开始学习矩阵？';
+
+  @override
+  String get continueLearning => '从上次离开的地方继续';
+
+  @override
+  String get continueAction => '继续';
+
+  @override
+  String get topicCompleted => '已完成';
+
+  @override
+  String pathProgress(int done, int total) {
+    return '已完成 $done/$total 个主题';
+  }
 
   @override
   String get pathEliminate => '1 · 消为零';
@@ -726,15 +744,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pathSolve => '3 · 求解方程组';
-
-  @override
-  String get guideGenericSource => '观察矩阵，理解本步骤的目标。';
-
-  @override
-  String get guideGenericApply => '跟随高亮元素与讲解。';
-
-  @override
-  String get guideGenericResult => '比较结果，准备好后继续。';
 
   @override
   String guideEliminateSource(String source, String target, String column) {
@@ -793,7 +802,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get guideDetApply => '逐个观察乘积并检查因子。';
 
   @override
-  String get guideDetResult => '乘积保留在屏幕上，可按自己的节奏检查。';
+  String get guideDetResult => '这些乘积之和就是该组对行列式的贡献。';
 
   @override
   String get coefficientError => '请输入 −1000 到 1000 的数字。';
@@ -944,18 +953,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get compact => '紧凑';
 
   @override
-  String get accentLabel => '强调色';
-
-  @override
-  String get blue => '蓝色';
-
-  @override
-  String get teal => '青绿色';
-
-  @override
-  String get purple => '紫色';
-
-  @override
   String get shortcutsLabel => '键盘快捷键';
 
   @override
@@ -971,16 +968,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resetSettings => '重置设置';
 
   @override
+  String get moreOptions => '更多选项';
+
+  @override
+  String get resetProgress => '重置学习进度';
+
+  @override
   String get settingsStorageError => '无法读取或保存偏好设置。更改在本次会话中仍然有效。';
 
   @override
-  String get localPreferences => '偏好设置保存在此设备上，不保存矩阵历史记录。';
+  String get localPreferences => '偏好设置和已完成的课程保存在此设备上，不保存矩阵和测验答案。';
 
   @override
   String get resultExact => '精确';
 
   @override
   String get resultApproximate => '近似';
+
+  @override
+  String get checkTitle => '验证结果';
+
+  @override
+  String get checkHolds => '成立';
+
+  @override
+  String get checkFails => '不成立';
+
+  @override
+  String get checkInverse => 'A 乘以它的逆矩阵得到单位矩阵。';
+
+  @override
+  String get checkDetRows => '通过行化简化为三角矩阵得到相同的值。';
+
+  @override
+  String get checkDetCofactor => '按第一行的余子式展开得到相同的值。';
+
+  @override
+  String get checkLu => 'L 乘以 U 得回 A，行的顺序由 P 记录。';
+
+  @override
+  String get checkSystem => '将 x 代回方程组得到 b。';
+
+  @override
+  String get checkRank => '行列式非零的最大方子矩阵的阶数就是秩；其余列数就是零度。';
+
+  @override
+  String get checkEigen => 'A 只拉伸 v：Av 等于 λv。';
+
+  @override
+  String get seeAsTransform => '作为变换查看';
 
   @override
   String get resultComplete => '完整';
@@ -995,7 +1031,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get eigenPrecision => '特征值保留三位小数；向量表示近似方向，并非零空间的精确解。';
 
   @override
-  String get eigenScope => '3×3 分析仅搜索 −20 到 20 的整数根。未找到的根可能是实数或复数。';
+  String get eigenScope => '3×3 的有理根为精确值；其他实根四舍五入到三位小数。系数过大时，部分根可能无法求出。';
 
   @override
   String get eigenBasisScope => '每个特征值仅显示一个代表向量，不计算完整的特征空间基。';
@@ -1133,6 +1169,113 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quizQ5Feedback3 => '对角线元素均为正，没有额外的负号。';
 
   @override
+  String get genDetTitle => '2×2 行列式';
+
+  @override
+  String get genDetPrompt => '下面矩阵的 det(A) 是多少？';
+
+  @override
+  String get genDetHint => '对于 2×2 矩阵，用主对角线的乘积减去另一条对角线的乘积：ad − bc。';
+
+  @override
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  ) {
+    return 'det(A) = $a·$d − $b·$c = $value。';
+  }
+
+  @override
+  String get genDetFeedbackSign => '这里把两条对角线的乘积相加了；第二个应当减去。';
+
+  @override
+  String get genDetFeedbackRows => '这里是按行相乘。行列式使用的是对角线。';
+
+  @override
+  String get genDetFeedbackOrder => '顺序反了：应先取主对角线，所以符号相反。';
+
+  @override
+  String get genElimTitle => '选择乘数';
+
+  @override
+  String get genElimPrompt => '哪个行变换能使第 2 行的第一个元素变为零？';
+
+  @override
+  String get genElimHint => '用要消去的元素除以它上方的主元。';
+
+  @override
+  String genElimExplanation(String entry, String pivot, String factor) {
+    return '乘数等于元素除以主元：$entry ÷ $pivot = $factor。减去第 1 行的 $factor 倍，该元素变为 0。';
+  }
+
+  @override
+  String get genElimFeedbackSign => '符号相反时，元素会变大而不是变为零。';
+
+  @override
+  String get genElimFeedbackRatio => '比值颠倒了：应当用元素除以主元，而不是主元除以元素。';
+
+  @override
+  String get genElimFeedbackRow => '这改变的是主元所在的第 1 行，而需要改变的是第 2 行。';
+
+  @override
+  String get genProductTitle => '乘积中的一个元素';
+
+  @override
+  String get genProductPrompt => 'A·A 第 1 行第 2 列的元素是多少？';
+
+  @override
+  String get genProductHint => '第一个因子的第 1 行与第二个因子的第 2 列相遇：逐对相乘再相加。';
+
+  @override
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  ) {
+    return '第 1 行是 ($r1, $r2)，第 2 列是 ($c1, $c2)，所以该元素为 $r1·$c1 + $r2·$c2 = $value。';
+  }
+
+  @override
+  String get genProductFeedbackSquare => '把元素平方不是矩阵乘法；要用整行和整列。';
+
+  @override
+  String get genProductFeedbackRows => '这里把第 1 行和第 2 行配对了。第二个因子提供的是列。';
+
+  @override
+  String get genProductFeedbackColumns => '这里把两列配对了。第一个因子提供的是行。';
+
+  @override
+  String get genInverseTitle => '2×2 矩阵的逆';
+
+  @override
+  String get genInversePrompt => '哪个矩阵是 A⁻¹？';
+
+  @override
+  String get genInverseHint => '交换主对角线上的元素，改变另外两个元素的符号，再除以 det(A)。';
+
+  @override
+  String genInverseExplanation(String det) {
+    return 'det(A) = $det。a 与 d 交换，b 与 c 变号，然后整体乘以 1/$det。';
+  }
+
+  @override
+  String get genInverseFeedbackSigns => '对角线已交换，但 b 和 c 也要变号。';
+
+  @override
+  String get genInverseFeedbackSwap => 'b 和 c 已变号，但 a 和 d 也要交换位置。';
+
+  @override
+  String get genInverseFeedbackNegated => '这里所有元素都变了号；只有 b 和 c 需要变号。';
+
+  @override
+  String get newQuestions => '新题目';
+
+  @override
   String eigen_vector_approx_title(Object index, Object lambda) {
     return 'λ_$index ≈ $lambda 的近似向量';
   }
@@ -1144,4 +1287,105 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get spaceKey => '空格';
+
+  @override
+  String matrixCellPendingLabel(int row, int column) {
+    return '第 $row 行，第 $column 列，尚未计算';
+  }
+
+  @override
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
+    return '求解 $poly 得到实特征值 $roots 和一对共轭复特征值 λ ≈ $complex。只有实特征值有实特征向量。';
+  }
+
+  @override
+  String get keyNextRow => '下一行';
+
+  @override
+  String get multiplyRowsLocked => 'B 的行数与 A 的列数相同，因此 A × B 有定义。';
+
+  @override
+  String get lessonComplete => '课程完成';
+
+  @override
+  String get lessonCompleteHint => '查看结果、重看本课，或用你自己的矩阵继续。';
+
+  @override
+  String get replayLesson => '再看一遍';
+
+  @override
+  String get tryOwnMatrix => '试试你自己的矩阵';
+
+  @override
+  String get editMatrix => '修改矩阵';
+
+  @override
+  String presetApplied(String matrix) {
+    return '矩阵 $matrix 已替换。';
+  }
+
+  @override
+  String get undo => '撤销';
+
+  @override
+  String get transformShortcutsHint => '键盘：空格播放或倒放，S 剪切，P 投影，R 单位矩阵。';
+
+  @override
+  String get transformLegendOriginal => '浅色网格：变换前的平面。';
+
+  @override
+  String get transformLegendEigen => '虚线：实特征向量方向，变换后仍在自身所在直线上。';
+
+  @override
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  ) {
+    return '目标 $entry ÷ 主元 $pivot = $ratio。减去主元行的 $ratio 倍可消去目标元素，同一个 $ratio 写入 L 的 ($row, $column) 位置，因此 L · U 可还原 A。';
+  }
+
+  @override
+  String get guideAdjSource => '对于 [[a, b], [c, d]]，观察对角线上的 a、d 以及另外两个元素 b、c。';
+
+  @override
+  String get guideAdjApply => 'a 与 d 交换位置；b 和 c 位置不变但改变符号。';
+
+  @override
+  String get guideAdjResult => '这就是 adj(A)。除以 det(A) 即得逆矩阵。';
+
+  @override
+  String get guideAdjReason =>
+      '对 2×2 矩阵，A · adj(A) = det(A) · I。因此当 det(A) ≠ 0 时，A⁻¹ = adj(A) ÷ det(A)。';
+
+  @override
+  String guideScaleAllSource(String factor) {
+    return 'adj(A) 的每个元素都乘以同一个数 1/det(A) = $factor。';
+  }
+
+  @override
+  String get guideScaleAllApply => '逐个元素相乘。';
+
+  @override
+  String get guideScaleAllResult => '结果是 A⁻¹。检验：A · A⁻¹ = I。';
+
+  @override
+  String get guideDiagSource => '矩阵现在是上三角矩阵，因此其行列式等于对角线元素之积。';
+
+  @override
+  String get guideDiagApply => '逐个乘以对角线元素。每次行交换都在第一个因子中带来一个 −1。';
+
+  @override
+  String get guideDiagResult => '行消元不改变行列式，因此这个乘积就是原矩阵的行列式。';
+
+  @override
+  String get guideDetRecapSource => '两组的和都已在前面的步骤中得到。';
+
+  @override
+  String get guideDetRecapApply => '用 + 组的和减去 − 组的和。';
+
+  @override
+  String get guideDetRecapResult => '差值就是行列式。';
 }

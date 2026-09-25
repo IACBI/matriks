@@ -59,12 +59,8 @@ class MatrixArithmeticSolver {
               valB,
             ),
             highlights: [
-              CellHighlight(
-                row: r,
-                col: c,
-                type: HighlightType.target,
-                badgeText: sum.toLatex(),
-              ),
+              // The cell itself shows the result; a badge would repeat it.
+              CellHighlight(row: r, col: c, type: HighlightType.target),
             ],
             subCalculations: [
               SubCalculation(
@@ -156,12 +152,8 @@ class MatrixArithmeticSolver {
               result: cellSum,
             ),
             highlights: [
-              CellHighlight(
-                row: r,
-                col: c,
-                type: HighlightType.target,
-                badgeText: cellSum.toLatex(),
-              ),
+              // The cell itself shows the result; a badge would repeat it.
+              CellHighlight(row: r, col: c, type: HighlightType.target),
             ],
             subCalculations: [
               SubCalculation(

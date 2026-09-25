@@ -10,6 +10,9 @@ class CustomNumpad extends StatelessWidget {
   final VoidCallback onClear;
   final VoidCallback onNextCell;
   final VoidCallback onPrevCell;
+
+  /// Moves down a row in the same column. Falls back to [onNextCell].
+  final VoidCallback? onNextRow;
   final double keyHeight;
 
   const CustomNumpad({
@@ -19,6 +22,7 @@ class CustomNumpad extends StatelessWidget {
     required this.onClear,
     required this.onNextCell,
     required this.onPrevCell,
+    this.onNextRow,
     this.keyHeight = 46.0,
   });
 
@@ -104,7 +108,9 @@ class CustomNumpad extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Row 1: 1, 2, 3, Prev, Next
+              // Every key has one job: the cell moves are previous cell, next
+              // row and next cell (tab); the sign key toggles the sign.
+              // Row 1: 1, 2, 3, Previous cell, Next row
               Row(
                 children: [
                   buildKey('1'),
@@ -118,24 +124,25 @@ class CustomNumpad extends StatelessWidget {
                     child: const Icon(Icons.arrow_back_rounded, size: 20),
                   ),
                   buildKey(
-                    'next',
-                    onTap: onNextCell,
+                    'down',
+                    onTap: onNextRow ?? onNextCell,
                     color: controlBg,
-                    semanticLabel: l10n?.keyNextCell ?? 'Next cell',
-                    child: const Icon(Icons.arrow_forward_rounded, size: 20),
+                    semanticLabel: l10n?.keyNextRow ?? 'Next row',
+                    child: const Icon(Icons.arrow_downward_rounded, size: 20),
                   ),
                 ],
               ),
-              // Row 2: 4, 5, 6, Negative, Fraction
+              // Row 2: 4, 5, 6, Sign, Fraction
               Row(
                 children: [
                   buildKey('4'),
                   buildKey('5'),
                   buildKey('6'),
                   buildKey(
-                    '-',
+                    '±',
+                    onTap: () => onKeyPressed('-'),
                     textColor: theme.colorScheme.primary,
-                    semanticLabel: l10n?.keySign ?? 'Negative sign',
+                    semanticLabel: l10n?.keySign ?? 'Toggle sign',
                   ),
                   buildKey(
                     '/',
@@ -160,7 +167,7 @@ class CustomNumpad extends StatelessWidget {
                   ),
                 ],
               ),
-              // Row 4: Clear (C), Sign (±), Zero (0), Dot (.), Tab (⇥)
+              // Row 4: Clear (C), Zero (0, wide), Dot (.), Tab (⇥)
               Row(
                 children: [
                   buildKey(
@@ -174,20 +181,7 @@ class CustomNumpad extends StatelessWidget {
                         : const Color(0xFFDC2626),
                     semanticLabel: l10n?.keyClear ?? 'Clear cell',
                   ),
-                  buildKey(
-                    '±',
-                    onTap: () => onKeyPressed('-'),
-                    textColor: theme.colorScheme.primary,
-                    semanticLabel: l10n?.keySign ?? 'Toggle sign',
-                    child: const Text(
-                      '±',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  buildKey('0', semanticLabel: '0'),
+                  buildKey('0', semanticLabel: '0', flex: 2),
                   buildKey(
                     '.',
                     semanticLabel: l10n?.keyDecimal ?? 'Decimal point',

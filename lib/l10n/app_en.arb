@@ -22,7 +22,7 @@
   "topicRankNullity": "Rank & Nullity",
   "topicRankNullityDesc": "Compute matrix rank, nullity, and verify the Rank-Nullity Theorem.",
   "topicEigen": "Eigenvalues & Eigenvectors",
-  "topicEigenDesc": "Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.",
+  "topicEigenDesc": "Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.",
   "topicTransform2d": "2D Geometric Transformation",
   "topicTransform2dDesc": "Visualize unit square warping, basis vectors (î, ĵ), and determinant area in real-time.",
   "topicAdd": "Matrix Addition",
@@ -39,12 +39,14 @@
   "presetClear": "Clear",
   "calculate": "Solve",
   "fractionToggle": "Fraction / Decimal",
-  "decreaseDimension": "Decrease dimension",
-  "increaseDimension": "Increase dimension",
+  "removeRow": "Remove a row",
+  "addRow": "Add a row",
+  "removeColumn": "Remove a column",
+  "addColumn": "Add a column",
   "stepOf": "Step {current} of {total}",
   "decreasePlaybackSpeed": "Decrease playback speed",
   "increasePlaybackSpeed": "Increase playback speed",
-  "playbackSpeed": "Speed: {speed}x",
+  "playbackSpeed": "Speed: {speed}",
   "play": "Play",
   "pause": "Pause",
   "nextStep": "Next",
@@ -54,7 +56,6 @@
   "close": "Close",
   "toggleTheme": "Toggle Theme",
   "changeLanguage": "Language",
-  "solveError": "Error: {error}",
   "solveFallbackError": "Could not solve matrix.",
   "legendPivot": "Pivot",
   "legendSource": "Source",
@@ -74,7 +75,7 @@
   "step_row_swap_desc": "Swapped Row {rowA} and Row {rowB} to place a non-zero pivot ({pivot}) at Column {col}.",
   "step_row_scale_title": "Normalize Row {row}",
   "step_row_scale_desc": "Multiplied Row {row} by {factor} to make the leading pivot equal to 1.",
-  "step_row_elimination_title": "Eliminate Entry in Row {target}",
+  "step_row_elimination_title": "Eliminate Entry in Row {target} using Row {source}",
   "step_row_elimination_desc": "Eliminated element in column {col} of Row {target}: R_{target} ← R_{target} - ({multiplier}) · R_{source}.",
   "det_1x1_title": "1x1 Matrix Determinant",
   "det_1x1_desc": "The determinant of a 1x1 matrix is simply its single element: {val}.",
@@ -120,10 +121,10 @@
   "system_inconsistent_desc": "Row {row} reduces to [0 ... 0 | {val}], stating 0 = {val}. This is a contradiction, so the system has no solution.",
   "system_unique_title": "Unique Solution Found",
   "system_unique_desc": "Every unknown corresponds to a pivot column. The unique solution is {solution}.",
-  "system_infinite_title": "Infinite Solutions ({count} Free Variables)",
+  "system_infinite_title": "Infinite Solutions ({count, plural, one{1 Free Variable} other{{count} Free Variables}})",
   "system_infinite_desc": "The non-pivot variables ({freeVars}) are free parameters ({params}). The solution is expressed in parametric vector form.",
   "rank_nullity_title": "Rank = {rank}, Nullity = {nullity}",
-  "rank_nullity_desc": "The matrix has {rank} pivot columns and {nullity} free columns. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.",
+  "rank_nullity_desc": "The matrix has {rank, plural, one{1 pivot column} other{{rank} pivot columns}} and {nullity, plural, one{1 free column} other{{nullity} free columns}}. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.",
   "eigen_char_poly_title": "Characteristic Polynomial",
   "eigen_trace_det_desc": "For a 2x2 matrix, the characteristic equation is λ² - tr(A)λ + det(A) = 0 with trace = {trace} and det = {det}.",
   "eigen_complex_title": "Complex Eigenvalues",
@@ -132,9 +133,9 @@
   "eigen_roots_approx_desc": "Solving {poly} gives approximate real eigenvalues, rounded to three decimal places: {roots}.",
   "eigen_roots_desc": "Solving {poly} yields the real eigenvalues: {roots}.",
   "eigen_vector_title": "Eigenvector for λ_{index} = {lambda}",
-  "eigen_vector_desc": "For (A − {lambda}I)v = 0, one representative eigenvector is {vector}.",
+  "eigen_vector_desc": "For (A − λI)v = 0 with λ = {lambda}, one representative eigenvector is {vector}.",
   "eigen_3x3_poly_desc": "For a 3x3 matrix, the characteristic equation is {poly} with trace = {trace} and det = {det}.",
-  "eigen_irrational_desc": "No integer root from −20 to 20 was found for {poly}. Other real or complex roots may exist; this solver does not compute them.",
+  "eigen_irrational_desc": "The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.",
   "topicLu": "LU Decomposition (A = LU)",
   "topicLuDesc": "Factorize a square matrix into lower (L) and upper (U) triangular matrices.",
   "topicPractice": "Self-Test & Practice Quiz",
@@ -234,14 +235,26 @@
   "inspectOperation": "Inspect this operation",
   "stepExplanation": "Why this works",
   "cellCalculations": "Cell calculations",
+  "stepDetails": "Details",
   "chooseStep": "Choose a step",
   "learningPath": "New to matrices?",
+  "continueLearning": "Continue where you left off",
+  "continueAction": "Continue",
+  "topicCompleted": "Completed",
+  "pathProgress": "{done} of {total} topics completed",
+  "@pathProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "pathEliminate": "1 · Create zeros",
   "pathReduce": "2 · Find the pivots",
   "pathSolve": "3 · Solve a system",
-  "guideGenericSource": "Read the current matrix and the goal of this step.",
-  "guideGenericApply": "Follow the highlighted entries. The explanation gives the reasoning.",
-  "guideGenericResult": "Compare the result with the explanation. Continue when you are ready.",
   "guideEliminateSource": "Use row {source} to change row {target}. Focus on column {column}.",
   "@guideEliminateSource": {
     "placeholders": {
@@ -332,7 +345,7 @@
   },
   "guideDetSource": "Follow the factors in each product. The signs determine which products are subtracted.",
   "guideDetApply": "One product is highlighted at a time. Read its factors below the matrix.",
-  "guideDetResult": "The products remain visible below, so you can check the result at your own pace.",
+  "guideDetResult": "Their sum is this group's contribution to the determinant.",
   "coefficientError": "Enter a number from −1000 to 1000.",
   "transformTransitionHint": "Edit a coefficient and press Enter or leave the field to apply. Values: −1000 to 1000. The slider compares the previous and new states; intermediate frames are transitions between transformations.",
   "multiplicationSourceRow": "A · row {row}",
@@ -432,24 +445,33 @@
   "densityLabel": "Layout density",
   "comfortable": "Comfortable",
   "compact": "Compact",
-  "accentLabel": "Accent palette",
-  "blue": "Blue",
-  "teal": "Teal",
-  "purple": "Purple",
   "shortcutsLabel": "Keyboard shortcuts",
   "shortcutHelp": "Select an action, then press a letter, Space or a horizontal arrow. Home/End and Page Up/Down remain available.",
   "pressKey": "Press a key",
   "shortcutConflict": "That key is reserved or already assigned.",
   "resetSettings": "Reset settings",
+  "moreOptions": "More options",
+  "resetProgress": "Reset progress",
   "settingsStorageError": "Preferences could not be read or saved. Changes remain available for this session.",
-  "localPreferences": "Preferences stay on this device. Matrix history is not saved.",
+  "localPreferences": "Preferences and the lessons you finished stay on this device. Matrices and quiz answers are not saved.",
   "resultExact": "Exact",
   "resultApproximate": "Approximate",
+  "checkTitle": "Check the result",
+  "checkHolds": "Holds",
+  "checkFails": "Does not hold",
+  "checkInverse": "Multiplying A by its inverse gives the identity matrix.",
+  "checkDetRows": "Row reduction to a triangular matrix gives the same value.",
+  "checkDetCofactor": "Cofactor expansion along the first row gives the same value.",
+  "checkLu": "Multiplying L by U gives back A, with its rows in the order P records.",
+  "checkSystem": "Substituting x back into the equations gives b.",
+  "checkRank": "The largest square submatrix with a nonzero determinant gives the rank; the remaining columns give the nullity.",
+  "checkEigen": "A only stretches v: Av equals λv.",
+  "seeAsTransform": "See it as a transformation",
   "resultComplete": "Complete",
   "resultPartial": "Partial",
   "resultUnsupported": "Unsupported",
   "eigenPrecision": "Eigenvalues are rounded to three decimals; vectors are approximate directions, not exact null-space solutions.",
-  "eigenScope": "3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.",
+  "eigenScope": "3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.",
   "eigenBasisScope": "One representative vector per eigenvalue is shown; a full eigenspace basis is not computed.",
   "complexScope": "Complex eigenvectors are not supported. The imaginary part is rounded to two decimals.",
   "guideAddSource": "Match the same position in A and B.",
@@ -457,7 +479,7 @@
   "guideAddResult": "Their sum belongs in the same position in C.",
   "quizQ1QuestionTitle": "Gaussian Elimination: Pivot & Elimination",
   "quizQ1Prompt": "In the matrix below, the first pivot is at cell (1,1). Which elementary row operation eliminates the first entry in row 2?",
-  "quizQ1Explanation": "The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.",
+  "quizQ1Explanation": "The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.",
   "quizQ1Hint": "Subtract a multiple of the pivot row from the target row to create a zero.",
   "quizQ1Feedback0": "Subtracting twice row 1 creates 2 − 2 = 0.",
   "quizQ1Feedback1": "Adding twice row 1 gives 2 + 2 = 4, not zero.",
@@ -495,7 +517,165 @@
   "quizQ5Feedback1": "The diagonal product is 2 × 3 × 4 = 24.",
   "quizQ5Feedback2": "Zeros below the diagonal do not force determinant zero. A zero diagonal entry would.",
   "quizQ5Feedback3": "All diagonal entries are positive; no extra negative sign is introduced.",
+  "genDetTitle": "2×2 determinant",
+  "genDetPrompt": "What is det(A) for the matrix below?",
+  "genDetHint": "For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.",
+  "genDetExplanation": "det(A) = {a}·{d} − {b}·{c} = {value}.",
+  "@genDetExplanation": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      },
+      "d": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "genDetFeedbackSign": "That adds the two diagonal products; the second one is subtracted.",
+  "genDetFeedbackRows": "That multiplies along the rows. A determinant uses the diagonals.",
+  "genDetFeedbackOrder": "The order is reversed: the main diagonal comes first, so the sign flips.",
+  "genElimTitle": "Choosing a multiplier",
+  "genElimPrompt": "Which row operation makes the first entry of row 2 zero?",
+  "genElimHint": "Divide the entry you want to remove by the pivot above it.",
+  "genElimExplanation": "The multiplier is the entry divided by the pivot: {entry} ÷ {pivot} = {factor}. Subtracting {factor} times row 1 turns the entry into 0.",
+  "@genElimExplanation": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "genElimFeedbackSign": "With the opposite sign the entry grows instead of becoming 0.",
+  "genElimFeedbackRatio": "That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.",
+  "genElimFeedbackRow": "That changes row 1, the pivot row. The row that must change is row 2.",
+  "genProductTitle": "An entry of a product",
+  "genProductPrompt": "What is the entry in row 1, column 2 of A·A?",
+  "genProductHint": "Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.",
+  "genProductExplanation": "Row 1 is ({r1}, {r2}) and column 2 is ({c1}, {c2}), so the entry is {r1}·{c1} + {r2}·{c2} = {value}.",
+  "@genProductExplanation": {
+    "placeholders": {
+      "r1": {
+        "type": "String"
+      },
+      "r2": {
+        "type": "String"
+      },
+      "c1": {
+        "type": "String"
+      },
+      "c2": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "genProductFeedbackSquare": "Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.",
+  "genProductFeedbackRows": "That pairs row 1 with row 2. The second factor contributes a column.",
+  "genProductFeedbackColumns": "That pairs two columns. The first factor contributes a row.",
+  "genInverseTitle": "Inverse of a 2×2 matrix",
+  "genInversePrompt": "Which matrix is A⁻¹?",
+  "genInverseHint": "Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).",
+  "genInverseExplanation": "det(A) = {det}. a and d trade places, b and c change sign, and everything is multiplied by 1/{det}.",
+  "@genInverseExplanation": {
+    "placeholders": {
+      "det": {
+        "type": "String"
+      }
+    }
+  },
+  "genInverseFeedbackSigns": "The diagonal is swapped, but b and c also change sign.",
+  "genInverseFeedbackSwap": "b and c change sign, but a and d must also trade places.",
+  "genInverseFeedbackNegated": "Every entry is negated here; only b and c change sign.",
+  "newQuestions": "New questions",
   "eigen_vector_approx_title": "Approximate vector for λ_{index} ≈ {lambda}",
   "eigen_vector_approx_desc": "Using λ ≈ {lambda}, an approximate direction is {vector}. The rounded value does not give an exact null-space solution.",
-  "spaceKey": "Space"
+  "spaceKey": "Space",
+  "matrixCellPendingLabel": "Row {row}, column {column}, not calculated yet",
+  "@matrixCellPendingLabel": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "int"
+      }
+    }
+  },
+  "eigen_cubic_complex_desc": "Solving {poly} gives the real eigenvalue {roots} and the complex conjugate pair λ ≈ {complex}. Only the real eigenvalue has a real eigenvector.",
+  "keyNextRow": "Next row",
+  "multiplyRowsLocked": "B has as many rows as A has columns, so A × B is defined.",
+  "lessonComplete": "Lesson complete",
+  "lessonCompleteHint": "Check the result, watch the lesson again, or continue with a matrix of your own.",
+  "replayLesson": "Watch again",
+  "tryOwnMatrix": "Try your own matrix",
+  "editMatrix": "Change the matrix",
+  "presetApplied": "Matrix {matrix} replaced.",
+  "@presetApplied": {
+    "placeholders": {
+      "matrix": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Undo",
+  "transformShortcutsHint": "Keyboard: Space plays or reverses, S shear, P projection, R identity.",
+  "transformLegendOriginal": "Faint grid: the plane before the transformation.",
+  "transformLegendEigen": "Dashed lines: real eigenvector directions, which stay on their own line.",
+  "guideLuReason": "Target {entry} ÷ pivot {pivot} = {ratio}. Subtracting {ratio} times the pivot row cancels the target, and the same {ratio} is written into L at ({row}, {column}), so L · U rebuilds A.",
+  "@guideLuReason": {
+    "placeholders": {
+      "entry": {
+        "type": "String"
+      },
+      "pivot": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      },
+      "row": {
+        "type": "String"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "guideAdjSource": "For [[a, b], [c, d]], look at the diagonal a, d and the other two entries b, c.",
+  "guideAdjApply": "a and d trade places; b and c keep their places but change sign.",
+  "guideAdjResult": "This is adj(A). Dividing it by det(A) gives the inverse.",
+  "guideAdjReason": "For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.",
+  "guideScaleAllSource": "Every entry of adj(A) is multiplied by the same number, 1/det(A) = {factor}.",
+  "@guideScaleAllSource": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "guideScaleAllApply": "Multiply the entries one at a time.",
+  "guideScaleAllResult": "The result is A⁻¹. Check: A · A⁻¹ = I.",
+  "guideDiagSource": "The matrix is now upper triangular, so its determinant is the product of the diagonal.",
+  "guideDiagApply": "Multiply the diagonal entries one by one. The first factor carries a −1 for each row swap.",
+  "guideDiagResult": "Row eliminations did not change the determinant, so this product is det of the original matrix.",
+  "guideDetRecapSource": "Both totals are known from the previous steps.",
+  "guideDetRecapApply": "Subtract the − total from the + total.",
+  "guideDetRecapResult": "The difference is the determinant."
 }

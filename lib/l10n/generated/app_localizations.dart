@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @topicEigenDesc.
   ///
   /// In en, this message translates to:
-  /// **'Explore 2×2 eigenpairs and 3×3 integer roots from −20 to 20.'**
+  /// **'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.'**
   String get topicEigenDesc;
 
   /// No description provided for @topicTransform2d.
@@ -338,17 +338,29 @@ abstract class AppLocalizations {
   /// **'Fraction / Decimal'**
   String get fractionToggle;
 
-  /// No description provided for @decreaseDimension.
+  /// No description provided for @removeRow.
   ///
   /// In en, this message translates to:
-  /// **'Decrease dimension'**
-  String get decreaseDimension;
+  /// **'Remove a row'**
+  String get removeRow;
 
-  /// No description provided for @increaseDimension.
+  /// No description provided for @addRow.
   ///
   /// In en, this message translates to:
-  /// **'Increase dimension'**
-  String get increaseDimension;
+  /// **'Add a row'**
+  String get addRow;
+
+  /// No description provided for @removeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove a column'**
+  String get removeColumn;
+
+  /// No description provided for @addColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a column'**
+  String get addColumn;
 
   /// No description provided for @stepOf.
   ///
@@ -371,7 +383,7 @@ abstract class AppLocalizations {
   /// No description provided for @playbackSpeed.
   ///
   /// In en, this message translates to:
-  /// **'Speed: {speed}x'**
+  /// **'Speed: {speed}'**
   String playbackSpeed(Object speed);
 
   /// No description provided for @play.
@@ -427,12 +439,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get changeLanguage;
-
-  /// No description provided for @solveError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error: {error}'**
-  String solveError(Object error);
 
   /// No description provided for @solveFallbackError.
   ///
@@ -551,8 +557,8 @@ abstract class AppLocalizations {
   /// No description provided for @step_row_elimination_title.
   ///
   /// In en, this message translates to:
-  /// **'Eliminate Entry in Row {target}'**
-  String step_row_elimination_title(Object target);
+  /// **'Eliminate Entry in Row {target} using Row {source}'**
+  String step_row_elimination_title(Object source, Object target);
 
   /// No description provided for @step_row_elimination_desc.
   ///
@@ -832,8 +838,8 @@ abstract class AppLocalizations {
   /// No description provided for @system_infinite_title.
   ///
   /// In en, this message translates to:
-  /// **'Infinite Solutions ({count} Free Variables)'**
-  String system_infinite_title(Object count);
+  /// **'Infinite Solutions ({count, plural, one{1 Free Variable} other{{count} Free Variables}})'**
+  String system_infinite_title(num count);
 
   /// No description provided for @system_infinite_desc.
   ///
@@ -850,8 +856,8 @@ abstract class AppLocalizations {
   /// No description provided for @rank_nullity_desc.
   ///
   /// In en, this message translates to:
-  /// **'The matrix has {rank} pivot columns and {nullity} free columns. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.'**
-  String rank_nullity_desc(Object cols, Object nullity, Object rank);
+  /// **'The matrix has {rank, plural, one{1 pivot column} other{{rank} pivot columns}} and {nullity, plural, one{1 free column} other{{nullity} free columns}}. By the Rank-Nullity Theorem, rank(A) + nullity(A) = {cols}.'**
+  String rank_nullity_desc(Object cols, num nullity, num rank);
 
   /// No description provided for @eigen_char_poly_title.
   ///
@@ -904,7 +910,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigen_vector_desc.
   ///
   /// In en, this message translates to:
-  /// **'For (A − {lambda}I)v = 0, one representative eigenvector is {vector}.'**
+  /// **'For (A − λI)v = 0 with λ = {lambda}, one representative eigenvector is {vector}.'**
   String eigen_vector_desc(Object lambda, Object vector);
 
   /// No description provided for @eigen_3x3_poly_desc.
@@ -916,7 +922,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigen_irrational_desc.
   ///
   /// In en, this message translates to:
-  /// **'No integer root from −20 to 20 was found for {poly}. Other real or complex roots may exist; this solver does not compute them.'**
+  /// **'The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.'**
   String eigen_irrational_desc(Object poly);
 
   /// No description provided for @topicLu.
@@ -1279,6 +1285,12 @@ abstract class AppLocalizations {
   /// **'Cell calculations'**
   String get cellCalculations;
 
+  /// No description provided for @stepDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get stepDetails;
+
   /// No description provided for @chooseStep.
   ///
   /// In en, this message translates to:
@@ -1290,6 +1302,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New to matrices?'**
   String get learningPath;
+
+  /// No description provided for @continueLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue where you left off'**
+  String get continueLearning;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueAction;
+
+  /// No description provided for @topicCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get topicCompleted;
+
+  /// No description provided for @pathProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} topics completed'**
+  String pathProgress(int done, int total);
 
   /// No description provided for @pathEliminate.
   ///
@@ -1308,24 +1344,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'3 · Solve a system'**
   String get pathSolve;
-
-  /// No description provided for @guideGenericSource.
-  ///
-  /// In en, this message translates to:
-  /// **'Read the current matrix and the goal of this step.'**
-  String get guideGenericSource;
-
-  /// No description provided for @guideGenericApply.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow the highlighted entries. The explanation gives the reasoning.'**
-  String get guideGenericApply;
-
-  /// No description provided for @guideGenericResult.
-  ///
-  /// In en, this message translates to:
-  /// **'Compare the result with the explanation. Continue when you are ready.'**
-  String get guideGenericResult;
 
   /// No description provided for @guideEliminateSource.
   ///
@@ -1414,7 +1432,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDetResult.
   ///
   /// In en, this message translates to:
-  /// **'The products remain visible below, so you can check the result at your own pace.'**
+  /// **'Their sum is this group\'s contribution to the determinant.'**
   String get guideDetResult;
 
   /// No description provided for @coefficientError.
@@ -1687,30 +1705,6 @@ abstract class AppLocalizations {
   /// **'Compact'**
   String get compact;
 
-  /// No description provided for @accentLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Accent palette'**
-  String get accentLabel;
-
-  /// No description provided for @blue.
-  ///
-  /// In en, this message translates to:
-  /// **'Blue'**
-  String get blue;
-
-  /// No description provided for @teal.
-  ///
-  /// In en, this message translates to:
-  /// **'Teal'**
-  String get teal;
-
-  /// No description provided for @purple.
-  ///
-  /// In en, this message translates to:
-  /// **'Purple'**
-  String get purple;
-
   /// No description provided for @shortcutsLabel.
   ///
   /// In en, this message translates to:
@@ -1741,6 +1735,18 @@ abstract class AppLocalizations {
   /// **'Reset settings'**
   String get resetSettings;
 
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get moreOptions;
+
+  /// No description provided for @resetProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset progress'**
+  String get resetProgress;
+
   /// No description provided for @settingsStorageError.
   ///
   /// In en, this message translates to:
@@ -1750,7 +1756,7 @@ abstract class AppLocalizations {
   /// No description provided for @localPreferences.
   ///
   /// In en, this message translates to:
-  /// **'Preferences stay on this device. Matrix history is not saved.'**
+  /// **'Preferences and the lessons you finished stay on this device. Matrices and quiz answers are not saved.'**
   String get localPreferences;
 
   /// No description provided for @resultExact.
@@ -1764,6 +1770,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Approximate'**
   String get resultApproximate;
+
+  /// No description provided for @checkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the result'**
+  String get checkTitle;
+
+  /// No description provided for @checkHolds.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds'**
+  String get checkHolds;
+
+  /// No description provided for @checkFails.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not hold'**
+  String get checkFails;
+
+  /// No description provided for @checkInverse.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplying A by its inverse gives the identity matrix.'**
+  String get checkInverse;
+
+  /// No description provided for @checkDetRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Row reduction to a triangular matrix gives the same value.'**
+  String get checkDetRows;
+
+  /// No description provided for @checkDetCofactor.
+  ///
+  /// In en, this message translates to:
+  /// **'Cofactor expansion along the first row gives the same value.'**
+  String get checkDetCofactor;
+
+  /// No description provided for @checkLu.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplying L by U gives back A, with its rows in the order P records.'**
+  String get checkLu;
+
+  /// No description provided for @checkSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Substituting x back into the equations gives b.'**
+  String get checkSystem;
+
+  /// No description provided for @checkRank.
+  ///
+  /// In en, this message translates to:
+  /// **'The largest square submatrix with a nonzero determinant gives the rank; the remaining columns give the nullity.'**
+  String get checkRank;
+
+  /// No description provided for @checkEigen.
+  ///
+  /// In en, this message translates to:
+  /// **'A only stretches v: Av equals λv.'**
+  String get checkEigen;
+
+  /// No description provided for @seeAsTransform.
+  ///
+  /// In en, this message translates to:
+  /// **'See it as a transformation'**
+  String get seeAsTransform;
 
   /// No description provided for @resultComplete.
   ///
@@ -1792,7 +1864,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigenScope.
   ///
   /// In en, this message translates to:
-  /// **'3×3 analysis searches integer roots from −20 to 20. Missing roots may be real or complex.'**
+  /// **'3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.'**
   String get eigenScope;
 
   /// No description provided for @eigenBasisScope.
@@ -1840,7 +1912,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizQ1Explanation.
   ///
   /// In en, this message translates to:
-  /// **'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2(1) = 0, apply R_2 \\leftarrow R_2 - 2R_1.'**
+  /// **'The first entry in row 2 is 2, and the pivot is 1. To obtain 2 - 2 \\cdot 1 = 0, apply R_2 \\leftarrow R_2 - 2R_1.'**
   String get quizQ1Explanation;
 
   /// No description provided for @quizQ1Hint.
@@ -2065,6 +2137,192 @@ abstract class AppLocalizations {
   /// **'All diagonal entries are positive; no extra negative sign is introduced.'**
   String get quizQ5Feedback3;
 
+  /// No description provided for @genDetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'2×2 determinant'**
+  String get genDetTitle;
+
+  /// No description provided for @genDetPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What is det(A) for the matrix below?'**
+  String get genDetPrompt;
+
+  /// No description provided for @genDetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For a 2×2 matrix, multiply the main diagonal and subtract the product of the other diagonal: ad − bc.'**
+  String get genDetHint;
+
+  /// No description provided for @genDetExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'det(A) = {a}·{d} − {b}·{c} = {value}.'**
+  String genDetExplanation(
+    String a,
+    String b,
+    String c,
+    String d,
+    String value,
+  );
+
+  /// No description provided for @genDetFeedbackSign.
+  ///
+  /// In en, this message translates to:
+  /// **'That adds the two diagonal products; the second one is subtracted.'**
+  String get genDetFeedbackSign;
+
+  /// No description provided for @genDetFeedbackRows.
+  ///
+  /// In en, this message translates to:
+  /// **'That multiplies along the rows. A determinant uses the diagonals.'**
+  String get genDetFeedbackRows;
+
+  /// No description provided for @genDetFeedbackOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'The order is reversed: the main diagonal comes first, so the sign flips.'**
+  String get genDetFeedbackOrder;
+
+  /// No description provided for @genElimTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choosing a multiplier'**
+  String get genElimTitle;
+
+  /// No description provided for @genElimPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which row operation makes the first entry of row 2 zero?'**
+  String get genElimPrompt;
+
+  /// No description provided for @genElimHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Divide the entry you want to remove by the pivot above it.'**
+  String get genElimHint;
+
+  /// No description provided for @genElimExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'The multiplier is the entry divided by the pivot: {entry} ÷ {pivot} = {factor}. Subtracting {factor} times row 1 turns the entry into 0.'**
+  String genElimExplanation(String entry, String pivot, String factor);
+
+  /// No description provided for @genElimFeedbackSign.
+  ///
+  /// In en, this message translates to:
+  /// **'With the opposite sign the entry grows instead of becoming 0.'**
+  String get genElimFeedbackSign;
+
+  /// No description provided for @genElimFeedbackRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'That ratio is upside down: divide the entry by the pivot, not the pivot by the entry.'**
+  String get genElimFeedbackRatio;
+
+  /// No description provided for @genElimFeedbackRow.
+  ///
+  /// In en, this message translates to:
+  /// **'That changes row 1, the pivot row. The row that must change is row 2.'**
+  String get genElimFeedbackRow;
+
+  /// No description provided for @genProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An entry of a product'**
+  String get genProductTitle;
+
+  /// No description provided for @genProductPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the entry in row 1, column 2 of A·A?'**
+  String get genProductPrompt;
+
+  /// No description provided for @genProductHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Row 1 of the first factor meets column 2 of the second: multiply pair by pair and add.'**
+  String get genProductHint;
+
+  /// No description provided for @genProductExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Row 1 is ({r1}, {r2}) and column 2 is ({c1}, {c2}), so the entry is {r1}·{c1} + {r2}·{c2} = {value}.'**
+  String genProductExplanation(
+    String r1,
+    String r2,
+    String c1,
+    String c2,
+    String value,
+  );
+
+  /// No description provided for @genProductFeedbackSquare.
+  ///
+  /// In en, this message translates to:
+  /// **'Squaring the entry itself is not matrix multiplication; use a whole row and a whole column.'**
+  String get genProductFeedbackSquare;
+
+  /// No description provided for @genProductFeedbackRows.
+  ///
+  /// In en, this message translates to:
+  /// **'That pairs row 1 with row 2. The second factor contributes a column.'**
+  String get genProductFeedbackRows;
+
+  /// No description provided for @genProductFeedbackColumns.
+  ///
+  /// In en, this message translates to:
+  /// **'That pairs two columns. The first factor contributes a row.'**
+  String get genProductFeedbackColumns;
+
+  /// No description provided for @genInverseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inverse of a 2×2 matrix'**
+  String get genInverseTitle;
+
+  /// No description provided for @genInversePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which matrix is A⁻¹?'**
+  String get genInversePrompt;
+
+  /// No description provided for @genInverseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap the entries of the main diagonal, change the sign of the other two, and divide by det(A).'**
+  String get genInverseHint;
+
+  /// No description provided for @genInverseExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'det(A) = {det}. a and d trade places, b and c change sign, and everything is multiplied by 1/{det}.'**
+  String genInverseExplanation(String det);
+
+  /// No description provided for @genInverseFeedbackSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'The diagonal is swapped, but b and c also change sign.'**
+  String get genInverseFeedbackSigns;
+
+  /// No description provided for @genInverseFeedbackSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'b and c change sign, but a and d must also trade places.'**
+  String get genInverseFeedbackSwap;
+
+  /// No description provided for @genInverseFeedbackNegated.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry is negated here; only b and c change sign.'**
+  String get genInverseFeedbackNegated;
+
+  /// No description provided for @newQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'New questions'**
+  String get newQuestions;
+
   /// No description provided for @eigen_vector_approx_title.
   ///
   /// In en, this message translates to:
@@ -2082,6 +2340,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Space'**
   String get spaceKey;
+
+  /// No description provided for @matrixCellPendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {row}, column {column}, not calculated yet'**
+  String matrixCellPendingLabel(int row, int column);
+
+  /// No description provided for @eigen_cubic_complex_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Solving {poly} gives the real eigenvalue {roots} and the complex conjugate pair λ ≈ {complex}. Only the real eigenvalue has a real eigenvector.'**
+  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots);
+
+  /// No description provided for @keyNextRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next row'**
+  String get keyNextRow;
+
+  /// No description provided for @multiplyRowsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'B has as many rows as A has columns, so A × B is defined.'**
+  String get multiplyRowsLocked;
+
+  /// No description provided for @lessonComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson complete'**
+  String get lessonComplete;
+
+  /// No description provided for @lessonCompleteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the result, watch the lesson again, or continue with a matrix of your own.'**
+  String get lessonCompleteHint;
+
+  /// No description provided for @replayLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch again'**
+  String get replayLesson;
+
+  /// No description provided for @tryOwnMatrix.
+  ///
+  /// In en, this message translates to:
+  /// **'Try your own matrix'**
+  String get tryOwnMatrix;
+
+  /// No description provided for @editMatrix.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the matrix'**
+  String get editMatrix;
+
+  /// No description provided for @presetApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Matrix {matrix} replaced.'**
+  String presetApplied(String matrix);
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @transformShortcutsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard: Space plays or reverses, S shear, P projection, R identity.'**
+  String get transformShortcutsHint;
+
+  /// No description provided for @transformLegendOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Faint grid: the plane before the transformation.'**
+  String get transformLegendOriginal;
+
+  /// No description provided for @transformLegendEigen.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashed lines: real eigenvector directions, which stay on their own line.'**
+  String get transformLegendEigen;
+
+  /// No description provided for @guideLuReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Target {entry} ÷ pivot {pivot} = {ratio}. Subtracting {ratio} times the pivot row cancels the target, and the same {ratio} is written into L at ({row}, {column}), so L · U rebuilds A.'**
+  String guideLuReason(
+    String entry,
+    String pivot,
+    String ratio,
+    String row,
+    String column,
+  );
+
+  /// No description provided for @guideAdjSource.
+  ///
+  /// In en, this message translates to:
+  /// **'For [[a, b], [c, d]], look at the diagonal a, d and the other two entries b, c.'**
+  String get guideAdjSource;
+
+  /// No description provided for @guideAdjApply.
+  ///
+  /// In en, this message translates to:
+  /// **'a and d trade places; b and c keep their places but change sign.'**
+  String get guideAdjApply;
+
+  /// No description provided for @guideAdjResult.
+  ///
+  /// In en, this message translates to:
+  /// **'This is adj(A). Dividing it by det(A) gives the inverse.'**
+  String get guideAdjResult;
+
+  /// No description provided for @guideAdjReason.
+  ///
+  /// In en, this message translates to:
+  /// **'For a 2×2 matrix, A · adj(A) = det(A) · I. So A⁻¹ = adj(A) ÷ det(A) whenever det(A) ≠ 0.'**
+  String get guideAdjReason;
+
+  /// No description provided for @guideScaleAllSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry of adj(A) is multiplied by the same number, 1/det(A) = {factor}.'**
+  String guideScaleAllSource(String factor);
+
+  /// No description provided for @guideScaleAllApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply the entries one at a time.'**
+  String get guideScaleAllApply;
+
+  /// No description provided for @guideScaleAllResult.
+  ///
+  /// In en, this message translates to:
+  /// **'The result is A⁻¹. Check: A · A⁻¹ = I.'**
+  String get guideScaleAllResult;
+
+  /// No description provided for @guideDiagSource.
+  ///
+  /// In en, this message translates to:
+  /// **'The matrix is now upper triangular, so its determinant is the product of the diagonal.'**
+  String get guideDiagSource;
+
+  /// No description provided for @guideDiagApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply the diagonal entries one by one. The first factor carries a −1 for each row swap.'**
+  String get guideDiagApply;
+
+  /// No description provided for @guideDiagResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Row eliminations did not change the determinant, so this product is det of the original matrix.'**
+  String get guideDiagResult;
+
+  /// No description provided for @guideDetRecapSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Both totals are known from the previous steps.'**
+  String get guideDetRecapSource;
+
+  /// No description provided for @guideDetRecapApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtract the − total from the + total.'**
+  String get guideDetRecapApply;
+
+  /// No description provided for @guideDetRecapResult.
+  ///
+  /// In en, this message translates to:
+  /// **'The difference is the determinant.'**
+  String get guideDetRecapResult;
 }
 
 class _AppLocalizationsDelegate

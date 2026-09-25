@@ -7,7 +7,13 @@ void main() {
       TopicItem.allTopics.firstWhere((t) => t.type == type);
 
   test('Shrinking B preserves valid focus and subsequent input', () {
-    final cubit = MatrixInputCubit(topic(TopicType.multiply));
+    final cubit = MatrixInputCubit(topic(TopicType.multiply))
+      // Start from empty 3x3 factors; the topic opens on a 2x2 example.
+      ..setDimensionsA(3, 3)
+      ..setDimensionsB(3, 3)
+      ..selectMatrix(1)
+      ..presetClear()
+      ..selectMatrix(0);
     addTearDown(cubit.close);
     cubit.selectMatrix(1);
     cubit.setFocus(2, 2);
@@ -18,7 +24,13 @@ void main() {
   });
 
   test('Resizing A clamps focus against active B dimensions', () {
-    final cubit = MatrixInputCubit(topic(TopicType.multiply));
+    final cubit = MatrixInputCubit(topic(TopicType.multiply))
+      // Start from empty 3x3 factors; the topic opens on a 2x2 example.
+      ..setDimensionsA(3, 3)
+      ..setDimensionsB(3, 3)
+      ..selectMatrix(1)
+      ..presetClear()
+      ..selectMatrix(0);
     addTearDown(cubit.close);
     cubit.setDimensionsB(3, 1);
     cubit.selectMatrix(1);
