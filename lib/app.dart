@@ -5,6 +5,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/settings/cubit/settings_cubit.dart';
 import 'features/settings/cubit/settings_state.dart';
+import 'core/widgets/focus_ring.dart';
 import 'core/widgets/studio_shell.dart';
 import 'features/settings/data/preferences_repository.dart';
 
@@ -54,7 +55,7 @@ class MatrixEducatorApp extends StatelessWidget {
                     settings.reduceMotion ||
                     MediaQuery.disableAnimationsOf(context),
               ),
-              child: child!,
+              child: FocusRing(child: child!),
             ),
             home: const StudioShell(),
           );
