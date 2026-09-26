@@ -435,3 +435,57 @@ With the owner's approval the Windows build was driven further, through UI Autom
 - **More options, expanded, was named by all its contents** ("More options, Solution view, Speed: 1×, …") on desktop platforms; the header is now named only by its title.
 
 Verification: 350 application and 71 engine tests pass; analysis and formatting clean. `player_timeline_test.dart` now opens the Details drawer (or builds it open) before reading the scrub slider, since the slider no longer exists while the drawer is closed; its assertions are unchanged.
+
+# Audit: dead code, performance and security — 2026-09-26
+
+## Outcome
+
+An evidence-first pass over the merged `main`. Three changes matter: exact arithmetic is 2–5× faster on fractional input, the engine no longer reads hexadecimal as a number, and a dependency the app never used is gone. The rest is removal of code with no caller and CI token hardening. No playback contract, UI behaviour or engine output changed.
+
+## Changes
+
+1. **Faster exact arithmetic.** Timing a 5×5 inverse whose cells are 15-digit / 15-digit fractions (the 32-character input bound) showed about 76% of the solve inside `Rational`'s gcd, on denominators that grow to about 2,700 bits. `+ − × ÷` now reduce through the operands' gcds (Knuth, TAOCP 4.5.1) instead of one gcd of the full cross product. Mean time per solve, before → after, with the old and new engines measured alternately in one session (200 solves each on the VM, 20 in JS):
+
+   | Operation, 32-character fractions | Dart VM | Compiled JS (the web build solves on the UI thread) |
+   | --- | --- | --- |
+   | 5×5 inverse | 50.7 → 23.5 ms | 589 → 218 ms |
+   | 5×5 linear system | 24.2 → 10.8 ms | 268 → 98 ms |
+   | 5×5 RREF | 14.6 → 6.0 ms | 143 → 48 ms |
+   | 3×3 eigen | 11.8 → 5.0 ms | 101 → 21 ms |
+
+   Single-digit integer inputs take 0.1–0.8 ms either way; their differences stay within run-to-run noise. The old and new engines were run on 400 random matrices through every solver (4,000 solutions, integer to 7-digit fractions, 32 MB of step-by-step output) and the output was byte-identical. A new engine test checks 3,000 random operand pairs, including zero, equal and shared denominators and 40-digit values, against the normalized cross-product definition. Swapping in the SDK's `BigInt.gcd` instead was measured and rejected: 10–25% faster, and slower than the loop in JS at 200 bits.
+2. **Parsing.** `Rational.tryParse` went through `BigInt.tryParse`, which also reads `0x` hexadecimal: `"0x10"` parsed as 16 and `"0x1.5"` as 3/2. The editor's keypad and key filter never produce `x`, so learners were not affected; the engine now accepts decimal digits only.
+3. **Removed with no caller in the app, tests, tools or example:**
+   - `cupertino_icons`, which no Dart file used but the web build listed in `FontManifest.json` and downloaded at startup.
+   - `Matrix.fromDoubles`, which also threw for doubles printed in exponent form (`1e-7`, `1e21`).
+   - `Rational.toDisplayString`, a wrapper around `toString`/`toDecimalString`.
+   - `toJson` on `CellHighlight` and `SubCalculation`; no other step type serializes, so they could not serialize a step.
+   - The `fractionToggle` string in all five locales, left when its toggle was removed.
+4. **CI.** The workflow declares `contents: read` as its default, so the verify job no longer depends on the repository setting, which is currently also read-only. `subosito/flutter-action` is pinned to the commit of `v2.23.0`, which `v2` currently points to, because the deploy job runs it while holding Pages and OIDC tokens.
+
+## Reviewed and left unchanged
+
+- **Unused but kept.** `Matrix.getCol`, `Matrix.transpose` and `Rational.isPositive` have no caller, but they are correct, general matrix operations in a standalone package, which is the reason given for keeping `LinearSystemResult` and the other result types in the 2026-09-11 pass. `SettingsCubit.flushed` is used only by tests, as a way to await queued preference writes.
+- **Clean without changes.**
+  - Every `lib/` file is imported by app code.
+  - No other ARB key is unreferenced, and all five locales have the same key set.
+  - No lint is suppressed and there are no TODOs.
+- **Lifecycles.** Every controller, focus node, listener and observer is disposed. Cubits are owned by `BlocProvider`. Sliders write preferences on `onChangeEnd`, not on every tick.
+- **Rendering.** The player caches rows and cells per animation stage, and every `CustomPainter` repaints only when its inputs change. The `RegExp`s built in `math_text.dart` were not hoisted, because the Dart VM already caches recently compiled patterns; without a measured cost, hoisting would have been speculative.
+- **Security.**
+  - No credential, key, `.env` or build output is tracked.
+  - `web/` loads nothing from another origin and writes only `textContent`.
+  - The release Android manifest requests no permissions.
+  - Preference JSON with a wrong version, wrong types or invalid JSON falls back to defaults.
+  - `tool/*.py` makes no network or process calls.
+  - `pub get` reported no advisories. `flutter_bloc` 9 is available, but a major upgrade is outside a behaviour-preserving audit.
+
+## Verification
+
+- Analysis: `flutter analyze` and `dart analyze` report no issues.
+- Tests: 350 application and 73 engine tests pass; the 2 new engine tests are the arithmetic property check and the hexadecimal rejection.
+- Formatting: `dart format` changes nothing.
+- The engine example runs.
+- A release web build loaded with no console errors; every request was same-origin and none was for `CupertinoIcons`.
+
+The benchmarks are wall-clock timings on one developer machine. Browser timings came from Node running the dart2js output of the same solver benchmark, not from a browser profile.
