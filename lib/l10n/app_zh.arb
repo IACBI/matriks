@@ -103,7 +103,6 @@
   "presetIdentity": "单位矩阵",
   "presetClear": "清空",
   "calculate": "求解",
-  "fractionToggle": "分数／小数",
   "removeRow": "删除一行",
   "addRow": "添加一行",
   "removeColumn": "删除一列",

@@ -132,9 +132,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calculate => 'Решить';
 
   @override
-  String get fractionToggle => 'Дробь / Десятичная';
-
-  @override
   String get removeRow => 'Удалить строку';
 
   @override
