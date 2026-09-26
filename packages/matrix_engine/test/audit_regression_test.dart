@@ -77,4 +77,25 @@ void main() {
     expect(Rational.tryParse('1.+2'), isNull);
     expect(Rational.parse('-0.25'), Rational(-1, 4));
   });
+
+  test('Matrix.fromDoubles reads exponent-form doubles exactly', () {
+    final m = Matrix.fromDoubles([
+      [0.5, 0.1, 1e-7],
+      [1.5e21, -2.5e-8, 100.0],
+    ]);
+    expect(m.get(0, 0), Rational(1, 2));
+    expect(m.get(0, 1), Rational(1, 10));
+    expect(m.get(0, 2), Rational(1, 10000000));
+    expect(m.get(1, 0), Rational(BigInt.parse('1500000000000000000000')));
+    expect(m.get(1, 1), Rational(-1, 40000000));
+    expect(m.get(1, 2), Rational(100));
+    for (final bad in [double.nan, double.infinity, double.negativeInfinity]) {
+      expect(
+        () => Matrix.fromDoubles([
+          [bad],
+        ]),
+        throwsArgumentError,
+      );
+    }
+  });
 }

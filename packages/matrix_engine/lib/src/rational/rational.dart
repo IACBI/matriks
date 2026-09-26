@@ -201,6 +201,12 @@ class Rational implements Comparable<Rational> {
     return '$num/$den';
   }
 
+  /// Human friendly display, with optional decimal rounding.
+  String toDisplayString({bool asDecimal = false, int decimalPlaces = 2}) {
+    if (asDecimal) return toDecimalString(decimalPlaces);
+    return toString();
+  }
+
   /// Rounds half away from zero to [places] decimals with exact integer
   /// arithmetic. Unlike [toDouble], values beyond the double range never turn
   /// into `NaN` or `Infinity`.

@@ -24,6 +24,13 @@ class CellHighlight {
     required this.type,
     this.badgeText,
   });
+
+  Map<String, dynamic> toJson() => {
+    'row': row,
+    'col': col,
+    'type': type.name,
+    'badgeText': badgeText,
+  };
 }
 
 /// Breakdown of a single cell's arithmetic for the student to inspect
@@ -39,6 +46,13 @@ class SubCalculation {
     required this.formulaLatex,
     required this.result,
   });
+
+  Map<String, dynamic> toJson() => {
+    'targetRow': targetRow,
+    'targetCol': targetCol,
+    'formulaLatex': formulaLatex,
+    'result': result.toString(),
+  };
 }
 
 /// Display structure of the matrix (e.g. augmented for equations or inverse)

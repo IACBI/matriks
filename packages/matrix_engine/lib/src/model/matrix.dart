@@ -32,6 +32,29 @@ class Matrix {
     );
   }
 
+  /// Each double as the exact value of its shortest decimal form, so 0.1
+  /// becomes 1/10 rather than its binary approximation. Throws an
+  /// [ArgumentError] for NaN or infinity.
+  factory Matrix.fromDoubles(List<List<double>> data) {
+    return Matrix(
+      data.map((row) => row.map(_rationalFromDouble).toList()).toList(),
+    );
+  }
+
+  // `toString` switches to exponent form (1e-7, 1.5e+21) outside a middle
+  // range, which Rational.parse does not read.
+  static Rational _rationalFromDouble(double value) {
+    if (!value.isFinite) {
+      throw ArgumentError.value(value, 'value', 'must be finite');
+    }
+    final parts = value.toString().split(RegExp('[eE]'));
+    final mantissa = Rational.parse(parts[0]);
+    if (parts.length == 1) return mantissa;
+    final exponent = int.parse(parts[1]);
+    final scale = Rational(BigInt.from(10).pow(exponent.abs()));
+    return exponent < 0 ? mantissa / scale : mantissa * scale;
+  }
+
   factory Matrix.identity(int n) {
     if (n <= 0) throw ArgumentError('Identity matrix dimension must be > 0');
     final data = List.generate(
