@@ -383,26 +383,32 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           );
         }
 
+        // No wider than the keypad's keys under it, so their edges line up
+        // on a tablet or a wide window.
         Widget buildSolveButton() {
           return Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
               vertical: 4.0,
             ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isSolving
-                    ? null
-                    : () => _solveAndAnimate(context, state),
-                icon: _isSolving
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.play_arrow_rounded),
-                label: Text(_isSolving ? (l10n.calculating) : (l10n.calculate)),
+            child: Center(
+              child: SizedBox(
+                width: CustomNumpad.keysMaxWidth,
+                child: ElevatedButton.icon(
+                  onPressed: _isSolving
+                      ? null
+                      : () => _solveAndAnimate(context, state),
+                  icon: _isSolving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.play_arrow_rounded),
+                  label: Text(
+                    _isSolving ? (l10n.calculating) : (l10n.calculate),
+                  ),
+                ),
               ),
             ),
           );
@@ -476,49 +482,59 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                 horizontal: 8.0,
                                 vertical: 4.0,
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (topic.isDualMatrix) ...[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                        vertical: 4.0,
-                                      ),
-                                      child: SegmentedButton<int>(
-                                        segments: [
-                                          ButtonSegment(
-                                            value: 0,
-                                            label: Text(l10n.matrixA),
-                                          ),
-                                          ButtonSegment(
-                                            value: 1,
-                                            label: Text(l10n.matrixB),
-                                          ),
-                                        ],
-                                        selected: {state.activeMatrix},
-                                        onSelectionChanged: (set) =>
-                                            cubit.selectMatrix(set.first),
-                                      ),
-                                    ),
-                                  ],
-                                  buildDimensionRow(),
-                                  const SizedBox(height: 16),
-                                  buildSolveButton(),
-                                  CustomNumpad(
-                                    keyHeight:
-                                        isLandscape &&
-                                            constraints.maxHeight < 420
-                                        ? 36.0
-                                        : 42.0,
-                                    onKeyPressed: cubit.onKeyPressed,
-                                    onBackspace: cubit.onBackspace,
-                                    onClear: cubit.onClear,
-                                    onNextCell: cubit.onNextCell,
-                                    onNextRow: cubit.onNextRow,
-                                    onPrevCell: cubit.onPrevCell,
+                              // The keypad's surface ends with its keys
+                              // instead of spanning the whole panel.
+                              child: Center(
+                                child: ConstrainedBox(
+                                  // Keys plus the Solve button's margins.
+                                  constraints: const BoxConstraints(
+                                    maxWidth: CustomNumpad.keysMaxWidth + 32,
                                   ),
-                                ],
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (topic.isDualMatrix) ...[
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0,
+                                            vertical: 4.0,
+                                          ),
+                                          child: SegmentedButton<int>(
+                                            segments: [
+                                              ButtonSegment(
+                                                value: 0,
+                                                label: Text(l10n.matrixA),
+                                              ),
+                                              ButtonSegment(
+                                                value: 1,
+                                                label: Text(l10n.matrixB),
+                                              ),
+                                            ],
+                                            selected: {state.activeMatrix},
+                                            onSelectionChanged: (set) =>
+                                                cubit.selectMatrix(set.first),
+                                          ),
+                                        ),
+                                      ],
+                                      buildDimensionRow(),
+                                      const SizedBox(height: 16),
+                                      buildSolveButton(),
+                                      CustomNumpad(
+                                        keyHeight:
+                                            isLandscape &&
+                                                constraints.maxHeight < 420
+                                            ? 36.0
+                                            : 42.0,
+                                        onKeyPressed: cubit.onKeyPressed,
+                                        onBackspace: cubit.onBackspace,
+                                        onClear: cubit.onClear,
+                                        onNextCell: cubit.onNextCell,
+                                        onNextRow: cubit.onNextRow,
+                                        onPrevCell: cubit.onPrevCell,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),

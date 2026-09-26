@@ -518,14 +518,18 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                             size: 20,
                                           ),
                                           const SizedBox(width: 8),
-                                          Text(
-                                            feedbackTitle,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
+                                          // Wraps on a phone at large text
+                                          // instead of running off the card.
+                                          Expanded(
+                                            child: Text(
+                                              feedbackTitle,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -683,9 +687,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
             ),
             child: Row(
               children: [
+                // Grows with the letter, which follows the text size.
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: MediaQuery.textScalerOf(context).scale(28),
+                  height: MediaQuery.textScalerOf(context).scale(28),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isDark
