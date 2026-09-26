@@ -124,9 +124,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calculate => '求解';
 
   @override
-  String get fractionToggle => '分数／小数';
-
-  @override
   String get removeRow => '删除一行';
 
   @override

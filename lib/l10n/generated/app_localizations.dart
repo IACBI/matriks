@@ -332,12 +332,6 @@ abstract class AppLocalizations {
   /// **'Solve'**
   String get calculate;
 
-  /// No description provided for @fractionToggle.
-  ///
-  /// In en, this message translates to:
-  /// **'Fraction / Decimal'**
-  String get fractionToggle;
-
   /// No description provided for @removeRow.
   ///
   /// In en, this message translates to:

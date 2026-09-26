@@ -435,3 +435,102 @@ With the owner's approval the Windows build was driven further, through UI Autom
 - **More options, expanded, was named by all its contents** ("More options, Solution view, Speed: 1×, …") on desktop platforms; the header is now named only by its title.
 
 Verification: 350 application and 71 engine tests pass; analysis and formatting clean. `player_timeline_test.dart` now opens the Details drawer (or builds it open) before reading the scrub slider, since the slider no longer exists while the drawer is closed; its assertions are unchanged.
+
+# Audit: dead code, performance and security — 2026-09-26
+
+## Outcome
+
+An evidence-first pass over the merged `main`. Three changes matter: exact arithmetic is 2–5× faster on fractional input, the engine no longer reads hexadecimal as a number, and a dependency the app never used is gone. The rest is removal of code with no caller and CI token hardening. No playback contract, UI behaviour or engine output changed.
+
+## Changes
+
+1. **Faster exact arithmetic.** Timing a 5×5 inverse whose cells are 15-digit / 15-digit fractions (the 32-character input bound) showed about 76% of the solve inside `Rational`'s gcd, on denominators that grow to about 2,700 bits. `+ − × ÷` now reduce through the operands' gcds (Knuth, TAOCP 4.5.1) instead of one gcd of the full cross product. Mean time per solve, before → after, with the old and new engines measured alternately in one session (200 solves each on the VM, 20 in JS):
+
+   | Operation, 32-character fractions | Dart VM | Compiled JS (the web build solves on the UI thread) |
+   | --- | --- | --- |
+   | 5×5 inverse | 50.7 → 23.5 ms | 589 → 218 ms |
+   | 5×5 linear system | 24.2 → 10.8 ms | 268 → 98 ms |
+   | 5×5 RREF | 14.6 → 6.0 ms | 143 → 48 ms |
+   | 3×3 eigen | 11.8 → 5.0 ms | 101 → 21 ms |
+
+   Single-digit integer inputs take 0.1–0.8 ms either way; their differences stay within run-to-run noise. The old and new engines were run on 400 random matrices through every solver (4,000 solutions, integer to 7-digit fractions, 32 MB of step-by-step output) and the output was byte-identical. A new engine test checks 3,000 random operand pairs, including zero, equal and shared denominators and 40-digit values, against the normalized cross-product definition. Swapping in the SDK's `BigInt.gcd` instead was measured and rejected: 10–25% faster, and slower than the loop in JS at 200 bits.
+2. **Parsing.** `Rational.tryParse` went through `BigInt.tryParse`, which also reads `0x` hexadecimal: `"0x10"` parsed as 16 and `"0x1.5"` as 3/2. The editor's keypad and key filter never produce `x`, so learners were not affected; the engine now accepts decimal digits only.
+3. **Removed with no caller in the app, tests, tools or example:**
+   - `cupertino_icons`, which no Dart file used but the web build listed in `FontManifest.json` and downloaded at startup.
+   - The `fractionToggle` string in all five locales, left when its toggle was removed.
+
+   This pass first also removed four uncalled `matrix_engine` members: `Matrix.fromDoubles`, `Rational.toDisplayString`, and `toJson` on `CellHighlight` and `SubCalculation`. The pull request review pointed out that `matrix_engine.dart` exports them, so removing them would break other consumers of the package without a version change. All four are kept. `Matrix.fromDoubles` also had a real defect, fixed here: it threw a `FormatException` for doubles printed in exponent form (`1e-7`, `1.5e21`). It now reads them exactly, and rejects NaN and infinity with an `ArgumentError`.
+4. **CI.** The workflow declares `contents: read` as its default, so the verify job no longer depends on the repository setting, which is currently also read-only. `subosito/flutter-action` is pinned to the commit of `v2.23.0`, which `v2` currently points to, because the deploy job runs it while holding Pages and OIDC tokens.
+
+## Reviewed and left unchanged
+
+- **Unused but kept.** `Matrix.getCol`, `Matrix.transpose` and `Rational.isPositive` have no caller, but they are correct, general matrix operations in a standalone package, which is the reason given for keeping `LinearSystemResult` and the other result types in the 2026-09-11 pass. `SettingsCubit.flushed` is used only by tests, as a way to await queued preference writes.
+- **Clean without changes.**
+  - Every `lib/` file is imported by app code.
+  - No other ARB key is unreferenced, and all five locales have the same key set.
+  - No lint is suppressed and there are no TODOs.
+- **Lifecycles.** Every controller, focus node, listener and observer is disposed. Cubits are owned by `BlocProvider`. Sliders write preferences on `onChangeEnd`, not on every tick.
+- **Rendering.** The player caches rows and cells per animation stage, and every `CustomPainter` repaints only when its inputs change. The `RegExp`s built in `math_text.dart` were not hoisted, because the Dart VM already caches recently compiled patterns; without a measured cost, hoisting would have been speculative.
+- **Security.**
+  - No credential, key, `.env` or build output is tracked.
+  - `web/` loads nothing from another origin and writes only `textContent`.
+  - The release Android manifest requests no permissions.
+  - Preference JSON with a wrong version, wrong types or invalid JSON falls back to defaults.
+  - `tool/*.py` makes no network or process calls.
+  - `pub get` reported no advisories. `flutter_bloc` 9 is available, but a major upgrade is outside a behaviour-preserving audit.
+
+## Verification
+
+- Analysis: `flutter analyze` and `dart analyze` report no issues.
+- Tests: 350 application and 73 engine tests pass; the 2 new engine tests are the arithmetic property check and the hexadecimal rejection.
+- Formatting: `dart format` changes nothing.
+- The engine example runs.
+- A release web build loaded with no console errors; every request was same-origin and none was for `CupertinoIcons`.
+
+The benchmarks are wall-clock timings on one developer machine. Browser timings came from Node running the dart2js output of the same solver benchmark, not from a browser profile.
+
+# Second pass: rendering, accessibility and visual review — 2026-09-26
+
+## Outcome
+
+This pass ran on the same branch after the engine audit above. It measured where the running app spends time, ran Flutter's automated accessibility guidelines over every screen, and inspected the release web build at every supported width, in both themes, at 200% text and in Chinese. Six defects were found and fixed, each with a regression test that fails without the fix. No playback contract, engine output or visual identity changed.
+
+## Changes
+
+1. **Step changes rebuilt every cell.**
+   - *Cause.* `MatrixDisplayGrid` cached each cell's widget, but cleared the cache on every update. A step change therefore rebuilt every cell and its formula, although a step changes only a few entries: one or two of 25 in matrix addition.
+   - *Fix.* The cache key now holds every input of a cell, and the previous update's cells are carried over. An unchanged entry keeps its widget, which Flutter then skips. The carried map is replaced on each update, so at most two steps' cells are held.
+   - *Measured in a widget test (5×5 addition, debug mode).* The frame after a step change rebuilt 551 widgets instead of 1,289, and took 48–82 ms instead of 80–231 ms.
+   - *Measured in the release web build (Chrome, 4× CPU throttling, the two builds alternated).* The first session, with the machine steady, gave a consistent result over 3 rounds:
+     - p99 frame time fell from 162–188 ms to 54–61 ms.
+     - Frames rendered in 24 s rose from 1,031–1,089 to 1,166–1,207.
+     - The baseline's roughly 200 ms + 450–520 ms double stall at each step change became a single stall of 100–157 ms.
+   - *Later runs.* Browser runs after the machine's display and power state changed were too noisy to confirm or refute this: the baseline's own median frame interval moved between 13.9 and 23.1 ms from run to run. Without throttling, this desktop now shows no step-change stall in either build.
+2. **Keyboard focus was hard to see.**
+   - *Cause.* Material marks focus with a light overlay. Measured on screenshots, it changes a control by about 1.3:1, below the 3:1 WCAG 1.4.11 asks of a focus indicator.
+   - *Fix.* `FocusRing` (`lib/core/widgets/focus_ring.dart`, installed in `app.dart`) outlines the focused control in 2 px of the action colour, which measures 6.1–10.3:1 against the surfaces. It is drawn only in keyboard highlight mode, and not around text fields, which keep their own border, or around screen-sized shortcut listeners.
+   - *Tracking.* While a ring is shown, it re-measures after every frame without requesting frames of its own. The first version tracked only scroll and focus changes; in the browser its ring was left behind when the lesson grew calculation rows above a focused Details header.
+3. **The result view ignored the stage column.** At 1440 px the heading and button sat at the left edge and the check card stretched to 1,392 px. The view now uses the same centred 880 px column as the lesson.
+4. **The Solve button was wider than the keypad under it:** 568 px at 600 px and 592 px at 1440 px, over 480 px of keys. It is now capped at `CustomNumpad.keysMaxWidth`, and in the wide layout the keypad's surface ends with its keys.
+5. **Practice answer feedback was cut off.** The title ("Congratulations, Correct Answer!") could not wrap. In the browser at 320 px and 200% text it read "Congratulations, Co". It now wraps.
+6. **Practice option letters overflowed their circles at 200% text.** The circle was a fixed 28 px while the letter scaled; the circle now scales with the text.
+
+Also changed, as polish rather than a defect fix: the Android launcher label, the Windows window title and file details, and the Linux window title said "matriks". They now say "Matriks", as iOS already did. Internal and binary names are unchanged.
+
+## Reviewed without a change
+
+- **Automated accessibility.** Flutter's 44 px target-size, label and text-contrast guidelines pass for every tab, an answered practice question, expanded settings, the editor, the player, its Details drawer and the result. They were checked at 320–1280 px, at 100–200% text, in both themes and in all five languages. `test/accessibility_guidelines_test.dart` now runs a subset of these configurations on every build. The editor keypad's 46 px keys pass the project's 44 px rule but not Android's 48 dp guideline; they were left as designed.
+- **Startup.** Three local cold loads of the release web build reached the app in 2.2–2.4 s, with 34 requests and 10.9 MB uncompressed. Of that, 5.4 MB is CanvasKit's `canvaskit.wasm` and 4.3 MB is `main.dart.js`. Neither can shrink without removing a dependency.
+- **Visual pass.** No new defects were found at 320, 600, 960 or 1440 px in either theme, at 200% text, or in Chinese. Chinese was checked offline, with no external request. Horizontal scrolling of wide matrices on phones remains as documented above.
+
+## Verification
+
+- `dart format` changes nothing, and `flutter analyze` and `dart analyze` report no issues.
+- Tests: 372 application tests (350 before) and 74 engine tests pass. The 74th engine test covers `Matrix.fromDoubles`, and passes on both the VM and Node. The 22 new tests are in `matrix_cell_reuse_test.dart`, `focus_ring_test.dart`, `wide_layout_alignment_test.dart`, `practice_large_text_test.dart` and `accessibility_guidelines_test.dart`.
+- Release builds: web, Windows and Android (release, still with debug signing) build. The Windows build launches and shows its window titled "Matriks".
+- Each fix was confirmed in the rebuilt release web build.
+
+Not verified:
+- No screen reader was run.
+- No physical phone was used.
+- The Android build was not installed on a device or emulator in this pass.

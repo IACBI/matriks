@@ -170,7 +170,12 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   final Map<int, Widget> _sourceCache = {};
   bool _scrubbing = false;
   bool _completionSent = false;
-  final Map<Object, Widget> _cellCache = {};
+  Map<Object, Widget> _cellCache = {};
+  // The previous update's cells. Their keys hold every input of a cell, so a
+  // step change reuses the widgets of entries it leaves alone and rebuilds
+  // only the ones it touches. Replaced on each update, so at most two steps'
+  // cells are held.
+  Map<Object, Widget> _carriedCells = const {};
   final Map<int, ({List<Widget> cells, Widget row})> _rowCache = {};
   final Map<(int, int, bool), List<Widget>> _stageRows = {};
   final ScrollController _matrixScroll = ScrollController();
@@ -259,8 +264,8 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   void didUpdateWidget(covariant MatrixDisplayGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
     _timeline = _timelineFor(widget);
-    _cellCache.clear();
-    _rowCache.clear();
+    _carriedCells = _cellCache;
+    _cellCache = {};
     _explanationCache.clear();
     _sourceCache.clear();
     _stageRows.clear();
@@ -310,6 +315,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _cellCache.clear();
+    _carriedCells = const {};
     _rowCache.clear();
     _explanationCache.clear();
     _sourceCache.clear();
@@ -373,6 +379,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     _cellHeight = 64 * scale;
     if (previousGeometry != (_cellWidth, _cellHeight, _fontSize)) {
       _cellCache.clear();
+      _carriedCells = const {};
       _rowCache.clear();
       _stageRows.clear();
     }
@@ -978,64 +985,94 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         current != null &&
         (order > current ||
             (order == current && !reduceMotion && progress < 1));
+    final tappable = hasSub && widget.onCellTap != null;
+    final divided = dividerCol != null && c == dividerCol - 1;
+    // Everything the cell below is built from; geometry, theme and
+    // localizations clear the caches when they change.
     final cacheKey = (
-      r,
-      c,
-      displayVal,
-      calculation,
-      isZeroResult,
-      matchHighlight?.type,
-      matchHighlight?.badgeText,
-      pending,
+      (r, c),
+      (displayVal, valBefore, calculation, pending),
+      (isZeroResult, matchHighlight?.type, matchHighlight?.badgeText),
+      (widget.isDecimalView, hasSub, tappable, divided),
     );
     final l10n = AppLocalizations.of(context);
-    return _cellCache.putIfAbsent(cacheKey, () {
-      final cell = SizedBox(
-        width: cellWidth,
-        height: cellHeight,
-        child: MatrixCellWidget(
-          calculationLatex: calculation,
-          value: displayVal,
-          fontSize: _fontSize,
-          valueBefore: valBefore,
-          highlight: matchHighlight,
-          isDecimalView: widget.isDecimalView,
-          hasSubCalculation: hasSub,
+    return _cellCache[cacheKey] ??=
+        _carriedCells[cacheKey] ??
+        _newCell(
+          r,
+          c,
+          displayVal,
+          valBefore,
+          calculation,
+          matchHighlight,
+          hasSub: hasSub,
           isZeroResult: isZeroResult,
           pending: pending,
-          // Tests host bare grids without localizations; keep a fallback.
-          semanticLabel: pending
-              ? (l10n?.matrixCellPendingLabel(r + 1, c + 1) ??
-                    'Row ${r + 1}, column ${c + 1}, not calculated yet')
-              : (l10n?.matrixCellLabel(r + 1, c + 1, '$displayVal') ??
-                    'Row ${r + 1}, column ${c + 1}, $displayVal'),
-          onTap: hasSub && widget.onCellTap != null
-              ? () => widget.onCellTap!(r, c)
-              : null,
-        ),
-      );
-
-      // Augmented separator vertical divider line
-      if (dividerCol != null && c == dividerCol - 1) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            cell,
-            Container(
-              width: 2,
-              height: 42,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.outline,
-                borderRadius: BorderRadius.circular(1),
-              ),
-            ),
-          ],
+          tappable: tappable,
+          divided: divided,
+          l10n: l10n,
         );
-      }
+  }
 
-      return cell;
-    });
+  Widget _newCell(
+    int r,
+    int c,
+    Rational displayVal,
+    Rational? valBefore,
+    String? calculation,
+    CellHighlight? matchHighlight, {
+    required bool hasSub,
+    required bool isZeroResult,
+    required bool pending,
+    required bool tappable,
+    required bool divided,
+    required AppLocalizations? l10n,
+  }) {
+    final cell = SizedBox(
+      width: cellWidth,
+      height: cellHeight,
+      child: MatrixCellWidget(
+        calculationLatex: calculation,
+        value: displayVal,
+        fontSize: _fontSize,
+        valueBefore: valBefore,
+        highlight: matchHighlight,
+        isDecimalView: widget.isDecimalView,
+        hasSubCalculation: hasSub,
+        isZeroResult: isZeroResult,
+        pending: pending,
+        // Tests host bare grids without localizations; keep a fallback.
+        semanticLabel: pending
+            ? (l10n?.matrixCellPendingLabel(r + 1, c + 1) ??
+                  'Row ${r + 1}, column ${c + 1}, not calculated yet')
+            : (l10n?.matrixCellLabel(r + 1, c + 1, '$displayVal') ??
+                  'Row ${r + 1}, column ${c + 1}, $displayVal'),
+        // Reads the current callback when tapped, so a cell carried over
+        // from an earlier update never calls a stale one.
+        onTap: tappable ? () => widget.onCellTap?.call(r, c) : null,
+      ),
+    );
+
+    // Augmented separator vertical divider line
+    if (divided) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          cell,
+          Container(
+            width: 2,
+            height: 42,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.outline,
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return cell;
   }
 
   String? _calculationAt(

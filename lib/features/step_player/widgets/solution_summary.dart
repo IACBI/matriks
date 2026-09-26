@@ -87,65 +87,72 @@ class SolutionSummary extends StatelessWidget {
     final error = localizedSolverError(l, solution.errorMessageKey);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l.resultLabel,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 16),
-          SolutionStatus(solution: solution),
-          const SizedBox(height: 16),
-          if (!solution.isSuccess)
-            Text(
-              error,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          // A matrix result is drawn below as the matrix itself; its TeX line
-          // would only repeat it, with cramped fractions.
-          // Separate parts (each eigenpair; P, L and U) sit side by side
-          // when they fit and stack on a narrow screen.
-          if (solution.resultLatex != null && solution.result is! Matrix)
-            Wrap(
-              spacing: 32,
-              runSpacing: 12,
-              children: [
-                for (final part in solution.resultLatex!.split(r' \quad '))
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: MathText(part, fontSize: 24),
-                  ),
-              ],
-            ),
-          const SizedBox(height: 24),
-          // Only a matrix result is drawn as a matrix. For a determinant,
-          // LU or eigen result the final matrix would stand unlabelled under
-          // the answer (U again, or A itself).
-          if (solution.isSuccess && solution.result is Matrix)
-            MatrixDisplayGrid(
-              snapshot: MatrixSnapshot.fromMatrix(solution.finalMatrix),
-              highlights: const [],
-              staticStep: true,
-              showExplanation: false,
-              isDecimalView: decimal,
-            ),
-          ResultChecks(solution: solution),
-          const SizedBox(height: 24),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+      // The same centred column as the lesson stage, so a wide window does
+      // not pull the heading and checks away from the matrix.
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 880),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (solution.steps.isNotEmpty)
-                FilledButton.icon(
-                  onPressed: onViewSteps,
-                  icon: const Icon(Icons.layers_outlined),
-                  label: Text(l.viewSteps),
+              Text(
+                l.resultLabel,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 16),
+              SolutionStatus(solution: solution),
+              const SizedBox(height: 16),
+              if (!solution.isSuccess)
+                Text(
+                  error,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
-              ?TransformLink.forSolution(solution),
+              // A matrix result is drawn below as the matrix itself; its TeX line
+              // would only repeat it, with cramped fractions.
+              // Separate parts (each eigenpair; P, L and U) sit side by side
+              // when they fit and stack on a narrow screen.
+              if (solution.resultLatex != null && solution.result is! Matrix)
+                Wrap(
+                  spacing: 32,
+                  runSpacing: 12,
+                  children: [
+                    for (final part in solution.resultLatex!.split(r' \quad '))
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: MathText(part, fontSize: 24),
+                      ),
+                  ],
+                ),
+              const SizedBox(height: 24),
+              // Only a matrix result is drawn as a matrix. For a determinant,
+              // LU or eigen result the final matrix would stand unlabelled under
+              // the answer (U again, or A itself).
+              if (solution.isSuccess && solution.result is Matrix)
+                MatrixDisplayGrid(
+                  snapshot: MatrixSnapshot.fromMatrix(solution.finalMatrix),
+                  highlights: const [],
+                  staticStep: true,
+                  showExplanation: false,
+                  isDecimalView: decimal,
+                ),
+              ResultChecks(solution: solution),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  if (solution.steps.isNotEmpty)
+                    FilledButton.icon(
+                      onPressed: onViewSteps,
+                      icon: const Icon(Icons.layers_outlined),
+                      label: Text(l.viewSteps),
+                    ),
+                  ?TransformLink.forSolution(solution),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

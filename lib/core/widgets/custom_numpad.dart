@@ -5,6 +5,9 @@ import '../theme/app_theme.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 class CustomNumpad extends StatelessWidget {
+  /// Widest the keys grow; controls laid out with the keypad match it.
+  static const keysMaxWidth = 480.0;
+
   final void Function(String text) onKeyPressed;
   final VoidCallback onBackspace;
   final VoidCallback onClear;
@@ -104,7 +107,7 @@ class CustomNumpad extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
+          constraints: const BoxConstraints(maxWidth: keysMaxWidth),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -134,9 +134,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get calculate => 'Çöz';
 
   @override
-  String get fractionToggle => 'Kesir / Ondalık';
-
-  @override
   String get removeRow => 'Satır çıkar';
 
   @override

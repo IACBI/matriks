@@ -134,9 +134,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get calculate => 'Resolver';
 
   @override
-  String get fractionToggle => 'Fracción / Decimal';
-
-  @override
   String get removeRow => 'Quitar una fila';
 
   @override

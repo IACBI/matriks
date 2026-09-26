@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:matrix_engine/src/rational/rational.dart';
 import 'package:test/test.dart';
 
@@ -58,6 +60,63 @@ void main() {
       expect(Rational.parse('0.75'), equals(Rational(3, 4)));
       expect(Rational.parse('-0.5'), equals(Rational(-1, 2)));
       expect(Rational.tryParse('invalid'), isNull);
+    });
+
+    test('Parsing reads decimal digits only, never hexadecimal', () {
+      for (final hex in ['0x10', '0x1/2', '1/0X2', '0x1.5', '-0x3']) {
+        expect(Rational.tryParse(hex), isNull, reason: hex);
+      }
+      expect(Rational.parse('+5'), Rational(5));
+      expect(Rational.parse(' 1 / 2 '), Rational(1, 2));
+    });
+
+    test('Arithmetic agrees with the normalized cross-product definition', () {
+      final random = Random(4);
+      BigInt big(int digits) => BigInt.parse(
+        List.generate(digits, (_) => '${random.nextInt(10)}').join(),
+      );
+      Rational sample() {
+        final digits = 1 + random.nextInt(random.nextBool() ? 3 : 40);
+        final n = random.nextInt(8) == 0 ? BigInt.zero : big(digits);
+        final d = random.nextInt(4) == 0
+            ? BigInt.one
+            : big(digits) + BigInt.one;
+        return Rational(random.nextBool() ? -n : n, d);
+      }
+
+      void expectNormalized(Rational r, BigInt n, BigInt d, String op) {
+        expect(r, Rational(n, d), reason: op);
+        expect(r.den > BigInt.zero, isTrue, reason: op);
+        expect(r.num.gcd(r.den), BigInt.one, reason: op);
+      }
+
+      for (var i = 0; i < 3000; i++) {
+        final a = sample();
+        // Shared and equal denominators take their own reduction paths.
+        final b = switch (i % 3) {
+          0 => sample(),
+          1 => Rational(sample().num, a.den),
+          _ => Rational(sample().num, a.den * BigInt.from(6)),
+        };
+        final label = '$a, $b';
+        expectNormalized(
+          a + b,
+          a.num * b.den + b.num * a.den,
+          a.den * b.den,
+          '+ $label',
+        );
+        expectNormalized(
+          a - b,
+          a.num * b.den - b.num * a.den,
+          a.den * b.den,
+          '- $label',
+        );
+        expectNormalized(a * b, a.num * b.num, a.den * b.den, '* $label');
+        if (!b.isZero) {
+          expectNormalized(a / b, a.num * b.den, a.den * b.num, '/ $label');
+        }
+        expectNormalized(-a, -a.num, a.den, 'neg $a');
+      }
     });
 
     test('LaTeX formatting', () {
