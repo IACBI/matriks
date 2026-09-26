@@ -32,16 +32,6 @@ class Matrix {
     );
   }
 
-  factory Matrix.fromDoubles(List<List<double>> data) {
-    return Matrix(
-      data
-          .map(
-            (row) => row.map((val) => Rational.parse(val.toString())).toList(),
-          )
-          .toList(),
-    );
-  }
-
   factory Matrix.identity(int n) {
     if (n <= 0) throw ArgumentError('Identity matrix dimension must be > 0');
     final data = List.generate(

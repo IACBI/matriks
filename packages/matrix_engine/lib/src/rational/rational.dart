@@ -65,8 +65,8 @@ class Rational implements Comparable<Rational> {
     if (s.contains('/')) {
       final parts = s.split('/');
       if (parts.length != 2) return null;
-      final n = BigInt.tryParse(parts[0].trim());
-      final d = BigInt.tryParse(parts[1].trim());
+      final n = _parseInteger(parts[0].trim());
+      final d = _parseInteger(parts[1].trim());
       if (n == null || d == null || d == BigInt.zero) return null;
       return Rational(n, d);
     }
@@ -74,11 +74,10 @@ class Rational implements Comparable<Rational> {
     if (s.contains('.')) {
       final parts = s.split('.');
       if (parts.length != 2) return null;
-      final whole = BigInt.tryParse(parts[0].trim());
+      final whole = _parseInteger(parts[0].trim());
       final decStr = parts[1].trim();
-      if (!RegExp(r'^\d+$').hasMatch(decStr)) return null;
-      final dec = BigInt.tryParse(decStr);
-      if (whole == null || dec == null) return null;
+      if (whole == null || !_digits.hasMatch(decStr)) return null;
+      final dec = BigInt.parse(decStr);
 
       final isNegative = parts[0].trim().startsWith('-');
       final factor = BigInt.from(10).pow(decStr.length);
@@ -87,13 +86,21 @@ class Rational implements Comparable<Rational> {
       return Rational(signedNum, factor);
     }
 
-    final n = BigInt.tryParse(s);
+    final n = _parseInteger(s);
     if (n != null) {
       return Rational(n, BigInt.one);
     }
 
     return null;
   }
+
+  static final _digits = RegExp(r'^[0-9]+$');
+  static final _integer = RegExp(r'^[+-]?[0-9]+$');
+
+  // BigInt.tryParse also reads `0x` hexadecimal, which is not a number a
+  // learner means to type.
+  static BigInt? _parseInteger(String s) =>
+      _integer.hasMatch(s) ? BigInt.parse(s) : null;
 
   static Rational parse(String input) {
     final r = tryParse(input);
@@ -118,34 +125,48 @@ class Rational implements Comparable<Rational> {
   bool get isPositive => num > BigInt.zero;
   bool get isInteger => den == BigInt.one;
 
-  Rational operator +(Rational other) {
-    final newNum = (num * other.den) + (other.num * den);
-    final newDen = den * other.den;
-    return Rational(newNum, newDen);
-  }
+  Rational operator +(Rational other) => _add(other.num, other.den);
 
-  Rational operator -(Rational other) {
-    final newNum = (num * other.den) - (other.num * den);
-    final newDen = den * other.den;
-    return Rational(newNum, newDen);
-  }
+  Rational operator -(Rational other) => _add(-other.num, other.den);
 
-  Rational operator *(Rational other) {
-    final newNum = num * other.num;
-    final newDen = den * other.den;
-    return Rational(newNum, newDen);
-  }
+  Rational operator *(Rational other) => _multiply(other.num, other.den);
 
   Rational operator /(Rational other) {
     if (other.num == BigInt.zero) {
       throw const DivisionByZeroException();
     }
-    final newNum = num * other.den;
-    final newDen = den * other.num;
-    return Rational(newNum, newDen);
+    return other.num.isNegative
+        ? _multiply(-other.den, -other.num)
+        : _multiply(other.den, other.num);
   }
 
-  Rational operator -() => Rational(-num, den);
+  // Both operands are already in lowest terms, so the result can be reduced
+  // with gcds of the operands rather than one gcd of the full cross product
+  // (Knuth, TAOCP 4.5.1). Elimination on fractional 5×5 input grows
+  // denominators to thousands of bits, where that gcd dominated solve time.
+  Rational _add(BigInt n2, BigInt d2) {
+    if (den == d2) return Rational(num + n2, den);
+    final g = _gcd(den, d2);
+    if (g == BigInt.one) {
+      return Rational._internal(num * d2 + n2 * den, den * d2);
+    }
+    final t = num * (d2 ~/ g) + n2 * (den ~/ g);
+    if (t == BigInt.zero) return zero;
+    final g2 = _gcd(t.abs(), g);
+    return Rational._internal(t ~/ g2, (den ~/ g) * (d2 ~/ g2));
+  }
+
+  Rational _multiply(BigInt n2, BigInt d2) {
+    if (num == BigInt.zero || n2 == BigInt.zero) return zero;
+    final g1 = _gcd(num.abs(), d2);
+    final g2 = _gcd(n2.abs(), den);
+    return Rational._internal(
+      (num ~/ g1) * (n2 ~/ g2),
+      (den ~/ g2) * (d2 ~/ g1),
+    );
+  }
+
+  Rational operator -() => Rational._internal(-num, den);
 
   Rational abs() => isNegative ? -this : this;
 
@@ -178,12 +199,6 @@ class Rational implements Comparable<Rational> {
   String toString() {
     if (den == BigInt.one) return num.toString();
     return '$num/$den';
-  }
-
-  /// Human friendly display, with optional decimal rounding.
-  String toDisplayString({bool asDecimal = false, int decimalPlaces = 2}) {
-    if (asDecimal) return toDecimalString(decimalPlaces);
-    return toString();
   }
 
   /// Rounds half away from zero to [places] decimals with exact integer
