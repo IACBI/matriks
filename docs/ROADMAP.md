@@ -10,7 +10,7 @@ Build a trustworthy teaching workspace for learners who need to understand matri
 
 | Area | Current evidence | Gap and consequence |
 | --- | --- | --- |
-| Mathematics | Separate exact Rational engine; ResultAccuracy/ResultCompleteness on every solution; 3×3 rational roots exact, irrational roots bracketed (2026-09-24) | Complex eigenvectors and eigenspace bases for repeated roots are not computed; 3×3 coefficients beyond 1e12 fall back to an integer search |
+| Mathematics | Separate exact Rational engine; ResultAccuracy/ResultCompleteness on every solution; 2×2 and 3×3 eigen analysis fully exact in closed form, with complex eigenvectors and full eigenspace bases (2026-09-27) | Eigen analysis is limited to 2×2 and 3×3 |
 | Learning | Three starter lessons, phase explanations, progressive contributions, option-specific feedback, and (2026-09-24) a numbered `TopicItem.pathOrder` learning route with a "Continue where you left off" card | The route orders existing topics; it adds no prerequisite text, objective or next-action framing (see C01), and has not been evaluated with learners |
 | Catalog | Search and categories combine correctly; topics are numbered along the learning path and show a `TopicGlyph` drawing and completion state (2026-09-24) | The introductory region and filters consume significant space in the saved desktop capture; novice versus returning-user priorities need validation |
 | Player | One playback authority, revision guards, adaptive timing, reduced motion and scrubbing tests; (2026-09-24) rebuilt as a single centred stage column with a merged `Details` drawer, replacing the split desktop panel | Mobile multiplication still expands into several formula rows and requires scrolling; the new layout has not been checked live in a browser or on a device (see B02) |
@@ -33,6 +33,8 @@ P0 blocks an honest/public release. P1 makes the existing product dependable and
 ### Stage 1 — Trust and reproducibility (P0)
 
 **A01. Represent numerical certainty and completeness (M; owner: engine + UI).**
+
+**Status: resolved 2026-09-27.** Eigen analysis no longer approximates: irrational and complex eigenvalues are exact closed forms, every eigenvalue has exact eigenvectors, repeated eigenvalues have full eigenspace bases, and nothing is reported missing. The decimal view and the transform visualizer no longer round either. The evidence below describes the state before that change. See the 2026-09-27 section of [PROJECT_REVIEW.md](PROJECT_REVIEW.md).
 
 Evidence: `packages/matrix_engine/lib/src/algorithms/eigen.dart` rounds irrational 2×2 roots to three decimals and stores them as Rational. For `[[0,2],[1,0]]`, the solver returns ±707/500 with residual `[0,151/250000]`, while UI prose describes an eigenvector equation with equality. For `diag(1,30,40)`, it returns one pair and `isSuccess=true`; searching only -20…20 is documented, but the partial result has no explicit completeness metadata. A repeated eigenvalue may also have a multi-dimensional eigenspace while only one vector is returned; investigate and label scope rather than claiming a complete basis.
 

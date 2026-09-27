@@ -25,7 +25,7 @@ Results are labelled honestly. Every solution carries an accuracy (exact or appr
 
 Everything runs on the device. There is no backend, account system or remote data store; only presentation preferences are persisted, never matrices or quiz history.
 
-Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only: rational roots are exact, irrational roots are rounded to three decimals with approximate eigenvectors, complex eigenvalues are reported without eigenvectors, and 3×3 matrices with very large coefficients may be labelled incomplete. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
+Know the numerical boundaries before relying on it. Most operations accept dimensions 1–5. Eigen analysis covers 2×2 and 3×3 only, and nothing in it is rounded: irrational and complex eigenvalues are written exactly in radicals (Cardano's formula or cosines for an irreducible cubic), every eigenvalue gets exact eigenvectors, and a repeated eigenvalue gets its whole eigenspace. It is not a general-purpose numerical eigensolver. Cell input is capped at 32 characters to bound user-controlled computation.
 
 ### Features
 
@@ -117,7 +117,7 @@ Sonuçlar dürüstçe etiketlenir. Her çözüm bir doğruluk (tam ya da yaklaş
 
 Her şey cihazda çalışır. Arka uç, hesap sistemi veya uzak veri deposu yoktur; yalnızca sunum tercihleri saklanır, matrisler ve sınav geçmişi saklanmaz.
 
-Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar: rasyonel kökler kesindir, irrasyonel kökler üç ondalığa yuvarlanır ve özvektörleri yaklaşıktır, karmaşık özdeğerler özvektörsüz raporlanır, çok büyük katsayılı 3×3 matrisler eksik olarak işaretlenebilir. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
+Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutlarını kabul eder. Özdeğer analizi yalnızca 2×2 ve 3×3 kapsar ve hiçbir değeri yuvarlamaz: irrasyonel ve karmaşık özdeğerler köklü ifadelerle kesin yazılır (indirgenemez kübikte Cardano formülü ya da kosinüslerle), her özdeğerin kesin özvektörleri verilir, tekrarlı bir özdeğer için özuzayın tamamı bulunur. Genel amaçlı bir sayısal özdeğer çözücüsü değildir. Kullanıcı kaynaklı hesaplamayı sınırlamak için hücre girdisi 32 karakterle sınırlıdır.
 
 ### Özellikler
 

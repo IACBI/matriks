@@ -1,6 +1,7 @@
 import '../model/matrix.dart';
 import '../model/step.dart';
 import '../rational/rational.dart';
+import 'operand.dart';
 import 'determinant.dart';
 import 'gauss_jordan.dart';
 
@@ -74,7 +75,7 @@ class InverseSolver {
         explanationParams: {
           'det': det.toLatex(),
           'formula':
-              '(${a.toLatex()} \\cdot ${d.toLatex()}) - (${b.toLatex()} \\cdot ${c.toLatex()})',
+              '(${operandLatex(a)} \\cdot ${operandLatex(d)}) - (${operandLatex(b)} \\cdot ${operandLatex(c)})',
         },
         matrixBefore: snap1,
         matrixAfter: snap1,
@@ -137,28 +138,28 @@ class InverseSolver {
             targetRow: 0,
             targetCol: 0,
             formulaLatex:
-                '${d.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 0).toLatex()}',
+                '${operandLatex(d)} \\cdot ${operandLatex(invDet)} = ${invMatrix.get(0, 0).toLatex()}',
             result: invMatrix.get(0, 0),
           ),
           SubCalculation(
             targetRow: 0,
             targetCol: 1,
             formulaLatex:
-                '${(-b).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(0, 1).toLatex()}',
+                '${operandLatex(-b)} \\cdot ${operandLatex(invDet)} = ${invMatrix.get(0, 1).toLatex()}',
             result: invMatrix.get(0, 1),
           ),
           SubCalculation(
             targetRow: 1,
             targetCol: 0,
             formulaLatex:
-                '${(-c).toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 0).toLatex()}',
+                '${operandLatex(-c)} \\cdot ${operandLatex(invDet)} = ${invMatrix.get(1, 0).toLatex()}',
             result: invMatrix.get(1, 0),
           ),
           SubCalculation(
             targetRow: 1,
             targetCol: 1,
             formulaLatex:
-                '${a.toLatex()} \\cdot ${invDet.toLatex()} = ${invMatrix.get(1, 1).toLatex()}',
+                '${operandLatex(a)} \\cdot ${operandLatex(invDet)} = ${invMatrix.get(1, 1).toLatex()}',
             result: invMatrix.get(1, 1),
           ),
         ],

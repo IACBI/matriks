@@ -534,3 +534,118 @@ Not verified:
 - No screen reader was run.
 - No physical phone was used.
 - The Android build was not installed on a device or emulator in this pass.
+
+# Academic calculator: exact values everywhere — 2026-09-27
+
+## Outcome
+
+The owner uses Matriks as an academic calculator, so every value it shows must be exact and true. Three places rounded:
+- Eigen analysis: irrational eigenvalues to three decimals with approximate vectors, complex ones to two decimals without vectors, and large 3×3 spectra marked incomplete.
+- The decimal view: four places, marked ≈.
+- The 2D transformation screen: doubles, e.g. 0.707107 for the 45° rotation.
+
+None of them rounds now. The same pass also fixed the problems the previous review found: phones held sideways, width measurement on huge values, offline use of the installed web app, and CI gaps.
+
+The work ran as four parallel streams, each in its own git worktree with a disjoint set of files, then merged and verified together. They were run at the default reasoning effort: a low-effort agent definition needs a session restart when its folder does not exist yet.
+
+## Changes
+
+1. **Exact eigen analysis (engine and app).** `packages/matrix_engine` gained rational polynomials, number fields Q[x]/(m) and exact spectra.
+   - **Rational roots:** found completely, with no size limit: Sturm isolation, bisection, the simplest fraction, then exact verification. The ±20 scan and the 1e12 fallback are gone.
+   - **Irreducible factors:** written in closed form: square roots, Cardano with real cube roots, or cosines with angles in [0, π].
+   - **Eigenvectors:** computed by exact elimination in Q(λ). That includes complex eigenvalues, which had no vectors before. A cubic eigenvalue's vector is a polynomial in λ, valid for each of its roots.
+   - **Repeated eigenvalues:** get their whole eigenspace; defective matrices are stated as such.
+   - **Result metadata:** every eigen result is `exact` and `complete`.
+   - **Result checks:** the check recomputes A·v and λ·v in Q(λ) for every eigenpair.
+   - **Text:** step and result strings are in all five languages; none says "approximate" or "rounded".
+   - **API:** the public API only grows, and nothing exported was removed.
+2. **Exact decimal view.** Terminating expansions are written in full and repeating ones with a bar (1/6 = 0.1\overline{6}). Screen readers hear "0.1 repeating 6" in the interface language. An expansion longer than 24 digits after the point is shown as the fraction.
+3. **Exact transform visualizer.** Values are held as a + b√2 (`QuadraticSurd`).
+   - Fields accept fractions; the rotation shows √2/2 and its determinant is exactly 1.
+   - Basis vectors and the determinant show the target's exact values, never interpolated ones.
+   - The link from a 2×2 eigen result opens it with exact entries, so 1/3 stays 1/3 instead of becoming 0.3333333333333333.
+4. **Width measurement on huge values.** A number's length is bounded from its bit length once widths saturate. With 357-digit entries this went from 221 ms to 2 ms in JavaScript, and from 22 ms to 1 ms on the VM.
+5. **Phones held sideways.** On screens wider than tall, under 500 px high and at least 600 px wide, the matrix editor uses the side-by-side layout. At 844×390 and 667×375 Solve and the keypad are visible beside the matrix.
+6. **Offline web app.** `web/offline_worker.js` sends every same-origin GET to the network first, so online visitors always get the latest deployment, and serves the cache only when the network fails. The page hands the worker everything it loaded, so one online visit is enough.
+7. **CI.** `.github/dependabot.yml` sends weekly grouped updates for actions and pub packages (major pub versions ignored). A pull-request job builds the Android, Windows and Linux apps, which the web-only verify job never compiled.
+8. **Integration fixes after merging:**
+   - Long eigenpair lines break after the ⟹ arrow, so on a phone Cardano's λ no longer pushes its vector off screen.
+   - Cosine angles are normalised to [0, π].
+   - The "repeating" word is localized.
+   - The repeated-eigenvalue test expects `complete`, because the full eigenspace is now given.
+
+## Verification
+
+- **Tests.** Application tests went from 372 to 440, and engine tests from 74 to 97; the engine suite also runs on Node, since the web build runs the engine as JavaScript. `dart format`, `flutter analyze` and `dart analyze` are clean. Every new behaviour has a regression test, and the tests checked this way fail without their fix.
+- **Independent cross-check against SymPy 1.14.**
+  - **Method:** the engine's displayed LaTeX (eigenvalues and eigenvector entries) was parsed and evaluated to 40 digits for 429 matrices: small integers, fractions, companion matrices of random cubics, and repeated and defective spectra.
+  - **What was compared:** the eigenvalues, with multiplicity, against SymPy's exact eigenvalues, and A·v = λ·v for every displayed vector.
+  - **Result:** all 429 match. The 72 cosine-form cases were checked again after the angle normalisation.
+  - **A checker bug on the way:** it first flagged 111 Cardano cases. The cause was the checker itself: SymPy reads ∛x of a negative x as the principal complex root, while the notation means the real root. The engine README now states that convention.
+- **Browser (Chrome, release build under /matriks/):**
+  - 1/3 and 1/6 show as 0.\overline{3} and 0.1\overline{6}.
+  - The 45° rotation shows √2/2 and a determinant of 1, including mid-animation.
+  - 844×390 shows the side-by-side editor.
+  - (1±√5)/2, 2±i, ∛2 with its complex pair, and 2cos(2π/9)… appear with exact vectors, each marked "Holds", at 1440 and 390 px.
+  - After one online visit the app reloads offline. Changed files, including the page itself, are served fresh when online.
+- **Builds:** release web and Windows builds succeed.
+
+## Remaining limits
+
+- Eigen analysis stays limited to 2×2 and 3×3.
+- For large coefficients the closed forms are exact but long and hard to read. Radicands keep square factors above 10⁵, which is still exact.
+- The web app solves on the UI thread: about 0.2–0.3 s for a 3×3 of 15-digit fractions.
+- Offline support was tested in Chrome only, not Firefox, Safari or on the live GitHub Pages site. The first visit must be online.
+- For the two-matrix topics (addition, multiplication) held sideways, the keypad's last row needs a scroll; Solve stays visible.
+- Chinese wording was chosen within the bundled font subset: 重复 rather than 循环 for "repeating", and "Cardano 方法" in the eigen text.
+- The new CI platform job runs for the first time on the next pull request.
+- No screen reader or physical phone was used.
+
+## Every matrix shape, engine and interface
+
+Before the pull request, both sides were checked at every shape the editor allows: 262 in all.
+
+| Topic | Shapes |
+| --- | --- |
+| Addition | m×n |
+| Multiplication | (m×k)·(k×n) |
+| REF, RREF, rank–nullity | m×n |
+| Linear systems | [A | b] with 2..5 columns |
+| Determinant, inverse, LU | n×n |
+| Eigen | 2×2 and 3×3 |
+
+All dimensions run from 1 to 5.
+
+- **Engine** (`packages/matrix_engine/test/all_shapes_test.dart`): 7,688 seeded cases.
+  - **Inputs:** integers, fractions, zero-heavy, rank-deficient, identity, diagonal, and 15-digit fractions.
+  - **Mathematical properties, checked exactly:** A + B, AB, echelon forms, rank, Ax = b and its classification, the determinant against cofactors, A·A⁻¹ = I, and PA = LU.
+  - **The step record:**
+    - consecutive steps continue each other, and replaying each row operation reproduces the next frame;
+    - indices stay in bounds;
+    - LaTeX braces balance, and no decimal notation appears.
+  - **Does the test catch bugs?** A mutation run planted 22 bugs in a copy of the engine; the test caught all 22.
+  - **Result:** no mathematical defect, on the VM and on Node.
+- **Interface** (`test/all_shapes_ui_test.dart` in the suite, `tool/all_shapes_sweep_test.dart` exhaustive):
+  - **Player:** every step and the result, in fraction and decimal views, at 390×844 and 1280×800, and at 320×568 with 200% text. Each frame was checked for:
+    - overflows;
+    - the cell count;
+    - raw TeX in semantics;
+    - ≈, NaN and Infinity;
+    - every result check reading "Holds".
+  - **Editor:** all 262 shapes at 390×844, 844×390 and 1280×800, with a real Solve at 390×844 for every shape.
+- **Browser:** the release build ran all ten topics at their extreme shapes (1×1, 1×5, 5×1, 5×5 and mixed shapes) at 1440 and 390 px. Screenshots were reviewed for every last step and every result.
+
+Defects found and fixed:
+- **Negative operands without brackets** in several engine formulas (`-2 \cdot -\frac{1}{2}`). They are now bracketed through one helper, covered by `operand_brackets_test.dart`.
+- **Fractions in TeX matrices** (L and U, solution vectors, eigenvectors) shrank to script size. `MathText` now sets their entries in display style. flutter_math_fork does not grow array rows for display-style entries, and parses neither `\\[gap]` nor `\arraystretch`, so each such cell also carries a zero-width `\rule` strut that keeps the rows apart. This was confirmed in the browser.
+- **Highlighted cells off screen.** On a phone the highlighted block could start out of sight: A⁻¹ in [I | A⁻¹], and the b of a contradiction row. A step that is not animating now scrolls to its highlighted cells once, centred on the pivot or badged cell when the row cannot fit. Informational steps follow their highlights while playing.
+- **Cell badges covered wide values.** "0 ✓" and "≠0" now sit on the cell's corner.
+- **Overflowing formulas.** A single-term formula in the lesson caption (the 2×2 adjugate step) and the addition header overflowed at 320 px with 200% text. Both scroll now.
+- **Wrong screen-reader values for exact eigenvalues.** Labels dropped roots and π, and ran fractions together: "1/2 + 52" for 1/2 + √5/2. They now read √, ∛, π, cos and arccos, innermost first.
+- **English text in every language for a system with no solution.** "No Solution" is now the localized `systemNoSolution`, and the contradiction row reads `0 ≠ c`.
+- **Focus ring after mouse actions.** The ring appeared on a menu button that got focus back after a mouse click. Like :focus-visible, it now appears only after a key press.
+
+Tests: the application suite and the engine suite (including the operand, all-shapes and exact-eigen tests) pass on the VM, and the engine suite also passes on Node. Formatting and analysis are clean. The exhaustive interface sweep in `tool/` passes.
+
+Not covered: dark theme and languages other than English in the exhaustive sweep (the suite covers them elsewhere), guided (animated) mode in the sweep, and real devices.
+

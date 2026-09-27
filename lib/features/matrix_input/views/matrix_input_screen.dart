@@ -51,6 +51,17 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final screen = MediaQuery.sizeOf(context);
+    // A phone on its side (at most about 440 px tall) cannot stack the
+    // matrix, Solve and the keypad: Solve lands below the fold and typing
+    // scrolls the cells away. Tablets are at least 600 px tall, so 500
+    // separates the two. From 600 px across, the keypad's share of the width
+    // still gives each of the five keys in a row its 44 px. Large text keeps
+    // this layout, since each pane scrolls on its own.
+    final isShortLandscape =
+        screen.width > screen.height &&
+        screen.height < 500 &&
+        screen.width >= 600;
 
     return BlocBuilder<MatrixInputCubit, MatrixInputState>(
       builder: (context, state) {
@@ -126,17 +137,18 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
         // B's rows follow A's columns in a product; say why they are locked.
         final rowsLocked = !isA && topic.type == TopicType.multiply;
 
-        Widget buildDimensionRow() {
-          final row = Wrap(
+        Widget buildDimensionRow({bool showLabel = true}) {
+          Widget row = Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 4,
             runSpacing: 8,
             children: [
-              Text(
-                '${l10n.size}: ',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              if (showLabel)
+                Text(
+                  '${l10n.size}: ',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               _buildDimensionChip(
                 context,
                 label: '$currentRows',
@@ -191,6 +203,9 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
               ),
             ],
           );
+          if (!showLabel) {
+            row = Semantics(container: true, label: l10n.size, child: row);
+          }
           if (!rowsLocked) return row;
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -426,6 +441,8 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           },
           child: Scaffold(
             appBar: AppBar(
+              // Material's app bar height for a phone in landscape.
+              toolbarHeight: isShortLandscape ? 48 : null,
               title: Text(topic.title(l10n)),
               actions: [
                 IconButton(
@@ -457,12 +474,16 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                         constraints.maxWidth >= 960 &&
                         MediaQuery.textScalerOf(context).scale(1) <= 1.3;
 
-                    if (isWide) {
+                    if (isWide || isShortLandscape) {
                       return Row(
                         children: [
                           // Left: Dimension Selector + Matrix Canvas
                           Expanded(
-                            flex: 5,
+                            // On a phone the keypad side gets the larger
+                            // share so the size controls stay on one line,
+                            // which lets the whole keypad fit under Solve; a
+                            // 3 × 3 matrix still fits beside it from 600 px.
+                            flex: isWide ? 5 : 4,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: buildMatrixCanvas(),
@@ -476,7 +497,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                           ),
                           // Right: Dual matrix tabs, Solve Button & Compact CustomNumpad
                           Expanded(
-                            flex: 4,
+                            flex: isWide ? 4 : 5,
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0,
@@ -516,8 +537,12 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                           ),
                                         ),
                                       ],
-                                      buildDimensionRow(),
-                                      const SizedBox(height: 16),
+                                      // "Size:" would push the chips to a
+                                      // second line on a phone; their
+                                      // "3 × 3" reads as the size, and
+                                      // screen readers still hear the word.
+                                      buildDimensionRow(showLabel: isWide),
+                                      SizedBox(height: isWide ? 16 : 8),
                                       buildSolveButton(),
                                       CustomNumpad(
                                         keyHeight:

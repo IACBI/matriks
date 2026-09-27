@@ -9,6 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/cubit/settings_cubit.dart';
 import '../widgets/transform_grid_painter.dart';
 import '../widgets/coefficient_field.dart';
+import '../models/quadratic_surd.dart';
 import '../models/transform_matrix.dart';
 import '../../../core/widgets/slider_while_shown.dart';
 
@@ -27,16 +28,19 @@ class TransformVisualizerScreen extends StatefulWidget {
 class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late String? _selectedPreset = widget.initial == null ? 'shear' : null;
-  late double a = widget.initial?.a ?? 1.0;
-  late double b = widget.initial?.b ?? 1.0;
-  late double c = widget.initial?.c ?? 0.0;
-  late double d = widget.initial?.d ?? 1.0;
+
+  /// Held exactly; its doubles only draw the canvas.
+  late TransformMatrix _target =
+      widget.initial?.toExact() ?? TransformMatrix.preset('shear');
+  QuadraticSurd get a => _target.exactA;
+  QuadraticSurd get b => _target.exactB;
+  QuadraticSurd get c => _target.exactC;
+  QuadraticSurd get d => _target.exactD;
 
   late AnimationController _animController;
   late CurvedAnimation _animation;
   TransformMatrix _start = TransformMatrix.identity;
   int _coefficientRevision = 0;
-  TransformMatrix get _target => TransformMatrix(a, b, c, d);
   TransformMatrix get _current => _start.interpolate(_target, _animation.value);
 
   /// Units from the centre to the shorter canvas edge. Taken from both ends
@@ -75,10 +79,6 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
     return directions;
   }
 
-  static String _short(double value) => value
-      .toStringAsFixed(2)
-      .replaceFirst(RegExp(r'0+$'), '')
-      .replaceFirst(RegExp(r'\.$'), '');
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -156,10 +156,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
     _animController.stop();
     setState(() {
       _start = visible;
-      a = target.a;
-      b = target.b;
-      c = target.c;
-      d = target.d;
+      _target = target.toExact();
       _selectedPreset = preset;
       if (preset != null) _coefficientRevision++;
     });
@@ -197,7 +194,6 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final det = (a * d) - (b * c);
 
     return Focus(
       focusNode: _focusNode,
@@ -353,7 +349,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                     'a',
                                     a,
                                     (v) => _changeTarget(
-                                      TransformMatrix(v, b, c, d),
+                                      TransformMatrix.exact(v, b, c, d),
                                     ),
                                   ),
                                 ),
@@ -363,7 +359,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                     'b',
                                     b,
                                     (v) => _changeTarget(
-                                      TransformMatrix(a, v, c, d),
+                                      TransformMatrix.exact(a, v, c, d),
                                     ),
                                   ),
                                 ),
@@ -377,7 +373,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                     'c',
                                     c,
                                     (v) => _changeTarget(
-                                      TransformMatrix(a, b, v, d),
+                                      TransformMatrix.exact(a, b, v, d),
                                     ),
                                   ),
                                 ),
@@ -387,7 +383,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                     'd',
                                     d,
                                     (v) => _changeTarget(
-                                      TransformMatrix(a, b, c, v),
+                                      TransformMatrix.exact(a, b, c, v),
                                     ),
                                   ),
                                 ),
@@ -399,11 +395,8 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                     ],
                   ),
                   builder: (context, child) {
-                    final current = _current;
-                    final currentA = current.a;
-                    final currentB = current.b;
-                    final currentC = current.c;
-                    final currentD = current.d;
+                    // The target's exact entries, never an interpolated
+                    // frame: mid-animation numbers are not the matrix.
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -421,23 +414,17 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                 runSpacing: 8,
                                 children: [
                                   _buildBadge(
-                                    label: l10n.basisVectorI(
-                                      _short(currentA),
-                                      _short(currentC),
-                                    ),
+                                    label: l10n.basisVectorI('$a', '$c'),
                                     color: theme.colorScheme.primary,
                                   ),
                                   _buildBadge(
-                                    label: l10n.basisVectorJ(
-                                      _short(currentB),
-                                      _short(currentD),
-                                    ),
+                                    label: l10n.basisVectorJ('$b', '$d'),
                                     color: AppTheme.accentGreen,
                                   ),
                                 ],
                               ),
                               Text(
-                                '${l10n.targetDeterminant}: ${formatCoefficient(det)}',
+                                '${l10n.targetDeterminant}: ${_target.exactDeterminant}',
                                 style: theme.textTheme.bodyMedium,
                               ),
                             ],
@@ -621,11 +608,11 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
 
   Widget _buildCellControl(
     String name,
-    double val,
-    ValueChanged<double> onChanged,
+    QuadraticSurd val,
+    ValueChanged<QuadraticSurd> onChanged,
   ) => CoefficientField(
     name: name,
-    value: val,
+    exact: val,
     revision: _coefficientRevision,
     onChanged: onChanged,
   );

@@ -1,12 +1,19 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Outlines the focused control while the keyboard is in use.
 ///
 /// Material marks keyboard focus with a light overlay that changes a control
 /// by about 1.3:1, below the 3:1 a focus indicator needs against its
 /// unfocused state (WCAG 1.4.11). The ring is drawn over the whole app, so it
-/// reaches custom rows and cells as well as Material controls, and only in
-/// [FocusHighlightMode.traditional]: pointer and touch users see no change.
+/// reaches custom rows and cells as well as Material controls.
+///
+/// Like a browser's :focus-visible it appears only after a key press and goes
+/// away on the next pointer press. Flutter counts a mouse as
+/// [FocusHighlightMode.traditional] too, and a control that gets focus back
+/// after a mouse action (a menu button once its menu closes) would otherwise
+/// be framed for a mouse user.
 class FocusRing extends StatefulWidget {
   final Widget child;
 
@@ -19,6 +26,7 @@ class FocusRing extends StatefulWidget {
 class _FocusRingState extends State<FocusRing> {
   final _ring = ValueNotifier<Rect?>(null);
   bool _checkQueued = false;
+  bool _keyboard = false;
 
   FocusManager get _focus => FocusManager.instance;
 
@@ -27,17 +35,37 @@ class _FocusRingState extends State<FocusRing> {
     super.initState();
     _focus.addListener(_scheduleCheck);
     _focus.addHighlightModeListener(_onModeChanged);
+    HardwareKeyboard.instance.addHandler(_onKey);
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
   }
 
   @override
   void dispose() {
     _focus.removeListener(_scheduleCheck);
     _focus.removeHighlightModeListener(_onModeChanged);
+    HardwareKeyboard.instance.removeHandler(_onKey);
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_onPointer);
     _ring.dispose();
     super.dispose();
   }
 
   void _onModeChanged(FocusHighlightMode _) => _scheduleCheck();
+
+  // Observes only: returning false leaves the key to shortcuts and traversal.
+  bool _onKey(KeyEvent event) {
+    if (event is KeyDownEvent && !_keyboard) {
+      _keyboard = true;
+      _scheduleCheck();
+    }
+    return false;
+  }
+
+  void _onPointer(PointerEvent event) {
+    if (event is PointerDownEvent && _keyboard) {
+      _keyboard = false;
+      _scheduleCheck();
+    }
+  }
 
   /// Focus or highlight mode changed: measure after the next frame.
   void _scheduleCheck() {
@@ -63,7 +91,9 @@ class _FocusRingState extends State<FocusRing> {
   }
 
   Rect? _focusedRect() {
-    if (_focus.highlightMode != FocusHighlightMode.traditional) return null;
+    if (!_keyboard || _focus.highlightMode != FocusHighlightMode.traditional) {
+      return null;
+    }
     final node = _focus.primaryFocus;
     final context = node?.context;
     if (node == null || node is FocusScopeNode || context == null) return null;

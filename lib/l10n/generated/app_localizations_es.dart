@@ -83,7 +83,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Valores y vectores propios de matrices 2×2 y 3×3, exactos cuando las raíces son racionales.';
+      'Valores y vectores propios de matrices 2×2 y 3×3, todos calculados de forma exacta, incluidos los irracionales y los complejos.';
 
   @override
   String get topicTransform2d => 'Transformación geométrica 2D';
@@ -507,16 +507,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String eigen_complex_desc(Object poly, Object roots) {
-    return 'El discriminante de $poly es negativo. Raíces conjugadas aproximadas: $roots.';
+    return 'El discriminante de $poly es negativo, así que los valores propios son complejos conjugados. Exactamente, λ = $roots.';
   }
 
   @override
   String get eigen_roots_title => 'Raíces de la ecuación característica';
-
-  @override
-  String eigen_roots_approx_desc(Object poly, Object roots) {
-    return 'Al resolver $poly, los valores propios reales aproximados, redondeados a tres decimales, son: $roots.';
-  }
 
   @override
   String eigen_roots_desc(Object poly, Object roots) {
@@ -539,8 +534,62 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String eigen_irrational_desc(Object poly) {
-    return 'Las raíces de $poly no se pudieron aislar con fiabilidad con coeficientes de este tamaño. Existen raíces reales o complejas, pero este solucionador no las calcula.';
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots) {
+    return 'Al resolver $poly, el discriminante $disc no es un cuadrado perfecto, así que los valores propios son irracionales. Exactamente, λ = $roots.';
+  }
+
+  @override
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots) {
+    return 'Al resolver $poly: sobre los racionales se factoriza como $factors = 0. El factor cuadrático no tiene raíces racionales, así que los valores propios son exactamente $roots.';
+  }
+
+  @override
+  String eigen_roots_cardano_desc(Object poly) {
+    return '$poly no tiene raíces racionales y su discriminante es negativo: hay un valor propio real y un par de complejos conjugados. La fórmula de Cardano da los tres de forma exacta, como aparece sobre la matriz.';
+  }
+
+  @override
+  String eigen_roots_trig_desc(Object poly) {
+    return '$poly no tiene raíces racionales y su discriminante es positivo: hay tres valores propios reales distintos. Aquí la fórmula de Cardano necesitaría raíces cúbicas de números complejos, así que las raíces exactas se escriben con cosenos, sobre la matriz.';
+  }
+
+  @override
+  String eigen_vector_surd_desc(Object lambda, Object vector) {
+    return 'λ = $lambda es irracional, así que la cuadrícula sigue mostrando A y la matriz A − λI exacta aparece encima. Al resolver (A − λI)v = 0 de forma exacta se obtiene $vector.';
+  }
+
+  @override
+  String eigen_vector_complex_desc(Object lambda, Object vector) {
+    return 'λ = $lambda es complejo, así que la cuadrícula sigue mostrando A y la matriz A − λI exacta aparece encima. Al resolver (A − λI)v = 0 con números complejos se obtiene $vector; el valor propio conjugado tiene el vector conjugado.';
+  }
+
+  @override
+  String eigen_vector_cubic_title(Object index) {
+    return 'Vector propio para λ_$index';
+  }
+
+  @override
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector) {
+    return 'λ_$index es una raíz de la cúbica irreducible $poly = 0; su valor exacto aparece sobre la matriz, que sigue mostrando A. Al resolver (A − λI)v = 0 en función de λ se obtiene $vector, una fórmula válida para cada raíz de la cúbica.';
+  }
+
+  @override
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  ) {
+    return 'λ = $lambda es una raíz de multiplicidad $multiplicity y el espacio nulo de A − λI tiene la misma dimensión. Una base es $vectors; cualquier combinación no nula de ellos es un vector propio.';
+  }
+
+  @override
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  ) {
+    return 'λ = $lambda tiene multiplicidad algebraica $algebraic, pero el espacio nulo de A − λI solo tiene dimensión $geometric (multiplicidad geométrica): $vectors. A no tiene suficientes vectores propios independientes, así que es defectuosa y no se puede diagonalizar.';
   }
 
   @override
@@ -1090,20 +1139,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resultUnsupported => 'No compatible';
 
   @override
-  String get eigenPrecision =>
-      'Los valores propios se redondean a tres decimales; los vectores son direcciones aproximadas, no soluciones exactas del núcleo.';
-
-  @override
-  String get eigenScope =>
-      'Las raíces 3×3 son exactas si son racionales; las demás raíces reales se redondean a tres decimales. Con coeficientes muy grandes pueden quedar raíces sin resolver.';
-
-  @override
   String get eigenBasisScope =>
-      'Se muestra un vector por valor propio; no se calcula una base completa del espacio propio.';
+      'A es defectuosa: un valor propio tiene menos vectores propios independientes que su multiplicidad, así que A no se puede diagonalizar.';
 
   @override
-  String get complexScope =>
-      'No se admiten vectores propios complejos. La parte imaginaria se redondea a dos decimales.';
+  String get eigenComplexNote =>
+      'Los valores propios complejos de una matriz real aparecen en pares conjugados, y sus vectores propios también.';
+
+  @override
+  String get eigenCubicNote =>
+      'El polinomio característico tiene un factor cúbico irreducible. Sus raíces se escriben de forma exacta con la fórmula de Cardano o con cosenos, y sus vectores propios como polinomios en λ.';
 
   @override
   String get guideAddSource => 'Empareja la misma posición en A y B.';
@@ -1380,26 +1425,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newQuestions => 'Nuevas preguntas';
 
   @override
-  String eigen_vector_approx_title(Object index, Object lambda) {
-    return 'Vector aproximado para λ_$index ≈ $lambda';
-  }
-
-  @override
-  String eigen_vector_approx_desc(Object lambda, Object vector) {
-    return 'Con λ ≈ $lambda, una dirección aproximada es $vector; no es una solución exacta del núcleo.';
-  }
-
-  @override
   String get spaceKey => 'Espacio';
 
   @override
   String matrixCellPendingLabel(int row, int column) {
     return 'Fila $row, columna $column, aún sin calcular';
-  }
-
-  @override
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
-    return 'Al resolver $poly se obtiene el valor propio real $roots y el par conjugado complejo λ ≈ $complex. Solo el valor propio real tiene un vector propio real.';
   }
 
   @override
@@ -1505,4 +1535,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideDetRecapResult => 'La diferencia es el determinante.';
+
+  @override
+  String get mathRepeating => 'período';
+
+  @override
+  String get systemNoSolution => 'Sin solución: el sistema es incompatible';
 }

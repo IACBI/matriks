@@ -205,16 +205,6 @@ String localizedStepText(
           params['rank'] ?? 0,
         );
 
-      case 'eigen_vector_approx_title':
-        return l10n.eigen_vector_approx_title(
-          params['index'].toString(),
-          params['lambda'].toString(),
-        );
-      case 'eigen_vector_approx_desc':
-        return l10n.eigen_vector_approx_desc(
-          params['lambda'].toString(),
-          params['vector'].toString(),
-        );
       // Eigen
       case 'eigen_char_poly_title':
         return l10n.eigen_char_poly_title;
@@ -232,11 +222,22 @@ String localizedStepText(
         );
       case 'eigen_roots_title':
         return l10n.eigen_roots_title;
-      case 'eigen_roots_approx_desc':
-        return l10n.eigen_roots_approx_desc(
+      case 'eigen_roots_surd_desc':
+        return l10n.eigen_roots_surd_desc(
+          params['disc']?.toString() ?? '',
           params['poly']?.toString() ?? '',
           params['roots']?.toString() ?? '',
         );
+      case 'eigen_roots_factored_desc':
+        return l10n.eigen_roots_factored_desc(
+          params['factors']?.toString() ?? '',
+          params['poly']?.toString() ?? '',
+          params['roots']?.toString() ?? '',
+        );
+      case 'eigen_roots_cardano_desc':
+        return l10n.eigen_roots_cardano_desc(params['poly']?.toString() ?? '');
+      case 'eigen_roots_trig_desc':
+        return l10n.eigen_roots_trig_desc(params['poly']?.toString() ?? '');
       case 'eigen_roots_desc':
         return l10n.eigen_roots_desc(
           params['poly']?.toString() ?? '',
@@ -252,20 +253,43 @@ String localizedStepText(
           params['lambda']?.toString() ?? '',
           params['vector']?.toString() ?? '',
         );
+      case 'eigen_vector_surd_desc':
+        return l10n.eigen_vector_surd_desc(
+          params['lambda']?.toString() ?? '',
+          params['vector']?.toString() ?? '',
+        );
+      case 'eigen_vector_complex_desc':
+        return l10n.eigen_vector_complex_desc(
+          params['lambda']?.toString() ?? '',
+          params['vector']?.toString() ?? '',
+        );
+      case 'eigen_vector_cubic_title':
+        return l10n.eigen_vector_cubic_title(params['index'] ?? 0);
+      case 'eigen_vector_cubic_desc':
+        return l10n.eigen_vector_cubic_desc(
+          params['index'] ?? 0,
+          params['poly']?.toString() ?? '',
+          params['vector']?.toString() ?? '',
+        );
+      case 'eigen_eigenspace_desc':
+        return l10n.eigen_eigenspace_desc(
+          params['lambda']?.toString() ?? '',
+          params['multiplicity'] ?? 0,
+          params['vectors']?.toString() ?? '',
+        );
+      case 'eigen_defective_desc':
+        return l10n.eigen_defective_desc(
+          params['algebraic'] ?? 0,
+          params['geometric'] ?? 0,
+          params['lambda']?.toString() ?? '',
+          params['vectors']?.toString() ?? '',
+        );
       case 'eigen_3x3_poly_desc':
         return l10n.eigen_3x3_poly_desc(
           params['det']?.toString() ?? '',
           params['poly']?.toString() ?? '',
           params['trace']?.toString() ?? '',
         );
-      case 'eigen_cubic_complex_desc':
-        return l10n.eigen_cubic_complex_desc(
-          params['complex']?.toString() ?? '',
-          params['poly']?.toString() ?? '',
-          params['roots']?.toString() ?? '',
-        );
-      case 'eigen_irrational_desc':
-        return l10n.eigen_irrational_desc(params['poly']?.toString() ?? '');
 
       // LU Decomposition
       case 'lu_init_title':

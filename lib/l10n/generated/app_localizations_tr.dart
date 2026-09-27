@@ -83,7 +83,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      '2×2 ve 3×3 matrislerin özdeğer ve özvektörlerini incele; rasyonel kökler kesin hesaplanır.';
+      '2×2 ve 3×3 matrislerin özdeğer ve özvektörlerini incele; irrasyonel ve karmaşık olanlar dahil hepsi kesin hesaplanır.';
 
   @override
   String get topicTransform2d => '2B Geometrik Lineer Dönüşüm';
@@ -487,17 +487,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String eigen_complex_desc(Object poly, Object roots) {
-    return '$poly için diskriminant negatiftir. Özdeğerler karmaşık eşleniklerdir: $roots.';
+    return '$poly için diskriminant negatif olduğundan özdeğerler karmaşık eşleniklerdir. Kesin değerleri: λ = $roots.';
   }
 
   @override
   String get eigen_roots_title =>
       'Özdeğerler (Karakteristik Denklemin Kökleri)';
-
-  @override
-  String eigen_roots_approx_desc(Object poly, Object roots) {
-    return '$poly için üç ondalık basamağa yuvarlanan yaklaşık gerçek özdeğerler: $roots.';
-  }
 
   @override
   String eigen_roots_desc(Object poly, Object roots) {
@@ -520,8 +515,62 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String eigen_irrational_desc(Object poly) {
-    return 'Katsayılar bu kadar büyük olduğunda $poly kökleri güvenilir biçimde ayrılamadı. Gerçek veya karmaşık kökler vardır ama bu çözücü onları hesaplamaz.';
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots) {
+    return '$poly çözülür: diskriminant $disc tam kare olmadığından özdeğerler irrasyoneldir. Kesin değerleri: λ = $roots.';
+  }
+
+  @override
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots) {
+    return '$poly çözülür: denklem rasyonel sayılar üzerinde $factors = 0 biçiminde çarpanlarına ayrılır. İkinci dereceden çarpanın rasyonel kökü olmadığından özdeğerlerin kesin değerleri: $roots.';
+  }
+
+  @override
+  String eigen_roots_cardano_desc(Object poly) {
+    return '$poly denkleminin rasyonel kökü yoktur ve diskriminantı negatiftir: bir gerçek özdeğer ve bir karmaşık eşlenik çift vardır. Cardano formülü üçünü de kesin olarak verir; değerler matrisin üstünde yazılıdır.';
+  }
+
+  @override
+  String eigen_roots_trig_desc(Object poly) {
+    return '$poly denkleminin rasyonel kökü yoktur ve diskriminantı pozitiftir: birbirinden farklı üç gerçek özdeğer vardır. Cardano formülü burada karmaşık sayıların küp köklerini gerektirdiğinden kesin kökler kosinüslerle yazılır; değerler matrisin üstündedir.';
+  }
+
+  @override
+  String eigen_vector_surd_desc(Object lambda, Object vector) {
+    return 'λ = $lambda irrasyonel olduğundan tabloda hâlâ A görünür; A − λI matrisinin kesin hâli üstte yazılıdır. (A − λI)v = 0 kesin olarak çözüldüğünde $vector bulunur.';
+  }
+
+  @override
+  String eigen_vector_complex_desc(Object lambda, Object vector) {
+    return 'λ = $lambda karmaşık olduğundan tabloda hâlâ A görünür; A − λI matrisinin kesin hâli üstte yazılıdır. (A − λI)v = 0 karmaşık sayılarla çözüldüğünde $vector bulunur; eşlenik özdeğerin özvektörü de bu vektörün eşleniğidir.';
+  }
+
+  @override
+  String eigen_vector_cubic_title(Object index) {
+    return 'λ_$index için Özvektör';
+  }
+
+  @override
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector) {
+    return 'λ_$index, indirgenemez $poly = 0 kübik denkleminin bir köküdür; kesin değeri matrisin üstünde yazılıdır, tabloda ise A görünür. (A − λI)v = 0 λ cinsinden çözüldüğünde $vector bulunur; bu formül kübik denklemin her kökü için geçerlidir.';
+  }
+
+  @override
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  ) {
+    return 'λ = $lambda, katlılığı $multiplicity olan bir köktür ve A − λI matrisinin sıfır uzayı da aynı boyuttadır. Bir bazı: $vectors; bunların sıfırdan farklı her doğrusal birleşimi bir özvektördür.';
+  }
+
+  @override
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  ) {
+    return 'λ = $lambda kökünün cebirsel katlılığı $algebraic, ancak A − λI matrisinin sıfır uzayının boyutu (geometrik katlılık) yalnızca $geometric: $vectors. A\'nın yeterince bağımsız özvektörü yoktur; bu yüzden A kusurludur ve köşegenleştirilemez.';
   }
 
   @override
@@ -1073,20 +1122,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get resultUnsupported => 'Desteklenmiyor';
 
   @override
-  String get eigenPrecision =>
-      'Özdeğerler üç ondalığa yuvarlanır; vektörler kesin sıfır uzayı çözümleri değil, yaklaşık yönlerdir.';
-
-  @override
-  String get eigenScope =>
-      '3×3 kökler rasyonelse kesindir; diğer gerçek kökler üç ondalığa yuvarlanır. Çok büyük katsayılarda kökler bulunamayabilir.';
-
-  @override
   String get eigenBasisScope =>
-      'Her özdeğer için bir örnek vektör gösterilir; özuzayın tam bazı hesaplanmaz.';
+      'A kusurludur: bir özdeğerin bağımsız özvektör sayısı katlılığından azdır, bu yüzden A köşegenleştirilemez.';
 
   @override
-  String get complexScope =>
-      'Karmaşık özvektörler desteklenmiyor. Sanal kısım iki ondalığa yuvarlanır.';
+  String get eigenComplexNote =>
+      'Gerçek bir matrisin karmaşık özdeğerleri eşlenik çiftler hâlinde gelir; özvektörleri de öyle.';
+
+  @override
+  String get eigenCubicNote =>
+      'Karakteristik polinomun indirgenemez kübik bir çarpanı var. Kökleri Cardano formülüyle ya da kosinüslerle kesin olarak, özvektörleri ise λ cinsinden polinomlarla yazılır.';
 
   @override
   String get guideAddSource => 'A ve B\'deki aynı konumları eşleştir.';
@@ -1376,26 +1421,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get newQuestions => 'Yeni sorular';
 
   @override
-  String eigen_vector_approx_title(Object index, Object lambda) {
-    return 'λ_$index ≈ $lambda için yaklaşık vektör';
-  }
-
-  @override
-  String eigen_vector_approx_desc(Object lambda, Object vector) {
-    return 'λ ≈ $lambda kullanılarak yaklaşık yön $vector bulunur. Yuvarlanan değer, kesin sıfır uzayı çözümü vermez.';
-  }
-
-  @override
   String get spaceKey => 'Boşluk';
 
   @override
   String matrixCellPendingLabel(int row, int column) {
     return 'Satır $row, sütun $column, henüz hesaplanmadı';
-  }
-
-  @override
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
-    return '$poly çözüldüğünde gerçek özdeğer $roots ve karmaşık eşlenik çift λ ≈ $complex bulunur. Yalnızca gerçek özdeğerin gerçek bir özvektörü vardır.';
   }
 
   @override
@@ -1500,4 +1530,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get guideDetRecapResult => 'Aradaki fark determinanttır.';
+
+  @override
+  String get mathRepeating => 'devirli';
+
+  @override
+  String get systemNoSolution => 'Çözüm yok: sistem tutarsız';
 }

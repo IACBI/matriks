@@ -672,7 +672,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
         selected: isSelected,
         // The formula sits in a horizontal scroll view, which would keep it
         // out of the button's label: the option was read as just "A".
-        label: '${optionLetters[index]}: ${mathSemanticsLabel(optionLatex)}',
+        label:
+            '${optionLetters[index]}: ${mathSemanticsLabel(optionLatex, repeating: AppLocalizations.of(context)!.mathRepeating)}',
         excludeSemantics: true,
         child: InkWell(
           onTap: _hasAnswered ? null : () => _selectOption(index),

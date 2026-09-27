@@ -1,11 +1,69 @@
 import 'dart:math' as math;
 
+import 'package:matrix_engine/matrix_engine.dart';
+
+import 'quadratic_surd.dart';
+
 /// Small presentation model for geometric interpolation, independent of solvers.
+///
+/// [a], [b], [c] and [d] are doubles for drawing and interpolation only.
+/// Anything shown to the learner comes from the exact entries ([exactA] …),
+/// which are held exactly when the matrix is built with [TransformMatrix.exact]
+/// or [TransformMatrix.fromRationals].
 class TransformMatrix {
   final double a, b, c, d;
-  const TransformMatrix(this.a, this.b, this.c, this.d);
+  final QuadraticSurd? _exactA, _exactB, _exactC, _exactD;
+
+  const TransformMatrix(this.a, this.b, this.c, this.d)
+    : _exactA = null,
+      _exactB = null,
+      _exactC = null,
+      _exactD = null;
+
+  TransformMatrix.exact(
+    QuadraticSurd exactA,
+    QuadraticSurd exactB,
+    QuadraticSurd exactC,
+    QuadraticSurd exactD,
+  ) : a = exactA.toDouble(),
+      b = exactB.toDouble(),
+      c = exactC.toDouble(),
+      d = exactD.toDouble(),
+      _exactA = exactA,
+      _exactB = exactB,
+      _exactC = exactC,
+      _exactD = exactD;
+
+  factory TransformMatrix.fromRationals(
+    Rational a,
+    Rational b,
+    Rational c,
+    Rational d,
+  ) => TransformMatrix.exact(
+    QuadraticSurd(a),
+    QuadraticSurd(b),
+    QuadraticSurd(c),
+    QuadraticSurd(d),
+  );
+
   static const identity = TransformMatrix(1, 0, 0, 1);
+
+  /// Exact entries. A matrix built from doubles reads each as the shortest
+  /// decimal that round-trips to it (see [QuadraticSurd.fromDouble]).
+  QuadraticSurd get exactA => _exactA ?? QuadraticSurd.fromDouble(a);
+  QuadraticSurd get exactB => _exactB ?? QuadraticSurd.fromDouble(b);
+  QuadraticSurd get exactC => _exactC ?? QuadraticSurd.fromDouble(c);
+  QuadraticSurd get exactD => _exactD ?? QuadraticSurd.fromDouble(d);
+
+  /// This matrix with its entries held exactly.
+  TransformMatrix toExact() => _exactA != null
+      ? this
+      : TransformMatrix.exact(exactA, exactB, exactC, exactD);
+
+  /// Drawing approximation of [exactDeterminant].
   double get determinant => a * d - b * c;
+
+  QuadraticSurd get exactDeterminant => exactA * exactD - exactB * exactC;
 
   bool get isRotation =>
       (a - d).abs() < 1e-10 &&
@@ -36,26 +94,18 @@ class TransformMatrix {
     );
   }
 
-  static TransformMatrix preset(String name) => switch (name) {
-    'shear' => const TransformMatrix(1, 1, 0, 1),
-    'rotation' => TransformMatrix(
-      math.sqrt1_2,
-      -math.sqrt1_2,
-      math.sqrt1_2,
-      math.sqrt1_2,
-    ),
-    'reflection' => const TransformMatrix(1, 0, 0, -1),
-    'projection' => const TransformMatrix(.5, .5, .5, .5),
-    'scale' => const TransformMatrix(1.5, 0, 0, 1.5),
-    _ => identity,
-  };
-}
-
-String formatCoefficient(double value) {
-  if (value == 0) return '0.0';
-  if (value.abs() < .000001) return value.toStringAsPrecision(4);
-  return value
-      .toStringAsFixed(6)
-      .replaceFirst(RegExp(r'0+$'), '')
-      .replaceFirst(RegExp(r'\.$'), '.0');
+  static TransformMatrix preset(String name) {
+    QuadraticSurd q(int n, [int den = 1]) => QuadraticSurd(Rational(n, den));
+    final zero = q(0);
+    final one = q(1);
+    final half = QuadraticSurd.halfRootTwo;
+    return switch (name) {
+      'shear' => TransformMatrix.exact(one, one, zero, one),
+      'rotation' => TransformMatrix.exact(half, -half, half, half),
+      'reflection' => TransformMatrix.exact(one, zero, zero, q(-1)),
+      'projection' => TransformMatrix.exact(q(1, 2), q(1, 2), q(1, 2), q(1, 2)),
+      'scale' => TransformMatrix.exact(q(3, 2), zero, zero, q(3, 2)),
+      _ => TransformMatrix.exact(one, zero, zero, one),
+    };
+  }
 }

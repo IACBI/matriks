@@ -82,7 +82,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Собственные значения и векторы матриц 2×2 и 3×3; рациональные корни находятся точно.';
+      'Собственные значения и векторы матриц 2×2 и 3×3 — все вычисляются точно, включая иррациональные и комплексные.';
 
   @override
   String get topicTransform2d => 'Геометрические преобразования 2D';
@@ -493,16 +493,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String eigen_complex_desc(Object poly, Object roots) {
-    return 'Дискриминант $poly отрицателен. Приближённые сопряжённые корни: $roots.';
+    return 'Дискриминант $poly отрицателен, поэтому собственные значения комплексно сопряжены. Точно: λ = $roots.';
   }
 
   @override
   String get eigen_roots_title => 'Корни характеристического уравнения';
-
-  @override
-  String eigen_roots_approx_desc(Object poly, Object roots) {
-    return 'При решении $poly приближённые действительные собственные значения, округлённые до трёх знаков: $roots.';
-  }
 
   @override
   String eigen_roots_desc(Object poly, Object roots) {
@@ -525,8 +520,62 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String eigen_irrational_desc(Object poly) {
-    return 'Корни $poly не удалось надёжно выделить при коэффициентах такого размера. Вещественные или комплексные корни существуют, но этот решатель их не вычисляет.';
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots) {
+    return 'Решаем $poly: дискриминант $disc не является полным квадратом, поэтому собственные значения иррациональны. Точно: λ = $roots.';
+  }
+
+  @override
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots) {
+    return 'Решаем $poly: над рациональными числами уравнение раскладывается как $factors = 0. У квадратного множителя нет рациональных корней, поэтому собственные значения точно равны $roots.';
+  }
+
+  @override
+  String eigen_roots_cardano_desc(Object poly) {
+    return 'У уравнения $poly нет рациональных корней, а его дискриминант отрицателен: одно действительное собственное значение и пара комплексно сопряжённых. Формула Кардано даёт все три точно — они записаны над матрицей.';
+  }
+
+  @override
+  String eigen_roots_trig_desc(Object poly) {
+    return 'У уравнения $poly нет рациональных корней, а его дискриминант положителен: три различных действительных собственных значения. Формуле Кардано здесь понадобились бы кубические корни из комплексных чисел, поэтому точные корни записаны через косинусы — над матрицей.';
+  }
+
+  @override
+  String eigen_vector_surd_desc(Object lambda, Object vector) {
+    return 'λ = $lambda иррационально, поэтому в таблице по-прежнему показана A, а точная матрица A − λI записана над ней. Точное решение (A − λI)v = 0 даёт $vector.';
+  }
+
+  @override
+  String eigen_vector_complex_desc(Object lambda, Object vector) {
+    return 'λ = $lambda — комплексное число, поэтому в таблице по-прежнему показана A, а точная матрица A − λI записана над ней. Решение (A − λI)v = 0 в комплексных числах даёт $vector; сопряжённому собственному значению соответствует сопряжённый вектор.';
+  }
+
+  @override
+  String eigen_vector_cubic_title(Object index) {
+    return 'Собственный вектор для λ_$index';
+  }
+
+  @override
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector) {
+    return 'λ_$index — корень неприводимого кубического уравнения $poly = 0; его точное значение записано над матрицей, а в таблице показана A. Решение (A − λI)v = 0 через λ даёт $vector — одна формула для каждого корня этого уравнения.';
+  }
+
+  @override
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  ) {
+    return 'λ = $lambda — корень кратности $multiplicity, и нуль-пространство A − λI имеет ту же размерность. Его базис: $vectors; любая ненулевая комбинация этих векторов — собственный вектор.';
+  }
+
+  @override
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  ) {
+    return 'Алгебраическая кратность λ = $lambda равна $algebraic, но размерность нуль-пространства A − λI (геометрическая кратность) — лишь $geometric: $vectors. У A недостаточно независимых собственных векторов, поэтому матрица дефектна и не диагонализуема.';
   }
 
   @override
@@ -1072,20 +1121,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resultUnsupported => 'Не поддерживается';
 
   @override
-  String get eigenPrecision =>
-      'Собственные значения округлены до трёх знаков; векторы задают приближённые направления, а не точные решения ядра.';
-
-  @override
-  String get eigenScope =>
-      'Рациональные корни 3×3 находятся точно; остальные вещественные корни округляются до трёх знаков. При очень больших коэффициентах корни могут остаться ненайденными.';
-
-  @override
   String get eigenBasisScope =>
-      'Для каждого собственного значения показан один вектор; полный базис собственного подпространства не вычисляется.';
+      'Матрица A дефектна: у одного из собственных значений независимых собственных векторов меньше, чем его кратность, поэтому A не диагонализуема.';
 
   @override
-  String get complexScope =>
-      'Комплексные собственные векторы не поддерживаются. Мнимая часть округлена до двух знаков.';
+  String get eigenComplexNote =>
+      'Комплексные собственные значения действительной матрицы образуют сопряжённые пары, как и их собственные векторы.';
+
+  @override
+  String get eigenCubicNote =>
+      'У характеристического многочлена есть неприводимый кубический множитель. Его корни записаны точно — по формуле Кардано или через косинусы, а собственные векторы — многочленами от λ.';
 
   @override
   String get guideAddSource => 'Сопоставьте одинаковые позиции в A и B.';
@@ -1361,26 +1406,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get newQuestions => 'Новые вопросы';
 
   @override
-  String eigen_vector_approx_title(Object index, Object lambda) {
-    return 'Приближённый вектор для λ_$index ≈ $lambda';
-  }
-
-  @override
-  String eigen_vector_approx_desc(Object lambda, Object vector) {
-    return 'При λ ≈ $lambda приближённое направление: $vector; это не точное решение ядра.';
-  }
-
-  @override
   String get spaceKey => 'Пробел';
 
   @override
   String matrixCellPendingLabel(int row, int column) {
     return 'Строка $row, столбец $column, ещё не вычислено';
-  }
-
-  @override
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
-    return 'Решение $poly даёт вещественное собственное значение $roots и пару комплексно сопряжённых λ ≈ $complex. Вещественный собственный вектор есть только у вещественного значения.';
   }
 
   @override
@@ -1484,4 +1514,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guideDetRecapResult => 'Разность и есть определитель.';
+
+  @override
+  String get mathRepeating => 'период';
+
+  @override
+  String get systemNoSolution => 'Решений нет: система несовместна';
 }

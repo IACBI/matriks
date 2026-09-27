@@ -281,7 +281,7 @@ void main() {
       }
     }
   });
-  test('Large translated irrational eigenvalues retain decimal precision', () {
+  test('Large translated irrational eigenvalues stay exact', () {
     final offset = Rational.parse('10000000000000000000000');
     final solution = EigenSolver.solve(
       Matrix([
@@ -289,11 +289,22 @@ void main() {
         [Rational.one, offset],
       ]),
     );
-    final pairs = (solution.result as EigenResult).realEigenpairs;
-    expect(pairs.map((p) => p.eigenvalue - offset), [
-      Rational.parse('1.414'),
-      Rational.parse('-1.414'),
+    final result = solution.result as EigenResult;
+    expect(result.realEigenpairs, isEmpty);
+    expect(result.eigenpairs.map((p) => p.eigenvalue.latex), [
+      r'10000000000000000000000 + \sqrt{2}',
+      r'10000000000000000000000 - \sqrt{2}',
     ]);
+    expect(
+      result.eigenpairs.map((p) => p.eigenvalue.minimalPolynomial),
+      everyElement(
+        RationalPolynomial([
+          offset * offset - Rational(2),
+          -offset * Rational(2),
+          Rational.one,
+        ]),
+      ),
+    );
   });
   test('3x3 eigenpairs on 30 similar matrices retain known spectrum and zero residual', () {
     for (var i = 0; i < 30; i++) {
@@ -324,17 +335,18 @@ void main() {
       }
     }
   });
-  test(
-    'Tiny distinct irrational roots are retained even when both round to zero',
-    () {
-      final solution = EigenSolver.solve(
-        Matrix([
-          [Rational.zero, Rational(2, 100000000)],
-          [Rational(1, 100000000), Rational.zero],
-        ]),
-      );
-      expect((solution.result as EigenResult).realEigenpairs.length, 2);
-      expect(solution.steps[1].explanationKey, 'eigen_roots_approx_desc');
-    },
-  );
+  test('Tiny distinct irrational roots stay distinct and exact', () {
+    final solution = EigenSolver.solve(
+      Matrix([
+        [Rational.zero, Rational(2, 100000000)],
+        [Rational(1, 100000000), Rational.zero],
+      ]),
+    );
+    final result = solution.result as EigenResult;
+    expect(result.eigenpairs.map((p) => p.eigenvalue.latex), [
+      r'\frac{\sqrt{2}}{100000000}',
+      r'-\frac{\sqrt{2}}{100000000}',
+    ]);
+    expect(solution.steps[1].explanationKey, 'eigen_roots_surd_desc');
+  });
 }

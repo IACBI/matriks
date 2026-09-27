@@ -114,7 +114,8 @@ void main() {
     );
   });
 
-  test('Rounded eigenvalues are written as the decimals they are', () {
+  test('Irrational eigenvalues are written exactly, never as decimals', () {
+    final decimal = RegExp(r'\d\.\d');
     for (final matrix in [
       Matrix.fromInts([
         [0, 2],
@@ -125,16 +126,22 @@ void main() {
         [0, 0, 1],
         [1, 3, 0],
       ]),
+      Matrix.fromInts([
+        [1, -2],
+        [1, 3],
+      ]),
     ]) {
       final solution = EigenSolver.solve(matrix);
-      expect(solution.accuracy, ResultAccuracy.approximate);
-      expect(solution.resultLatex, isNot(contains(r'\frac')));
+      expect(solution.accuracy, ResultAccuracy.exact);
+      expect(solution.resultLatex, isNot(contains(r'\approx')));
+      expect(solution.resultLatex, isNot(matches(decimal)));
       for (final step in solution.steps) {
         for (final value in [
           ...step.titleParams.values,
           ...step.explanationParams.values,
         ]) {
-          expect(value.toString(), isNot(contains(r'\frac')));
+          expect(value.toString(), isNot(contains('≈')));
+          expect(value.toString(), isNot(matches(decimal)));
         }
       }
     }
@@ -144,9 +151,10 @@ void main() {
         [1, 0],
       ]),
     );
+    // Titles are prose, so the value is plain text rather than TeX.
     expect(
       root2.steps.map((s) => s.titleParams['lambda']).whereType<String>(),
-      containsAll(['1.414', '-1.414']),
+      containsAll(['√2', '-√2']),
     );
   });
 

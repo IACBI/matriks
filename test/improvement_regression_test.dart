@@ -32,23 +32,20 @@ Widget _host(Widget child, {bool reduced = false}) => BlocProvider(
 
 void main() {
   group('Decimal view', () {
-    test('exact decimals are exact and rounded ones are marked', () {
+    test('terminating decimals are exact and repeating ones carry a bar', () {
       expect(decimalLatex(Rational(1, 2)), '0.5');
       expect(decimalLatex(Rational(-7)), '-7');
       expect(decimalLatex(Rational(3, 8)), '0.375');
-      expect(decimalLatex(Rational(1, 3)), r'\approx 0.3333');
-      expect(decimalLatex(Rational(-2, 3)), r'\approx -0.6667');
+      expect(decimalLatex(Rational(1, 3)), r'0.\overline{3}');
+      expect(decimalLatex(Rational(-2, 3)), r'-0.\overline{6}');
     });
     test('tiny nonzero values never display as zero', () {
-      expect(decimalLatex(Rational(1, 300000)), r'\approx 3.33 \times 10^{-6}');
-      expect(
-        decimalLatex(Rational(-1, 100001)),
-        r'\approx -1.00 \times 10^{-5}',
-      );
+      expect(decimalLatex(Rational(1, 300000)), r'0.00000\overline{3}');
+      expect(decimalLatex(Rational(-1, 100001)), r'-0.\overline{0000099999}');
     });
     test('values beyond the double range stay finite text', () {
       final huge = Rational.parse('1${'0' * 400}') / Rational(3);
-      expect(decimalLatex(huge), startsWith(r'\approx 333'));
+      expect(decimalLatex(huge), '${'3' * 400}.\\overline{3}');
       expect(decimalLatex(huge), isNot(contains('NaN')));
     });
   });
