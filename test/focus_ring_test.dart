@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -108,8 +109,10 @@ void main() {
         ),
       ),
     );
-    button.requestFocus();
+    // A keyboard user reaches the button with Tab.
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pumpAndSettle();
+    expect(button.hasPrimaryFocus, isTrue);
     RRect ringAt(Rect r) =>
         RRect.fromRectAndRadius(r.inflate(2), const Radius.circular(10));
     expect(ring(), paints..rrect(rrect: ringAt(button.rect)));
@@ -120,5 +123,29 @@ void main() {
     await tester.pump();
     expect(ring(), paints..rrect(rrect: ringAt(button.rect)));
     expect(button.rect.top, greaterThan(110));
+  });
+
+  testWidgets('A pointer press hides the ring, like :focus-visible', (
+    tester,
+  ) async {
+    await pumpApp(tester, FocusHighlightStrategy.alwaysTraditional);
+    for (var i = 0; i < 3; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+    }
+    expect(ring(), paints..rrect());
+    final focused = FocusManager.instance.primaryFocus;
+    // A mouse press on empty space keeps focus where it is (a menu button
+    // gets focus back this way when its menu closes) but is not keyboard use.
+    await tester.tapAt(
+      tester.getCenter(find.textContaining('mathematics studio')),
+      kind: PointerDeviceKind.mouse,
+    );
+    await tester.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus, focused);
+    expect(ring(), isNot(paints..rrect()));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(ring(), paints..rrect());
   });
 }
