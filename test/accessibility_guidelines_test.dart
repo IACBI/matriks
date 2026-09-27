@@ -46,8 +46,14 @@ void main() {
           await tester.tap(find.byIcon(Icons.school_outlined).first);
           await tester.pumpAndSettle();
           await expectGuidelines(tester);
-          await tester.tap(find.bySemanticsLabel(RegExp(r'^A: ')).first);
+          // At 200% text the options start below the screen; answering is
+          // what shows the feedback these checks are for.
+          final option = find.bySemanticsLabel(RegExp(r'^A: ')).first;
+          await tester.ensureVisible(option);
           await tester.pumpAndSettle();
+          await tester.tap(option);
+          await tester.pumpAndSettle();
+          expect(find.byIcon(Icons.check_circle_rounded), findsWidgets);
           await expectGuidelines(tester);
 
           await tester.tap(find.byIcon(Icons.transform_rounded).first);
