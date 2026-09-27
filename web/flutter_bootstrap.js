@@ -22,6 +22,28 @@ function showFailure() {
   retry.hidden = false;
 }
 
+// Offline support; the strategy is described in offline_worker.js. Relative
+// URLs resolve against <base href>, so this works under any deployment path.
+const offlineWorker =
+  'serviceWorker' in navigator
+    ? navigator.serviceWorker
+        .register('offline_worker.js', { scope: './', updateViaCache: 'none' })
+        .catch(() => null)
+    : Promise.resolve(null);
+
+// Hands the worker every file the page loads, including those fetched before
+// the worker took control, so the first online visit is enough offline.
+function cacheLoadedFiles() {
+  offlineWorker.then((registration) => {
+    if (!registration || !('PerformanceObserver' in window)) return;
+    const send = (cacheUrls) =>
+      navigator.serviceWorker.ready.then((ready) => ready.active.postMessage({ cacheUrls }));
+    send([window.location.href]);
+    new PerformanceObserver((list) => send(list.getEntries().map((entry) => entry.name)))
+      .observe({ type: 'resource', buffered: true });
+  });
+}
+
 const startupTimeout = window.setTimeout(showFailure, 30000);
 _flutter.loader.load({
   onEntrypointLoaded: async (engineInitializer) => {
@@ -30,6 +52,7 @@ _flutter.loader.load({
       await runner.runApp();
       window.clearTimeout(startupTimeout);
       document.getElementById('startup').remove();
+      cacheLoadedFiles();
     } catch (_) {
       window.clearTimeout(startupTimeout);
       showFailure();
