@@ -693,13 +693,13 @@ After the exact-values work shipped, the live site (https://iacbi.github.io/matr
 
 - `flutter analyze`: no issues. `flutter test`: 508 passed. Formatting is clean.
 - `tool/all_shapes_sweep_test.dart`: 63/63.
-- Each new test fails without its fix.
+- Each test written for a defect fails without its fix. Tests that guard behaviour meant to stay the same (a formula that fits keeps its spacing and shows no thumb) are not regression checks, and are not counted here.
 - Release web builds were checked in Chrome at 320, 390 and 1440 px before each merge, and again on the live site after deployment.
 
 ## Remaining limits
 
 - Repository settings are the owner's:
-  - Dependabot security alerts and secret scanning are off, though the repository is public;
+  - Dependabot alerts and the repository's secret scanning (with push protection) are off, though the repository is public; see the security review for the exact settings;
   - auto-merge is not allowed;
   - Codex reviews are paused by its usage limit.
 - The web runs had no screen reader and used no physical phone; 200% text was covered by widget tests, not in the browser.
