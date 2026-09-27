@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:matrix_engine/matrix_engine.dart';
+
 import '../../../l10n/generated/app_localizations.dart';
-import '../models/transform_matrix.dart';
+import '../models/quadratic_surd.dart';
 
 class CoefficientField extends StatefulWidget {
   final String name;
-  final double value;
+  final QuadraticSurd exact;
   final int revision;
-  final ValueChanged<double> onChanged;
+  final ValueChanged<QuadraticSurd> onChanged;
   const CoefficientField({
     super.key,
     required this.name,
-    required this.value,
+    required this.exact,
     required this.revision,
     required this.onChanged,
   });
+
+  /// Drawing approximation of [exact]; never displayed.
+  double get value => exact.toDouble();
+
+  static final _limit = QuadraticSurd.fromInt(1000);
+  static final _step = QuadraticSurd(Rational(1, 2));
   @override
   State<CoefficientField> createState() => _CoefficientFieldState();
 }
@@ -27,7 +35,7 @@ class _CoefficientFieldState extends State<CoefficientField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: formatCoefficient(widget.value));
+    _controller = TextEditingController(text: widget.exact.toString());
     _focus.addListener(_onFocus);
   }
 
@@ -38,19 +46,33 @@ class _CoefficientFieldState extends State<CoefficientField> {
   @override
   void didUpdateWidget(CoefficientField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.value != widget.value ||
+    if (oldWidget.exact != widget.exact ||
         oldWidget.revision != widget.revision) {
-      _controller.text = formatCoefficient(widget.value);
+      _controller.text = widget.exact.toString();
       _invalid = false;
     }
   }
 
   void _commit() {
-    if (_controller.text == formatCoefficient(widget.value)) return;
-    final value = double.tryParse(_controller.text.trim().replaceAll(',', '.'));
-    final valid = value != null && value.isFinite && value.abs() <= 1000;
+    // Untouched text, including a √2 entry the keyboard cannot type, is not
+    // an edit.
+    if (_controller.text == widget.exact.toString()) return;
+    final value = QuadraticSurd.tryParse(_controller.text);
+    final valid = value != null && value.abs() <= CoefficientField._limit;
     setState(() => _invalid = !valid);
-    if (valid) widget.onChanged(value);
+    if (!valid) return;
+    if (value == widget.exact) {
+      _controller.text = value.toString();
+    } else {
+      widget.onChanged(value);
+    }
+  }
+
+  QuadraticSurd _clamp(QuadraticSurd value) {
+    final limit = CoefficientField._limit;
+    if (value > limit) return limit;
+    if (value < -limit) return -limit;
+    return value;
   }
 
   @override
@@ -93,17 +115,19 @@ class _CoefficientFieldState extends State<CoefficientField> {
           children: [
             IconButton(
               tooltip: l10n.decreaseCoefficient(widget.name),
-              onPressed: widget.value > -1000
-                  ? () =>
-                        widget.onChanged((widget.value - .5).clamp(-1000, 1000))
+              onPressed: widget.exact > -CoefficientField._limit
+                  ? () => widget.onChanged(
+                      _clamp(widget.exact - CoefficientField._step),
+                    )
                   : null,
               icon: const Icon(Icons.remove, size: 18),
             ),
             IconButton(
               tooltip: l10n.increaseCoefficient(widget.name),
-              onPressed: widget.value < 1000
-                  ? () =>
-                        widget.onChanged((widget.value + .5).clamp(-1000, 1000))
+              onPressed: widget.exact < CoefficientField._limit
+                  ? () => widget.onChanged(
+                      _clamp(widget.exact + CoefficientField._step),
+                    )
                   : null,
               icon: const Icon(Icons.add, size: 18),
             ),

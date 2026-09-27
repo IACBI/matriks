@@ -25,8 +25,8 @@ void main() {
       // 2. We should be on TransformVisualizerScreen
       expect(find.text('2D Linear Transformation'), findsOneWidget);
 
-      // Initial state: det = 1.0 (since default a=1, b=1, c=0, d=1 -> det = 1*1 - 1*0 = 1.0)
-      expect(find.text('Target determinant: 1.0'), findsOneWidget);
+      // Initial state: a=1, b=1, c=0, d=1, so det = 1*1 - 1*0 = 1, exactly.
+      expect(find.text('Target determinant: 1'), findsOneWidget);
 
       // 3. Test Shear preset
       final shearChip = find.text('Shear');
@@ -35,16 +35,16 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(shearChip);
       await tester.pumpAndSettle();
-      expect(find.text('Target determinant: 1.0'), findsOneWidget);
+      expect(find.text('Target determinant: 1'), findsOneWidget);
 
-      // 4. Test Projection preset (collapses 2D space, det = 0.0)
+      // 4. Test Projection preset (collapses 2D space, det = 0)
       final projChip = find.text('Projection (det=0)');
       expect(projChip, findsOneWidget);
       await tester.ensureVisible(projChip);
       await tester.pumpAndSettle();
       await tester.tap(projChip);
       await tester.pumpAndSettle();
-      expect(find.text('Target determinant: 0.0'), findsOneWidget);
+      expect(find.text('Target determinant: 0'), findsOneWidget);
 
       // 5. Test Scale preset
       final scaleChip = find.text('Scale');
