@@ -133,8 +133,7 @@ class SolutionSummary extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           for (final piece in _splitAtImplies(part))
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
+                            SidewaysFormula(
                               child: MathText(piece, fontSize: 24),
                             ),
                         ],
@@ -204,10 +203,7 @@ class ResultChecks extends StatelessWidget {
                 Text(check.description, style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 6),
               ],
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: MathText(check.latex, fontSize: 18),
-              ),
+              SidewaysFormula(child: MathText(check.latex, fontSize: 18)),
               const SizedBox(height: 6),
               Row(
                 children: [
@@ -229,6 +225,59 @@ class ResultChecks extends StatelessWidget {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A formula that scrolls sideways when it is wider than the screen, with a
+/// visible scrollbar.
+///
+/// Flutter adds no scrollbar to a horizontal scroll view by itself, and a
+/// matrix cut at the edge (the L of a 5×5 LU on a phone) otherwise looks
+/// complete. Room for the thumb is reserved only while the formula overflows,
+/// so a formula that fits keeps its spacing.
+class SidewaysFormula extends StatefulWidget {
+  final Widget child;
+  const SidewaysFormula({super.key, required this.child});
+
+  @override
+  State<SidewaysFormula> createState() => _SidewaysFormulaState();
+}
+
+class _SidewaysFormulaState extends State<SidewaysFormula> {
+  final _controller = ScrollController();
+  var _overflows = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  bool _onMetrics(ScrollMetricsNotification notification) {
+    if (notification.depth == 0) {
+      final overflows =
+          notification.metrics.maxScrollExtent >
+          notification.metrics.minScrollExtent;
+      if (overflows != _overflows) setState(() => _overflows = overflows);
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollMetricsNotification>(
+      onNotification: _onMetrics,
+      child: Scrollbar(
+        controller: _controller,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          controller: _controller,
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.only(bottom: _overflows ? 10 : 0),
+          child: widget.child,
         ),
       ),
     );
