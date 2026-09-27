@@ -19,9 +19,12 @@ env:
   FLUTTER_VERSION: 3.47.1
 
 jobs:
+  # Ubuntu is pinned in every job: ubuntu-latest follows each new release
+  # (26.04 from October 2026), and the Linux build compiles against the
+  # system GTK and clang. Moving to a newer release is a change made here.
   verify:
     name: Analyze and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -87,11 +90,11 @@ jobs:
       matrix:
         include:
           - target: apk
-            os: ubuntu-latest
+            os: ubuntu-24.04
           - target: windows
             os: windows-latest
           - target: linux
-            os: ubuntu-latest
+            os: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -123,7 +126,7 @@ jobs:
     # Only main publishes. A manual run on another branch verifies and builds a
     # preview artifact but must not replace the live site.
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
