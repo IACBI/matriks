@@ -48,6 +48,19 @@ void main() {
       '{}+ 3',
     ]);
     expect(splitTexTerms('7'), ['7']);
+    // Arrows are not \left or \right: a row operation still breaks.
+    expect(splitTexTerms(r'R_2 \leftarrow R_2 - 2R_1'), [
+      r'R_2 \leftarrow R_2',
+      '{}- 2R_1',
+    ]);
+    expect(splitTexTerms(r'a \rightarrow b + c'), [
+      r'a \rightarrow b',
+      '{}+ c',
+    ]);
+    expect(splitTexTerms(r'\left(a \leftrightarrow b + c\right) + d'), [
+      r'\left(a \leftrightarrow b + c\right)',
+      '{}+ d',
+    ]);
   });
 
   test('Formulas are read as text, not as their glyphs', () {

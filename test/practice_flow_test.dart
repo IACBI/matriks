@@ -16,7 +16,10 @@ void main() {
         300.0,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(practiceTopicFinder, findsOneWidget);
+      // The last scroll is laid out only on the next frame; tapping before it
+      // lands on the bottom bar's Practice tab instead of this topic.
+      await tester.pumpAndSettle();
+      expect(practiceTopicFinder.hitTestable(), findsOneWidget);
 
       // 2. Tap to open PracticeScreen
       await tester.tap(practiceTopicFinder);

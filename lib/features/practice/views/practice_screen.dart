@@ -8,6 +8,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../core/widgets/matrix_bracket.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/cubit/settings_cubit.dart';
 import '../../settings/widgets/language_menu.dart';
@@ -586,8 +587,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   Widget _buildMatrixPreview(Matrix m, bool isDark) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return SidewaysScroll(
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -716,10 +716,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: MathText(optionLatex, fontSize: 15),
-                    ),
+                    // At large text an option breaks between terms instead of
+                    // running past the edge of its button.
+                    child: MathText(optionLatex, fontSize: 15, wrapLines: true),
                   ),
                 ),
                 if (_hasAnswered && isCorrectOption)

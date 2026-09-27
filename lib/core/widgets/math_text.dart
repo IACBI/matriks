@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
 import '../../l10n/generated/app_localizations.dart';
+import 'sideways_scroll.dart';
 
 // Inline prose uses readable symbols; complete formulas remain in MathText.
 //
@@ -147,10 +148,7 @@ class MathText extends StatelessWidget {
       return Semantics(
         label: label,
         excludeSemantics: true,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: math,
-        ),
+        child: SidewaysScroll(child: math),
       );
     }
     return Semantics(
@@ -164,8 +162,7 @@ class MathText extends StatelessWidget {
             for (final part in parts)
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: constraints.maxWidth),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                child: SidewaysScroll(
                   child: Math.tex(
                     displayStyleMatrixCells(part),
                     textScaleFactor: 1,
@@ -286,9 +283,9 @@ List<String> splitTexTerms(String latex) {
       depth++;
     } else if (ch == '}') {
       depth--;
-    } else if (latex.startsWith(r'\left', i)) {
+    } else if (_isCommand(latex, i, r'\left')) {
       depth++;
-    } else if (latex.startsWith(r'\right', i)) {
+    } else if (_isCommand(latex, i, r'\right')) {
       depth--;
     } else if (depth == 0 && i > start) {
       final op = operators.where((o) => latex.startsWith(o, i)).firstOrNull;
@@ -306,4 +303,12 @@ List<String> splitTexTerms(String latex) {
     for (final (index, part) in parts.indexed)
       if (part.isNotEmpty) index == 0 ? part : '{}$part',
   ];
+}
+
+/// Whether [command] starts at [index] as a whole command name: `\left(`
+/// does, `\leftarrow` does not.
+bool _isCommand(String latex, int index, String command) {
+  if (!latex.startsWith(command, index)) return false;
+  final next = index + command.length;
+  return next == latex.length || !RegExp('[A-Za-z]').hasMatch(latex[next]);
 }

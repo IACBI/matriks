@@ -3,6 +3,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/cubit/settings_state.dart';
 
@@ -224,8 +225,7 @@ class StepDetails extends StatelessWidget {
           for (final sub in calculations)
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              title: SidewaysScroll(
                 child: MathText(sub.formulaLatex, fontSize: 16),
               ),
               trailing: const Icon(Icons.open_in_full_rounded, size: 16),

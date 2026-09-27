@@ -8,6 +8,7 @@ import '../../../core/number_format.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
 import '../../../core/widgets/matrix_bracket.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'determinant_lines_painter.dart';
 import 'matrix_cell_widget.dart';
@@ -428,8 +429,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
           if (widget.sceneFormula != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              child: SidewaysScroll(
                 child: MathText(widget.sceneFormula!, fontSize: 20),
               ),
             ),
@@ -447,8 +447,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                     ('A', trans.left),
                     ('B', trans.right),
                   ])
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                    SidewaysScroll(
                       child: MathText(
                         '${name}_{${trans.row + 1},${trans.col + 1}} = ${value.toLatex()}',
                         fontSize: 20,
@@ -489,10 +488,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
           if (trans != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: _buildOperationBadge(trans, isDark),
-              ),
+              child: SidewaysScroll(child: _buildOperationBadge(trans, isDark)),
             ),
           _buildMatrixViewport(
             child: AnimatedBuilder(
@@ -777,6 +773,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         controller: _matrixScroll,
         thumbVisibility: true,
         child: SingleChildScrollView(
+          key: const ValueKey('matrix-viewport'),
           controller: _matrixScroll,
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.only(bottom: 10),
