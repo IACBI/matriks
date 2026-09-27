@@ -3,6 +3,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 class CellCalculationSheet extends StatelessWidget {
@@ -123,8 +124,7 @@ class CellCalculationSheet extends StatelessWidget {
                 color: isDark ? AppTheme.borderDark : AppTheme.borderLight,
               ),
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            child: SidewaysScroll(
               child: MathText(calculation.formulaLatex, fontSize: 18),
             ),
           ),
@@ -140,8 +140,7 @@ class CellCalculationSheet extends StatelessWidget {
                 ),
               ),
               Flexible(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                child: SidewaysScroll(
                   child: MathText(calculation.result.toLatex(), fontSize: 16),
                 ),
               ),

@@ -79,13 +79,9 @@ void main() {
       // Scrolled all the way to I, as a learner might leave it; the last
       // step must bring A inverse into view by itself.
       tester
-          .widgetList<SingleChildScrollView>(
-            find.descendant(
-              of: find.byType(MatrixDisplayGrid),
-              matching: find.byType(SingleChildScrollView),
-            ),
+          .widget<SingleChildScrollView>(
+            find.byKey(const ValueKey('matrix-viewport')),
           )
-          .firstWhere((view) => view.controller != null)
           .controller!
           .jumpTo(0);
       await tester.pumpAndSettle();
@@ -194,13 +190,9 @@ void main() {
     cubit.jumpToStep(0);
     await tester.pumpAndSettle();
     tester
-        .widgetList<SingleChildScrollView>(
-          find.descendant(
-            of: find.byType(MatrixDisplayGrid),
-            matching: find.byType(SingleChildScrollView),
-          ),
+        .widget<SingleChildScrollView>(
+          find.byKey(const ValueKey('matrix-viewport')),
         )
-        .firstWhere((view) => view.controller != null)
         .controller!
         .jumpTo(0);
     await tester.pumpAndSettle();

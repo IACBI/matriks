@@ -3,6 +3,7 @@ import 'package:matrix_engine/matrix_engine.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/math_text.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 /// Show the actual operands, never source beams on the output matrix.
@@ -80,21 +81,25 @@ class MultiplicationSources extends StatelessWidget {
       );
     }
 
+    // Side by side when both fit; otherwise the column of B goes under the
+    // row of A rather than off the edge of a phone. A row longer than the
+    // screen scrolls on its own, with its bar showing.
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            vector(
+      child: Wrap(
+        spacing: 24,
+        runSpacing: 16,
+        children: [
+          SidewaysScroll(
+            child: vector(
               l10n.multiplicationSourceRow('${transformation.targetRow + 1}'),
               transformation.rowElements,
               false,
               AppTheme.accentAmber,
             ),
-            const SizedBox(width: 24),
-            vector(
+          ),
+          SidewaysScroll(
+            child: vector(
               l10n.multiplicationSourceColumn(
                 '${transformation.targetCol + 1}',
               ),
@@ -102,8 +107,8 @@ class MultiplicationSources extends StatelessWidget {
               true,
               AppTheme.accentAmber,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
