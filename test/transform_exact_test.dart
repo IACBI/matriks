@@ -145,6 +145,24 @@ void main() {
       }
     });
 
+    test('reads decimals written without a digit on one side of the point', () {
+      expect(QuadraticSurd.tryParse('.5'), q(1, 2));
+      expect(QuadraticSurd.tryParse('-.5'), q(-1, 2));
+      expect(QuadraticSurd.tryParse('+.5'), q(1, 2));
+      expect(QuadraticSurd.tryParse('−.25'), q(-1, 4));
+      expect(QuadraticSurd.tryParse(',5'), q(1, 2));
+      expect(QuadraticSurd.tryParse('3.'), q(3));
+      expect(QuadraticSurd.tryParse('-3.'), q(-3));
+      expect(QuadraticSurd.tryParse('.5√2'), half);
+      expect(
+        QuadraticSurd.tryParse('.5 + √2'),
+        QuadraticSurd(Rational(1, 2), Rational.one),
+      );
+      for (final invalid in ['.', '-.', '..5', '3..', '.5.', '1./2', '.√2']) {
+        expect(QuadraticSurd.tryParse(invalid), isNull, reason: invalid);
+      }
+    });
+
     test('reads a double as the decimal it was written as', () {
       expect(QuadraticSurd.fromDouble(0.1), q(1, 10));
       expect(QuadraticSurd.fromDouble(-2.5), q(-5, 2));

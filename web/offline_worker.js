@@ -10,7 +10,8 @@
 //
 // Bump CACHE when this file's caching logic changes; content updates need no
 // bump because they are fetched from the network anyway.
-const CACHE = 'matriks-offline-v1';
+const CACHE_PREFIX = 'matriks-offline-';
+const CACHE = `${CACHE_PREFIX}v1`;
 
 // Files the browser fetches outside the resource timeline (manifest, icons).
 const SHELL = [
@@ -32,8 +33,12 @@ self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
+      // Other apps on the same origin (GitHub Pages serves every project of
+      // a user from one) keep their caches; only older Matriks ones go.
       for (const name of await caches.keys()) {
-        if (name !== CACHE) await caches.delete(name);
+        if (name.startsWith(CACHE_PREFIX) && name !== CACHE) {
+          await caches.delete(name);
+        }
       }
       await self.clients.claim();
     })(),

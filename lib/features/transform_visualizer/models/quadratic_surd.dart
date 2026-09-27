@@ -140,6 +140,19 @@ class QuadraticSurd implements Comparable<QuadraticSurd> {
     return '$factor√2$divisor';
   }
 
+  static final _leadingPoint = RegExp(r'^([+-]?)\.(\d+)$');
+  static final _trailingPoint = RegExp(r'^([+-]?\d+)\.$');
+
+  /// `.5`, `-.5` and `3.` as `0.5`, `-0.5` and `3`: decimals the fields
+  /// accepted when they were parsed as doubles, which [Rational.tryParse]
+  /// does not read.
+  static String _completeDecimal(String text) {
+    final leading = _leadingPoint.firstMatch(text);
+    if (leading != null) return '${leading[1]}0.${leading[2]}';
+    final trailing = _trailingPoint.firstMatch(text);
+    return trailing != null ? trailing[1]! : text;
+  }
+
   static final _surdPattern = RegExp(
     r'^(?:([+-]?[0-9.]+(?:/[0-9]+)?)([+-]))?([+-]?)([0-9.]*)√2(?:/([0-9]+))?$',
   );
@@ -154,7 +167,7 @@ class QuadraticSurd implements Comparable<QuadraticSurd> {
         .replaceAll('−', '-')
         .replaceAll(',', '.');
     if (!text.contains('√')) {
-      final value = Rational.tryParse(text);
+      final value = Rational.tryParse(_completeDecimal(text));
       return value == null ? null : QuadraticSurd(value);
     }
     final match = _surdPattern.firstMatch(text);
@@ -162,7 +175,7 @@ class QuadraticSurd implements Comparable<QuadraticSurd> {
     var rational = Rational.zero;
     var negativeRoot = match.group(3) == '-';
     if (match.group(1) != null) {
-      final parsed = Rational.tryParse(match.group(1)!);
+      final parsed = Rational.tryParse(_completeDecimal(match.group(1)!));
       if (parsed == null) return null;
       rational = parsed;
       if (match.group(2) == '-') negativeRoot = !negativeRoot;
@@ -170,7 +183,7 @@ class QuadraticSurd implements Comparable<QuadraticSurd> {
     final factorText = match.group(4)!;
     final factor = factorText.isEmpty
         ? Rational.one
-        : Rational.tryParse(factorText);
+        : Rational.tryParse(_completeDecimal(factorText));
     if (factor == null) return null;
     var root = factor;
     final divisorText = match.group(5);
