@@ -1,7 +1,93 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matriks/core/widgets/math_text.dart';
+import 'package:matriks/features/step_player/step_text.dart';
 import 'package:matriks/l10n/generated/app_localizations.dart';
 import 'package:matrix_engine/matrix_engine.dart';
+
+/// One lesson for each kind of exact eigen step.
+Map<String, StepSolution> _exactEigenLessons() => {
+  for (final (label, rows) in [
+    (
+      'eigen-2x2-complex-surd',
+      [
+        [1, -5],
+        [1, 1],
+      ],
+    ),
+    (
+      'eigen-2x2-defective',
+      [
+        [2, 1],
+        [0, 2],
+      ],
+    ),
+    (
+      'eigen-3x3-irrational-pair',
+      [
+        [3, 0, 0],
+        [0, 0, 2],
+        [0, 1, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-complex-pair',
+      [
+        [2, 0, 0],
+        [0, 0, -1],
+        [0, 1, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-cardano',
+      [
+        [0, 1, 0],
+        [0, 0, 1],
+        [2, 0, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-cardano-surd',
+      [
+        [0, 1, 0],
+        [0, 0, 1],
+        [-1, -1, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-trig',
+      [
+        [0, 1, 0],
+        [0, 0, 1],
+        [-1, 3, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-trig-arccos',
+      [
+        [0, 1, 0],
+        [0, 0, 1],
+        [-7, 7, 0],
+      ],
+    ),
+    (
+      'eigen-3x3-eigenspace',
+      [
+        [2, 0, 1],
+        [0, 2, 0],
+        [0, 0, 5],
+      ],
+    ),
+    (
+      'eigen-3x3-defective',
+      [
+        [2, 1, 0],
+        [0, 2, 0],
+        [0, 0, 2],
+      ],
+    ),
+  ])
+    label: EigenSolver.solve(Matrix.fromInts(rows)),
+};
 
 /// Step explanations are prose, not TeX. Anything a solver puts into
 /// `explanationParams` reaches the reader through [readableMathProse], so no
@@ -122,6 +208,7 @@ void main() {
           [0, 1, 1],
         ]),
       ),
+      ..._exactEigenLessons(),
       'lu': LUDecompositionSolver.solve(
         Matrix.fromInts([
           [0, 2, 1],
@@ -314,6 +401,7 @@ void main() {
           [-4, 3],
         ]),
       ),
+      ..._exactEigenLessons(),
     };
 
     solutions.forEach((label, solution) {
@@ -339,6 +427,35 @@ void main() {
         }
       });
     });
+  });
+
+  group('Exact eigen lessons read as prose in every language', () {
+    // Irrational, complex and cubic eigenvalues reach the step text as plain
+    // text (√, ±, i) or as TeX that readableMathProse supports; either way
+    // the reader never sees a command, a caret or an approximation.
+    for (final locale in AppLocalizations.supportedLocales) {
+      test(locale.languageCode, () {
+        final l10n = lookupAppLocalizations(locale);
+        _exactEigenLessons().forEach((label, solution) {
+          for (final step in solution.steps) {
+            for (final (key, params) in [
+              (step.titleKey, step.titleParams),
+              (step.explanationKey, step.explanationParams),
+            ]) {
+              final text = readableMathProse(
+                localizedStepText(l10n, key, params),
+              );
+              final reason = '$label · $key: $text';
+              expect(text, isNot(key), reason: reason);
+              expect(text, isNot(contains(r'\')), reason: reason);
+              expect(text, isNot(contains('^')), reason: reason);
+              expect(text, isNot(contains('≈')), reason: reason);
+              expect(text, isNot(matches(RegExp(r'\d\.\d'))), reason: reason);
+            }
+          }
+        });
+      });
+    }
   });
 
   group('Eigenvector description never subtracts a negative eigenvalue', () {

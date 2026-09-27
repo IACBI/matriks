@@ -384,7 +384,9 @@ void main() {
           [0, 2],
         ]),
       );
-      expect(repeated.completeness, ResultCompleteness.partial);
+      // Defective, but the whole (one-dimensional) eigenspace is given, so
+      // nothing is missing; the note says why there is no eigenbasis.
+      expect(repeated.completeness, ResultCompleteness.complete);
       await show(repeated);
       expect(find.text(l10n.eigenBasisScope), findsOneWidget);
     },

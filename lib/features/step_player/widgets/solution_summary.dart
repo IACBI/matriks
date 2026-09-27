@@ -56,14 +56,11 @@ class SolutionStatus extends StatelessWidget {
           ],
         ),
         if (eigen != null) ...[
-          if (eigen.hasComplexEigenvalues)
-            Text(l.complexScope)
-          else if (solution.accuracy == ResultAccuracy.approximate)
-            Text(l.eigenPrecision),
-          if (solution.initialMatrix.rows == 3) Text(l.eigenScope),
-          // Distinct eigenvalues have one-dimensional eigenspaces, so the
-          // vector shown is already a basis; only a repeated one may not be.
-          if (eigen.realEigenpairs.any((p) => p.algebraicMultiplicity > 1))
+          if (eigen.hasComplexEigenvalues) Text(l.eigenComplexNote),
+          if (eigen.eigenpairs.any((p) => p.eigenvalue.degree == 3))
+            Text(l.eigenCubicNote),
+          // Too few eigenvectors is a property of A, stated as such.
+          if (eigen.eigenpairs.any((p) => p.isDefective))
             Text(l.eigenBasisScope),
         ],
       ],
@@ -111,15 +108,36 @@ class SolutionSummary extends StatelessWidget {
               // would only repeat it, with cramped fractions.
               // Separate parts (each eigenpair; P, L and U) sit side by side
               // when they fit and stack on a narrow screen.
-              if (solution.resultLatex != null && solution.result is! Matrix)
+              // The engine's result for a system with no solution is English
+              // prose; the interface says it in the learner's language.
+              if (solution.result case LinearSystemResult(
+                type: LinearSystemType.inconsistent,
+              ))
+                Text(
+                  l.systemNoSolution,
+                  style: Theme.of(context).textTheme.titleLarge,
+                )
+              else if (solution.resultLatex != null &&
+                  solution.result is! Matrix)
                 Wrap(
                   spacing: 32,
                   runSpacing: 12,
                   children: [
                     for (final part in solution.resultLatex!.split(r' \quad '))
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: MathText(part, fontSize: 24),
+                      // "λ = … ⟹ v = …" breaks after the arrow when it does
+                      // not fit, so a long exact λ (Cardano's formula on a
+                      // phone) cannot push its vector out of sight.
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          for (final piece in _splitAtImplies(part))
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: MathText(piece, fontSize: 24),
+                            ),
+                        ],
                       ),
                   ],
                 ),
@@ -217,6 +235,17 @@ class ResultChecks extends StatelessWidget {
   }
 }
 
+/// `a \implies b` as `a \implies` and `b`; anything else unchanged.
+List<String> _splitAtImplies(String latex) {
+  const arrow = r' \implies ';
+  final at = latex.indexOf(arrow);
+  if (at < 0) return [latex];
+  return [
+    '${latex.substring(0, at)} \\implies',
+    latex.substring(at + arrow.length),
+  ];
+}
+
 /// Opens a 2×2 eigen problem in the transformation view, where the
 /// eigenvectors are the directions the grid only stretches.
 class TransformLink extends StatelessWidget {
@@ -230,14 +259,21 @@ class TransformLink extends StatelessWidget {
     if (solution.operationKey != 'op_eigen' || a.rows != 2 || a.cols != 2) {
       return null;
     }
+    final limit = Rational.fromInt(1000);
     final values = [
       for (var r = 0; r < 2; r++)
-        for (var c = 0; c < 2; c++) a.get(r, c).toDouble(),
+        for (var c = 0; c < 2; c++) a.get(r, c),
     ];
-    if (values.any((v) => !v.isFinite || v.abs() > 1000)) return null;
+    if (values.any((v) => v.abs() > limit)) return null;
     return TransformLink(
       key: const ValueKey('transform-link'),
-      matrix: TransformMatrix(values[0], values[1], values[2], values[3]),
+      // Exact, so 1/3 arrives as 1/3 rather than 0.3333333333333333.
+      matrix: TransformMatrix.fromRationals(
+        values[0],
+        values[1],
+        values[2],
+        values[3],
+      ),
     );
   }
 

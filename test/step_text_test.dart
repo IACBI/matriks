@@ -147,6 +147,27 @@ List<StepSolution> _solutions() => [
       [1, 3, 0],
     ]),
   ),
+  // Defective, a full repeated eigenspace, and a cubic with one real root.
+  EigenSolver.solve(
+    _m([
+      [2, 1],
+      [0, 2],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [2, 0, 1],
+      [0, 2, 0],
+      [0, 0, 5],
+    ]),
+  ),
+  EigenSolver.solve(
+    _m([
+      [0, 1, 0],
+      [0, 0, 1],
+      [2, 0, 0],
+    ]),
+  ),
   EigenSolver.solve(
     Matrix([
       [Rational.parse('1${'0' * 30}'), Rational.one, Rational.zero],

@@ -133,8 +133,12 @@ class MatrixCellWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(color: borderColor, width: borderWidth),
       ),
+      // Badges sit on the cell's top-right corner, over its border, so a
+      // value as wide as the cell (a long fraction in a contradiction row)
+      // is never covered by one.
       child: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
@@ -171,8 +175,8 @@ class MatrixCellWidget extends StatelessWidget {
           // has its own confirmation badge in the same corner.
           if (highlight?.badgeText != null && !isZeroResult)
             Positioned(
-              top: 2,
-              right: 4,
+              top: -8,
+              right: -6,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                 decoration: BoxDecoration(
@@ -194,8 +198,8 @@ class MatrixCellWidget extends StatelessWidget {
           // Stable zero-result confirmation.
           if (isZeroResult)
             Positioned(
-              top: 2,
-              right: 3,
+              top: -8,
+              right: -6,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                 decoration: BoxDecoration(

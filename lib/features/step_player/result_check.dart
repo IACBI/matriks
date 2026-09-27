@@ -144,41 +144,70 @@ List<ResultCheck> resultChecks(StepSolution solution, AppLocalizations l) {
         ),
       ];
     case 'op_eigen' when result is EigenResult:
-      // Only exact pairs: a rounded eigenvalue gives Av ≈ λv by design.
-      return [
-        for (final (index, pair) in result.realEigenpairs.indexed)
-          if (solution.accuracy == ResultAccuracy.exact ||
-              _isExactRoot(a, pair.eigenvalue))
-            () {
-              final v = _column(pair.eigenvector);
-              final av = _product(a, v);
-              final lv = _column([
-                for (final e in pair.eigenvector) e * pair.eigenvalue,
-              ]);
-              // λv written as mathematicians do: v, -v, 3v.
-              final lambda = pair.eigenvalue == Rational.one
-                  ? ''
-                  : pair.eigenvalue == Rational.minusOne
-                  ? '-'
-                  : '${pair.eigenvalue.toLatex()}\\,';
-              return ResultCheck(
-                description: l.checkEigen,
-                latex:
-                    'A\\mathbf{v}_{${index + 1}} = ${av.toLatex()} = $lambda\\mathbf{v}_{${index + 1}}',
-                holds: av == lv,
-              );
-            }(),
-      ];
+      return _eigenChecks(a, result, l);
   }
   return const [];
 }
 
-bool _isExactRoot(Matrix a, Rational lambda) => _cofactorDeterminant(
-  Matrix([
-    for (var r = 0; r < a.rows; r++)
-      [
-        for (var c = 0; c < a.cols; c++)
-          r == c ? a.get(r, c) - lambda : a.get(r, c),
-      ],
-  ]),
-).isZero;
+/// Av = λv for every basis vector of every eigenpair, rational or not.
+///
+/// Each product is recomputed here from A and v in the eigenvalue's field
+/// Q(λ) = Q[x]/(m), where λ is the class of x: exact arithmetic that proves
+/// the identity for every root of m at once, without reading anything the
+/// solver concluded. A zero vector never passes.
+List<ResultCheck> _eigenChecks(
+  Matrix a,
+  EigenResult result,
+  AppLocalizations l,
+) {
+  final checks = <ResultCheck>[];
+  for (final (i, pair) in result.eigenpairs.indexed) {
+    final value = pair.eigenvalue;
+    final field = NumberField(value.minimalPolynomial);
+    final lambda = field.generator;
+    final rational = value.rationalValue;
+    final symbol = '\\lambda_{${i + 1}}';
+    for (final v in pair.eigenspaceBasis) {
+      final k = checks.length + 1;
+      final av = [
+        for (var r = 0; r < a.rows; r++)
+          [for (var c = 0; c < a.cols; c++) field.rational(a.get(r, c)) * v[c]]
+              .fold(field.zero, (sum, e) => sum + e),
+      ];
+      final lv = [for (final e in v) lambda * e];
+      final holds =
+          v.any((e) => !e.isZero) &&
+          av.length == lv.length &&
+          [for (var r = 0; r < av.length; r++) av[r] == lv[r]].every((h) => h);
+      final String avLatex;
+      final String scale;
+      if (rational != null) {
+        avLatex = _column([for (final e in av) e[0]]).toLatex();
+        // λv written as mathematicians do: v, -v, 3v.
+        scale = rational == Rational.one
+            ? ''
+            : rational == Rational.minusOne
+            ? '-'
+            : '${rational.toLatex()}\\,';
+      } else {
+        final entries = [
+          for (final e in av)
+            value.elementLatex(
+              e,
+              symbol: value.degree == 3 ? symbol : r'\lambda',
+            ),
+        ].join(r' \\ ');
+        avLatex = '\\begin{pmatrix}$entries\\end{pmatrix}';
+        scale = '$symbol\\,';
+      }
+      checks.add(
+        ResultCheck(
+          description: l.checkEigen,
+          latex: 'A\\mathbf{v}_{$k} = $avLatex = $scale\\mathbf{v}_{$k}',
+          holds: holds,
+        ),
+      );
+    }
+  }
+  return checks;
+}

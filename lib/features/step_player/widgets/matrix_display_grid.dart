@@ -24,7 +24,9 @@ import '../../../core/widgets/slider_while_shown.dart';
 /// that reserves room for its cell expression, so the matrix jumps between
 /// steps. The player measures the whole solution once and passes this.
 class MatrixLayoutHint {
-  /// Widest numerator, denominator or decimal text in any step.
+  /// Widest numerator, denominator or decimal text in any step. Beyond the
+  /// width at which a cell stops growing this is a lower bound (see
+  /// [layoutLength]).
   final int minimumDigits;
 
   /// Some step shows an arithmetic expression inside a cell.
@@ -87,12 +89,7 @@ int _widestEntry(MatrixSnapshot snapshot, bool decimal) {
       final value = snapshot.get(r, c);
       digits = math.max(
         digits,
-        decimal
-            ? decimalWidth(value)
-            : math.max(
-                value.num.toString().length,
-                value.den.toString().length,
-              ),
+        decimal ? decimalWidth(value) : fractionWidth(value),
       );
     }
   }
@@ -180,6 +177,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   final Map<(int, int, bool), List<Widget>> _stageRows = {};
   final ScrollController _matrixScroll = ScrollController();
   (int, int)? _followedColumn;
+  Object? _revealedStep;
 
   double _cellWidth = 88;
   double _cellHeight = 64;
@@ -442,15 +440,20 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                 alignment: WrapAlignment.center,
                 spacing: 16,
                 runSpacing: 8,
+                // Each entry scrolls on its own when a long fraction is
+                // wider than a phone at large text.
                 children: [
-                  MathText(
-                    'A_{${trans.row + 1},${trans.col + 1}} = ${trans.left.toLatex()}',
-                    fontSize: 20,
-                  ),
-                  MathText(
-                    'B_{${trans.row + 1},${trans.col + 1}} = ${trans.right.toLatex()}',
-                    fontSize: 20,
-                  ),
+                  for (final (name, value) in [
+                    ('A', trans.left),
+                    ('B', trans.right),
+                  ])
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: MathText(
+                        '${name}_{${trans.row + 1},${trans.col + 1}} = ${value.toLatex()}',
+                        fontSize: 20,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -501,6 +504,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                 // Numeric cells change at column boundaries, not on every frame.
                 final stage = (progress * stageCount).floor();
                 _followActiveColumn(trans, progress, reduceMotion, changing);
+                _revealHighlights();
                 final term = trans is MatrixElementMultiplicationTransformation
                     ? (progress * trans.rowElements.length).floor()
                     : 0;
@@ -801,7 +805,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         ((progress * widget.snapshot.rows * widget.snapshot.cols).floor() %
                 widget.snapshot.cols)
             .clamp(0, widget.snapshot.cols - 1),
-      _ => 0,
+      _ => _highlightedColumns?.$1 ?? 0,
     };
     final token = (widget.animationRevision, column);
     if (_followedColumn == token) return;
@@ -814,12 +818,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         return;
       }
       final position = _matrixScroll.position;
-      final divider = widget.snapshot.augmentedColIndex;
-      final left =
-          64 * MediaQuery.textScalerOf(context).scale(1) +
-          (_reserveSwapLane ? 20 : 0) +
-          column * cellWidth +
-          (divider != null && column >= divider ? 10 : 0);
+      final left = _columnLeft(column);
       final right = left + cellWidth;
       var offset = position.pixels;
       if (left < offset) offset = left;
@@ -837,6 +836,61 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
           curve: Curves.easeInOut,
         );
       }
+    });
+  }
+
+  /// Left edge of [column] inside the horizontally scrolling matrix.
+  double _columnLeft(int column) {
+    final divider = widget.snapshot.augmentedColIndex;
+    return 64 * MediaQuery.textScalerOf(context).scale(1) +
+        (_reserveSwapLane ? 20 : 0) +
+        column * cellWidth +
+        (divider != null && column >= divider ? 10 : 0);
+  }
+
+  /// The first and last columns this step highlights.
+  (int, int)? get _highlightedColumns {
+    if (widget.highlights.isEmpty) return null;
+    final columns = [for (final h in widget.highlights) h.col];
+    return (columns.reduce(math.min), columns.reduce(math.max));
+  }
+
+  /// A step that is not animating (static steps, a paused or finished
+  /// lesson) opens scrolled to the cells it is about. On a phone the matrix
+  /// [I | A⁻¹] or a contradiction row [0 … 0 | b] is wider than the screen,
+  /// and the highlighted block would otherwise start out of sight. Once per
+  /// step, so a learner's own scrolling is left alone.
+  void _revealHighlights() {
+    if (_running) return;
+    final range = _highlightedColumns;
+    final token = (widget.stepIndex, widget.animationRevision, widget.snapshot);
+    if (range == null || _revealedStep == token) return;
+    _revealedStep = token;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _revealedStep != token || !_matrixScroll.hasClients) {
+        return;
+      }
+      final position = _matrixScroll.position;
+      final viewport = position.viewportDimension;
+      final left = _columnLeft(range.$1);
+      final right = _columnLeft(range.$2) + cellWidth;
+      var offset = position.pixels;
+      if (right - left <= viewport) {
+        if (right > offset + viewport) offset = right - viewport;
+        if (left < offset) offset = left;
+      } else {
+        // A whole row that does not fit is centred on the cell the step is
+        // about: its pivot, or the entry that carries a badge (the b of a
+        // contradiction row). Without one, its start.
+        final key = widget.highlights
+            .where((h) => h.type == HighlightType.pivot || h.badgeText != null)
+            .firstOrNull;
+        offset = key == null
+            ? left
+            : _columnLeft(key.col) + cellWidth / 2 - viewport / 2;
+      }
+      offset = offset.clamp(0.0, position.maxScrollExtent);
+      if ((offset - position.pixels).abs() >= 1) _matrixScroll.jumpTo(offset);
     });
   }
 
@@ -1266,6 +1320,15 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
       );
     }
     if (trans is LinearSystemTransformation) {
+      final l10n = AppLocalizations.of(context);
+      // The engine's summary for a system with no solution is English prose.
+      if (trans.type == LinearSystemType.inconsistent && l10n != null) {
+        return Text(
+          l10n.systemNoSolution,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
+      }
       return MathText(trans.summaryLatex, fontSize: 20);
     }
     if (trans is EigenTransformation) {

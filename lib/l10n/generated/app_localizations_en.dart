@@ -84,7 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get topicEigenDesc =>
-      'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.';
+      'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, all computed exactly, including irrational and complex ones.';
 
   @override
   String get topicTransform2d => '2D Geometric Transformation';
@@ -506,17 +506,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eigen_complex_desc(Object poly, Object roots) {
-    return 'The discriminant is negative for $poly. The eigenvalues are complex conjugates: $roots.';
+    return 'The discriminant of $poly is negative, so the eigenvalues are complex conjugates. Exactly, λ = $roots.';
   }
 
   @override
   String get eigen_roots_title =>
       'Eigenvalues (Roots of Characteristic Equation)';
-
-  @override
-  String eigen_roots_approx_desc(Object poly, Object roots) {
-    return 'Solving $poly gives approximate real eigenvalues, rounded to three decimal places: $roots.';
-  }
 
   @override
   String eigen_roots_desc(Object poly, Object roots) {
@@ -539,8 +534,62 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String eigen_irrational_desc(Object poly) {
-    return 'The roots of $poly could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.';
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots) {
+    return 'Solving $poly: the discriminant $disc is not a perfect square, so the eigenvalues are irrational. Exactly, λ = $roots.';
+  }
+
+  @override
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots) {
+    return 'Solving $poly: over the rationals it factors as $factors = 0. The quadratic factor has no rational root, so the eigenvalues are exactly $roots.';
+  }
+
+  @override
+  String eigen_roots_cardano_desc(Object poly) {
+    return '$poly has no rational root and a negative discriminant: one real eigenvalue and a complex conjugate pair. Cardano\'s formula gives all three exactly, as written above the matrix.';
+  }
+
+  @override
+  String eigen_roots_trig_desc(Object poly) {
+    return '$poly has no rational root and a positive discriminant: three distinct real eigenvalues. Cardano\'s formula would need cube roots of complex numbers here, so the exact roots are written with cosines, above the matrix.';
+  }
+
+  @override
+  String eigen_vector_surd_desc(Object lambda, Object vector) {
+    return 'λ = $lambda is irrational, so the grid still shows A and the exact A − λI is written above it. Solving (A − λI)v = 0 exactly gives $vector.';
+  }
+
+  @override
+  String eigen_vector_complex_desc(Object lambda, Object vector) {
+    return 'λ = $lambda is complex, so the grid still shows A and the exact A − λI is written above it. Solving (A − λI)v = 0 with complex numbers gives $vector; the conjugate eigenvalue has the conjugate vector.';
+  }
+
+  @override
+  String eigen_vector_cubic_title(Object index) {
+    return 'Eigenvector for λ_$index';
+  }
+
+  @override
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector) {
+    return 'λ_$index is a root of the irreducible cubic $poly = 0; its exact value is above the matrix, which still shows A. Solving (A − λI)v = 0 in terms of λ gives $vector, one formula that holds for every root of the cubic.';
+  }
+
+  @override
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  ) {
+    return 'λ = $lambda is a root of multiplicity $multiplicity, and the null space of A − λI has the same dimension. A basis is $vectors; every nonzero combination of them is an eigenvector.';
+  }
+
+  @override
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  ) {
+    return 'λ = $lambda is a root of multiplicity $algebraic (algebraic multiplicity), but the null space of A − λI has dimension only $geometric (geometric multiplicity): $vectors. A has too few independent eigenvectors, so it is defective and cannot be diagonalized.';
   }
 
   @override
@@ -1091,20 +1140,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resultUnsupported => 'Unsupported';
 
   @override
-  String get eigenPrecision =>
-      'Eigenvalues are rounded to three decimals; vectors are approximate directions, not exact null-space solutions.';
-
-  @override
-  String get eigenScope =>
-      '3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.';
-
-  @override
   String get eigenBasisScope =>
-      'One representative vector per eigenvalue is shown; a full eigenspace basis is not computed.';
+      'A is defective: an eigenvalue has fewer independent eigenvectors than its multiplicity, so A cannot be diagonalized.';
 
   @override
-  String get complexScope =>
-      'Complex eigenvectors are not supported. The imaginary part is rounded to two decimals.';
+  String get eigenComplexNote =>
+      'Complex eigenvalues of a real matrix come in conjugate pairs, and so do their eigenvectors.';
+
+  @override
+  String get eigenCubicNote =>
+      'The characteristic polynomial has an irreducible cubic factor. Its roots are written exactly with Cardano\'s formula or with cosines, and their eigenvectors as polynomials in λ.';
 
   @override
   String get guideAddSource => 'Match the same position in A and B.';
@@ -1392,26 +1437,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newQuestions => 'New questions';
 
   @override
-  String eigen_vector_approx_title(Object index, Object lambda) {
-    return 'Approximate vector for λ_$index ≈ $lambda';
-  }
-
-  @override
-  String eigen_vector_approx_desc(Object lambda, Object vector) {
-    return 'Using λ ≈ $lambda, an approximate direction is $vector. The rounded value does not give an exact null-space solution.';
-  }
-
-  @override
   String get spaceKey => 'Space';
 
   @override
   String matrixCellPendingLabel(int row, int column) {
     return 'Row $row, column $column, not calculated yet';
-  }
-
-  @override
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
-    return 'Solving $poly gives the real eigenvalue $roots and the complex conjugate pair λ ≈ $complex. Only the real eigenvalue has a real eigenvector.';
   }
 
   @override
@@ -1516,4 +1546,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDetRecapResult => 'The difference is the determinant.';
+
+  @override
+  String get mathRepeating => 'repeating';
+
+  @override
+  String get systemNoSolution => 'No solution: the system is inconsistent';
 }

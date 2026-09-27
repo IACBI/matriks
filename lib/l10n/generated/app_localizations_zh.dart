@@ -76,7 +76,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topicEigen => '特征值与特征向量';
 
   @override
-  String get topicEigenDesc => '探索 2×2 与 3×3 矩阵的特征值和特征向量；有理根精确求得。';
+  String get topicEigenDesc => '探索 2×2 与 3×3 矩阵的特征值和特征向量，全部精确计算，无理数和复数也不例外。';
 
   @override
   String get topicTransform2d => '二维几何变换';
@@ -470,16 +470,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String eigen_complex_desc(Object poly, Object roots) {
-    return '$poly 的判别式为负。近似共轭根：$roots。';
+    return '$poly 的判别式为负，所以特征值是一对共轭复数。精确值为 λ = $roots。';
   }
 
   @override
   String get eigen_roots_title => '特征方程的根';
-
-  @override
-  String eigen_roots_approx_desc(Object poly, Object roots) {
-    return '求解 $poly 得到保留三位小数的近似实特征值：$roots。';
-  }
 
   @override
   String eigen_roots_desc(Object poly, Object roots) {
@@ -502,8 +497,62 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String eigen_irrational_desc(Object poly) {
-    return '系数过大，无法可靠地分离 $poly 的根。实根或复根存在，但本求解器不计算它们。';
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots) {
+    return '求解 $poly：判别式 $disc 不是完全平方数，所以特征值是无理数。精确值为 λ = $roots。';
+  }
+
+  @override
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots) {
+    return '求解 $poly：在有理数上可分解为 $factors = 0。二次因式没有有理根，所以特征值的精确值为 $roots。';
+  }
+
+  @override
+  String eigen_roots_cardano_desc(Object poly) {
+    return '$poly 没有有理根，判别式为负：有一个实特征值和一对共轭复特征值。用 Cardano 方法可以得到这三个根的精确值，写在矩阵上方。';
+  }
+
+  @override
+  String eigen_roots_trig_desc(Object poly) {
+    return '$poly 没有有理根，判别式为正：有三个不同的实特征值。此时 Cardano 方法需要对复数开立方，因此精确根用 cos 表示，写在矩阵上方。';
+  }
+
+  @override
+  String eigen_vector_surd_desc(Object lambda, Object vector) {
+    return 'λ = $lambda 是无理数，所以表格中仍显示 A，精确的 A − λI 写在上方。精确求解 (A − λI)v = 0 得到 $vector。';
+  }
+
+  @override
+  String eigen_vector_complex_desc(Object lambda, Object vector) {
+    return 'λ = $lambda 是复数，所以表格中仍显示 A，精确的 A − λI 写在上方。用复数求解 (A − λI)v = 0 得到 $vector；共轭特征值对应共轭向量。';
+  }
+
+  @override
+  String eigen_vector_cubic_title(Object index) {
+    return 'λ_$index 对应的特征向量';
+  }
+
+  @override
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector) {
+    return 'λ_$index 是三次方程 $poly = 0 的一个根，这个三次式在有理数上不能分解；它的精确值写在矩阵上方，表格中仍显示 A。用 λ 表示求解 (A − λI)v = 0 得到 $vector，这个结果对该三次方程的每个根都成立。';
+  }
+
+  @override
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  ) {
+    return 'λ = $lambda 是 $multiplicity 重根，A − λI 的零空间维数与之相同。一组基为 $vectors；这个零空间中每个非零向量都是特征向量。';
+  }
+
+  @override
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  ) {
+    return 'λ = $lambda 的代数重数为 $algebraic，但 A − λI 的零空间维数（几何重数）只有 $geometric：$vectors。A 的线性无关特征向量太少，因此不能对角化。';
   }
 
   @override
@@ -1025,16 +1074,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resultUnsupported => '不支持';
 
   @override
-  String get eigenPrecision => '特征值保留三位小数；向量表示近似方向，并非零空间的精确解。';
+  String get eigenBasisScope => 'A 不能对角化：有一个特征值的线性无关特征向量个数少于它的重数。';
 
   @override
-  String get eigenScope => '3×3 的有理根为精确值；其他实根四舍五入到三位小数。系数过大时，部分根可能无法求出。';
+  String get eigenComplexNote => '实矩阵的复特征值成对共轭出现，它们的特征向量也是如此。';
 
   @override
-  String get eigenBasisScope => '每个特征值仅显示一个代表向量，不计算完整的特征空间基。';
-
-  @override
-  String get complexScope => '不支持复特征向量。虚部保留两位小数。';
+  String get eigenCubicNote =>
+      '特征多项式有一个在有理数上不能分解的三次因式。它的根用 Cardano 方法或 cos 精确表示，特征向量则写成 λ 的多项式。';
 
   @override
   String get guideAddSource => '对应 A 和 B 中的相同位置。';
@@ -1273,26 +1320,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newQuestions => '新题目';
 
   @override
-  String eigen_vector_approx_title(Object index, Object lambda) {
-    return 'λ_$index ≈ $lambda 的近似向量';
-  }
-
-  @override
-  String eigen_vector_approx_desc(Object lambda, Object vector) {
-    return '使用 λ ≈ $lambda 得到近似方向 $vector，它不是零空间的精确解。';
-  }
-
-  @override
   String get spaceKey => '空格';
 
   @override
   String matrixCellPendingLabel(int row, int column) {
     return '第 $row 行，第 $column 列，尚未计算';
-  }
-
-  @override
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots) {
-    return '求解 $poly 得到实特征值 $roots 和一对共轭复特征值 λ ≈ $complex。只有实特征值有实特征向量。';
   }
 
   @override
@@ -1385,4 +1417,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get guideDetRecapResult => '差值就是行列式。';
+
+  @override
+  String get mathRepeating => '重复';
+
+  @override
+  String get systemNoSolution => '方程组无解';
 }

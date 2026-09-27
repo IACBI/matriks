@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @topicEigenDesc.
   ///
   /// In en, this message translates to:
-  /// **'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, exact where the roots are rational.'**
+  /// **'Explore eigenvalues and eigenvectors of 2×2 and 3×3 matrices, all computed exactly, including irrational and complex ones.'**
   String get topicEigenDesc;
 
   /// No description provided for @topicTransform2d.
@@ -874,7 +874,7 @@ abstract class AppLocalizations {
   /// No description provided for @eigen_complex_desc.
   ///
   /// In en, this message translates to:
-  /// **'The discriminant is negative for {poly}. The eigenvalues are complex conjugates: {roots}.'**
+  /// **'The discriminant of {poly} is negative, so the eigenvalues are complex conjugates. Exactly, λ = {roots}.'**
   String eigen_complex_desc(Object poly, Object roots);
 
   /// No description provided for @eigen_roots_title.
@@ -882,12 +882,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Eigenvalues (Roots of Characteristic Equation)'**
   String get eigen_roots_title;
-
-  /// No description provided for @eigen_roots_approx_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Solving {poly} gives approximate real eigenvalues, rounded to three decimal places: {roots}.'**
-  String eigen_roots_approx_desc(Object poly, Object roots);
 
   /// No description provided for @eigen_roots_desc.
   ///
@@ -913,11 +907,74 @@ abstract class AppLocalizations {
   /// **'For a 3x3 matrix, the characteristic equation is {poly} with trace = {trace} and det = {det}.'**
   String eigen_3x3_poly_desc(Object det, Object poly, Object trace);
 
-  /// No description provided for @eigen_irrational_desc.
+  /// No description provided for @eigen_roots_surd_desc.
   ///
   /// In en, this message translates to:
-  /// **'The roots of {poly} could not be isolated reliably for coefficients of this size. Real or complex roots exist, but this solver does not compute them.'**
-  String eigen_irrational_desc(Object poly);
+  /// **'Solving {poly}: the discriminant {disc} is not a perfect square, so the eigenvalues are irrational. Exactly, λ = {roots}.'**
+  String eigen_roots_surd_desc(Object disc, Object poly, Object roots);
+
+  /// No description provided for @eigen_roots_factored_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Solving {poly}: over the rationals it factors as {factors} = 0. The quadratic factor has no rational root, so the eigenvalues are exactly {roots}.'**
+  String eigen_roots_factored_desc(Object factors, Object poly, Object roots);
+
+  /// No description provided for @eigen_roots_cardano_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'{poly} has no rational root and a negative discriminant: one real eigenvalue and a complex conjugate pair. Cardano\'s formula gives all three exactly, as written above the matrix.'**
+  String eigen_roots_cardano_desc(Object poly);
+
+  /// No description provided for @eigen_roots_trig_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'{poly} has no rational root and a positive discriminant: three distinct real eigenvalues. Cardano\'s formula would need cube roots of complex numbers here, so the exact roots are written with cosines, above the matrix.'**
+  String eigen_roots_trig_desc(Object poly);
+
+  /// No description provided for @eigen_vector_surd_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'λ = {lambda} is irrational, so the grid still shows A and the exact A − λI is written above it. Solving (A − λI)v = 0 exactly gives {vector}.'**
+  String eigen_vector_surd_desc(Object lambda, Object vector);
+
+  /// No description provided for @eigen_vector_complex_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'λ = {lambda} is complex, so the grid still shows A and the exact A − λI is written above it. Solving (A − λI)v = 0 with complex numbers gives {vector}; the conjugate eigenvalue has the conjugate vector.'**
+  String eigen_vector_complex_desc(Object lambda, Object vector);
+
+  /// No description provided for @eigen_vector_cubic_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Eigenvector for λ_{index}'**
+  String eigen_vector_cubic_title(Object index);
+
+  /// No description provided for @eigen_vector_cubic_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'λ_{index} is a root of the irreducible cubic {poly} = 0; its exact value is above the matrix, which still shows A. Solving (A − λI)v = 0 in terms of λ gives {vector}, one formula that holds for every root of the cubic.'**
+  String eigen_vector_cubic_desc(Object index, Object poly, Object vector);
+
+  /// No description provided for @eigen_eigenspace_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'λ = {lambda} is a root of multiplicity {multiplicity}, and the null space of A − λI has the same dimension. A basis is {vectors}; every nonzero combination of them is an eigenvector.'**
+  String eigen_eigenspace_desc(
+    Object lambda,
+    Object multiplicity,
+    Object vectors,
+  );
+
+  /// No description provided for @eigen_defective_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'λ = {lambda} is a root of multiplicity {algebraic} (algebraic multiplicity), but the null space of A − λI has dimension only {geometric} (geometric multiplicity): {vectors}. A has too few independent eigenvectors, so it is defective and cannot be diagonalized.'**
+  String eigen_defective_desc(
+    Object algebraic,
+    Object geometric,
+    Object lambda,
+    Object vectors,
+  );
 
   /// No description provided for @topicLu.
   ///
@@ -1849,29 +1906,23 @@ abstract class AppLocalizations {
   /// **'Unsupported'**
   String get resultUnsupported;
 
-  /// No description provided for @eigenPrecision.
-  ///
-  /// In en, this message translates to:
-  /// **'Eigenvalues are rounded to three decimals; vectors are approximate directions, not exact null-space solutions.'**
-  String get eigenPrecision;
-
-  /// No description provided for @eigenScope.
-  ///
-  /// In en, this message translates to:
-  /// **'3×3 roots are exact when rational; other real roots are rounded to three decimals. Very large coefficients may leave roots unresolved.'**
-  String get eigenScope;
-
   /// No description provided for @eigenBasisScope.
   ///
   /// In en, this message translates to:
-  /// **'One representative vector per eigenvalue is shown; a full eigenspace basis is not computed.'**
+  /// **'A is defective: an eigenvalue has fewer independent eigenvectors than its multiplicity, so A cannot be diagonalized.'**
   String get eigenBasisScope;
 
-  /// No description provided for @complexScope.
+  /// No description provided for @eigenComplexNote.
   ///
   /// In en, this message translates to:
-  /// **'Complex eigenvectors are not supported. The imaginary part is rounded to two decimals.'**
-  String get complexScope;
+  /// **'Complex eigenvalues of a real matrix come in conjugate pairs, and so do their eigenvectors.'**
+  String get eigenComplexNote;
+
+  /// No description provided for @eigenCubicNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The characteristic polynomial has an irreducible cubic factor. Its roots are written exactly with Cardano\'s formula or with cosines, and their eigenvectors as polynomials in λ.'**
+  String get eigenCubicNote;
 
   /// No description provided for @guideAddSource.
   ///
@@ -2317,18 +2368,6 @@ abstract class AppLocalizations {
   /// **'New questions'**
   String get newQuestions;
 
-  /// No description provided for @eigen_vector_approx_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Approximate vector for λ_{index} ≈ {lambda}'**
-  String eigen_vector_approx_title(Object index, Object lambda);
-
-  /// No description provided for @eigen_vector_approx_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Using λ ≈ {lambda}, an approximate direction is {vector}. The rounded value does not give an exact null-space solution.'**
-  String eigen_vector_approx_desc(Object lambda, Object vector);
-
   /// No description provided for @spaceKey.
   ///
   /// In en, this message translates to:
@@ -2340,12 +2379,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Row {row}, column {column}, not calculated yet'**
   String matrixCellPendingLabel(int row, int column);
-
-  /// No description provided for @eigen_cubic_complex_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Solving {poly} gives the real eigenvalue {roots} and the complex conjugate pair λ ≈ {complex}. Only the real eigenvalue has a real eigenvector.'**
-  String eigen_cubic_complex_desc(Object complex, Object poly, Object roots);
 
   /// No description provided for @keyNextRow.
   ///
@@ -2508,6 +2541,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The difference is the determinant.'**
   String get guideDetRecapResult;
+
+  /// Read aloud between the fixed digits and the repeating digits of a decimal, as in 0.1 repeating 6 for 0.1666…
+  ///
+  /// In en, this message translates to:
+  /// **'repeating'**
+  String get mathRepeating;
+
+  /// Shown above the matrix and on the result screen when a linear system has no solution
+  ///
+  /// In en, this message translates to:
+  /// **'No solution: the system is inconsistent'**
+  String get systemNoSolution;
 }
 
 class _AppLocalizationsDelegate
