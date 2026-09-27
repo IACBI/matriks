@@ -649,3 +649,57 @@ Tests: the application suite and the engine suite (including the operand, all-sh
 
 Not covered: dark theme and languages other than English in the exhaustive sweep (the suite covers them elsewhere), guided (animated) mode in the sweep, and real devices.
 
+
+# Live site review and follow-ups — 2026-09-28
+
+## Outcome
+
+After the exact-values work shipped, the live site (https://iacbi.github.io/matriks/) was checked end to end, and the review turned up three interface defects and two tests that passed without testing what they describe. All were fixed in pull requests #5 and #6. Pull request #4 (Dependabot) moved `actions/upload-artifact` from v4 to v7, and #7 pinned the Ubuntu runner.
+
+## Live site check
+
+- **Files:** every page, script, icon and all 25 fonts in `FontManifest.json` answer 200.
+- **Every topic at every extreme shape:** 46 cases each at 1440 and 390 px, run with Playwright against the live address. Each case ran the guided lesson, every static step and the result: no console error, raw TeX, ≈, NaN or failed check.
+- **Five languages, light and dark:** all four tabs open with translated titles and labels, and no font is fetched from Google.
+- **Offline:** after one visit the only cache is `matriks-offline-v1` (36 entries); a reload and a new tab both work with the network off. This closes the earlier limit that offline use was untested on the live site (Chrome only).
+
+## Defects found and fixed
+
+- **Content cut at the right edge with no sign it scrolls.** Flutter draws no scrollbar for a horizontal scroll view. Measured at 320 px and at 390 px with 200% text, these overflowed silently:
+  - result formulas and checks (the L of a 5×5 LU);
+  - the formulas above the lesson matrix (L during LU, row operations, the entries being added), by up to 278 px;
+  - long terms in calculation panels, the cell sheet and the step list;
+  - the 5×5 editor at 320 px (62 px, most of the last column);
+  - the practice question matrix at 200% text.
+
+  `SidewaysScroll` now shows the bar for all of them and reserves room for it only while the content overflows. A value inside a matrix cell still shrinks and then scrolls without one, since a bar would cover it.
+- **The column of B off a phone's screen.** In multiplication it stood beside the row of A at x ≈ 823 on a 320 px screen. The two now wrap: side by side when they fit, the column under the row otherwise.
+- **Row operations did not wrap.** `splitTexTerms` read `\leftarrow` as `\left` (and `\rightarrow` as `\right`), so nothing after the arrow was split. Calculation panels did not wrap row operations, and practice options ran 97 px past their buttons at 200% text. The options now wrap between terms. Every engine and quiz formula with an arrow was checked: the new splits give valid TeX.
+- **Tests that passed without testing.** flutter_test only warns when a tap misses its widget:
+  - the accessibility test never answered the practice question at 200% text, because the option was below the screen;
+  - the practice flow tapped its topic before the scroll was laid out and hit the bottom bar's Practice tab.
+
+  Both now bring their target into view, and `test/flutter_test_config.dart` makes a missed tap fail. The suite had exactly these five misses.
+- **Earlier in the same pass:**
+  - the offline worker deleted every cache on the shared GitHub Pages origin, and now deletes only obsolete `matriks-offline-*` caches;
+  - coefficient fields rejected `.5` and `3.` after the move to exact parsing, and accept them again.
+
+## CI
+
+- Ubuntu jobs are pinned to `ubuntu-24.04`: `ubuntu-latest` moves to 26.04 from October 19, 2026, and the Linux build compiles against the system GTK and clang.
+- Deploy, tests and the apk, Linux and Windows builds pass on the pinned images.
+
+## Verification
+
+- `flutter analyze`: no issues. `flutter test`: 508 passed. Formatting is clean.
+- `tool/all_shapes_sweep_test.dart`: 63/63.
+- Each test written for a defect fails without its fix. Tests that guard behaviour meant to stay the same (a formula that fits keeps its spacing and shows no thumb) are not regression checks, and are not counted here.
+- Release web builds were checked in Chrome at 320, 390 and 1440 px before each merge, and again on the live site after deployment.
+
+## Remaining limits
+
+- Repository settings are the owner's:
+  - Dependabot alerts and the repository's secret scanning (with push protection) are off, though the repository is public; see the security review for the exact settings;
+  - auto-merge is not allowed;
+  - Codex reviews are paused by its usage limit.
+- The web runs had no screen reader and used no physical phone; 200% text was covered by widget tests, not in the browser.

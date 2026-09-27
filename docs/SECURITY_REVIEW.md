@@ -52,3 +52,16 @@ No Git history exists here to audit historical credentials. The scan excludes lo
 - Source scanner metadata: `output/security-source-scan.json`.
 - Documentation only: this report and a pointer from the prior UX report. No application code, dependencies, credentials or signing configuration changed.
 - Full analysis, full test suites and production builds were not rerun for this documentation-only review. Earlier UI build/test results are historical and are not substituted for security checks.
+
+## Deployed site and history — 2026-09-28
+
+This follow-up closes the two checks listed above as still required.
+
+- **Transport.** https://iacbi.github.io/matriks/ is served over HTTPS; `http://` answers 301 to it, and `Strict-Transport-Security: max-age=31556952` is set by GitHub Pages.
+- **Headers.** No `Content-Security-Policy`, `X-Frame-Options` or `Referrer-Policy` is sent: GitHub Pages does not allow custom headers, and the page declares no CSP `<meta>`. The app has no accounts, backend or sensitive actions, so being framed exposes nothing. A CSP could only come from a `<meta>` tag and would have to allow Flutter's WebAssembly and bootstrap scripts; it is optional hardening, not done here.
+- **Caching.** Pages sends `Cache-Control: max-age=600`. The offline worker fetches with `cache: 'no-cache'`, so online visitors still get each deployment, and since 2026-09-27 it deletes only its own obsolete caches, never another project's on the shared origin.
+- **Third-party requests.** On the live site no request goes to `fonts.gstatic.com` or `fonts.googleapis.com` in any of the five languages: fonts, CanvasKit and the app come from the site itself.
+- **History.** All 72 commits were scanned (`git log --all -p`) for GitHub, AWS, Slack, Google and OpenAI token formats and private-key headers: none found. No `.env`, key, keystore or certificate file was ever committed. As before, this cannot rule out every possible secret format.
+- **Repository settings.** Dependabot version updates are configured. The repository API (`security_and_analysis`) reports `secret_scanning`, `secret_scanning_push_protection`, `secret_scanning_non_provider_patterns`, `secret_scanning_validity_checks` and `dependabot_security_updates` as `disabled`, and Dependabot alerts are disabled too. GitHub's secret scanning partner program still checks public repositories for supported providers' token formats and notifies the provider, but that raises no alert in this repository. Enabling these settings is the owner's decision.
+
+Not covered: penetration testing, native mobile security, and the signing gaps above (Android debug signing, unsigned Windows executable), which are unchanged.
