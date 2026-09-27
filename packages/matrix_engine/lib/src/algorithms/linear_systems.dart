@@ -104,7 +104,8 @@ class LinearSystemsSolver {
         ),
       ];
 
-      final formula = '0 = ${constVal.toLatex()} \\implies \\text{False}';
+      // Language-neutral: the step's localized description says why.
+      final formula = '0 \\neq ${constVal.toLatex()}';
 
       steps.add(
         MatrixStep(

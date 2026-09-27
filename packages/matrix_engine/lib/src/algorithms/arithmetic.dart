@@ -1,12 +1,9 @@
 import '../model/matrix.dart';
 import '../model/step.dart';
 import '../rational/rational.dart';
+import 'operand.dart';
 
 class MatrixArithmeticSolver {
-  /// A negative operand needs brackets so a reader never meets "3 + -15".
-  static String _operand(Rational value) =>
-      value.isNegative ? '(${value.toLatex()})' : value.toLatex();
-
   /// Matrix Addition: C = A + B
   static StepSolution add(Matrix a, Matrix b) {
     if (a.rows != b.rows || a.cols != b.cols) {
@@ -41,7 +38,7 @@ class MatrixArithmeticSolver {
         final afterSnap = MatrixSnapshot.fromMatrix(currentResultMatrix);
 
         final formula =
-            '${_operand(valA)} + ${_operand(valB)} = ${sum.toLatex()}';
+            '${operandLatex(valA)} + ${operandLatex(valB)} = ${sum.toLatex()}';
 
         steps.add(
           MatrixStep(
@@ -125,7 +122,7 @@ class MatrixArithmeticSolver {
           cellSum = cellSum + prod;
           rowElements.add(elA);
           colElements.add(elB);
-          terms.add('(${_operand(elA)} \\cdot ${_operand(elB)})');
+          terms.add('(${operandLatex(elA)} \\cdot ${operandLatex(elB)})');
         }
 
         final beforeSnap = MatrixSnapshot.fromMatrix(currentResult);

@@ -288,12 +288,15 @@ void main() {
     }
   });
 
-  test('Eigenpairs satisfy Av = λv exactly or to their stated rounding', () {
+  test('Every eigenpair satisfies Av = λv exactly', () {
     for (var i = 0; i < rounds * 2; i++) {
       final n = 2 + i % 2;
       final a = _random(rng, n, n, fractions: i % 4 == 0);
       final solution = EigenSolver.solve(a);
       final result = solution.result as EigenResult;
+      expect(solution.accuracy, ResultAccuracy.exact);
+      expect(solution.decimalPlaces, isNull);
+      expect(solution.completeness, ResultCompleteness.complete);
       Rational charPoly(Rational lambda) => _cofactorDet(
         Matrix([
           for (var r = 0; r < n; r++)
@@ -308,40 +311,33 @@ void main() {
           for (final e in pair.eigenvector) [e],
         ]);
         expect(pair.eigenvector.any((e) => !e.isZero), isTrue);
-        final exact = charPoly(pair.eigenvalue).isZero;
-        if (exact) {
-          expect(
-            _product(a, v),
-            Matrix([
-              for (final e in pair.eigenvector) [e * pair.eigenvalue],
-            ]),
-            reason: 'Av = λv for λ = ${pair.eigenvalue} on\n$a',
-          );
-        } else {
-          // Rounded to three decimals: a true root lies within 0.0005.
-          expect(solution.accuracy, ResultAccuracy.approximate);
-          final half = Rational(1, 2000);
-          final low = charPoly(pair.eigenvalue - half);
-          final high = charPoly(pair.eigenvalue + half);
-          expect(
-            low.isZero || high.isZero || low.isNegative != high.isNegative,
-            isTrue,
-            reason: 'a root near ${pair.eigenvalue} for\n$a',
-          );
-        }
-      }
-      if (solution.completeness == ResultCompleteness.complete) {
-        // Every real root is reported: count sign changes of the
-        // characteristic polynomial against the number of pairs.
-        final values = result.realEigenpairs.map((p) => p.eigenvalue).toSet();
-        expect(values.length, result.realEigenpairs.length);
-        expect(result.hasComplexEigenvalues, isFalse);
+        expect(charPoly(pair.eigenvalue).isZero, isTrue);
         expect(
-          result.realEigenpairs.length,
-          n,
-          reason: 'distinct roots of\n$a',
+          _product(a, v),
+          Matrix([
+            for (final e in pair.eigenvector) [e * pair.eigenvalue],
+          ]),
+          reason: 'Av = λv for λ = ${pair.eigenvalue} on\n$a',
         );
       }
+      // Every eigenvalue, rational or not, is checked in its own field Q(λ).
+      var multiplicities = 0;
+      for (final pair in result.eigenpairs) {
+        multiplicities += pair.algebraicMultiplicity;
+        final field = pair.eigenvalue.field;
+        final lambda = field.generator;
+        for (final v in pair.eigenspaceBasis) {
+          expect(v.any((e) => !e.isZero), isTrue);
+          for (var r = 0; r < n; r++) {
+            var sum = field.zero;
+            for (var c = 0; c < n; c++) {
+              sum += field.rational(a.get(r, c)) * v[c];
+            }
+            expect(sum, lambda * v[r], reason: 'Av = λv on\n$a');
+          }
+        }
+      }
+      expect(multiplicities, n, reason: 'every root of\n$a');
     }
   });
 }

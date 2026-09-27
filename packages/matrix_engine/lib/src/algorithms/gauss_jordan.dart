@@ -1,5 +1,6 @@
 import '../model/matrix.dart';
 import '../model/step.dart';
+import 'operand.dart';
 
 /// Configurable options for Gauss / Gauss-Jordan elimination
 class EliminationOptions {
@@ -128,7 +129,7 @@ class GaussJordanSolver {
               targetRow: r,
               targetCol: c,
               formulaLatex:
-                  '${original.toLatex()} \\cdot ${factor.toLatex()} = ${calculated.toLatex()}',
+                  '${operandLatex(original)} \\cdot ${operandLatex(factor)} = ${calculated.toLatex()}',
               result: calculated,
             ),
           );

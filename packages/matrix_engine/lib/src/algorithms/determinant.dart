@@ -1,6 +1,7 @@
 import '../model/matrix.dart';
 import '../model/step.dart';
 import '../rational/rational.dart';
+import 'operand.dart';
 
 enum DeterminantMethod {
   auto, // 2x2: formula, 3x3: Sarrus/Cofactor, NxN: Triangularization / Row reduction
@@ -10,10 +11,6 @@ enum DeterminantMethod {
 }
 
 class DeterminantSolver {
-  /// A negative operand needs brackets so a reader never meets "-12 + -10".
-  static String _operand(Rational value) =>
-      value.isNegative ? '(${value.toLatex()})' : value.toLatex();
-
   static StepSolution solve(
     Matrix matrix, {
     DeterminantMethod method = DeterminantMethod.auto,
@@ -170,9 +167,9 @@ class DeterminantSolver {
         titleKey: 'det_sarrus_pos_title',
         explanationKey: 'det_sarrus_pos_desc',
         explanationParams: {
-          'p1': _operand(p1),
-          'p2': _operand(p2),
-          'p3': _operand(p3),
+          'p1': operandLatex(p1),
+          'p2': operandLatex(p2),
+          'p3': operandLatex(p3),
           'total': posTotal.toLatex(),
         },
         matrixBefore: snap,
@@ -192,9 +189,9 @@ class DeterminantSolver {
         titleKey: 'det_sarrus_neg_title',
         explanationKey: 'det_sarrus_neg_desc',
         explanationParams: {
-          'n1': _operand(n1),
-          'n2': _operand(n2),
-          'n3': _operand(n3),
+          'n1': operandLatex(n1),
+          'n2': operandLatex(n2),
+          'n3': operandLatex(n3),
           'total': negTotal.toLatex(),
         },
         matrixBefore: snap,
@@ -423,7 +420,7 @@ class DeterminantSolver {
         titleKey: 'det_diagonal_product_title',
         explanationKey: 'det_diagonal_product_desc',
         explanationParams: {
-          'diagonals': diagElements.map((e) => e.toLatex()).join(' \\cdot '),
+          'diagonals': diagElements.map(operandLatex).join(' \\cdot '),
           'sign': signMultiplier == Rational.one ? '' : '(-1) \\cdot ',
           'det': finalDet.toLatex(),
         },
