@@ -1,0 +1,33 @@
+# Weekly update pull requests; each still has to pass CI before it merges.
+version: 2
+updates:
+  # Includes the SHA-pinned subosito/flutter-action, which otherwise never
+  # moves.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Major versions (flutter_bloc 9, for example) change APIs and are left for
+  # a deliberate upgrade.
+  - package-ecosystem: pub
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      app:
+        patterns: ["*"]
+
+  - package-ecosystem: pub
+    directory: /packages/matrix_engine
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
