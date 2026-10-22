@@ -3,7 +3,7 @@
 
 Interactive linear algebra with exact matrix arithmetic and guided visual solutions.
 
-![Flutter 3.47.1](https://img.shields.io/badge/Flutter-3.47.1-02569B?logo=flutter&logoColor=white)
+![Flutter 3.47.7](https://img.shields.io/badge/Flutter-3.47.7-02569B?logo=flutter&logoColor=white)
 ![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
 ![Tests](https://img.shields.io/badge/tests-329%20app%20%2B%2070%20engine-success)
@@ -38,7 +38,7 @@ Know the numerical boundaries before relying on it. Most operations accept dimen
 
 ### Requirements
 
-A Flutter SDK satisfying the Dart constraint `^3.13.1` in `pubspec.yaml`. Validated against Flutter 3.47.1 / Dart 3.13.1.
+A Flutter SDK satisfying the Dart constraint `^3.13.1` in `pubspec.yaml`. Validated against Flutter 3.47.7 / Dart 3.13.5.
 
 ### Installation
 
@@ -130,7 +130,7 @@ Güvenmeden önce sayısal sınırları bilin. İşlemlerin çoğu 1–5 boyutla
 
 ### Gereksinimler
 
-`pubspec.yaml` içindeki `^3.13.1` Dart kısıtını karşılayan bir Flutter SDK. Flutter 3.47.1 / Dart 3.13.1 ile doğrulandı.
+`pubspec.yaml` içindeki `^3.13.1` Dart kısıtını karşılayan bir Flutter SDK. Flutter 3.47.7 / Dart 3.13.5 ile doğrulandı.
 
 ### Kurulum
 
