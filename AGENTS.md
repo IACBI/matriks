@@ -20,6 +20,7 @@ Before editing, read the relevant implementation and nearby tests. Use `README.m
 - `packages/matrix_engine`: independent Dart package; immutable matrices, BigInt rational arithmetic, solvers, and engine tests.
 - `test/`: application, flow, animation, and responsive/accessibility regression tests.
 - `tool/motion_benchmark_test.dart`: optional debug animation benchmark, excluded from the default test suite.
+- `packages/matrix_engine/tool/adversarial_input_benchmark_test.dart`: optional timing and exactness run of every solver on the largest inputs the editor allows (32-character cells, 5×5); run it from `packages/matrix_engine` after solver changes.
 - `tool/build_symbol_font.py`: rebuilds `assets/fonts/MatriksSymbols-Regular.ttf` (a subset of DejaVu Sans, renamed as its Bitstream Vera license requires; see `assets/fonts/LICENSE-MatriksSymbols.txt`); needs `fontTools`.
 - `tool/build_cjk_font.py`: rebuilds `assets/fonts/MatriksCJK-Regular.ttf` and `-Bold.ttf` (a Noto Sans SC subset of the CJK characters in `app_zh.arb` and the Dart sources, renamed; see `assets/fonts/LICENSE-MatriksCJK.txt`); needs `fontTools`. Rerun it whenever Chinese strings change; a test fails if a character is missing.
 
