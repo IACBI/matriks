@@ -457,13 +457,16 @@ class InstructionExplanation extends StatelessWidget {
             ),
           ),
         ),
-        if (visibleCalculations > 0) ...[
+        if (lesson.calculations.isNotEmpty) ...[
           const SizedBox(height: 12),
-          ...List.generate(visibleCalculations, (index) {
+          // Lines not revealed yet keep their space, invisible and silent,
+          // so a reveal never pushes the Details drawer and its scrubber
+          // down under the learner's finger.
+          ...List.generate(lesson.calculations.length, (index) {
             final selected =
                 phase == InstructionPhase.operation &&
                 index == start + activeCalculation;
-            return Container(
+            final line = Container(
               margin: const EdgeInsets.only(bottom: 4),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -497,6 +500,13 @@ class InstructionExplanation extends StatelessWidget {
                   ),
                 ],
               ),
+            );
+            return Visibility(
+              visible: index < visibleCalculations,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: line,
             );
           }),
         ],

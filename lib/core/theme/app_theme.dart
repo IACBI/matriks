@@ -307,7 +307,11 @@ class AppTheme {
         side: BorderSide(color: border),
         shape: shape,
         labelStyle: TextStyle(
-          fontSize: 13,
+          // 14 px medium, as labelLarge: at 13 px regular the thin stems
+          // rendered at under 4.5:1 although the colour itself is ink.
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0,
           color: ink,
           fontFamilyFallback: symbolFallback,
           // Chips fade a label that overflows its one line. On the web, a
