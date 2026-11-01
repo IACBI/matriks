@@ -6,6 +6,7 @@ import '../../step_player/views/step_player_screen.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/studio_shell.dart';
 import '../../matrix_input/views/matrix_input_screen.dart';
 import '../../settings/cubit/settings_cubit.dart';
 import '../../settings/widgets/language_menu.dart';
@@ -130,20 +131,25 @@ class _TopicsScreenState extends State<TopicsScreen> {
         .map(TopicItem.of)
         .firstOrNull;
     final browsing = query.isEmpty && _selectedCategory == null;
+    final railShown =
+        widget.onOpenSection != null && StudioShell.showsRail(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                'assets/branding/matriks_icon.png',
-                width: 32,
-                height: 32,
+            // The navigation rail already shows the icon on wide screens.
+            if (!railShown) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  'assets/branding/matriks_icon.png',
+                  width: 32,
+                  height: 32,
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
+              const SizedBox(width: 10),
+            ],
             const Flexible(
               child: Text(
                 'Matriks',
@@ -248,7 +254,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
                       Icons.auto_awesome_outlined,
                       color: scheme.primary,
                     ),
-                    title: Text(l10n.learningPath),
+                    title: Text(
+                      l10n.learningPath,
+                      style: theme.textTheme.titleMedium,
+                    ),
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
@@ -441,26 +450,27 @@ class _TopicRow extends StatelessWidget {
       ),
     );
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 8),
       // Without the button role, Windows UI Automation exposed the row as
       // plain text that a screen reader cannot activate.
       child: Semantics(
         button: true,
+        // Outlined like every other card: a white row on the light workspace
+        // has almost no contrast of its own, and a bottom rule alone bent
+        // around the rounded corners.
         child: Material(
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            side: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
           clipBehavior: Clip.antiAlias,
           color: theme.colorScheme.surface,
           child: InkWell(
             onTap: onTap,
-            child: Container(
+            child: Padding(
               padding: EdgeInsets.symmetric(
-                vertical: compact ? 12 : 20,
-                horizontal: 20,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: theme.colorScheme.outlineVariant),
-                ),
+                vertical: compact ? 12 : 18,
+                horizontal: 16,
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {

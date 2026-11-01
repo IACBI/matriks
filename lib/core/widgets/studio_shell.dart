@@ -13,6 +13,14 @@ import '../theme/app_theme.dart';
 
 class StudioShell extends StatefulWidget {
   const StudioShell({super.key});
+
+  /// Whether the shell navigates with a side rail (wide screens at moderate
+  /// text sizes) rather than the bottom bar.
+  static bool showsRail(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return media.size.width >= 960 && media.textScaler.scale(1) <= 1.5;
+  }
+
   @override
   State<StudioShell> createState() => _StudioShellState();
 }
@@ -44,8 +52,7 @@ class _StudioShellState extends State<StudioShell> {
       (Icons.transform_rounded, l.transformNav),
       (Icons.tune_rounded, l.settings),
     ];
-    final media = MediaQuery.of(context);
-    final wide = media.size.width >= 960 && media.textScaler.scale(1) <= 1.5;
+    final wide = StudioShell.showsRail(context);
     final pages = <Widget>[
       TopicsScreen(
         onOpenSection: (section) => _select(switch (section) {
@@ -114,6 +121,12 @@ class _StudioShellState extends State<StudioShell> {
                 top: false,
                 child: Material(
                   color: Theme.of(context).colorScheme.surface,
+                  // Separates the bar from white cards scrolling beneath it.
+                  shape: Border(
+                    top: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
