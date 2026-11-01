@@ -69,4 +69,79 @@ void main() {
       }
     }
   });
+
+  test('2×2 diagonal products bracket negative factors', () {
+    final steps = DeterminantSolver.solve(
+      Matrix.fromInts([
+        [-3, -2],
+        [-5, -4],
+      ]),
+    ).steps;
+    // The template writes "{a} · {d}", so each factor is an operand.
+    expect(steps[0].explanationParams, containsPair('a', '(-3)'));
+    expect(steps[0].explanationParams, containsPair('d', '(-4)'));
+    expect(steps[1].explanationParams, containsPair('b', '(-2)'));
+    expect(steps[1].explanationParams, containsPair('c', '(-5)'));
+  });
+
+  test('Characteristic equations omit zero and unit coefficients', () {
+    String poly(List<List<int>> rows) =>
+        EigenSolver.solve(Matrix.fromInts(rows)).steps
+                .expand((step) => step.explanationParams.entries)
+                .firstWhere((entry) => entry.key == 'poly')
+                .value
+            as String;
+    expect(
+      poly([
+        [0, 1],
+        [-1, 0],
+      ]),
+      r'\lambda^2 + 1 = 0',
+    );
+    expect(
+      poly([
+        [1, 0],
+        [0, 0],
+      ]),
+      r'\lambda^2 - \lambda = 0',
+    );
+    expect(
+      poly([
+        [5, 2],
+        [2, 2],
+      ]),
+      r'\lambda^2 - 7 \lambda + 6 = 0',
+    );
+    expect(
+      poly([
+        [-1, 1],
+        [0, 0],
+      ]),
+      r'\lambda^2 + \lambda = 0',
+    );
+    expect(
+      poly([
+        [2, 0, 0],
+        [0, 3, 0],
+        [0, 0, 4],
+      ]),
+      r'-\lambda^3 + 9 \lambda^2 - 26 \lambda + 24 = 0',
+    );
+    expect(
+      poly([
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 0, 0],
+      ]),
+      r'-\lambda^3 + 1 = 0',
+    );
+    expect(
+      poly([
+        [1, 2, 0],
+        [2, 1, 0],
+        [0, 0, 0],
+      ]),
+      r'-\lambda^3 + 2 \lambda^2 + 3 \lambda = 0',
+    );
+  });
 }
