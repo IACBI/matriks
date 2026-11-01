@@ -94,6 +94,8 @@ class _PredictionCardState extends State<PredictionCard> {
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
+                // Flush with the prompt and choices above instead of inset.
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 onPressed: widget.onContinue,
                 child: Text(_answer == null ? l.skip : l.continueLabel),
               ),
