@@ -703,3 +703,46 @@ After the exact-values work shipped, the live site (https://iacbi.github.io/matr
   - auto-merge is not allowed;
   - Codex reviews are paused by its usage limit.
 - The web runs had no screen reader and used no physical phone; 200% text was covered by widget tests, not in the browser.
+
+# Engineering audit — 2026-11-01
+
+## Outcome
+
+Three read-only audits (engine mathematics, application logic, security and delivery) were challenged by reproducing each finding before any change, and the resulting diff was reviewed independently. The engine audit found no wrong result: about 10,600 eigen cases and 1,500 random matrices per solver were checked exactly, and the timing benchmark passed. Two editor defects and two notation slips were fixed.
+
+## Defects found and fixed
+
+- **Undo after a resize crashed the editor.** `MatrixInputCubit.undoPreset` restored the sizes but not the selection, so after Clear → larger size → select a new cell → Undo, the next key threw `RangeError`. Undo now restores the selection with the sizes.
+- **Enter in the same frame as an edit solved the old matrix.** `_solveAndAnimate` used the state captured at the last build, so `2`, `/`, Enter without a rebuild solved `2` and skipped the cell error for `2/`. It now reads the cubit's current state; arrow up/down do the same, and the preset buttons are disabled while a solve runs.
+- **2×2 determinant steps wrote "-3 · -4".** The diagonal factors now go through `operandLatex`, as every other formula does.
+- **The 2×2 characteristic equation wrote "λ² - 0 λ + 1".** Zero terms are left out and a unit coefficient is not written.
+
+Each defect test fails without its fix.
+
+## Delivery
+
+- CI cancels superseded pull-request runs only; a run on main is no longer cancelled midway, which could have stopped a Pages deploy.
+- CI resolves the app with `flutter pub get --enforce-lockfile`.
+- The Gradle wrapper verifies its distribution with `distributionSha256Sum` (taken from services.gradle.org).
+- README, CONTRIBUTING and YAYINLAMA no longer describe eigen analysis as approximate or partial, and the web build command includes `--no-web-resources-cdn`, as CI uses.
+
+## Verification
+
+- `flutter analyze` and `dart analyze` (engine): no issues. `flutter test`: 510 passed. Engine `dart test`: 363 passed.
+- Not run: release builds, the platform build jobs, a live browser check. The CI changes take effect on the next run.
+
+## Follow-up decisions
+
+The owner then delegated the open decisions; SECURITY_REVIEW.md records the repository settings and signing details.
+
+- **Offline cache.** `web/offline_worker.js` keys entries by path without the query string (cache `matriks-offline-v2`), so visits with different queries no longer add entries, and the cache holds at most one copy of each file the app has served.
+- **3×3 characteristic equation.** Written like the 2×2 one, without zero terms or unit coefficients: `-\lambda^3 + 9 \lambda^2 - 26 \lambda + 24 = 0` instead of `-\lambda^3 + (9)\lambda^2 - (26)\lambda + (24) = 0`.
+- **Engine lockfile** tracked and enforced in CI.
+- **Android release signing** reads the owner's upload key from `android/key.properties`; both the debug fallback and the upload-key path were built and their certificates checked with `apksigner`.
+
+## Remaining limits
+
+- No production Android upload key exists yet, and Windows builds are unsigned; both need the owner's identities.
+- The web app shares the `iacbi.github.io` origin with the owner's other Pages sites; accepted until it has its own domain.
+- A file not fetched on the last online visit can still come from an older deployment when offline; network-first caching per file cannot rule that out.
+- Whether `sha_pinning_required` also applies to actions nested inside `subosito/flutter-action` is shown only by the next CI run.

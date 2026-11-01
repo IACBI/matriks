@@ -34,8 +34,9 @@ sources. Format changed files with `dart format <paths>`.
   completion for the active `animationRevision`. Do not add a separate lesson timer.
 - **Exactness.** Values are `BigInt` rationals. Do not introduce floating point into the
   engine, and never substitute zero for invalid input.
-- **Honest labels.** `ResultAccuracy` and `ResultCompleteness` exist because parts of the
-  eigen solver are approximate or partial. Do not widen a claim the solver cannot meet.
+- **Honest labels.** Every solution carries `ResultAccuracy` and `ResultCompleteness`. Eigen
+  analysis is exact for 2×2 and 3×3 and reports larger sizes as unsupported; never round a
+  value or widen a claim the solver cannot meet.
 
 ## Reporting a wrong result
 
