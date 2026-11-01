@@ -8,10 +8,14 @@
 // Responses are marked no-cache: otherwise the browser's in-memory cache may
 // reuse a heuristically fresh script on reload without asking this worker.
 //
+// Entries are keyed by path, without the query string, so visits with
+// different queries share one entry and the cache holds at most one copy of
+// each file the app has served.
+//
 // Bump CACHE when this file's caching logic changes; content updates need no
 // bump because they are fetched from the network anyway.
 const CACHE_PREFIX = 'matriks-offline-';
-const CACHE = `${CACHE_PREFIX}v1`;
+const CACHE = `${CACHE_PREFIX}v2`;
 
 // Files the browser fetches outside the resource timeline (manifest, icons).
 const SHELL = [
@@ -27,19 +31,29 @@ const SHELL = [
 
 const scope = self.registration.scope;
 const inScope = (url) => url.startsWith(scope);
+const cacheKey = (url) => {
+  const key = new URL(url);
+  key.search = '';
+  key.hash = '';
+  return key.href;
+};
+
+// Other apps on the same origin (GitHub Pages serves every project of a user
+// from one) keep their caches; only older Matriks ones go.
+async function deleteOldCaches() {
+  for (const name of await caches.keys()) {
+    if (name.startsWith(CACHE_PREFIX) && name !== CACHE) {
+      await caches.delete(name);
+    }
+  }
+}
 
 self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
-      // Other apps on the same origin (GitHub Pages serves every project of
-      // a user from one) keep their caches; only older Matriks ones go.
-      for (const name of await caches.keys()) {
-        if (name.startsWith(CACHE_PREFIX) && name !== CACHE) {
-          await caches.delete(name);
-        }
-      }
+      await deleteOldCaches();
       await self.clients.claim();
     })(),
   );
@@ -58,17 +72,16 @@ async function fetchFresh(request) {
   const copy = fresh.clone();
   const stored = caches
     .open(CACHE)
-    .then((cache) => cache.put(request, copy))
+    .then((cache) => cache.put(cacheKey(request.url), copy))
     .catch(() => {});
   return { response: fresh, stored };
 }
 
 async function fromCache(request) {
   const cache = await caches.open(CACHE);
-  const navigate = request.mode === 'navigate';
   return (
-    (await cache.match(request, { ignoreSearch: navigate })) ||
-    (navigate ? await cache.match(scope) : undefined)
+    (await cache.match(cacheKey(request.url))) ||
+    (request.mode === 'navigate' ? await cache.match(scope) : undefined)
   );
 }
 
@@ -100,12 +113,16 @@ self.addEventListener('message', (event) => {
     [...SHELL, ...urls].map((url) => new URL(url, scope).href.split('#')[0]).filter(inScope),
   );
   event.waitUntil(
-    Promise.all(
-      [...wanted].map(async (url) => {
+    Promise.all([
+      // The previous worker may still store a response it fetched before
+      // this one activated, recreating the cache activate deleted. The page
+      // posts here repeatedly as it loads, so a later sweep catches it.
+      deleteOldCaches(),
+      ...[...wanted].map(async (url) => {
         if (storing.has(url)) return;
         storing.add(url);
         try {
-          if (!(await caches.match(url, { cacheName: CACHE }))) {
+          if (!(await caches.match(cacheKey(url), { cacheName: CACHE }))) {
             await (await fetchFresh(new Request(url))).stored;
           }
         } catch (_) {
@@ -114,6 +131,6 @@ self.addEventListener('message', (event) => {
           storing.delete(url);
         }
       }),
-    ),
+    ]),
   );
 });
