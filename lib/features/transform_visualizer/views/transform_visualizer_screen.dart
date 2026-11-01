@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/cubit/settings_cubit.dart';
+import '../../settings/widgets/preference_actions.dart';
 import '../widgets/transform_grid_painter.dart';
 import '../widgets/coefficient_field.dart';
 import '../models/quadratic_surd.dart';
@@ -205,17 +206,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.transformScreenTitle),
-          actions: [
-            IconButton(
-              tooltip: l10n.toggleTheme,
-              icon: Icon(
-                isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-              ),
-              onPressed: () => context.read<SettingsCubit>().toggleTheme(
-                currentBrightness: theme.brightness,
-              ),
-            ),
-          ],
+          actions: const [PreferenceActions()],
         ),
         body: SafeArea(
           child: LayoutBuilder(
@@ -277,14 +268,17 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Presets row
-                      Padding(
+                      // Start-aligned with the readout above it rather than
+                      // centred in the panel.
+                      Container(
+                        alignment: AlignmentDirectional.centerStart,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14.0,
-                          vertical: 6.0,
+                          horizontal: 16,
+                          vertical: 6,
                         ),
                         child: Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
+                          spacing: 8,
+                          runSpacing: 8,
                           children: [
                             _buildPresetChip(l10n.presetShear, 'shear'),
                             _buildPresetChip(l10n.presetRotation, 'rotation'),

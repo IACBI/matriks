@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_theme.dart';
+
 /// Draws the plane under the matrix [[a, b], [c, d]].
 ///
 /// A faint copy of the untransformed grid stays behind the moving one so the
@@ -32,8 +34,8 @@ class TransformGridPainter extends CustomPainter {
     required this.isDark,
     this.textScale = 1,
     this.viewRadius = 3.5,
-    this.iColor = const Color(0xFF3B82F6),
-    this.jColor = const Color(0xFF10B981),
+    this.iColor = AppTheme.primaryBlue,
+    this.jColor = AppTheme.accentGreen,
     this.eigenDirections = const [],
   });
 
@@ -68,13 +70,11 @@ class TransformGridPainter extends CustomPainter {
     // 2. The transformed grid. A degenerate matrix collapses the plane onto a
     // line or a point; the same lines are drawn and overlap.
     final gridPaint = Paint()
-      ..color = isDark
-          ? const Color(0xFF334155).withValues(alpha: 0.7)
-          : const Color(0xFFD5DCE6)
+      ..color = isDark ? AppTheme.borderDark : AppTheme.borderLight
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
     final axisPaint = Paint()
-      ..color = isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)
+      ..color = isDark ? AppTheme.borderSubtleDark : AppTheme.borderSubtleLight
       ..strokeWidth = 1.8
       ..style = PaintingStyle.stroke;
     // The shortest image of a unit step decides how far the source grid must
@@ -109,9 +109,7 @@ class TransformGridPainter extends CustomPainter {
     // 4. Transformed unit square; orange when orientation is kept, red when
     // it is flipped (negative determinant).
     final flipped = a * d - b * c < 0;
-    final areaColor = flipped
-        ? const Color(0xFFE11D48)
-        : const Color(0xFFF59E0B);
+    final areaColor = flipped ? AppTheme.accentRed : AppTheme.accentAmber;
     final p00 = toCanvas(0, 0);
     final p10 = toCanvas(1, 0);
     final p11 = toCanvas(1, 1);
@@ -235,6 +233,8 @@ class TransformGridPainter extends CustomPainter {
           color: color,
           fontWeight: FontWeight.w900,
           fontSize: 13 * textScale,
+          // î and ĵ come from the bundled symbol font, not a runtime fetch.
+          fontFamilyFallback: AppTheme.symbolFallback,
         ),
       ),
       textDirection: TextDirection.ltr,

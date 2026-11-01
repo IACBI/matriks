@@ -284,7 +284,9 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: background,
+        // Transparent, so a chip on a card matches the card instead of
+        // showing the page colour through it.
+        backgroundColor: Colors.transparent,
         selectedColor: primary.withValues(alpha: 0.12),
         side: BorderSide(color: border),
         shape: shape,

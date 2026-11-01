@@ -6,10 +6,11 @@ import '../../step_player/views/step_player_screen.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/sideways_scroll.dart';
 import '../../../core/widgets/studio_shell.dart';
 import '../../matrix_input/views/matrix_input_screen.dart';
 import '../../settings/cubit/settings_cubit.dart';
-import '../../settings/widgets/language_menu.dart';
+import '../../settings/widgets/preference_actions.dart';
 import '../../transform_visualizer/views/transform_visualizer_screen.dart';
 import '../../practice/views/practice_screen.dart';
 import '../models/topic_item.dart';
@@ -111,7 +112,6 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final settings = context.watch<SettingsCubit>().state;
     final compact = settings.compact;
     final query = foldForSearch(_searchController.text.trim());
@@ -133,6 +133,15 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final browsing = query.isEmpty && _selectedCategory == null;
     final railShown =
         widget.onOpenSection != null && StudioShell.showsRail(context);
+
+    final categoryChips = [
+      for (final category in <TopicCategory?>[null, ...TopicCategory.values])
+        ChoiceChip(
+          label: Text(category.label(l10n)),
+          selected: _selectedCategory == category,
+          onSelected: (_) => setState(() => _selectedCategory = category),
+        ),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -162,19 +171,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
             ),
           ],
         ),
-        actions: [
-          const LanguageMenu(),
-          IconButton(
-            tooltip: l10n.toggleTheme,
-            icon: Icon(
-              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-            ),
-            onPressed: () => context.read<SettingsCubit>().toggleTheme(
-              currentBrightness: theme.brightness,
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
+        actions: const [PreferenceActions()],
       ),
       body: SafeArea(
         child: Center(
@@ -223,23 +220,23 @@ class _TopicsScreenState extends State<TopicsScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final category in <TopicCategory?>[
-                      null,
-                      ...TopicCategory.values,
-                    ])
-                      ChoiceChip(
-                        label: Text(category.label(l10n)),
-                        selected: _selectedCategory == category,
-                        showCheckmark: false,
-                        onSelected: (_) =>
-                            setState(() => _selectedCategory = category),
-                      ),
-                  ],
-                ),
+                // On a phone the five filters take one scrolling line rather
+                // than three wrapped rows above the topics; at large text
+                // they wrap again so none is hidden off-screen.
+                if (MediaQuery.sizeOf(context).width < 600 &&
+                    MediaQuery.textScalerOf(context).scale(1) <= 1.3)
+                  SidewaysScroll(
+                    child: Row(
+                      children: [
+                        for (final (i, chip) in categoryChips.indexed) ...[
+                          if (i > 0) const SizedBox(width: 8),
+                          chip,
+                        ],
+                      ],
+                    ),
+                  )
+                else
+                  Wrap(spacing: 8, runSpacing: 8, children: categoryChips),
                 const SizedBox(height: 16),
                 if (browsing) ...[
                   // Open by default: the starter lessons are the intended
