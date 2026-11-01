@@ -745,4 +745,4 @@ The owner then delegated the open decisions; SECURITY_REVIEW.md records the repo
 - No production Android upload key exists yet, and Windows builds are unsigned; both need the owner's identities.
 - The web app shares the `iacbi.github.io` origin with the owner's other Pages sites; accepted until it has its own domain.
 - A file not fetched on the last online visit can still come from an older deployment when offline; network-first caching per file cannot rule that out.
-- Whether `sha_pinning_required` also applies to actions nested inside `subosito/flutter-action` is shown only by the next CI run.
+- The repository cannot require SHA-pinned actions: GitHub applies the rule to actions nested inside `subosito/flutter-action`, whose `actions/cache@v5` is pinned by tag, and the first run with the rule failed at job setup. The rule was switched off again.
