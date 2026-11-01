@@ -154,58 +154,75 @@ class PlayerControlBar extends StatelessWidget {
                               : null,
                           icon: const Icon(Icons.remove_rounded),
                         ),
-                        PopupMenuButton<double>(
-                          initialValue: playbackSpeed,
-                          tooltip:
-                              l10n?.playbackSpeed(speedText(playbackSpeed)) ??
-                              'Speed: ${speedText(playbackSpeed)}',
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          onSelected: onSpeedChanged,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 14,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppTheme.borderDark
-                                  : AppTheme.surfaceVariantLight,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  speedText(playbackSpeed),
-                                  style: Theme.of(context).textTheme.labelLarge,
+                        // A button for UI Automation (a custom child gets
+                        // only a tap, so Narrator found text it could not
+                        // invoke), named once by the tooltip.
+                        MergeSemantics(
+                          child: Semantics(
+                            button: true,
+                            child: PopupMenuButton<double>(
+                              initialValue: playbackSpeed,
+                              tooltip:
+                                  l10n?.playbackSpeed(
+                                    speedText(playbackSpeed),
+                                  ) ??
+                                  'Speed: ${speedText(playbackSpeed)}',
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              onSelected: onSpeedChanged,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
                                 ),
-                                const SizedBox(width: 4),
-                                const Icon(Icons.arrow_drop_down, size: 16),
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? AppTheme.borderDark
+                                      : AppTheme.surfaceVariantLight,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: ExcludeSemantics(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        speedText(playbackSpeed),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Icon(
+                                        Icons.arrow_drop_down,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              itemBuilder: (context) => [
+                                for (final speed in [
+                                  .25,
+                                  .5,
+                                  .75,
+                                  1.0,
+                                  1.25,
+                                  1.5,
+                                  2.0,
+                                  3.0,
+                                  4.0,
+                                ])
+                                  PopupMenuItem(
+                                    value: speed,
+                                    child: Text(
+                                      l10n?.playbackSpeed(speedText(speed)) ??
+                                          speedText(speed),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
-                          itemBuilder: (context) => [
-                            for (final speed in [
-                              .25,
-                              .5,
-                              .75,
-                              1.0,
-                              1.25,
-                              1.5,
-                              2.0,
-                              3.0,
-                              4.0,
-                            ])
-                              PopupMenuItem(
-                                value: speed,
-                                child: Text(
-                                  l10n?.playbackSpeed(speedText(speed)) ??
-                                      speedText(speed),
-                                ),
-                              ),
-                          ],
                         ),
                         IconButton(
                           key: const ValueKey('increase-playback-speed'),

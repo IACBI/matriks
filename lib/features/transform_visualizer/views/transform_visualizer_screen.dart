@@ -13,6 +13,7 @@ import '../widgets/coefficient_field.dart';
 import '../models/quadratic_surd.dart';
 import '../models/transform_matrix.dart';
 import '../../../core/widgets/slider_while_shown.dart';
+import '../../../core/widgets/option_chip.dart';
 
 class TransformVisualizerScreen extends StatefulWidget {
   /// Opens with this matrix instead of the shear preset, for example from a
@@ -465,30 +466,37 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                         .primary,
                                   ),
                                   child: SliderWhileShown(
-                                    child: Semantics(
-                                      label: l10n.transformProgress,
-                                      child: Slider(
-                                        semanticFormatterCallback: (value) =>
-                                            l10n.progressPercent(
-                                              (value * 100).round(),
-                                            ),
-                                        value: _animController.value,
-                                        min: 0.0,
-                                        max: 1.0,
-                                        onChanged: (val) {
-                                          _animController.stop();
-                                          _animController.value = val;
-                                        },
+                                    // Merged, so the name is the slider's
+                                    // own and not its parent group's.
+                                    child: MergeSemantics(
+                                      child: Semantics(
+                                        label: l10n.transformProgress,
+                                        child: Slider(
+                                          semanticFormatterCallback: (value) =>
+                                              l10n.progressPercent(
+                                                (value * 100).round(),
+                                              ),
+                                          value: _animController.value,
+                                          min: 0.0,
+                                          max: 1.0,
+                                          onChanged: (val) {
+                                            _animController.stop();
+                                            _animController.value = val;
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              Text(
-                                l10n.progressPercent(
-                                  (_animController.value * 100).round(),
+                              // The slider's value already says it.
+                              ExcludeSemantics(
+                                child: Text(
+                                  l10n.progressPercent(
+                                    (_animController.value * 100).round(),
+                                  ),
+                                  style: theme.textTheme.labelLarge,
                                 ),
-                                style: theme.textTheme.labelLarge,
                               ),
                             ],
                           ),
@@ -596,10 +604,10 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
   }
 
   Widget _buildPresetChip(String title, String name) {
-    return ChoiceChip(
-      label: Text(title),
+    return OptionChip(
+      label: title,
       selected: _selectedPreset == name,
-      onSelected: (_) => _applyPreset(name),
+      onSelected: () => _applyPreset(name),
     );
   }
 

@@ -737,14 +737,22 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
                     children: [
                       Expanded(
                         child: SliderWhileShown(
-                          child: AnimatedBuilder(
-                            animation: _animController,
-                            builder: (context, _) => Slider(
-                              key: const ValueKey('instruction-progress'),
-                              semanticFormatterCallback: (value) =>
-                                  '${l10n?.instructionProgress ?? 'This operation'} ${(value * 100).round()}%',
-                              value: _animController.value,
-                              onChanged: _onScrub,
+                          // Merged, so the name is the slider's own and
+                          // not its parent group's.
+                          child: MergeSemantics(
+                            child: Semantics(
+                              label:
+                                  l10n?.instructionProgress ?? 'This operation',
+                              child: AnimatedBuilder(
+                                animation: _animController,
+                                builder: (context, _) => Slider(
+                                  key: const ValueKey('instruction-progress'),
+                                  semanticFormatterCallback: (value) =>
+                                      '${(value * 100).round()}%',
+                                  value: _animController.value,
+                                  onChanged: _onScrub,
+                                ),
+                              ),
                             ),
                           ),
                         ),

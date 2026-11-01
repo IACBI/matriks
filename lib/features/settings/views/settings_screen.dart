@@ -9,6 +9,7 @@ import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
 import '../widgets/language_menu.dart';
 import '../../../core/widgets/slider_while_shown.dart';
+import '../../../core/widgets/option_chip.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -36,10 +37,10 @@ class SettingsScreen extends StatelessWidget {
             runSpacing: 8,
             children: [
               for (final e in options.entries)
-                ChoiceChip(
-                  label: Text(e.value),
+                OptionChip(
+                  label: e.value,
                   selected: value == e.key,
-                  onSelected: (_) => onChanged(e.key),
+                  onSelected: () => onChanged(e.key),
                 ),
             ],
           ),

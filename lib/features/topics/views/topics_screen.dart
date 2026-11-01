@@ -16,6 +16,7 @@ import '../../practice/views/practice_screen.dart';
 import '../models/topic_item.dart';
 import '../widgets/topic_glyph.dart';
 import '../search_fold.dart';
+import '../../../core/widgets/option_chip.dart';
 
 /// Shell destinations a catalog entry can switch to instead of opening a
 /// second, independent copy of the same screen.
@@ -136,10 +137,10 @@ class _TopicsScreenState extends State<TopicsScreen> {
 
     final categoryChips = [
       for (final category in <TopicCategory?>[null, ...TopicCategory.values])
-        ChoiceChip(
-          label: Text(category.label(l10n)),
+        OptionChip(
+          label: category.label(l10n),
           selected: _selectedCategory == category,
-          onSelected: (_) => setState(() => _selectedCategory = category),
+          onSelected: () => setState(() => _selectedCategory = category),
         ),
     ];
 
@@ -149,12 +150,15 @@ class _TopicsScreenState extends State<TopicsScreen> {
           children: [
             // The navigation rail already shows the icon on wide screens.
             if (!railShown) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/branding/matriks_icon.png',
-                  width: 32,
-                  height: 32,
+              // Decorative: "Matriks" is written beside it.
+              ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/branding/matriks_icon.png',
+                    width: 32,
+                    height: 32,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
