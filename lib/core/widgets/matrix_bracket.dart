@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
+
 /// One side of a square matrix bracket drawn with borders.
 class MatrixBracket extends StatelessWidget {
   final double height;
@@ -20,11 +22,7 @@ class MatrixBracket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final side = BorderSide(
-      color:
-          color ??
-          (Theme.of(context).brightness == Brightness.dark
-              ? const Color(0xFF64748B)
-              : const Color(0xFF475569)),
+      color: color ?? AppTheme.bracket(Theme.of(context).brightness),
       width: thickness,
     );
     return Container(

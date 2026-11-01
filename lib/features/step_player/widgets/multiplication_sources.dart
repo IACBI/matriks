@@ -66,11 +66,7 @@ class MultiplicationSources extends StatelessWidget {
               border: Border(left: BorderSide(color: color, width: 2)),
             ),
             child: CustomPaint(
-              painter: _BracketsPainter(
-                theme.brightness == Brightness.dark
-                    ? const Color(0xFF64748B)
-                    : const Color(0xFF475569),
-              ),
+              painter: _BracketsPainter(AppTheme.bracket(theme.brightness)),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: body,

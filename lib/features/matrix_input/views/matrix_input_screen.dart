@@ -366,9 +366,10 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                                               horizontal: 4,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: isDark
-                                                  ? AppTheme.accentIndigo
-                                                  : const Color(0xFF818CF8),
+                                              // Neutral, as in the player: the
+                                              // divider marks structure, not a
+                                              // role.
+                                              color: theme.colorScheme.outline,
                                               borderRadius:
                                                   BorderRadius.circular(1),
                                             ),
@@ -651,17 +652,13 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
     String? incrementTooltip,
   }) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: isDark ? AppTheme.surfaceVariantDark : AppTheme.borderLight,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: isDark ? AppTheme.borderDark : AppTheme.borderSubtleLight,
-          width: 1.0,
-        ),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -678,7 +675,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
             padding: const EdgeInsets.symmetric(horizontal: 6),
             child: Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              style: theme.textTheme.titleSmall?.copyWith(fontSize: 15),
             ),
           ),
           IconButton(
