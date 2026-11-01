@@ -466,30 +466,37 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                         .primary,
                                   ),
                                   child: SliderWhileShown(
-                                    child: Semantics(
-                                      label: l10n.transformProgress,
-                                      child: Slider(
-                                        semanticFormatterCallback: (value) =>
-                                            l10n.progressPercent(
-                                              (value * 100).round(),
-                                            ),
-                                        value: _animController.value,
-                                        min: 0.0,
-                                        max: 1.0,
-                                        onChanged: (val) {
-                                          _animController.stop();
-                                          _animController.value = val;
-                                        },
+                                    // Merged, so the name is the slider's
+                                    // own and not its parent group's.
+                                    child: MergeSemantics(
+                                      child: Semantics(
+                                        label: l10n.transformProgress,
+                                        child: Slider(
+                                          semanticFormatterCallback: (value) =>
+                                              l10n.progressPercent(
+                                                (value * 100).round(),
+                                              ),
+                                          value: _animController.value,
+                                          min: 0.0,
+                                          max: 1.0,
+                                          onChanged: (val) {
+                                            _animController.stop();
+                                            _animController.value = val;
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              Text(
-                                l10n.progressPercent(
-                                  (_animController.value * 100).round(),
+                              // The slider's value already says it.
+                              ExcludeSemantics(
+                                child: Text(
+                                  l10n.progressPercent(
+                                    (_animController.value * 100).round(),
+                                  ),
+                                  style: theme.textTheme.labelLarge,
                                 ),
-                                style: theme.textTheme.labelLarge,
                               ),
                             ],
                           ),
