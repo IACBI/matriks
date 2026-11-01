@@ -344,6 +344,8 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
     final previous = _beforePreset;
     if (previous == null) return;
     _beforePreset = null;
+    // The selection is restored with the sizes: the matrix may have been
+    // resized since the preset, leaving the current selection outside it.
     emit(
       state.copyWith(
         dataA: previous.dataA,
@@ -352,6 +354,9 @@ class MatrixInputCubit extends Cubit<MatrixInputState> {
         colsA: previous.colsA,
         rowsB: previous.rowsB,
         colsB: previous.colsB,
+        activeMatrix: previous.activeMatrix,
+        focusedRow: previous.focusedRow,
+        focusedCol: previous.focusedCol,
       ),
     );
   }

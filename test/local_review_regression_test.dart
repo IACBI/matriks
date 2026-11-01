@@ -297,6 +297,23 @@ void main() {
     }
   });
 
+  testWidgets('Enter validates the edit typed in the same frame', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(MatrixInputScreen(topic: TopicItem.of(TopicType.determinant))),
+    );
+    await tester.pumpAndSettle();
+    // No pump between the keys: the editor has not rebuilt when Enter lands,
+    // so solving from the last build's state would miss the trailing slash.
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyEvent(LogicalKeyboardKey.slash);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Check matrix A, row 1, column 1'), findsOne);
+    expect(find.byType(StepPlayerScreen), findsNothing);
+  });
+
   test('Counts agree with their nouns', () {
     final en = lookupAppLocalizations(const Locale('en'));
     expect(en.system_infinite_title(1), 'Infinite Solutions (1 Free Variable)');

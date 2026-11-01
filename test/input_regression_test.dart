@@ -68,4 +68,24 @@ void main() {
     cubit.setDimensionsA(1, 1);
     expect(cubit.state.rowsA, 2);
   });
+
+  test('Undoing a preset after a resize keeps the selection inside', () {
+    final cubit = MatrixInputCubit(topic(TopicType.rref));
+    addTearDown(cubit.close);
+    final before = cubit.state;
+    cubit
+      ..presetClear()
+      ..setDimensionsA(before.rowsA + 1, before.colsA + 1)
+      ..setFocus(before.rowsA, before.colsA)
+      ..undoPreset();
+    expect(cubit.state.rowsA, before.rowsA);
+    expect(cubit.state.dataA, before.dataA);
+    expect(cubit.state.focusedRow, before.focusedRow);
+    expect(cubit.state.focusedCol, before.focusedCol);
+    cubit
+      ..onKeyPressed('5')
+      ..onBackspace()
+      ..onClear();
+    expect(cubit.state.dataA[before.focusedRow][before.focusedCol], '0');
+  });
 }
