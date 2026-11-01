@@ -130,4 +130,31 @@ void main() {
       lessThan(tester.getRect(solveButton).left),
     );
   });
+
+  testWidgets('The entry hint sits under the matrix, next to the cells', (
+    tester,
+  ) async {
+    await openEditor(tester, const Size(1280, 800));
+    final hint = find.text(
+      'Select a cell, then enter an integer, decimal, or fraction.',
+    );
+    expect(
+      tester.getRect(hint).top,
+      greaterThan(tester.getRect(firstCell).bottom),
+    );
+    expect(
+      tester.getRect(hint).top - tester.getRect(firstCell).bottom,
+      lessThan(200),
+    );
+  });
+
+  testWidgets('At 200% text the × wraps with the column count', (tester) async {
+    await openEditor(tester, const Size(375, 812), scale: 2);
+    final times = find.text('×');
+    final columns = find.byTooltip('Add a column');
+    expect(
+      (tester.getCenter(times).dy - tester.getCenter(columns).dy).abs(),
+      lessThan(8),
+    );
+  });
 }

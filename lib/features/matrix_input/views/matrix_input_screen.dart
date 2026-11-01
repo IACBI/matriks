@@ -148,7 +148,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
               if (showLabel)
                 Text(
                   '${l10n.size}: ',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               _buildDimensionChip(
                 context,
@@ -172,35 +172,45 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                   }
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6),
-                child: Text(
-                  '×',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
-              _buildDimensionChip(
-                context,
-                label: '$currentCols',
-                enabled: !topic.requiresSquare,
-                canDecrement: canDecrementCols,
-                canIncrement: canIncrementCols,
-                decrementTooltip: l10n.removeColumn,
-                incrementTooltip: l10n.addColumn,
-                onDecrement: () {
-                  if (isA || topic.type == TopicType.add) {
-                    cubit.setDimensionsA(currentRows, currentCols - 1);
-                  } else {
-                    cubit.setDimensionsB(currentRows, currentCols - 1);
-                  }
-                },
-                onIncrement: () {
-                  if (isA || topic.type == TopicType.add) {
-                    cubit.setDimensionsA(currentRows, currentCols + 1);
-                  } else {
-                    cubit.setDimensionsB(currentRows, currentCols + 1);
-                  }
-                },
+              // The × stays with the column count, so a wrapped row reads
+              // "3" then "× 4" instead of leaving the × at a line end.
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6),
+                    child: Text(
+                      '×',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  _buildDimensionChip(
+                    context,
+                    label: '$currentCols',
+                    enabled: !topic.requiresSquare,
+                    canDecrement: canDecrementCols,
+                    canIncrement: canIncrementCols,
+                    decrementTooltip: l10n.removeColumn,
+                    incrementTooltip: l10n.addColumn,
+                    onDecrement: () {
+                      if (isA || topic.type == TopicType.add) {
+                        cubit.setDimensionsA(currentRows, currentCols - 1);
+                      } else {
+                        cubit.setDimensionsB(currentRows, currentCols - 1);
+                      }
+                    },
+                    onIncrement: () {
+                      if (isA || topic.type == TopicType.add) {
+                        cubit.setDimensionsA(currentRows, currentCols + 1);
+                      } else {
+                        cubit.setDimensionsB(currentRows, currentCols + 1);
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           );
@@ -241,156 +251,176 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
         Widget buildMatrixCanvas() {
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                child: Semantics(
-                  liveRegion: true,
-                  child: Text(
-                    visibleError ?? l10n.inputHelp,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: visibleError != null
-                          ? theme.colorScheme.error
-                          : null,
-                    ),
-                  ),
-                ),
-              ),
               Expanded(
                 child: Center(
-                  child: SidewaysScroll(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            MatrixBracket(
-                              height: currentRows * 60 - 8,
-                              isLeft: true,
-                            ),
-                            const SizedBox(width: 4),
-                            Column(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SidewaysScroll(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: List.generate(currentRows, (r) {
-                                return Row(
+                              children: [
+                                MatrixBracket(
+                                  height: currentRows * 60 - 8,
+                                  isLeft: true,
+                                ),
+                                const SizedBox(width: 4),
+                                Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: List.generate(currentCols, (c) {
-                                    final isFocused =
-                                        r == state.focusedRow &&
-                                        c == state.focusedCol;
-                                    final cellVal = currentData[r][c];
-                                    final hasError =
-                                        _invalidCell ==
-                                            (state.activeMatrix, r, c) &&
-                                        Rational.tryParse(cellVal) == null;
+                                  children: List.generate(currentRows, (r) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: List.generate(currentCols, (c) {
+                                        final isFocused =
+                                            r == state.focusedRow &&
+                                            c == state.focusedCol;
+                                        final cellVal = currentData[r][c];
+                                        final hasError =
+                                            _invalidCell ==
+                                                (state.activeMatrix, r, c) &&
+                                            Rational.tryParse(cellVal) == null;
 
-                                    final cellWidget = Semantics(
-                                      label: l10n.inputCell(
-                                        isA ? 'A' : 'B',
-                                        r + 1,
-                                        c + 1,
-                                      ),
-                                      value: cellVal,
-                                      hint: hasError ? _inputError : null,
-                                      excludeSemantics: true,
-                                      onTap: () => cubit.setFocus(r, c),
-                                      selected: isFocused,
-                                      button: true,
-                                      child: InkWell(
-                                        onTap: () => cubit.setFocus(r, c),
-                                        child: AnimatedContainer(
-                                          duration: AppTheme.motion(
-                                            context,
-                                            150,
+                                        final cellWidget = Semantics(
+                                          label: l10n.inputCell(
+                                            isA ? 'A' : 'B',
+                                            r + 1,
+                                            c + 1,
                                           ),
-                                          width: 58,
-                                          height: 52,
-                                          margin: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: isFocused
-                                                ? Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withValues(
-                                                        alpha: isDark
-                                                            ? 0.3
-                                                            : 0.15,
-                                                      )
-                                                : isDark
-                                                ? AppTheme.surfaceVariantDark
-                                                : Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              AppTheme.radiusSm,
-                                            ),
-                                            border: Border.all(
-                                              color: hasError
-                                                  ? theme.colorScheme.error
-                                                  : isFocused
-                                                  ? Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                  : isDark
-                                                  ? AppTheme.borderDark
-                                                  : AppTheme.borderSubtleLight,
-                                              width: isFocused ? 2.2 : 1.2,
-                                            ),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4),
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Text(
-                                                cellVal.isEmpty ? '0' : cellVal,
-                                                style: const TextStyle(
-                                                  fontSize: 16,
+                                          value: cellVal,
+                                          hint: hasError ? _inputError : null,
+                                          excludeSemantics: true,
+                                          onTap: () => cubit.setFocus(r, c),
+                                          selected: isFocused,
+                                          button: true,
+                                          child: InkWell(
+                                            onTap: () => cubit.setFocus(r, c),
+                                            child: AnimatedContainer(
+                                              duration: AppTheme.motion(
+                                                context,
+                                                150,
+                                              ),
+                                              width: 58,
+                                              height: 52,
+                                              margin: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: isFocused
+                                                    ? Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withValues(
+                                                            alpha: isDark
+                                                                ? 0.3
+                                                                : 0.15,
+                                                          )
+                                                    : isDark
+                                                    ? AppTheme
+                                                          .surfaceVariantDark
+                                                    : Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      AppTheme.radiusSm,
+                                                    ),
+                                                border: Border.all(
+                                                  color: hasError
+                                                      ? theme.colorScheme.error
+                                                      : isFocused
+                                                      ? Theme.of(context)
+                                                            .colorScheme
+                                                            .primary
+                                                      : isDark
+                                                      ? AppTheme.borderDark
+                                                      : AppTheme
+                                                            .borderSubtleLight,
+                                                  width: isFocused ? 2.2 : 1.2,
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Text(
+                                                    cellVal.isEmpty
+                                                        ? '0'
+                                                        : cellVal,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+
+                                        if (topic.isAugmentedSystem &&
+                                            c == currentCols - 2) {
+                                          return Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              cellWidget,
+                                              Container(
+                                                width: 2,
+                                                height: 42,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  // Neutral, as in the player: the
+                                                  // divider marks structure, not a
+                                                  // role.
+                                                  color:
+                                                      theme.colorScheme.outline,
+                                                  borderRadius:
+                                                      BorderRadius.circular(1),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
+
+                                        return cellWidget;
+                                      }),
                                     );
-
-                                    if (topic.isAugmentedSystem &&
-                                        c == currentCols - 2) {
-                                      return Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          cellWidget,
-                                          Container(
-                                            width: 2,
-                                            height: 42,
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              // Neutral, as in the player: the
-                                              // divider marks structure, not a
-                                              // role.
-                                              color: theme.colorScheme.outline,
-                                              borderRadius:
-                                                  BorderRadius.circular(1),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }
-
-                                    return cellWidget;
                                   }),
-                                );
-                              }),
+                                ),
+                                const SizedBox(width: 4),
+                                MatrixBracket(
+                                  height: currentRows * 60 - 8,
+                                  isLeft: false,
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 4),
-                            MatrixBracket(
-                              height: currentRows * 60 - 8,
-                              isLeft: false,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        // Under the matrix rather than at the top of the
+                        // panel: on a wide screen a cell's error stayed a
+                        // screen away from the cell it names.
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                          child: Semantics(
+                            liveRegion: true,
+                            child: Text(
+                              visibleError ?? l10n.inputHelp,
+                              textAlign: TextAlign.center,
+                              // An error reads at body size; the standing
+                              // hint stays secondary.
+                              style: visibleError != null
+                                  ? theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.error,
+                                    )
+                                  : theme.textTheme.bodySmall,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
