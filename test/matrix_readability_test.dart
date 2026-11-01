@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matrix_engine/matrix_engine.dart';
+import 'package:matriks/core/theme/app_theme.dart';
 import 'package:matriks/core/widgets/math_text.dart';
+import 'package:matriks/features/settings/cubit/settings_cubit.dart';
 import 'package:matriks/features/settings/cubit/settings_state.dart';
 import 'package:matriks/features/step_player/cubit/player_cubit.dart';
 import 'package:matriks/features/step_player/views/step_player_screen.dart';
+import 'package:matriks/features/step_player/widgets/determinant_lines_painter.dart';
 import 'package:matriks/features/step_player/widgets/matrix_cell_widget.dart';
 import 'package:matriks/features/step_player/widgets/matrix_display_grid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matriks/l10n/generated/app_localizations.dart';
 
 import 'product_accessibility_test.dart' show host;
 
@@ -215,5 +219,75 @@ void main() {
     );
     expect(rect.left, greaterThanOrEqualTo(0));
     expect(rect.right, lessThanOrEqualTo(390));
+  });
+  testWidgets('On a phone a Sarrus diagonal through the copied columns is '
+      'scrolled into view while it is traced', (tester) async {
+    tester.view.physicalSize = const Size(320, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      BlocProvider(
+        create: (_) =>
+            SettingsCubit(initial: const SettingsState(predictions: false)),
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: StepPlayerScreen(
+            solution: DeterminantSolver.solve(
+              Matrix.fromInts([
+                [1, 2, 1],
+                [2, 5, 4],
+                [1, 3, 3],
+              ]),
+            ),
+            topicTitle: 'det',
+          ),
+        ),
+      ),
+    );
+    final controller = tester
+        .widget<SingleChildScrollView>(
+          find.byKey(const ValueKey('matrix-viewport')),
+        )
+        .controller!;
+    DeterminantLinesPainter painter() =>
+        tester
+                .widget<CustomPaint>(
+                  find.byWidgetPredicate(
+                    (w) =>
+                        w is CustomPaint &&
+                        w.painter is DeterminantLinesPainter,
+                  ),
+                )
+                .painter!
+            as DeterminantLinesPainter;
+    // Frame by frame, as playback runs, until the third positive diagonal
+    // (row 1 column 3, then the copies of columns 1 and 2) is being traced.
+    for (var i = 0; i < 1000; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      final p = painter().progress;
+      if (p >= .8 && p < 1) break;
+    }
+    expect(painter().progress, inInclusiveRange(.8, 1));
+    expect(controller.position.maxScrollExtent, greaterThan(0));
+    final paint = tester.getRect(
+      find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is DeterminantLinesPainter,
+      ),
+    );
+    final p = painter();
+    final firstX = paint.left + 2.5 * p.cellWidth;
+    final lastX = paint.left + 4.5 * p.cellWidth + p.copiedColumnsGap!;
+    final viewport = tester.getRect(
+      find.byKey(const ValueKey('matrix-viewport')),
+    );
+    expect(firstX, greaterThanOrEqualTo(viewport.left));
+    expect(lastX, lessThanOrEqualTo(viewport.right));
   });
 }

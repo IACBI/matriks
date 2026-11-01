@@ -177,7 +177,7 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
   final Map<int, ({List<Widget> cells, Widget row})> _rowCache = {};
   final Map<(int, int, bool), List<Widget>> _stageRows = {};
   final ScrollController _matrixScroll = ScrollController();
-  (int, int)? _followedColumn;
+  (int, int, int)? _followedColumn;
   Object? _revealedStep;
 
   double _cellWidth = 88;
@@ -790,6 +790,16 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     List<int> changing,
   ) {
     if (!_running || _scrubbing) return;
+    // A Sarrus diagonal runs over three columns, two of them possibly copies
+    // right of the matrix, which on a phone start out of sight.
+    if (transformation is DeterminantSarrusTransformation &&
+        _showSarrusCopies &&
+        !transformation.recap) {
+      final count = transformation.phase == 3 ? 6 : 3;
+      final first = (progress * count).floor().clamp(0, count - 1) % 3;
+      _followColumns(first, first + 2, reduced);
+      return;
+    }
     final column = switch (transformation) {
       MatrixElementMultiplicationTransformation t => t.targetCol,
       MatrixElementAdditionTransformation t => t.col,
@@ -804,7 +814,13 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
             .clamp(0, widget.snapshot.cols - 1),
       _ => _highlightedColumns?.$1 ?? 0,
     };
-    final token = (widget.animationRevision, column);
+    _followColumns(column, column, reduced);
+  }
+
+  /// Scrolls columns [first]–[last] into view once per animation revision,
+  /// keeping [first] in sight when the range is wider than the screen.
+  void _followColumns(int first, int last, bool reduced) {
+    final token = (widget.animationRevision, first, last);
     if (_followedColumn == token) return;
     _followedColumn = token;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -815,13 +831,13 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
         return;
       }
       final position = _matrixScroll.position;
-      final left = _columnLeft(column);
-      final right = left + cellWidth;
+      final left = _columnLeft(first);
+      final right = _columnLeft(last) + cellWidth;
       var offset = position.pixels;
-      if (left < offset) offset = left;
       if (right > offset + position.viewportDimension) {
         offset = right - position.viewportDimension;
       }
+      if (left < offset) offset = left;
       offset = offset.clamp(0.0, position.maxScrollExtent);
       if ((offset - position.pixels).abs() < 1) return;
       if (reduced) {
@@ -842,7 +858,8 @@ class _MatrixDisplayGridState extends State<MatrixDisplayGrid>
     return 64 * MediaQuery.textScalerOf(context).scale(1) +
         (_reserveSwapLane ? 20 : 0) +
         column * cellWidth +
-        (divider != null && column >= divider ? 10 : 0);
+        (divider != null && column >= divider ? 10 : 0) +
+        (_showSarrusCopies && column >= widget.snapshot.cols ? _sarrusGap : 0);
   }
 
   /// The first and last columns this step highlights.
