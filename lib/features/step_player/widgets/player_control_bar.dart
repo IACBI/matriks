@@ -171,7 +171,7 @@ class PlayerControlBar extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: isDark
                                   ? AppTheme.borderDark
-                                  : const Color(0xFFF1F5F9),
+                                  : AppTheme.surfaceVariantLight,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
@@ -179,10 +179,7 @@ class PlayerControlBar extends StatelessWidget {
                               children: [
                                 Text(
                                   speedText(playbackSpeed),
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.labelLarge,
                                 ),
                                 const SizedBox(width: 4),
                                 const Icon(Icons.arrow_drop_down, size: 16),

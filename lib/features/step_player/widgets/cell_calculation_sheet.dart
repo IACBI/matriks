@@ -53,9 +53,7 @@ class CellCalculationSheet extends StatelessWidget {
               height: 4,
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF475569)
-                    : const Color(0xFFCBD5E1),
+                color: theme.colorScheme.outline,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -86,9 +84,8 @@ class CellCalculationSheet extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: 17,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -105,12 +102,8 @@ class CellCalculationSheet extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             l10n?.arithmeticDetail ?? 'Arithmetic Operation Detail:',
-            style: TextStyle(
-              fontSize: 13,
-              color: isDark
-                  ? AppTheme.textMutedDark
-                  : AppTheme.textSecondaryLight,
-              fontWeight: FontWeight.w500,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 10),
@@ -118,7 +111,7 @@ class CellCalculationSheet extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+              color: isDark ? AppTheme.scaffoldDark : AppTheme.scaffoldLight,
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(
                 color: isDark ? AppTheme.borderDark : AppTheme.borderLight,
@@ -134,10 +127,7 @@ class CellCalculationSheet extends StatelessWidget {
             children: [
               Text(
                 l10n?.resultLabel ?? 'Result:',
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: theme.textTheme.titleSmall,
               ),
               Flexible(
                 child: SidewaysScroll(

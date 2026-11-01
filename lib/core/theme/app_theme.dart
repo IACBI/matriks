@@ -30,6 +30,9 @@ class AppTheme {
   static const radiusLg = 20.0;
   static const radiusXl = 24.0;
   static const contentWidth = 1280.0;
+
+  /// Width of single-column reading and form screens (practice, settings).
+  static const readingWidth = 720.0;
   static const pressMs = 120;
   static const stateMs = 180;
   static const panelMs = 220;
@@ -39,6 +42,11 @@ class AppTheme {
   /// Chinese interface. Without them the web build fetches fallback fonts
   /// from Google at runtime, and shows boxes offline.
   static const symbolFallback = ['MatriksSymbols', 'MatriksCJK'];
+
+  /// Matrix brackets: firm enough to read as structure (over 3:1 on the
+  /// surfaces), quieter than the entries they enclose.
+  static Color bracket(Brightness brightness) =>
+      brightness == Brightness.dark ? borderSubtleDark : textMutedLight;
 
   static Duration motion(BuildContext context, [int milliseconds = stateMs]) =>
       MediaQuery.disableAnimationsOf(context)
@@ -99,6 +107,9 @@ class AppTheme {
       ),
       focusColor: primary.withValues(alpha: 0.18),
       hoverColor: primary.withValues(alpha: 0.06),
+      // Every style sets its own tracking: Material's English geometry would
+      // otherwise add up to 0.5 px per letter, which loosens body paragraphs
+      // and step explanations noticeably.
       textTheme: base.textTheme
           .apply(bodyColor: ink, displayColor: ink)
           .copyWith(
@@ -116,35 +127,72 @@ class AppTheme {
               fontWeight: FontWeight.w700,
               color: ink,
             ),
+            headlineSmall: TextStyle(
+              fontSize: 22,
+              height: 1.25,
+              letterSpacing: -0.3,
+              fontWeight: FontWeight.w600,
+              color: ink,
+            ),
             titleLarge: TextStyle(
+              letterSpacing: 0,
               fontSize: 20,
               height: 1.3,
               fontWeight: FontWeight.w600,
               color: ink,
             ),
             titleMedium: TextStyle(
+              letterSpacing: 0,
               fontSize: 16,
               height: 1.4,
               fontWeight: FontWeight.w600,
               color: ink,
             ),
-            bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: ink),
-            bodyMedium: TextStyle(fontSize: 14, height: 1.5, color: ink),
+            titleSmall: TextStyle(
+              letterSpacing: 0,
+              fontSize: 14,
+              height: 1.4,
+              fontWeight: FontWeight.w600,
+              color: ink,
+            ),
+            bodyLarge: TextStyle(
+              fontSize: 16,
+              height: 1.5,
+              letterSpacing: 0,
+              color: ink,
+            ),
+            bodyMedium: TextStyle(
+              fontSize: 14,
+              height: 1.5,
+              letterSpacing: 0,
+              color: ink,
+            ),
             bodySmall: TextStyle(
+              letterSpacing: 0.1,
               fontSize: 12,
               height: 1.4,
               color: secondaryInk,
             ),
             labelLarge: TextStyle(
+              letterSpacing: 0,
               fontSize: 14,
               height: 1.3,
               fontWeight: FontWeight.w600,
               color: ink,
             ),
             labelMedium: TextStyle(
+              letterSpacing: 0.2,
               fontSize: 12,
               height: 1.3,
               fontWeight: FontWeight.w600,
+              color: secondaryInk,
+            ),
+            // Material's 11 px default is below the 12 px floor for labels.
+            labelSmall: TextStyle(
+              letterSpacing: 0.2,
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: FontWeight.w500,
               color: secondaryInk,
             ),
           )

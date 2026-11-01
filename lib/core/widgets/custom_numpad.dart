@@ -176,12 +176,10 @@ class CustomNumpad extends StatelessWidget {
                   buildKey(
                     'C',
                     onTap: onClear,
-                    color: isDark
-                        ? const Color(0xFF450A0A)
-                        : const Color(0xFFFEE2E2),
-                    textColor: isDark
-                        ? const Color(0xFFFCA5A5)
-                        : const Color(0xFFDC2626),
+                    color: theme.colorScheme.error.withValues(
+                      alpha: isDark ? .16 : .1,
+                    ),
+                    textColor: theme.colorScheme.error,
                     semanticLabel: l10n?.keyClear ?? 'Clear cell',
                   ),
                   buildKey('0', semanticLabel: '0', flex: 2),
