@@ -481,7 +481,8 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                               .titleLarge,
                                   ),
                                 ),
-                                if (prediction)
+                                if (prediction) ...[
+                                  const SizedBox(height: 16),
                                   PredictionCard(
                                     key: ValueKey(currentStep.stepIndex),
                                     transformation:
@@ -494,6 +495,7 @@ class _StepPlayerViewState extends State<_StepPlayerView>
                                       playerCubit.play();
                                     }),
                                   ),
+                                ],
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(

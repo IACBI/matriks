@@ -28,7 +28,8 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.titleSmall),
+          // The same size as the switch and language titles beside it.
+          Text(label, style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -70,7 +71,9 @@ class SettingsScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppTheme.contentWidth),
+            // A form reads best at text width; at the full content width a
+            // switch sat a screen away from its label.
+            constraints: const BoxConstraints(maxWidth: AppTheme.readingWidth),
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
@@ -182,7 +185,12 @@ class SettingsScreen extends StatelessWidget {
                     ),
                 ]),
                 const SizedBox(height: 20),
-                Text(l.localPreferences),
+                Text(
+                  l.localPreferences,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,

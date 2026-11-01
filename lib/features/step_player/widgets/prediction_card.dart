@@ -54,9 +54,19 @@ class _PredictionCardState extends State<PredictionCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l.predictTitle, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(l.predictPrompt),
+            // Smaller than the step title above it: the question belongs to the
+            // step rather than competing with it.
+            Text(
+              l.predictTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l.predictPrompt,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,

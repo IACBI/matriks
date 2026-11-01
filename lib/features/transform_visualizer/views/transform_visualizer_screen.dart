@@ -409,6 +409,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                 l10n.basisVectors,
                                 style: theme.textTheme.labelMedium,
                               ),
+                              const SizedBox(height: 6),
                               Wrap(
                                 spacing: 16,
                                 runSpacing: 8,
@@ -423,6 +424,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 6),
                               Text(
                                 '${l10n.targetDeterminant}: ${_target.exactDeterminant}',
                                 style: theme.textTheme.bodyMedium,
@@ -488,10 +490,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                                 l10n.progressPercent(
                                   (_animController.value * 100).round(),
                                 ),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
+                                style: theme.textTheme.labelLarge,
                               ),
                             ],
                           ),
@@ -590,7 +589,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
 
   Widget _buildBadge({required String label, required Color color}) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         border: Border(left: BorderSide(color: color, width: 3)),
       ),
