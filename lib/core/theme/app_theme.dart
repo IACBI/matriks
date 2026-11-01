@@ -282,6 +282,22 @@ class AppTheme {
           borderRadius: BorderRadius.circular(radiusMd),
           borderSide: BorderSide(color: primary, width: 2),
         ),
+        // Stated rather than left to Material, whose defaults drew a field
+        // in error with a border and message off the app's error colour.
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: BorderSide(color: scheme.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: BorderSide(color: scheme.error, width: 2),
+        ),
+        errorStyle: TextStyle(
+          color: scheme.error,
+          fontSize: 12,
+          height: 1.4,
+          fontFamilyFallback: symbolFallback,
+        ),
       ),
       chipTheme: ChipThemeData(
         // Transparent, so a chip on a card matches the card instead of
