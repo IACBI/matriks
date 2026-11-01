@@ -50,3 +50,8 @@ app.*.map.json
 # Local audit and browser verification artifacts
 /.playwright-cli/
 /output/
+
+# Signing material belongs to the release owner, never to the repository.
+*.jks
+*.keystore
+key.properties
