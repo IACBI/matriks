@@ -13,6 +13,7 @@ import '../widgets/coefficient_field.dart';
 import '../models/quadratic_surd.dart';
 import '../models/transform_matrix.dart';
 import '../../../core/widgets/slider_while_shown.dart';
+import '../../../core/widgets/option_chip.dart';
 
 class TransformVisualizerScreen extends StatefulWidget {
   /// Opens with this matrix instead of the shear preset, for example from a
@@ -596,10 +597,10 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
   }
 
   Widget _buildPresetChip(String title, String name) {
-    return ChoiceChip(
-      label: Text(title),
+    return OptionChip(
+      label: title,
       selected: _selectedPreset == name,
-      onSelected: (_) => _applyPreset(name),
+      onSelected: () => _applyPreset(name),
     );
   }
 

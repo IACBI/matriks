@@ -88,12 +88,15 @@ class _StudioShellState extends State<StudioShell> {
                   labelType: NavigationRailLabelType.all,
                   leading: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/branding/matriks_icon.png',
-                        width: 48,
-                        height: 48,
+                    // Decorative: the window title already names the app.
+                    child: ExcludeSemantics(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/branding/matriks_icon.png',
+                          width: 48,
+                          height: 48,
+                        ),
                       ),
                     ),
                   ),
