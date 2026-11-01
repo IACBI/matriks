@@ -11,7 +11,7 @@ import '../../../core/widgets/matrix_bracket.dart';
 import '../../../core/widgets/sideways_scroll.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/cubit/settings_cubit.dart';
-import '../../settings/widgets/language_menu.dart';
+import '../../settings/widgets/preference_actions.dart';
 import '../../step_player/widgets/matrix_cell_widget.dart';
 import '../models/quiz_generator.dart';
 import '../models/quiz_question.dart';
@@ -244,7 +244,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          actions: [const LanguageMenu()],
+          actions: const [PreferenceActions()],
         ),
         body: SafeArea(
           child: Column(
