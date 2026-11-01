@@ -211,7 +211,7 @@ void main() {
       mathSemanticsLabel(
         r'A \cdot A^{-1} = \begin{pmatrix}1 & 0 \\ 0 & 1\end{pmatrix} = I',
       ),
-      'A · A⁻¹ = (1, 0; 0, 1) = I',
+      'A × A⁻¹ = (1, 0; 0, 1) = I',
     );
     // A column vector keeps reading as a list.
     expect(

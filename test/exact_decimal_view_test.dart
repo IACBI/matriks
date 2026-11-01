@@ -127,6 +127,8 @@ void main() {
   group('Repeating decimals for screen readers', () {
     test('the bar is read as a word, not dropped or leaked', () {
       expect(mathSemanticsLabel(r'0.1\overline{6}'), '0.1 repeating 6');
+      // Spoken as "times", not "dot".
+      expect(mathSemanticsLabel(r'2 - 2 \cdot 1 = 0'), '2 - 2 × 1 = 0');
       expect(mathSemanticsLabel(r'-0.08\overline{3}'), '-0.08 repeating 3');
       expect(mathSemanticsLabel(r'3.\overline{142857}'), '3. repeating 142857');
       expect(readableMathProse(r'x = 0.1\overline{6}'), 'x = 0.1 repeating 6');

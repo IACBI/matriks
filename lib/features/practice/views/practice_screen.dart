@@ -617,6 +617,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
         label:
             '${optionLetters[index]}: ${mathSemanticsLabel(optionLatex, repeating: AppLocalizations.of(context)!.mathRepeating)}',
         excludeSemantics: true,
+        // Excluding the children drops the InkWell's tap too; without this
+        // TalkBack found a button it could not press.
+        onTap: _hasAnswered ? null : () => _selectOption(index),
         child: InkWell(
           onTap: _hasAnswered ? null : () => _selectOption(index),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),

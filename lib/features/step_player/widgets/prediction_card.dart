@@ -71,6 +71,9 @@ class _PredictionCardState extends State<PredictionCard> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
+              // A display-style fraction makes its button taller; centred,
+              // the whole numbers beside it do not ride up.
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 for (final value in options)
                   OutlinedButton(

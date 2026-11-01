@@ -263,7 +263,9 @@ String mathSemanticsLabel(String latex, {String repeating = 'repeating'}) {
             ? m[1]!
             : '',
       )
-      .replaceAll(RegExp(r'[{}]'), '');
+      .replaceAll(RegExp(r'[{}]'), '')
+      // Speech engines read "·" as "dot" or "middle dot"; "×" is "times".
+      .replaceAll('·', '×');
   return text.replaceAll(RegExp(r'\s+'), ' ').trim();
 }
 

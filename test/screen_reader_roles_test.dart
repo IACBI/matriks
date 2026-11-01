@@ -10,6 +10,7 @@ import 'package:matriks/core/theme/app_theme.dart';
 import 'package:matriks/core/widgets/option_chip.dart';
 import 'package:matriks/features/settings/cubit/settings_cubit.dart';
 import 'package:matriks/features/settings/cubit/settings_state.dart';
+import 'package:matriks/features/practice/views/practice_screen.dart';
 import 'package:matriks/features/settings/views/settings_screen.dart';
 import 'package:matriks/features/step_player/views/step_player_screen.dart';
 import 'package:matriks/features/transform_visualizer/views/transform_visualizer_screen.dart';
@@ -150,6 +151,22 @@ void main() {
     );
     expect(scrub.label, 'This operation');
     expect(scrub.value, endsWith('%'));
+    handle.dispose();
+  });
+
+  testWidgets('A quiz option can be pressed by a screen reader', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(_host(const PracticeScreen()));
+    await tester.pump(const Duration(milliseconds: 300));
+    final option = find.byKey(const ValueKey('quiz-option-A'));
+    final data = _node(tester, option);
+    expect(data.flagsCollection.isButton, isTrue);
+    expect(data.hasAction(SemanticsAction.tap), isTrue);
+    tester.semantics.tap(find.semantics.byLabel(RegExp('^A: ')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(_node(tester, option).flagsCollection.isSelected, Tristate.isTrue);
     handle.dispose();
   });
 }
