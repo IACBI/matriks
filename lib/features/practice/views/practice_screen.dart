@@ -170,10 +170,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              scoreText,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text(scoreText, style: Theme.of(ctx).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(praiseText),
           ],
@@ -214,6 +211,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget build(BuildContext context) {
     final l10n = lookupAppLocalizations(Locale(_language));
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final q = _currentQuestion;
     final isCorrect = _selectedOptionIndex == q.correctIndex;
@@ -258,17 +256,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   backgroundColor: isDark
                       ? AppTheme.surfaceVariantDark
                       : AppTheme.borderLight,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).colorScheme.primary,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(scheme.primary),
                   minHeight: 4,
                 ),
               ),
 
               Expanded(
-                child: Center(
+                // Top-aligned: centred, a short question floated mid-screen
+                // and moved whenever the feedback card appeared.
+                child: Align(
+                  alignment: Alignment.topCenter,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 720),
+                    constraints: const BoxConstraints(
+                      maxWidth: AppTheme.readingWidth,
+                    ),
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20.0,
@@ -277,82 +278,51 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Score Badge, sized to its content rather than the
-                          // full column width.
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.accentAmber.withValues(
-                                  alpha: isDark ? 0.25 : 0.15,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusMd,
-                                ),
-                                border: Border.all(
-                                  color: AppTheme.accentAmber.withValues(
-                                    alpha: 0.6,
-                                  ),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.star_rounded,
-                                    color: AppTheme.accentAmber,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: Text(
-                                      scoreLabel,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: isDark
-                                            ? AppTheme.accentAmber
-                                            : const Color(0xFFB45309),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          // Question Header & Tag
+                          // Progress and score share one line; amber stays
+                          // free for the pivot and source roles it marks in
+                          // lessons.
                           Wrap(
                             alignment: WrapAlignment.spaceBetween,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             spacing: 12,
                             runSpacing: 8,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary
-                                      .withValues(alpha: isDark ? 0.2 : 0.1),
-                                  borderRadius: BorderRadius.circular(
-                                    AppTheme.radiusSm,
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  _Pill(
+                                    background: scheme.primary.withValues(
+                                      alpha: isDark ? 0.2 : 0.1,
+                                    ),
+                                    child: Text(
+                                      questionProgressLabel,
+                                      style: theme.textTheme.labelLarge
+                                          ?.copyWith(color: scheme.primary),
+                                    ),
                                   ),
-                                ),
-                                child: Text(
-                                  questionProgressLabel,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
+                                  _Pill(
+                                    background: scheme.surfaceContainerHighest,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.star_rounded,
+                                          color: scheme.onSurfaceVariant,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Flexible(
+                                          child: Text(
+                                            scoreLabel,
+                                            style: theme.textTheme.labelLarge,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                               TextButton.icon(
                                 onPressed: () {
@@ -362,7 +332,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 },
                                 icon: const Icon(
                                   Icons.lightbulb_outline_rounded,
-                                  size: 16,
+                                  size: 18,
                                 ),
                                 label: Text(hintLabel),
                               ),
@@ -374,36 +344,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.accentAmber.withValues(
-                                  alpha: isDark ? 0.15 : 0.08,
-                                ),
+                                color: scheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(
                                   AppTheme.radiusMd,
                                 ),
-                                border: Border.all(
-                                  color: AppTheme.accentAmber.withValues(
-                                    alpha: 0.4,
-                                  ),
-                                ),
                               ),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
-                                    Icons.info_outline_rounded,
-                                    color: AppTheme.accentAmber,
+                                  Icon(
+                                    Icons.lightbulb_outline_rounded,
+                                    color: scheme.primary,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       readableMathProse(q.hint),
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: isDark
-                                            ? const Color(0xFFFDE68A)
-                                            : const Color(0xFF92400E),
-                                        height: 1.35,
-                                      ),
+                                      style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
                                 ],
@@ -416,21 +374,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           // Question Title & Prompt
                           Text(
                             q.questionTitle,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              height: 1.3,
-                            ),
+                            style: theme.textTheme.titleLarge,
                           ),
                           const SizedBox(height: 6),
                           Text(
                             readableMathProse(q.prompt),
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: isDark
-                                  ? AppTheme.textSecondaryDark
-                                  : AppTheme.textSecondaryLight,
-                              height: 1.4,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: scheme.onSurfaceVariant,
                             ),
                           ),
 
@@ -439,18 +389,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           // Matrix Visual Display Card
                           Center(
                             child: Container(
-                              padding: const EdgeInsets.all(14),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? AppTheme.surfaceDark
-                                    : AppTheme.scaffoldLight,
+                                color: scheme.surface,
                                 borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusLg,
+                                  AppTheme.radiusMd,
                                 ),
                                 border: Border.all(
-                                  color: isDark
-                                      ? AppTheme.borderDark
-                                      : AppTheme.borderLight,
+                                  color: scheme.outlineVariant,
                                 ),
                               ),
                               child: _buildMatrixPreview(q.matrix, isDark),
@@ -524,13 +473,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                           Expanded(
                                             child: Text(
                                               feedbackTitle,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface,
-                                              ),
+                                              style:
+                                                  theme.textTheme.titleMedium,
                                             ),
                                           ),
                                         ],
@@ -553,13 +497,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                       const SizedBox(height: 8),
                                       Text(
                                         readableMathProse(q.explanation),
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: isDark
-                                              ? AppTheme.textPrimaryDark
-                                              : AppTheme.textPrimaryLight,
-                                          height: 1.4,
-                                        ),
+                                        style: theme.textTheme.bodyMedium,
                                       ),
                                     ],
                                   ),
@@ -567,7 +505,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            ElevatedButton.icon(
+                            FilledButton.icon(
                               onPressed: _nextQuestion,
                               icon: const Icon(Icons.arrow_forward_rounded),
                               label: Text(nextButtonLabel),
@@ -595,7 +533,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             width: 8,
             thickness: 2.2,
             height:
-                (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
+                (m.rows * 56.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
             isLeft: true,
           ),
@@ -607,8 +545,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(m.cols, (c) {
                   return SizedBox(
-                    width: 80 * MediaQuery.textScalerOf(context).scale(1),
-                    height: 64 * MediaQuery.textScalerOf(context).scale(1),
+                    width: 72 * MediaQuery.textScalerOf(context).scale(1),
+                    height: 56 * MediaQuery.textScalerOf(context).scale(1),
                     child: MatrixCellWidget(
                       value: m.get(r, c),
                       semanticLabel: lookupAppLocalizations(
@@ -625,7 +563,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             width: 8,
             thickness: 2.2,
             height:
-                (m.rows * 64.0 * MediaQuery.textScalerOf(context).scale(1)) -
+                (m.rows * 56.0 * MediaQuery.textScalerOf(context).scale(1)) -
                 8.0,
             isLeft: false,
           ),
@@ -643,7 +581,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
     final isSelected = _selectedOptionIndex == index;
     final isCorrectOption = index == correctIndex;
 
-    Color bgColor = isDark ? AppTheme.surfaceVariantDark : Colors.white;
+    final scheme = Theme.of(context).colorScheme;
+    Color bgColor = isDark ? AppTheme.surfaceVariantDark : scheme.surface;
     Color borderColor = isDark
         ? AppTheme.borderSubtleDark
         : AppTheme.borderSubtleLight;
@@ -657,7 +596,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
         borderColor = AppTheme.accentRed;
       }
     } else if (isSelected) {
-      borderColor = Theme.of(context).colorScheme.primary;
+      borderColor = scheme.primary;
     }
 
     final optionLetters = ['A', 'B', 'C', 'D'];
@@ -684,7 +623,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: borderColor, width: 1.5),
+              // Thin until answered, so four stacked options stay calm.
+              border: Border.all(
+                color: borderColor,
+                width: _hasAnswered && (isSelected || isCorrectOption)
+                    ? 1.5
+                    : 1,
+              ),
             ),
             child: Row(
               children: [
@@ -702,13 +647,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   child: Center(
                     child: Text(
                       optionLetters[index],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                        color: isDark
-                            ? Colors.white
-                            : AppTheme.textPrimaryLight,
-                      ),
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
                   ),
                 ),
@@ -740,4 +679,21 @@ class _PracticeScreenState extends State<PracticeScreen> {
       ),
     );
   }
+}
+
+/// A compact rounded label in the practice header.
+class _Pill extends StatelessWidget {
+  final Color background;
+  final Widget child;
+  const _Pill({required this.background, required this.child});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+    ),
+    child: child,
+  );
 }
