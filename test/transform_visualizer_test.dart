@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matriks/app.dart';
+import 'package:matriks/features/settings/cubit/settings_cubit.dart';
+import 'package:matriks/features/transform_visualizer/views/transform_visualizer_screen.dart';
+import 'package:matriks/l10n/generated/app_localizations.dart';
 
 void main() {
   testWidgets(
@@ -87,4 +91,33 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  testWidgets('An invalid coefficient does not push its neighbour down', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      BlocProvider(
+        create: (_) => SettingsCubit(),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const TransformVisualizerScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final a = find.byKey(const ValueKey('coefficient-a'));
+    final b = find.byKey(const ValueKey('coefficient-b'));
+    await tester.ensureVisible(a);
+    await tester.pumpAndSettle();
+    await tester.enterText(a, '2//3');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    expect(find.text('Enter a number from −1000 to 1000.'), findsOneWidget);
+    expect(tester.getTopLeft(b).dy, tester.getTopLeft(a).dy);
+  });
 }

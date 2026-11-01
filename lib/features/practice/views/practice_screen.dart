@@ -372,9 +372,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           const SizedBox(height: 12),
 
                           // Question Title & Prompt
-                          Text(
-                            q.questionTitle,
-                            style: theme.textTheme.titleLarge,
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              q.questionTitle,
+                              style: theme.textTheme.titleLarge,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(

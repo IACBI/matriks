@@ -157,4 +157,15 @@ void main() {
       lessThan(8),
     );
   });
+
+  testWidgets('Screen readers hear each size count with its name', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await openEditor(tester, const Size(375, 812));
+    expect(find.bySemanticsLabel('Rows'), findsOneWidget);
+    expect(tester.getSemantics(find.bySemanticsLabel('Rows')).value, '3');
+    expect(find.bySemanticsLabel('×'), findsNothing);
+    handle.dispose();
+  });
 }

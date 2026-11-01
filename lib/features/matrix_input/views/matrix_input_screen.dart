@@ -153,6 +153,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
               _buildDimensionChip(
                 context,
                 label: '$currentRows',
+                semanticLabel: l10n.rows,
                 canDecrement: canDecrementRows,
                 canIncrement: canIncrementRows,
                 decrementTooltip: l10n.removeRow,
@@ -177,19 +178,23 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 6),
-                    child: Text(
-                      '×',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                  // Visual only: each count is announced with its own name.
+                  const ExcludeSemantics(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        '×',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),
                   _buildDimensionChip(
                     context,
                     label: '$currentCols',
+                    semanticLabel: l10n.cols,
                     enabled: !topic.requiresSquare,
                     canDecrement: canDecrementCols,
                     canIncrement: canIncrementCols,
@@ -673,6 +678,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
   Widget _buildDimensionChip(
     BuildContext context, {
     required String label,
+    String? semanticLabel,
     required VoidCallback onDecrement,
     required VoidCallback onIncrement,
     bool enabled = true,
@@ -703,9 +709,16 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text(
-              label,
-              style: theme.textTheme.titleSmall?.copyWith(fontSize: 15),
+            // Read as "Rows, 3" rather than a bare number between the
+            // remove and add buttons.
+            child: Semantics(
+              label: semanticLabel,
+              value: label,
+              excludeSemantics: semanticLabel != null,
+              child: Text(
+                label,
+                style: theme.textTheme.titleSmall?.copyWith(fontSize: 15),
+              ),
             ),
           ),
           IconButton(

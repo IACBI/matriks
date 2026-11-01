@@ -437,6 +437,15 @@ class InstructionExplanation extends StatelessWidget {
             alignment: AlignmentDirectional.topStart,
             children: [...previous, ?current],
           ),
+          // Fades through, like the cell values: the old sentence is gone
+          // before the new one appears, so two never overlap mid-change.
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: const Interval(.5, 1),
+            ),
+            child: child,
+          ),
           child: Text(
             showAllPhases
                 ? '${lesson.source}\n\n${lesson.operation}\n\n${lesson.result}'

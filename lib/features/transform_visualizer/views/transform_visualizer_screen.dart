@@ -337,6 +337,9 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                             ),
                             const SizedBox(height: 16),
                             Row(
+                              // Top-aligned: an error under one field must not
+                              // push its neighbour down.
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: _buildCellControl(
@@ -361,6 +364,7 @@ class _TransformVisualizerScreenState extends State<TransformVisualizerScreen>
                             ),
                             const SizedBox(height: 12),
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: _buildCellControl(
