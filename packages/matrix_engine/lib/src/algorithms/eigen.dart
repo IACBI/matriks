@@ -141,13 +141,11 @@ class EigenSolver {
         ),
       );
       // Characteristic equation: λ² - tr(A)λ + det(A) = 0
-      final trSign = trace.isNegative
-          ? '+ ${(-trace).toLatex()}'
-          : '- ${trace.toLatex()}';
-      final detSign = det.isNegative
-          ? '- ${(-det).toLatex()}'
-          : '+ ${det.toLatex()}';
-      polyLatex = '\\lambda^2 $trSign \\lambda $detSign = 0';
+      polyLatex = _equationLatex([
+        (Rational.one, r'\lambda^2'),
+        (-trace, r'\lambda'),
+        (det, ''),
+      ]);
       characteristic = RationalPolynomial([det, -trace, Rational.one]);
     } else {
       // det(A - λI) = -λ³ + c2 λ² - c1 λ + c0.
@@ -163,8 +161,12 @@ class EigenSolver {
           (matrix.get(0, 1) * matrix.get(1, 0));
       final c1 = m1 + m2 + m3;
       final c0 = DeterminantSolver.solve(matrix).result as Rational;
-      polyLatex =
-          '-\\lambda^3 + (${c2.toLatex()})\\lambda^2 - (${c1.toLatex()})\\lambda + (${c0.toLatex()}) = 0';
+      polyLatex = _equationLatex([
+        (Rational.minusOne, r'\lambda^3'),
+        (c2, r'\lambda^2'),
+        (-c1, r'\lambda'),
+        (c0, ''),
+      ]);
       steps.add(
         MatrixStep(
           stepIndex: ++stepCounter,
@@ -620,6 +622,28 @@ class EigenSolver {
         ? 'A'
         : '${lambda.isNegative ? 'A +' : 'A -'} ${coefficient}I';
     return '$shift \\;\\Rightarrow\\; $vectorLatex';
+  }
+
+  /// `terms = 0`, each term a coefficient and a power of λ (`''` for the
+  /// constant). Zero terms are left out and a unit coefficient is not
+  /// written: `\lambda^2 + 1 = 0`, never `\lambda^2 - 0 \lambda + 1 = 0`.
+  static String _equationLatex(List<(Rational, String)> terms) {
+    final buffer = StringBuffer();
+    for (final (coefficient, power) in terms) {
+      if (coefficient.isZero) continue;
+      final size = coefficient.abs();
+      final factor = power.isNotEmpty && size == Rational.one
+          ? ''
+          : size.toLatex();
+      final term = [factor, power].where((part) => part.isNotEmpty).join(' ');
+      final sign = coefficient.isNegative ? '-' : '+';
+      buffer.write(
+        buffer.isEmpty
+            ? (coefficient.isNegative ? '-$term' : term)
+            : ' $sign $term',
+      );
+    }
+    return '$buffer = 0';
   }
 
   static List<Rational> _simplifyVector(List<Rational> v) {

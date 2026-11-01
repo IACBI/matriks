@@ -94,7 +94,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
 
           if (key == LogicalKeyboardKey.enter ||
               key == LogicalKeyboardKey.numpadEnter) {
-            _solveAndAnimate(context, state);
+            _solveAndAnimate(context);
           } else if (key == LogicalKeyboardKey.backspace) {
             cubit.onBackspace();
           } else if (key == LogicalKeyboardKey.delete) {
@@ -104,11 +104,11 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
           } else if (key == LogicalKeyboardKey.arrowLeft) {
             cubit.onPrevCell();
           } else if (key == LogicalKeyboardKey.arrowDown) {
-            final nextRow = (state.focusedRow + 1) % currentRows;
-            cubit.setFocus(nextRow, state.focusedCol);
+            cubit.onNextRow();
           } else if (key == LogicalKeyboardKey.arrowUp) {
-            final prevRow = (state.focusedRow - 1 + currentRows) % currentRows;
-            cubit.setFocus(prevRow, state.focusedCol);
+            final now = cubit.state;
+            final rows = now.activeMatrix == 0 ? now.rowsA : now.rowsB;
+            cubit.setFocus((now.focusedRow - 1 + rows) % rows, now.focusedCol);
           } else if (event.character != null && event.character!.isNotEmpty) {
             final ch = event.character!;
             if (ch.length != 1 || !'0123456789-./'.contains(ch)) {
@@ -412,7 +412,7 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 child: ElevatedButton.icon(
                   onPressed: _isSolving
                       ? null
-                      : () => _solveAndAnimate(context, state),
+                      : () => _solveAndAnimate(context),
                   icon: _isSolving
                       ? const SizedBox(
                           width: 18,
@@ -448,17 +448,23 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
                 IconButton(
                   tooltip: l10n.presetRandom,
                   icon: const Icon(Icons.casino_outlined),
-                  onPressed: () => applyPreset(cubit.presetRandom),
+                  onPressed: _isSolving
+                      ? null
+                      : () => applyPreset(cubit.presetRandom),
                 ),
                 IconButton(
                   tooltip: l10n.presetIdentity,
                   icon: const Icon(Icons.grid_3x3),
-                  onPressed: () => applyPreset(cubit.presetIdentity),
+                  onPressed: _isSolving
+                      ? null
+                      : () => applyPreset(cubit.presetIdentity),
                 ),
                 IconButton(
                   tooltip: l10n.presetClear,
                   icon: const Icon(Icons.delete_outline),
-                  onPressed: () => applyPreset(cubit.presetClear),
+                  onPressed: _isSolving
+                      ? null
+                      : () => applyPreset(cubit.presetClear),
                 ),
               ],
             ),
@@ -688,9 +694,12 @@ class _MatrixInputViewState extends State<_MatrixInputView> {
     );
   }
 
-  void _solveAndAnimate(BuildContext context, MatrixInputState state) async {
+  void _solveAndAnimate(BuildContext context) async {
     if (_isSolving) return;
     final l10n = AppLocalizations.of(context)!;
+    // Read now, not from the last build: an edit and Enter can arrive in the
+    // same frame, and the stale copy would solve the matrix before that edit.
+    final state = context.read<MatrixInputCubit>().state;
     for (var index = 0; index < (topic.isDualMatrix ? 2 : 1); index++) {
       final data = index == 0 ? state.dataA : state.dataB;
       for (var r = 0; r < data.length; r++) {

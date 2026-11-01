@@ -8,26 +8,35 @@ Bu proje web, Android, iOS ve Windows için hazırlanabilir. Mağazaya yüklemek
 2. Kaynak kodunun geri yüklenebilir bir Git kopyasını oluşturun. İmza anahtarlarını ve parolaları kaynak koduna koymayın.
 3. Uygulama ve motor analiz/testlerini çalıştırın; hedef cihazlarda temel akışları, ekran okuyucuyu, büyük yazıyı ve performansı kontrol edin.
 4. Beş dilde ekran görüntüleri, mağaza açıklamaları, destek adresi ve gerçek veri kullanımını anlatan gizlilik sayfasını hazırlayın. Uygulama hesap açmaz; tercihleri yerel olarak saklar. Web sunucusunun günlükleri ve barındırma hizmetleri ayrıca değerlendirilmelidir.
-5. Özdeğerlerin yaklaşık/kısmi kapsamını ve tek temsilci vektör sınırını ürün açıklamasında koruyun.
+5. Ürün açıklamasında özdeğer analizinin yalnızca 2×2 ve 3×3 matrisleri kapsadığını belirtin; bu boyutlarda sonuçlar kesindir, hiçbir değer yuvarlanmaz.
 
 ## 2. Web
 
-1. Proje kökünde flutter build web --release çalıştırın.
+1. Proje kökünde flutter build web --release --no-web-resources-cdn çalıştırın; bu bayrak CanvasKit'i Google'ın CDN'i yerine uygulamayla birlikte paketler.
 2. build/web klasörünün tamamını HTTPS destekleyen statik barındırmaya yükleyin.
 3. Alt dizinde yayınlayacaksanız uygun --base-href ile yeniden derleyin.
 4. Canlı adreste sayfa yenileme, beş dil, ayarların yeniden yükleme sonrası korunması, matematik yazı tipleri ve mobil tarayıcıları test edin.
-5. Önceki sürümü geri yükleyebilecek bir dağıtım kopyası tutun. Çevrimdışı kurulum otomatik olarak garanti edilmez.
+5. Önceki sürümü geri yükleyebilecek bir dağıtım kopyası tutun. web/offline_worker.js, çevrimiçi bir ziyaretten sonra uygulamanın çevrimdışı açılmasını sağlar; bunu canlı adreste ağı kapatarak doğrulayın.
 
 [Resmi Flutter web rehberi](https://docs.flutter.dev/deployment/web)
 
 ## 3. Google Play
 
 1. Play Console geliştirici hesabını açın ve kimlik doğrulamasını tamamlayın.
-2. Size ait uygulama kimliğini kesinleştirin. Upload key oluşturup güvenli yedekleyin; Gradle release yapılandırmasını bu anahtara bağlayın.
-3. Mevcut Android release yapılandırması debug anahtarını kullanır. Bunu değiştirmeden üretim sürümü göndermeyin.
-4. flutter build appbundle --release çalıştırın.
-5. AAB dosyasını Play Console'a yükleyin; veri güvenliği, içerik derecelendirmesi ve hesabınız için geçerli test koşullarını tamamlayın.
-6. Test cihazlarında doğrulayıp incelemeye gönderin; onaydan sonra kademeli yayınlayın.
+2. Uygulama kimliği `com.matrixeducator.matriks` olarak sabitlendi; iOS, macOS ve Linux ile aynıdır. İlk yayından sonra değiştirilemez, mağaza farklı kimliği başka bir uygulama sayar.
+3. Upload key oluşturun ve kaynak kodunun dışında güvenle yedekleyin:
+   `keytool -genkeypair -v -keystore <güvenli-yol>/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload`
+4. `android/key.properties` dosyasını oluşturun (git bu dosyayı ve `.jks`/`.keystore` dosyalarını yok sayar). `storeFile` göreli yazılırsa `android/app` klasörüne göre çözülür:
+   ```
+   storePassword=<parola>
+   keyPassword=<parola>
+   keyAlias=upload
+   storeFile=<güvenli-yol>/upload-keystore.jks
+   ```
+   Bu dosya yoksa release derlemesi debug anahtarıyla imzalanır; böyle bir paket mağazaya gönderilemez. Paketin imzasını `keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab` ile kontrol edin (APK için `apksigner verify --print-certs`); sertifika `CN=Android Debug` olmamalıdır.
+5. flutter build appbundle --release çalıştırın.
+6. AAB dosyasını Play Console'a yükleyin; veri güvenliği, içerik derecelendirmesi ve hesabınız için geçerli test koşullarını tamamlayın.
+7. Test cihazlarında doğrulayıp incelemeye gönderin; onaydan sonra kademeli yayınlayın.
 
 [Resmi Flutter Android rehberi](https://docs.flutter.dev/deployment/android)
 

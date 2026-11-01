@@ -6,7 +6,7 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 ![Flutter 3.47.7](https://img.shields.io/badge/Flutter-3.47.7-02569B?logo=flutter&logoColor=white)
 ![Dart 3.13.1](https://img.shields.io/badge/Dart-3.13.1-0175C2?logo=dart&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-web%20%7C%20windows%20%7C%20android%20%7C%20ios%20%7C%20linux%20%7C%20macos-555)
-![Tests](https://img.shields.io/badge/tests-329%20app%20%2B%2070%20engine-success)
+![Tests](https://img.shields.io/badge/tests-app%20%2B%20engine-success)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 **Read this in:** [English](#english) · [Türkçe](#turkce)
@@ -21,7 +21,7 @@ Interactive linear algebra with exact matrix arithmetic and guided visual soluti
 
 Matriks teaches linear algebra by showing the work. Twelve topics — from Gauss-Jordan elimination to eigenvectors — are solved with exact `BigInt` rational arithmetic, so a fraction stays a fraction and never drifts into floating-point noise. Each solution is replayed step by step: the operands that feed a cell are highlighted while the cell changes, and the arithmetic behind it stays on screen afterwards.
 
-Results are labelled honestly. Every solution carries an accuracy (exact or approximate) and a completeness (complete, partial or unsupported), so an approximation is never presented as an exact answer.
+Results are labelled honestly. Every solution states its accuracy and completeness; no value is ever rounded, and a size an operation does not support is reported as unsupported rather than answered.
 
 Everything runs on the device. There is no backend, account system or remote data store; only presentation preferences are persisted, never matrices or quiz history.
 
@@ -61,13 +61,13 @@ flutter run
 Release builds:
 
 ```sh
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 flutter build windows --release
 ```
 
-Serve `build/web` through any HTTP server. When distributing the Windows build, ship the whole `build/windows/x64/runner/Release` directory — the executable needs its DLLs and `data` folder.
+Serve `build/web` through any HTTP server. `--no-web-resources-cdn` bundles CanvasKit with the app instead of loading it from Google's CDN, so the offline worker can cache it and the app keeps working offline after one visit. When distributing the Windows build, ship the whole `build/windows/x64/runner/Release` directory — the executable needs its DLLs and `data` folder.
 
-Web, Windows and the test suites are the validated paths. Android, iOS, Linux and macOS targets are scaffolded but unverified here, Android release still uses the debug signing configuration, and the inspected Windows executable is unsigned.
+Web, Windows and the test suites are the validated paths. Android, iOS, Linux and macOS targets are scaffolded but unverified here, an Android release build is signed with the debug key unless the owner's `android/key.properties` names the upload key, and the inspected Windows executable is unsigned.
 
 ### Configuration
 
@@ -113,7 +113,7 @@ Maintained by 𝓐.𝓒.𝓑.
 
 Matriks lineer cebiri işlemi göstererek öğretir. Gauss-Jordan eliminasyonundan özvektörlere kadar on iki konu, tam `BigInt` rasyonel aritmetiğiyle çözülür; kesir kesir kalır, kayan nokta gürültüsüne dönüşmez. Her çözüm adım adım oynatılır: bir hücreyi besleyen operandlar hücre değişirken vurgulanır, arkasındaki aritmetik sonrasında da ekranda durur.
 
-Sonuçlar dürüstçe etiketlenir. Her çözüm bir doğruluk (tam ya da yaklaşık) ve bir kapsam (tamamlanmış, kısmi ya da desteklenmiyor) taşır; yaklaşık bir değer hiçbir zaman kesin sonuçmuş gibi sunulmaz.
+Sonuçlar dürüstçe etiketlenir. Her çözüm doğruluğunu ve kapsamını belirtir; hiçbir değer yuvarlanmaz, bir işlemin desteklemediği boyut da yanıtlanmak yerine desteklenmiyor olarak bildirilir.
 
 Her şey cihazda çalışır. Arka uç, hesap sistemi veya uzak veri deposu yoktur; yalnızca sunum tercihleri saklanır, matrisler ve sınav geçmişi saklanmaz.
 
@@ -153,13 +153,13 @@ flutter run
 Yayın derlemeleri:
 
 ```sh
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 flutter build windows --release
 ```
 
-`build/web` dizinini herhangi bir HTTP sunucusuyla yayınlayın. Windows derlemesini dağıtırken `build/windows/x64/runner/Release` dizininin tamamını gönderin — çalıştırılabilir dosya kendi DLL'lerine ve `data` klasörüne ihtiyaç duyar.
+`build/web` dizinini herhangi bir HTTP sunucusuyla yayınlayın. `--no-web-resources-cdn` CanvasKit'i Google'ın CDN'inden yüklemek yerine uygulamayla birlikte paketler; böylece çevrimdışı çalışan servis onu önbelleğe alabilir ve uygulama bir ziyaretten sonra çevrimdışı da açılır. Windows derlemesini dağıtırken `build/windows/x64/runner/Release` dizininin tamamını gönderin — çalıştırılabilir dosya kendi DLL'lerine ve `data` klasörüne ihtiyaç duyar.
 
-Doğrulanmış yollar web, Windows ve test paketleridir. Android, iOS, Linux ve macOS hedefleri hazır ama burada doğrulanmadı; Android yayın derlemesi hâlâ debug imzalama yapılandırmasını kullanıyor ve incelenen Windows çalıştırılabilir dosyası imzasız.
+Doğrulanmış yollar web, Windows ve test paketleridir. Android, iOS, Linux ve macOS hedefleri hazır ama burada doğrulanmadı; Android yayın derlemesi, sahibin `android/key.properties` dosyası upload anahtarını göstermedikçe debug anahtarıyla imzalanır; incelenen Windows çalıştırılabilir dosyası imzasızdır.
 
 ### Yapılandırma
 

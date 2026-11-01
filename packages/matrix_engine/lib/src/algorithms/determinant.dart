@@ -81,8 +81,8 @@ class DeterminantSolver {
       titleKey: 'det_2x2_main_diagonal_title',
       explanationKey: 'det_2x2_main_diagonal_desc',
       explanationParams: {
-        'a': a.toLatex(),
-        'd': d.toLatex(),
+        'a': operandLatex(a),
+        'd': operandLatex(d),
         'product': mainDiag.toLatex(),
       },
       matrixBefore: snap,
@@ -100,8 +100,8 @@ class DeterminantSolver {
       titleKey: 'det_2x2_anti_diagonal_title',
       explanationKey: 'det_2x2_anti_diagonal_desc',
       explanationParams: {
-        'b': b.toLatex(),
-        'c': c.toLatex(),
+        'b': operandLatex(b),
+        'c': operandLatex(c),
         'product': antiDiag.toLatex(),
       },
       matrixBefore: snap,
