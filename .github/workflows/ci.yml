@@ -7,9 +7,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# A newer push supersedes a pull request's run. A run on main is not
+# cancelled once started: a workflow-level cancel would also stop a Pages
+# deploy midway.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Every action is pinned to a full commit SHA; Dependabot (github-actions) moves the pins.
 # Read-only unless a job asks for more; only the Pages deploy does.
@@ -37,8 +40,8 @@ jobs:
 
       - name: Resolve dependencies
         run: |
-          flutter pub get
-          dart pub get --directory packages/matrix_engine
+          flutter pub get --enforce-lockfile
+          dart pub get --enforce-lockfile --directory packages/matrix_engine
 
       - name: Check generated localizations are current
         run: |
@@ -118,7 +121,7 @@ jobs:
 
       - name: Build
         run: |
-          flutter pub get
+          flutter pub get --enforce-lockfile
           flutter build ${{ matrix.target }} --release
 
   deploy:
@@ -163,8 +166,8 @@ jobs:
         # and MatriksCJK fonts, so no glyphs are fetched from fonts.gstatic.com;
         # only Chinese a learner types outside that subset would be.
         run: |
-          flutter pub get
-          dart pub get --directory packages/matrix_engine
+          flutter pub get --enforce-lockfile
+          dart pub get --enforce-lockfile --directory packages/matrix_engine
           flutter gen-l10n
           flutter build web --release \
             --base-href "${{ steps.pages.outputs.base_path }}/" \
