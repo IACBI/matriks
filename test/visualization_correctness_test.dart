@@ -68,6 +68,12 @@ Future<void> openTransform(
   await tester.pumpAndSettle();
 }
 
+/// The matches of [finder] that are shown: a calculation line not revealed
+/// yet is laid out, so nothing moves when it appears, but hidden.
+Iterable<Element> _shown(Finder finder) => finder.evaluate().where(
+  (e) => e.findAncestorWidgetOfExactType<Visibility>()?.visible ?? true,
+);
+
 void main() {
   testWidgets('Mobile preset controls keep the animated canvas visible', (
     tester,
@@ -347,10 +353,12 @@ void main() {
         Rational.zero,
       );
       expect(
-        find.byWidgetPredicate(
-          (w) => w is MathText && w.latex.contains('= -2'),
+        _shown(
+          find.byWidgetPredicate(
+            (w) => w is MathText && w.latex.contains('= -2'),
+          ),
         ),
-        findsNothing,
+        isEmpty,
       );
       await tester.pump(Duration(milliseconds: timeline.sourceMs + 100));
       expect(
@@ -408,7 +416,8 @@ void main() {
           ),
         ),
       );
-      expect(find.byType(MathText), findsNothing);
+      expect(_shown(find.byType(MathText)), isEmpty);
+      final before = tester.getSize(find.byType(InstructionExplanation));
       await tester.pumpWidget(
         host(
           const InstructionExplanation(
@@ -418,7 +427,9 @@ void main() {
           ),
         ),
       );
-      expect(find.byType(MathText), findsOneWidget);
+      expect(_shown(find.byType(MathText)), hasLength(1));
+      // Revealing a line moves nothing below the explanation.
+      expect(tester.getSize(find.byType(InstructionExplanation)), before);
       await tester.pumpWidget(
         host(
           const InstructionExplanation(
@@ -428,7 +439,7 @@ void main() {
           ),
         ),
       );
-      expect(find.byType(MathText), findsNWidgets(3));
+      expect(_shown(find.byType(MathText)), hasLength(3));
       expect(
         find.text('source reason\n\noperation reason\n\nresult reason'),
         findsOneWidget,

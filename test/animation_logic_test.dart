@@ -36,6 +36,12 @@ MatrixCellWidget _cell(WidgetTester tester, int index) => tester
     .widgetList<MatrixCellWidget>(find.byType(MatrixCellWidget))
     .elementAt(index);
 
+/// The matches of [finder] that are shown: a calculation line not revealed
+/// yet is laid out, so nothing moves when it appears, but hidden.
+Iterable<Element> _shown(Finder finder) => finder.evaluate().where(
+  (e) => e.findAncestorWidgetOfExactType<Visibility>()?.visible ?? true,
+);
+
 void main() {
   test('Row operations skip columns they cannot change', () {
     final solution = GaussJordanSolver.solve(
@@ -189,13 +195,17 @@ void main() {
       );
       final explanation = find.byType(InstructionExplanation);
       expect(
-        find.descendant(of: explanation, matching: find.byType(MathText)),
-        findsNWidgets(2),
+        _shown(
+          find.descendant(of: explanation, matching: find.byType(MathText)),
+        ),
+        hasLength(2),
       );
       await tester.pumpAndSettle();
       expect(
-        find.descendant(of: explanation, matching: find.byType(MathText)),
-        findsNWidgets(3),
+        _shown(
+          find.descendant(of: explanation, matching: find.byType(MathText)),
+        ),
+        hasLength(3),
       );
     },
   );
